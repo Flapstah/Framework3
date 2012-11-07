@@ -3,4 +3,5 @@ build/
 *.swp
 .vimrc
 make
+run
 tags
