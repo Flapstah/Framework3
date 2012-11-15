@@ -5,6 +5,8 @@
 
 namespace engine
 {
+	//============================================================================
+
 	namespace time
 	{
 		//==========================================================================
@@ -12,12 +14,6 @@ namespace engine
 		//==========================================================================
 		class CTimeValue
 		{
-			public:
-				enum eConstants
-				{
-					INVALID_TIME	 = DECLARE_64BIT(0xf000000000000000),
-				}; // End [enum eConstants]
-
 			public:
 				//======================================================================
 				// CTimeValue constructors
@@ -95,6 +91,8 @@ namespace engine
 			protected:
 				int64 m_ticks;
 		}; // End [class CTimeValue]
+
+		extern const CTimeValue INVALID_TIME;
 		//==========================================================================
 
 
@@ -105,17 +103,20 @@ namespace engine
 		{
 			typedef bool (*TimerCallback)(ITimer*, void* const);
 
-			virtual CTimeValue GetCurrentTime(void) const;
-			virtual CTimeValue GetElapsedTime(void) const;
-			virtual CTimeValue GetFrameTime(void) const;
-			virtual float GetMaxFrameTime(void) const;
-			virtual void SetMaxFrameTime(float maxFrameTime);
-			virtual void SetScale(float scale);
-			virtual float GetScale(void) const;
-			virtual void Pause(bool pause);
-			virtual void Reset(const CTimeValue& when);
-			virtual void SetCallbackInterval(const CTimeValue& interval);
-			virtual const CTimeValue& GetCallbackInterval(void);
+			virtual CTimeValue GetCurrentTime(void) const = 0;
+			virtual CTimeValue GetElapsedTime(void) const = 0;
+			virtual CTimeValue GetFrameTime(void) const = 0;
+			virtual float GetMaxFrameTime(void) const = 0;
+			virtual void SetMaxFrameTime(float maxFrameTime) = 0;
+			virtual void SetScale(float scale) = 0;
+			virtual float GetScale(void) const = 0;
+			virtual void Pause(bool pause) = 0;
+			virtual bool IsPaused(void) = 0;
+			virtual void SuspendCallbacks(bool suspend) = 0;
+			virtual bool HasSuspendedCallbacks(void) = 0;
+			virtual void Reset(const CTimeValue& when) = 0;
+			virtual void SetCallbackInterval(const CTimeValue& interval) = 0;
+			virtual const CTimeValue& GetCallbackInterval(void) = 0;
 		}; // End [struct ITimer]
 		//==========================================================================
 
@@ -125,10 +126,10 @@ namespace engine
 		//==========================================================================
 		struct ITime
 		{
-			virtual	const CTimeValue Update(void);
-			virtual const CTimeValue GetCurrentTime(void) const;
-
-			virtual ITimer* CreateTimer(ITimer& parent, float maxFrameTime, float scale, CTimeValue& callbackInterval, ITimer::TimerCallback pCallback, void* const pUserData);
+			virtual	const CTimeValue Update(void) = 0;
+			virtual const CTimeValue GetCurrentTime(void) const = 0;
+			virtual ITimer* CreateTimer(ITimer& parent, float maxFrameTime, float scale, CTimeValue& callbackInterval, ITimer::TimerCallback pCallback, void* const pUserData) = 0;
+			virtual void Sleep(uint32 microseconds) = 0;
 		}; // End [struct ITime]
 		//==========================================================================
 

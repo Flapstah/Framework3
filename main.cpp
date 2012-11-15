@@ -1,5 +1,7 @@
 #include "common/stdafx.h"
 
+#include "common/itime.h"
+
 //==============================================================================
 
 void DumpArgs(int argc, char* argv[])
@@ -48,6 +50,18 @@ int main(int argc, char* argv[])
 //	IGNORE_PARAMETER(argv);
 	DumpArgs(argc, argv);
 	DumpVariableSizes();
+
+	printf("Test getting time interface...");
+	engine::time::ITime* pTime = engine::time::GetITime();
+	printf("[%p]\n");
+
+	printf("Test CTimeValue...\n");
+	engine::time::CTimeValue tv1;
+	engine::time::CTimeValue tv2(2.0);
+	engine::time::CTimeValue tv3(3.0);
+	engine::time::CTimeValue tv4(tv2+tv3);
+	printf("tv1 = %fs\ntv2 = %fs\ntv3 = %fs\ntv4 = %fs\n", tv1.GetSeconds(), tv2.GetSeconds(), tv3.GetSeconds(), tv4.GetSeconds());
+
 	printf("All done.\n");
 
 	return 0;

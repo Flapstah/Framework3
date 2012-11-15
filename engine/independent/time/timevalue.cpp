@@ -10,8 +10,9 @@ namespace engine
 	{
 		//==========================================================================
 
-		int64 blah = 0;
-		const int64& g_kTICKS_PER_SECOND = blah;
+		extern int64 g_platformTicksPerSecond;
+		const int64& g_kTICKS_PER_SECOND = g_platformTicksPerSecond;
+		const CTimeValue INVALID_TIME(int64(DECLARE_64BIT(0xf000000000000000)));
 
 		//==========================================================================
 

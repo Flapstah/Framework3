@@ -97,13 +97,13 @@ set(PLATFORM_INDEPENDENT_SOURCES
 if (WIN32)
 set(PLATFORM_SPECIFIC_SOURCES
 	#engine/windows/common/platform_system.cpp
-	#engine/windows/time/platform_time.cpp
+	engine/windows/time/platform_time.cpp
 	)
 endif (WIN32)
 if (UNIX)
 set(PLATFORM_SPECIFIC_SOURCES
 	#engine/linux/common/platform_system.cpp
-	#engine/linux/time/platform_time.cpp
+	engine/linux/time/platform_time.cpp
 	)
 endif (UNIX)
 

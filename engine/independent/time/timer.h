@@ -17,6 +17,8 @@ namespace engine
 		class CTimer : public ITimer
 		{
 			public:
+				CTimer(ITimer* pParent, float maxFrameTime, float scale, CTimeValue& callbackInterval, ITimer::TimerCallback pCallback, void* const pUserData);
+				virtual ~CTimer(void);
 
 			// ITimer
 			virtual CTimeValue GetCurrentTime(void) const;
@@ -27,6 +29,9 @@ namespace engine
 			virtual void SetScale(float scale);
 			virtual float GetScale(void) const;
 			virtual void Pause(bool pause);
+			virtual bool IsPaused(void);
+			virtual void SuspendCallbacks(bool suspend);
+			virtual bool HasSuspendedCallbacks(void);
 			virtual void Reset(const CTimeValue& when);
 			virtual void SetCallbackInterval(const CTimeValue& interval);
 			virtual const CTimeValue& GetCallbackInterval(void);
@@ -39,8 +44,12 @@ namespace engine
 			CTimeValue m_callbackInterval;
 			CTimeValue m_callbackTicker;
 
-			TimerCallback* m_pCallback;
+			ITimer* m_pParent;
+			TimerCallback m_pCallback;
 			void* const m_pUserData;
+
+			float m_maxFrameTime;
+			float m_scale;
 
 			enum eFlags
 			{
