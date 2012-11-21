@@ -5,6 +5,7 @@ FOREACH(_MSG_STRING ${_MSG})
 ENDFOREACH()
 ENDMACRO(DBG_MSG)
 
+
 #
 # Build type
 #
@@ -19,13 +20,17 @@ ELSE()
    SET(CMAKE_BUILD_TYPE Debug CACHE STRING ${CMAKE_BUILD_TYPE_DOCUMENTATION})
 ENDIF()
 
+
 # The name of our project is "test". CMakeLists files in this project can
 # refer to the root source directory of the project as ${test_SOURCE_DIR} and
 # to the root binary directory of the project as ${test_BINARY_DIR}.
 cmake_minimum_required (VERSION 2.6)
 project (test)
 
+
+# Additional cmake modules path
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+
 
 # Compiler flags
 #set(LINK_FLAGS "-g")
@@ -39,15 +44,8 @@ if (UNIX)
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions")
 endif (UNIX)
 
-# Platform includes
-set(PLATFORM_INCLUDES "${test_SOURCE_DIR}/engine/independent")
-if (WIN32)
-	set(PLATFORM_INCLUDES ${PLATFORM_INCLUDES} "${test_SOURCE_DIR}/engine/windows")
-endif (WIN32)
-if (UNIX)
-	set(PLATFORM_INCLUDES ${PLATFORM_INCLUDES} "${test_SOURCE_DIR}/engine/linux")
-endif (UNIX)
 
+# Packages
 find_package(OpenGL REQUIRED)
 if (WIN32)
 	# Can't seem to use find_package for GLFW or OpenAL on my Windows 7 box...
@@ -70,13 +68,26 @@ if (UNIX)
 endif (UNIX)
 
 
+# Platform include paths
+set(PLATFORM_INCLUDES "${test_SOURCE_DIR}/engine/independent")
+if (WIN32)
+	set(PLATFORM_INCLUDES ${PLATFORM_INCLUDES} "${test_SOURCE_DIR}/engine/windows")
+endif (WIN32)
+if (UNIX)
+	set(PLATFORM_INCLUDES ${PLATFORM_INCLUDES} "${test_SOURCE_DIR}/engine/linux")
+endif (UNIX)
+
+
+# Set up include and library paths
 include_directories(${PLATFORM_INCLUDES} ${GLFW_INCLUDE_DIR} ${OPENAL_INCLUDE_DIR} ${OPENGL_INCLUDE_DIR})
 set(LIBS ${LIBS} ${GLFW_LIBRARY} ${OPENAL_LIBRARY} ${OPENGL_LIBRARY})
+
 
 #get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
 #DBG_MSG("INCLUDE_DIRECTORIES = [${dirs}]")
 #DBG_MSG("LIBS = [${LIBS}]")
 #DBG_MSG("PLATFORM_INCLUDES = [${PLATFORM_INCLUDES}]")
+
 
 # Platform sources
 set(PLATFORM_INDEPENDENT_SOURCES
@@ -93,6 +104,8 @@ set(PLATFORM_INDEPENDENT_SOURCES
 	engine/independent/time/time.cpp
 	engine/independent/time/timer.cpp
 	engine/independent/time/timevalue.cpp
+	unit_tests/unittest.cpp
+	unit_tests/timetest.cpp
 	)
 if (WIN32)
 set(PLATFORM_SPECIFIC_SOURCES
@@ -107,6 +120,7 @@ set(PLATFORM_SPECIFIC_SOURCES
 	)
 endif (UNIX)
 
+# Build rules for the executable
 add_executable (test main.cpp ${PLATFORM_INDEPENDENT_SOURCES} ${PLATFORM_SPECIFIC_SOURCES} )
 target_link_libraries (test ${LIBS})
 
