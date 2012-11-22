@@ -9,9 +9,10 @@ namespace test
 	//============================================================================
 
 	CUnitTest::CUnitTest(const char* name)
-		:	m_name(name)
+		:	m_pTime(GetITime())
+		,	m_name(name)
 		,	m_status(eTS_SUCCESS)
-		, m_verbosity(eTV_OVERALL_RESULT_ONLY)
+		,	m_verbosity(eTV_OVERALL_RESULT_ONLY)
 	{
 	}
 
@@ -57,7 +58,7 @@ namespace test
 
 	//============================================================================
 
-	const engine::time::CTimeValue& CUnitTest::Start(void)
+	const CTimeValue& CUnitTest::Start(void)
 	{
 		m_timeStarted = engine::time::GetITime()->GetCurrentTime();
 		return m_timeStarted;
@@ -71,7 +72,7 @@ namespace test
 
 	//============================================================================
 
-	const engine::time::CTimeValue& CUnitTest::End(void)
+	const CTimeValue& CUnitTest::End(void)
 	{
 		m_timeEnded = engine::time::GetITime()->GetCurrentTime();
 		return m_timeEnded;
