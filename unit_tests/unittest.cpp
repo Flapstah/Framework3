@@ -9,10 +9,16 @@ namespace test
 	//============================================================================
 
 	CUnitTest::CUnitTest(const char* name)
-		:	m_pTime(GetITime())
-		,	m_name(name)
-		,	m_status(eTS_SUCCESS)
-		,	m_verbosity(eTV_OVERALL_RESULT_ONLY)
+		:	m_name(name)
+		, m_stageWarnings(0)
+		, m_stageErrors(0)
+		, m_totalWarnings(0)
+		, m_totalErrors(0)
+		,	m_pTime(GetITime())
+		, m_stage(0)
+		,	m_testStatus(eTS_UNINITIALISED)
+		,	m_stageStatus(eSS_SUCCESS)
+		,	m_verbosity(eTV_INFORMATION)
 	{
 	}
 
@@ -20,33 +26,13 @@ namespace test
 
 	CUnitTest::~CUnitTest(void)
 	{
-		const char* status = "PASSED";
-		switch (m_status)
-		{
-			case eTS_SUCCESS:
-				status = "PASSED";
-				break;
-
-			case eTS_FAIL_CONTINUE:
-				status = "FAILED";
-				break;
-
-			case eTS_FAIL_ABORT:
-				status = "ABORTED";
-				break;
-
-			default:
-				status = "UNKNOWN";
-				break;
-		}
-
 		engine::time::CTimeValue elapsed = m_timeEnded-m_timeStarted;
 		
 		int32 days, hours, minutes;
 		float seconds;
 		elapsed.GetTime(days, hours, minutes, seconds);
 
-		printf("Unit test [%s] %s in %s%d days, %02u:%02u:%06.3fs\n\n", m_name, status, (elapsed.GetTicks() < 0) ? "-" : "",  days, hours, minutes, seconds);
+		printf("[%s] completed in %s%d days, %02u:%02u:%06.3fs, with %d warnings and %d errors\n\n", m_name, (elapsed.GetTicks() < 0) ? "-" : "",  days, hours, minutes, seconds, m_totalWarnings, m_totalErrors);
 	}
 
 	//============================================================================
@@ -54,6 +40,9 @@ namespace test
 	bool CUnitTest::Initialise(eTestVerbosity verbosity)
 	{
 		m_verbosity = verbosity;
+		m_testStatus = eTS_INITIALISED;
+
+		return true;
 	}
 
 	//============================================================================
@@ -61,6 +50,8 @@ namespace test
 	const CTimeValue& CUnitTest::Start(void)
 	{
 		m_timeStarted = engine::time::GetITime()->GetCurrentTime();
+		m_testStatus = eTS_RUNNING;
+
 		return m_timeStarted;
 	}
 
@@ -68,6 +59,36 @@ namespace test
 
 	CUnitTest::eTestStatus CUnitTest::Update(void)
 	{
+		if ((m_testStatus == eTS_RUNNING) && ((m_stage < m_test.size())))
+		{
+			STest& stage = m_test[m_stage];
+			uint32 status = stage.m_function(this);
+
+			if ((status & eSS_RESULT_MASK) == eSS_WARNING)
+			{
+				++m_stageWarnings;
+			}
+
+			if ((status & eSS_RESULT_MASK) == eSS_ERROR)
+			{
+				++m_stageErrors;
+			}
+
+			if (status & eSS_COMPLETE)
+			{
+				Log(eTV_RESULT, "[%s:%s] complete; %d warnings, %d errors", m_name, stage.m_name.c_str(), m_stageWarnings, m_stageErrors);
+
+				m_totalWarnings += m_stageWarnings;
+				m_totalErrors += m_stageErrors;
+
+				m_stageWarnings = 0;
+				m_stageErrors = 0;
+
+				++m_stage;
+			}
+		}
+
+		return m_testStatus;
 	}
 
 	//============================================================================
@@ -93,10 +114,42 @@ namespace test
 
 		if (m_verbosity >= targetLevel)
 		{
+			/*
+			switch (eStageStatus)
+			{
+				case eSS_SUCCESS:
+					printf(ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_GREEN)));
+					break;
+
+				case eSS_WARNING:
+					printf(ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_YELLOW)));
+					break;
+
+				case eSS_FAILED:
+					printf(ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_RED)));
+					break;
+
+				default:
+					printf(ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_CYAN)));
+					break;
+			}
+			*/
+
 			vprintf(format, args);
+			printf(ANSI_1SEQUENCE(ANSI_RESET_ALL));
 		}
 
 		va_end(args);
+	}
+
+	//============================================================================
+
+	void CUnitTest::AddStage(const char* name, TestFn function)
+	{
+		if (m_testStatus == eTS_UNINITIALISED)
+		{
+			m_test.push_back(STest(name, function));
+		}
 	}
 
 	//============================================================================

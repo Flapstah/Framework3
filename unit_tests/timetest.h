@@ -31,8 +31,11 @@ namespace test
 
 			//========================================================================
 
+			static	uint32 TimeValueConstruction(CUnitTest* pThis);
+			static	uint32 TimeValueOperations(CUnitTest* pThis);
+
 		protected:
-			CTimeValue m_testValue0;
+			CTimeValue m_testValue;
 	}; // End [struct class CTimeTest : public CUnitTest]
 
 	//============================================================================
