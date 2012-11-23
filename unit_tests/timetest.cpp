@@ -23,31 +23,9 @@ namespace test
 
 	bool CTimeTest::Initialise(eTestVerbosity verbosity)
 	{
-		const char* name = "Construction";
-		AddStage(name, TimeValueConstruction);
-		CUnitTest::Initialise(verbosity);
-		return true;
-	}
+		AddStage("Construction", TimeValueConstruction);
 
-	//============================================================================
-
-	const CTimeValue& CTimeTest::Start(void)
-	{
-		return CUnitTest::Start();
-	}
-
-	//============================================================================
-
-	CUnitTest::eTestStatus CTimeTest::Update(void)
-	{
-		return eTS_RUNNING;
-	}
-
-	//============================================================================
-
-	const CTimeValue& CTimeTest::End(void)
-	{
-		return CUnitTest::End();
+		return CUnitTest::Initialise(verbosity);
 	}
 
 	//============================================================================
@@ -59,27 +37,28 @@ namespace test
 
 	//============================================================================
 
-	uint32 CTimeTest::TimeValueConstruction(CUnitTest* pThis)
+	uint32 CTimeTest::TimeValueConstruction(CUnitTest* pParent)
 	{
-		/*
-		CTimeTest* _this = static_cast<CTimeTest*>(pThis);
-		if (m_testStatus == eTS_RUNNING)
+		CTimeTest* pThis = static_cast<CTimeTest*>(pParent);
+		uint32 status = eSS_SUCCESS;
+
+		if (pThis->m_testStatus == eTS_RUNNING)
 		{
-			switch (m_stage)
+			switch (pThis->m_stage)
 			{
 				case 0: // Test getting interface pointer
 					{
 						ITime* pTime = GetITime();
-						if (pTime == m_pTime)
+						if (pTime == pThis->m_pTime)
 						{
-							Log(eTV_INFORMATION, "Time interface obtained correctly (behaving as a singleton)\n");
+							pThis->Log(eTV_INFORMATION, "Time interface obtained correctly (behaving as a singleton)\n");
 						}
 						else
 						{
-							Log(eTV_INFORMATION, "Time interface different! (Not behaving as a singleton)\n");
+							pThis->Log(eTV_ERROR, "Time interface different! (Not behaving as a singleton)\n");
 						}
 
-						++m_stage;
+						++pThis->m_stage;
 					}
 					break;
 
@@ -88,14 +67,14 @@ namespace test
 						CTimeValue zeroTest;
 						if (zeroTest.GetSeconds() == 0.0)
 						{
-							Log(eTV_INFORMATION, "Default constructor initialised time value to 0.0s\n");
+							pThis->Log(eTV_INFORMATION, "Default constructor initialised time value to 0.0s\n");
 						}
 						else
 						{
-							Log(eTV_INFORMATION, "Default constructor failed to initialise time value to 0.0s (%g)!\n", zeroTest.GetSeconds());
+							pThis->Log(eTV_WARNING, "Default constructor failed to initialise time value to 0.0s (%g)!\n", zeroTest.GetSeconds());
 						}
 
-						++m_stage;
+						++pThis->m_stage;
 					}
 					break;
 
@@ -104,14 +83,14 @@ namespace test
 						CTimeValue oneTest(1.0);
 						if (oneTest.GetSeconds() == 1.0)
 						{
-							Log(eTV_INFORMATION, "Value constructor initialised time value to 1.0s\n");
+							pThis->Log(eTV_INFORMATION, "Value constructor initialised time value to 1.0s\n");
 						}
 						else
 						{
-							Log(eTV_INFORMATION, "Value constructor failed to initialise time value to 1.0s (%g)!\n", oneTest.GetSeconds());
+							pThis->Log(eTV_WARNING, "Value constructor failed to initialise time value to 1.0s (%g)!\n", oneTest.GetSeconds());
 						}
 
-						++m_stage;
+						++pThis->m_stage;
 					}
 					break;
 
@@ -122,32 +101,31 @@ namespace test
 
 						if (copyTest.GetSeconds() == 1.0)
 						{
-							Log(eTV_INFORMATION, "Copy constructor initialised time value to 1.0s\n");
+							pThis->Log(eTV_INFORMATION, "Copy constructor initialised time value to 1.0s\n");
 						}
 						else
 						{
-							Log(eTV_INFORMATION, "Copy constructor failed to initialise time value to 1.0s (%g)!\n", copyTest.GetSeconds());
+							pThis->Log(eTV_WARNING, "Copy constructor failed to initialise time value to 1.0s (%g)!\n", copyTest.GetSeconds());
 						}
 
-						++m_stage;
+						++pThis->m_stage;
 					}
 					break;
 
 				default:
-					m_testStatus = eTS_FINISHED;
+					status |= eSS_COMPLETE;
 					break;
 			}
 		}
 
-		return m_testStatus;
-		*/
-			return eSS_SUCCESS | eSS_COMPLETE;
+		return status;
 	}
 
 	//============================================================================
 
-	uint32 CTimeTest::TimeValueOperations(CUnitTest* pThis)
+	uint32 CTimeTest::TimeValueOperations(CUnitTest* pParent)
 	{
+		CTimeTest* pThis = static_cast<CTimeTest*>(pParent);
 		return eSS_SUCCESS | eSS_COMPLETE;
 	}
 

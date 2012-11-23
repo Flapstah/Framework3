@@ -21,18 +21,14 @@ namespace test
 			virtual										~CTimeTest(void);
 
 			// CUnitTest
-
 			virtual				bool				Initialise(eTestVerbosity verbosity);
-			virtual	const	CTimeValue&	Start(void);
-			virtual				eTestStatus	Update(void);
-			virtual	const	CTimeValue&	End(void);
 			virtual				void				Uninitialise(void);
 			// ~CUnitTest
 
 			//========================================================================
 
-			static	uint32 TimeValueConstruction(CUnitTest* pThis);
-			static	uint32 TimeValueOperations(CUnitTest* pThis);
+			static	uint32 TimeValueConstruction(CUnitTest* pParent);
+			static	uint32 TimeValueOperations(CUnitTest* pParent);
 
 		protected:
 			CTimeValue m_testValue;

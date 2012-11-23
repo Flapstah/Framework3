@@ -30,7 +30,7 @@ namespace test
 				eTS_INITIALISED,
 				eTS_RUNNING,
 				eTS_FINISHED,
-				eTS_ABORTED,
+				eTS_ABORTED
 			}; // End [enum eTestStatus]
 
 			//========================================================================
@@ -58,7 +58,7 @@ namespace test
 
 			//========================================================================
 
-			typedef uint32 (*TestFn)(CUnitTest* pThis);
+			typedef uint32 (*TestFn)(CUnitTest* pParent);
 
 			//========================================================================
 
@@ -66,9 +66,9 @@ namespace test
 			virtual										~CUnitTest(void);
 
 			virtual				bool				Initialise(eTestVerbosity verbosity) = 0;
-			virtual	const	CTimeValue&	Start(void) = 0;
-			virtual				eTestStatus	Update(void) = 0;
-			virtual	const	CTimeValue&	End(void) = 0;
+			virtual	const	CTimeValue&	Start(void);
+			virtual				eTestStatus	Update(void);
+			virtual	const	CTimeValue&	End(void);
 			virtual				void				Uninitialise(void) = 0;
 
 										void				Log(eTestVerbosity targetLevel, const char* format, ...);
@@ -86,7 +86,8 @@ namespace test
 				TestFn									m_function;
 			};
 
-			vector<STest>							m_test;
+			vector<STest>							m_tests;
+			vector<STest>::iterator		m_testIterator;
 			CTimeValue								m_timeStarted;
 			CTimeValue								m_timeEnded;
 			const char*								m_name;

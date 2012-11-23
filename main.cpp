@@ -54,7 +54,7 @@ int main(int argc, char* argv[])
 
 	test::CTimeTest* pTimeTest = new test::CTimeTest();
 	pTimeTest->Start();
-	pTimeTest->Update();
+	while (pTimeTest->Update() == test::CUnitTest::eTS_RUNNING);
 	pTimeTest->End();
 
 	printf("All done.\n");

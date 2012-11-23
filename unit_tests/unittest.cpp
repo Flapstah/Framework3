@@ -41,6 +41,7 @@ namespace test
 	{
 		m_verbosity = verbosity;
 		m_testStatus = eTS_INITIALISED;
+		m_testIterator = m_tests.begin();
 
 		return true;
 	}
@@ -59,32 +60,29 @@ namespace test
 
 	CUnitTest::eTestStatus CUnitTest::Update(void)
 	{
-		if ((m_testStatus == eTS_RUNNING) && ((m_stage < m_test.size())))
+		if (m_testStatus == eTS_RUNNING)
 		{
-			STest& stage = m_test[m_stage];
-			uint32 status = stage.m_function(this);
-
-			if ((status & eSS_RESULT_MASK) == eSS_WARNING)
+			if (m_testIterator != m_tests.end())
 			{
-				++m_stageWarnings;
+				STest& test = *m_testIterator;
+				uint32 status = test.m_function(this);
+
+				if (status & eSS_COMPLETE)
+				{
+					Log(eTV_RESULT, "[%s:%s] complete; %d warnings, %d errors\n", m_name, test.m_name.c_str(), m_stageWarnings, m_stageErrors);
+
+					m_totalWarnings += m_stageWarnings;
+					m_totalErrors += m_stageErrors;
+
+					m_stageWarnings = 0;
+					m_stageErrors = 0;
+
+					++m_testIterator;
+				}
 			}
-
-			if ((status & eSS_RESULT_MASK) == eSS_ERROR)
+			else
 			{
-				++m_stageErrors;
-			}
-
-			if (status & eSS_COMPLETE)
-			{
-				Log(eTV_RESULT, "[%s:%s] complete; %d warnings, %d errors", m_name, stage.m_name.c_str(), m_stageWarnings, m_stageErrors);
-
-				m_totalWarnings += m_stageWarnings;
-				m_totalErrors += m_stageErrors;
-
-				m_stageWarnings = 0;
-				m_stageErrors = 0;
-
-				++m_stage;
+				m_testStatus = eTS_FINISHED;
 			}
 		}
 
@@ -114,18 +112,20 @@ namespace test
 
 		if (m_verbosity >= targetLevel)
 		{
-			/*
-			switch (eStageStatus)
+			switch (targetLevel)
 			{
-				case eSS_SUCCESS:
+				case eTV_RESULT:
+				case eTV_INFORMATION:
 					printf(ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_GREEN)));
 					break;
 
-				case eSS_WARNING:
+				case eTV_WARNING:
+					++m_stageWarnings;
 					printf(ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_YELLOW)));
 					break;
 
-				case eSS_FAILED:
+				case eTV_ERROR:
+					++m_stageErrors;
 					printf(ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_RED)));
 					break;
 
@@ -133,7 +133,6 @@ namespace test
 					printf(ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_CYAN)));
 					break;
 			}
-			*/
 
 			vprintf(format, args);
 			printf(ANSI_1SEQUENCE(ANSI_RESET_ALL));
@@ -148,7 +147,7 @@ namespace test
 	{
 		if (m_testStatus == eTS_UNINITIALISED)
 		{
-			m_test.push_back(STest(name, function));
+			m_tests.push_back(STest(name, function));
 		}
 	}
 

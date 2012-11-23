@@ -69,7 +69,7 @@ endif (UNIX)
 
 
 # Platform include paths
-set(PLATFORM_INCLUDES "${test_SOURCE_DIR}/engine/independent")
+set(PLATFORM_INCLUDES "${test_SOURCE_DIR}/engine/independent" "${test_SOURCE_DIR}/unit_tests")
 if (WIN32)
 	set(PLATFORM_INCLUDES ${PLATFORM_INCLUDES} "${test_SOURCE_DIR}/engine/windows")
 endif (WIN32)
