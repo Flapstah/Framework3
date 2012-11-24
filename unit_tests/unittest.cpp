@@ -53,9 +53,6 @@ namespace test
 		m_timeStarted = engine::time::GetITime()->GetCurrentTime();
 		m_testStatus = eTS_RUNNING;
 
-		STest& test = *m_testIterator;
-		Log(eTV_RESULT, "[%s:%s] started", m_name, test.m_name.c_str());
-
 		return m_timeStarted;
 	}
 
@@ -68,8 +65,12 @@ namespace test
 			if (m_testIterator != m_tests.end())
 			{
 				STest& test = *m_testIterator;
-				uint32 status = test.m_function(this);
+				if (m_stage == 0)
+				{
+					Log(eTV_RESULT, "[%s:%s] started", m_name, test.m_name.c_str());
+				}
 
+				uint32 status = test.m_function(this);
 				if (status & eSS_COMPLETE)
 				{
 					Log(eTV_RESULT, "[%s:%s] complete; %d warnings, %d errors\n", m_name, test.m_name.c_str(), m_stageWarnings, m_stageErrors);
@@ -79,6 +80,8 @@ namespace test
 
 					m_stageWarnings = 0;
 					m_stageErrors = 0;
+
+					m_stage = 0;
 
 					++m_testIterator;
 				}

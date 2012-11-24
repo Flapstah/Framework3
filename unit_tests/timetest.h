@@ -26,7 +26,6 @@ namespace test
 
 			//========================================================================
 
-			static	uint32 TimeValueConstruction(CUnitTest* pParent);
 			static	uint32 TimeValueOperations(CUnitTest* pParent);
 
 		protected:
