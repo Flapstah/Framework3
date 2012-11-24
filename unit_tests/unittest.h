@@ -69,7 +69,7 @@ namespace test
 			virtual	const	CTimeValue&	Start(void);
 			virtual				eTestStatus	Update(void);
 			virtual	const	CTimeValue&	End(void);
-			virtual				void				Uninitialise(void) = 0;
+			virtual				void				Uninitialise(void);
 
 										void				Log(eTestVerbosity targetLevel, const char* format, ...);
 

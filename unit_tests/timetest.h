@@ -22,7 +22,6 @@ namespace test
 
 			// CUnitTest
 			virtual				bool				Initialise(eTestVerbosity verbosity);
-			virtual				void				Uninitialise(void);
 			// ~CUnitTest
 
 			//========================================================================

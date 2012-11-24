@@ -6,6 +6,8 @@
 
 namespace test
 {
+	//============================================================================
+
 	CTimeTest::CTimeTest(void)
 		: CUnitTest("Time")
 	{
@@ -30,13 +32,6 @@ namespace test
 
 	//============================================================================
 
-	void CTimeTest::Uninitialise(void)
-	{
-		CUnitTest::Uninitialise();
-	}
-
-	//============================================================================
-
 	uint32 CTimeTest::TimeValueConstruction(CUnitTest* pParent)
 	{
 		CTimeTest* pThis = static_cast<CTimeTest*>(pParent);
@@ -51,11 +46,11 @@ namespace test
 						ITime* pTime = GetITime();
 						if (pTime == pThis->m_pTime)
 						{
-							pThis->Log(eTV_INFORMATION, "Time interface obtained correctly (behaving as a singleton)\n");
+							pThis->Log(eTV_INFORMATION, "Time interface obtained correctly (behaving as a singleton)");
 						}
 						else
 						{
-							pThis->Log(eTV_ERROR, "Time interface different! (Not behaving as a singleton)\n");
+							pThis->Log(eTV_ERROR, "Time interface different! (Not behaving as a singleton)");
 						}
 
 						++pThis->m_stage;
@@ -67,11 +62,11 @@ namespace test
 						CTimeValue zeroTest;
 						if (zeroTest.GetSeconds() == 0.0)
 						{
-							pThis->Log(eTV_INFORMATION, "Default constructor initialised time value to 0.0s\n");
+							pThis->Log(eTV_INFORMATION, "Default constructor initialised time value to 0.0s");
 						}
 						else
 						{
-							pThis->Log(eTV_WARNING, "Default constructor failed to initialise time value to 0.0s (%g)!\n", zeroTest.GetSeconds());
+							pThis->Log(eTV_WARNING, "Default constructor failed to initialise time value to 0.0s (%g)!", zeroTest.GetSeconds());
 						}
 
 						++pThis->m_stage;
@@ -83,11 +78,11 @@ namespace test
 						CTimeValue oneTest(1.0);
 						if (oneTest.GetSeconds() == 1.0)
 						{
-							pThis->Log(eTV_INFORMATION, "Value constructor initialised time value to 1.0s\n");
+							pThis->Log(eTV_INFORMATION, "Value constructor initialised time value to 1.0s");
 						}
 						else
 						{
-							pThis->Log(eTV_WARNING, "Value constructor failed to initialise time value to 1.0s (%g)!\n", oneTest.GetSeconds());
+							pThis->Log(eTV_WARNING, "Value constructor failed to initialise time value to 1.0s (%g)!", oneTest.GetSeconds());
 						}
 
 						++pThis->m_stage;
@@ -101,11 +96,11 @@ namespace test
 
 						if (copyTest.GetSeconds() == 1.0)
 						{
-							pThis->Log(eTV_INFORMATION, "Copy constructor initialised time value to 1.0s\n");
+							pThis->Log(eTV_INFORMATION, "Copy constructor initialised time value to 1.0s");
 						}
 						else
 						{
-							pThis->Log(eTV_WARNING, "Copy constructor failed to initialise time value to 1.0s (%g)!\n", copyTest.GetSeconds());
+							pThis->Log(eTV_WARNING, "Copy constructor failed to initialise time value to 1.0s (%g)!", copyTest.GetSeconds());
 						}
 
 						++pThis->m_stage;

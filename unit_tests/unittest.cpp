@@ -32,7 +32,7 @@ namespace test
 		float seconds;
 		elapsed.GetTime(days, hours, minutes, seconds);
 
-		printf("[%s] completed in %s%d days, %02u:%02u:%06.3fs, with %d warnings and %d errors\n\n", m_name, (elapsed.GetTicks() < 0) ? "-" : "",  days, hours, minutes, seconds, m_totalWarnings, m_totalErrors);
+		Log(eTV_RESULT, "[%s] completed in %s%d days, %02u:%02u:%06.3fs, with %d warnings and %d errors\n", m_name, (elapsed.GetTicks() < 0) ? "-" : "",  days, hours, minutes, seconds, m_totalWarnings, m_totalErrors);
 	}
 
 	//============================================================================
@@ -52,6 +52,9 @@ namespace test
 	{
 		m_timeStarted = engine::time::GetITime()->GetCurrentTime();
 		m_testStatus = eTS_RUNNING;
+
+		STest& test = *m_testIterator;
+		Log(eTV_RESULT, "[%s:%s] started", m_name, test.m_name.c_str());
 
 		return m_timeStarted;
 	}
@@ -135,7 +138,7 @@ namespace test
 			}
 
 			vprintf(format, args);
-			printf(ANSI_1SEQUENCE(ANSI_RESET_ALL));
+			printf(ANSI_1SEQUENCE(ANSI_RESET_ALL) "\n");
 		}
 
 		va_end(args);
