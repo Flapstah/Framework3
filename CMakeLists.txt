@@ -106,6 +106,7 @@ set(PLATFORM_INDEPENDENT_SOURCES
 	engine/independent/time/timevalue.cpp
 	unit_tests/unittest.cpp
 	unit_tests/timetest.cpp
+	unit_tests/typetest.cpp
 	)
 if (WIN32)
 set(PLATFORM_SPECIFIC_SOURCES
