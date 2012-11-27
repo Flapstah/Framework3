@@ -73,7 +73,17 @@ namespace test
 				uint32 status = test.m_function(this);
 				if (status & eSS_COMPLETE)
 				{
-					Log(eTV_RESULT, "[%s:%s] complete; %d warnings, %d errors\n", m_name, test.m_name.c_str(), m_stageWarnings, m_stageErrors);
+					const char* colour = ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_GREEN));
+					if (m_stageWarnings != 0)
+					{
+						colour = ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_YELLOW));
+					}
+					if (m_stageErrors != 0)
+					{
+						colour = ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_RED));
+					}
+
+					Log(eTV_RESULT, "%s[%s:%s] complete; %d warnings, %d errors\n", colour, m_name, test.m_name.c_str(), m_stageWarnings, m_stageErrors);
 
 					m_totalWarnings += m_stageWarnings;
 					m_totalErrors += m_stageErrors;
@@ -127,16 +137,16 @@ namespace test
 
 				case eTV_WARNING:
 					++m_stageWarnings;
-					printf(ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_YELLOW)));
+					printf(ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_YELLOW)) "[WARNING] ");
 					break;
 
 				case eTV_ERROR:
 					++m_stageErrors;
-					printf(ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_RED)));
+					printf(ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_RED)) "[ERROR] ");
 					break;
 
 				default:
-					printf(ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_CYAN)));
+					printf(ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_CYAN)) "[UNKNOWN] ");
 					break;
 			}
 

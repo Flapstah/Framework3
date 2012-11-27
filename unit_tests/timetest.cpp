@@ -356,6 +356,154 @@ namespace test
 					}
 					break;
 
+				case 5: // operator-
+					{
+						CTimeValue oneTest(1.0);
+						CTimeValue twoTest(2.0);
+						CTimeValue minusTwoTest(-2.0);
+
+						// operator-(const CTimeValue& other)
+						CTimeValue testValue = oneTest-twoTest;
+						if ((testValue.GetSeconds() >= -1.0) && (testValue.GetSeconds() <= -1.0))
+						{
+							pThis->Log(eTV_INFORMATION, "[5.0] operator-(const CTimeValue& other) set test value to -1.0s");
+						}
+						else
+						{
+							pThis->Log(eTV_WARNING, "[5.0] operator-(const CTimeValue& other) did not set test value to -1.0s (%g)!", testValue.GetSeconds());
+						}
+
+						// operator-(const CTimeValue& other)
+						testValue = oneTest-minusTwoTest;
+						if ((testValue.GetSeconds() >= 3.0) && (testValue.GetSeconds() <= 3.0))
+						{
+							pThis->Log(eTV_INFORMATION, "[5.1] operator-(const CTimeValue& other) set test value to 3.0s");
+						}
+						else
+						{
+							pThis->Log(eTV_WARNING, "[5.1] operator-(const CTimeValue& other) did not set test value to 3.0s (%g)!", testValue.GetSeconds());
+						}
+
+						// operator-(double seconds)
+						testValue = twoTest-1.0;
+						if ((testValue.GetSeconds() >= 1.0) && (testValue.GetSeconds() <= 1.0))
+						{
+							pThis->Log(eTV_INFORMATION, "[5.2] operator- set test value to 1.0s");
+						}
+						else
+						{
+							pThis->Log(eTV_WARNING, "[5.2] operator- did not set test value to 1.0s (%g)!", testValue.GetSeconds());
+						}
+
+						// operator-(double seconds)
+						testValue = twoTest-(-3.0);
+						if ((testValue.GetSeconds() >= 5.0) && (testValue.GetSeconds() <= 5.0))
+						{
+							pThis->Log(eTV_INFORMATION, "[5.3] operator- set test value to 5.0s");
+						}
+						else
+						{
+							pThis->Log(eTV_WARNING, "[5.3] operator- did not set test value to 5.0s (%g)!", testValue.GetSeconds());
+						}
+
+						// operator-(int64 ticks)
+						testValue = oneTest.GetTicks()-twoTest.GetTicks();
+						if ((testValue.GetSeconds() >= -1.0) && (testValue.GetSeconds() <= -1.0))
+						{
+							pThis->Log(eTV_INFORMATION, "[5.4] operator- set test value to -1.0s");
+						}
+						else
+						{
+							pThis->Log(eTV_WARNING, "[5.4] operator- did not set test value to -1.0s (%g)!", testValue.GetSeconds());
+						}
+
+						// operator-(int64 ticks)
+						testValue = oneTest.GetTicks()-minusTwoTest.GetTicks();
+						if ((testValue.GetSeconds() >= 3.0) && (testValue.GetSeconds() <= 3.0))
+						{
+							pThis->Log(eTV_INFORMATION, "[5.5] operator- set test value to 3.0s");
+						}
+						else
+						{
+							pThis->Log(eTV_WARNING, "[5.5] operator- did not set test value to 3.0s (%g)!", testValue.GetSeconds());
+						}
+
+						++pThis->m_stage;
+					}
+					break;
+
+				case 6:
+					{
+						CTimeValue oneTest(1.0);
+						CTimeValue testValue(1.0);
+
+						if (testValue == oneTest)
+						{
+							pThis->Log(eTV_INFORMATION, "[6.0] operator==(const CTimeValue& other) values are equal");
+						}
+						else
+						{
+							pThis->Log(eTV_WARNING, "[6.0] operator==(const CTimeValue& other) values are not equal (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
+						}
+
+						if (testValue == 1.0)
+						{
+							pThis->Log(eTV_INFORMATION, "[6.1] operator==(1.0) values are equal");
+						}
+						else
+						{
+							pThis->Log(eTV_WARNING, "[6.1] operator==(1.0) values are not equal (%g)", testValue.GetSeconds());
+						}
+
+						if (testValue == oneTest.GetTicks())
+						{
+							pThis->Log(eTV_INFORMATION, "[6.2] operator==(oneTest.GetTicks()) values are equal");
+						}
+						else
+						{
+							pThis->Log(eTV_WARNING, "[6.2] operator==(oneTest.GetTicks()) values are not equal (%" PRId64 ", %" PRId64 ")", testValue.GetTicks(), oneTest.GetTicks());
+						}
+
+						++pThis->m_stage;
+					}
+					break;
+
+				case 7:
+					{
+						CTimeValue oneTest(1.0);
+						CTimeValue testValue(2.0);
+
+						if (testValue != oneTest)
+						{
+							pThis->Log(eTV_INFORMATION, "[7.0] operator!=(const CTimeValue& other) values are not equal");
+						}
+						else
+						{
+							pThis->Log(eTV_WARNING, "[7.0] operator!=(const CTimeValue& other) values are equal (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
+						}
+
+						if (testValue != 1.0)
+						{
+							pThis->Log(eTV_INFORMATION, "[7.1] operator!=(1.0) values are not equal");
+						}
+						else
+						{
+							pThis->Log(eTV_WARNING, "[7.1] operator!=(1.0) values are equal (%g)", testValue.GetSeconds());
+						}
+
+						if (testValue != oneTest.GetTicks())
+						{
+							pThis->Log(eTV_INFORMATION, "[7.2] operator!=(oneTest.GetTicks()) values are not equal");
+						}
+						else
+						{
+							pThis->Log(eTV_WARNING, "[7.2] operator!=(oneTest.GetTicks()) values are equal (%" PRId64 ", %" PRId64 ")", testValue.GetTicks(), oneTest.GetTicks());
+						}
+
+						++pThis->m_stage;
+					}
+					break;
+
 				default:
 					status |= eSS_COMPLETE;
 					break;

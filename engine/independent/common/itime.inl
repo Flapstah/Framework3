@@ -147,7 +147,7 @@ namespace engine
 
 		inline const CTimeValue CTimeValue::operator-(double seconds) const
 		{
-			CTimeValue result(m_ticks-(seconds*g_kTICKS_PER_SECOND));
+			CTimeValue result(m_ticks-static_cast<int64>(seconds*g_kTICKS_PER_SECOND));
 			return result;
 		}
 
