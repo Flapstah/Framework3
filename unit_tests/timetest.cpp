@@ -432,7 +432,7 @@ namespace test
 					}
 					break;
 
-				case 6:
+				case 6: // operator==
 					{
 						CTimeValue oneTest(1.0);
 						CTimeValue testValue(1.0);
@@ -468,7 +468,7 @@ namespace test
 					}
 					break;
 
-				case 7:
+				case 7: // operator!=
 					{
 						CTimeValue oneTest(1.0);
 						CTimeValue testValue(2.0);
@@ -504,6 +504,215 @@ namespace test
 					}
 					break;
 
+				case 8: // operator<
+					{
+						CTimeValue oneTest(1.0);
+						CTimeValue testValue(2.0);
+
+						if (testValue < oneTest)
+						{
+							pThis->Log(eTV_WARNING, "[8.0] operator<(const CTimeValue& other) passed value is less than test value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
+						}
+						else
+						{
+							pThis->Log(eTV_INFORMATION, "[8.0] operator<(const CTimeValue& other) passed value is not less than test value");
+						}
+
+						testValue = 1.0;
+						if (testValue < oneTest)
+						{
+							pThis->Log(eTV_WARNING, "[8.1] operator<(const CTimeValue& other) passed value is less than test value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
+						}
+						else
+						{
+							pThis->Log(eTV_INFORMATION, "[8.1] operator<(const CTimeValue& other) passed value is not less than test value");
+						}
+
+						testValue = 0.5;
+						if (testValue < oneTest)
+						{
+							pThis->Log(eTV_INFORMATION, "[8.2] operator<(const CTimeValue& other) test value is less than passed value");
+						}
+						else
+						{
+							pThis->Log(eTV_WARNING, "[8.2] operator<(const CTimeValue& other) test value is not less than passed value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
+						}
+
+						testValue = 2.0;
+						if (testValue < 1.0)
+						{
+							pThis->Log(eTV_WARNING, "[8.3] operator<(1.0) passed value is less than test value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
+						}
+						else
+						{
+							pThis->Log(eTV_INFORMATION, "[8.3] operator<(1.0) passed value is not less than test value");
+						}
+
+						testValue = 1.0;
+						if (testValue < 1.0)
+						{
+							pThis->Log(eTV_WARNING, "[8.4] operator<(1.0) passed value is less than test value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
+						}
+						else
+						{
+							pThis->Log(eTV_INFORMATION, "[8.4] operator<(1.0) passed value is not less than test value");
+						}
+
+						testValue = 0.5;
+						if (testValue < 1.0)
+						{
+							pThis->Log(eTV_INFORMATION, "[8.5] operator<(1.0) test value is less than passed value");
+						}
+						else
+						{
+							pThis->Log(eTV_WARNING, "[8.5] operator<(1.0) test value is not less than passed value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
+						}
+
+						testValue = 2.0;
+						if (testValue < oneTest.GetTicks())
+						{
+							pThis->Log(eTV_WARNING, "[8.6] operator<(oneTest.GetTicks()) passed value is less than test value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
+						}
+						else
+						{
+							pThis->Log(eTV_INFORMATION, "[8.6] operator<(oneTest.GetTicks()) passed value is not less than test value");
+						}
+
+						testValue = 1.0;
+						if (testValue < oneTest.GetTicks())
+						{
+							pThis->Log(eTV_WARNING, "[8.7] operator<(oneTest.GetTicks()) passed value is less than test value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
+						}
+						else
+						{
+							pThis->Log(eTV_INFORMATION, "[8.7] operator<(oneTest.GetTicks()) passed value is not less than test value");
+						}
+
+						testValue = 0.5;
+						if (testValue < oneTest.GetTicks())
+						{
+							pThis->Log(eTV_INFORMATION, "[8.8] operator<(oneTest.GetTicks()) test value is less than passed value");
+						}
+						else
+						{
+							pThis->Log(eTV_WARNING, "[8.8] operator<(oneTest.GetTicks()) test value is not less than passed value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
+						}
+
+						++pThis->m_stage;
+					}
+					break;
+
+				case 9: // operator<=
+					{
+						CTimeValue oneTest(1.0);
+						CTimeValue testValue(2.0);
+
+						if (testValue <= oneTest)
+						{
+							pThis->Log(eTV_WARNING, "[9.0] operator<=(const CTimeValue& other) passed value is less than or equal to test value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
+						}
+						else
+						{
+							pThis->Log(eTV_INFORMATION, "[9.0] operator<=(const CTimeValue& other) passed value is not less than or equal to test value");
+						}
+
+						testValue = 1.0;
+						if (testValue <= oneTest)
+						{
+							pThis->Log(eTV_INFORMATION, "[9.1] operator<=(const CTimeValue& other) passed value is less than or equal to test value");
+						}
+						else
+						{
+							pThis->Log(eTV_WARNING, "[9.1] operator<=(const CTimeValue& other) passed value is not less than or equal to test value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
+						}
+
+						testValue = 0.5;
+						if (testValue <= oneTest)
+						{
+							pThis->Log(eTV_INFORMATION, "[9.2] operator<=(const CTimeValue& other) test value is less than or equal to passed value");
+						}
+						else
+						{
+							pThis->Log(eTV_WARNING, "[9.2] operator<=(const CTimeValue& other) test value is not less than or equal to passed value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
+						}
+
+						testValue = 2.0;
+						if (testValue <= 1.0)
+						{
+							pThis->Log(eTV_WARNING, "[9.3] operator<=(1.0) passed value is less than or equal to test value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
+						}
+						else
+						{
+							pThis->Log(eTV_INFORMATION, "[9.3] operator<=(1.0) passed value is not less than or equal to test value");
+						}
+
+						testValue = 1.0;
+						if (testValue <= 1.0)
+						{
+							pThis->Log(eTV_INFORMATION, "[9.4] operator<=(1.0) passed value is less than or equal to test value");
+						}
+						else
+						{
+							pThis->Log(eTV_WARNING, "[9.4] operator<=(1.0) passed value is not less than or equal to test value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
+						}
+
+						testValue = 0.5;
+						if (testValue <= 1.0)
+						{
+							pThis->Log(eTV_INFORMATION, "[9.5] operator<=(1.0) test value is less than or equal to passed value");
+						}
+						else
+						{
+							pThis->Log(eTV_WARNING, "[9.5] operator<=(1.0) test value is not less than or equal to passed value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
+						}
+
+						testValue = 2.0;
+						if (testValue <= oneTest.GetTicks())
+						{
+							pThis->Log(eTV_WARNING, "[9.6] operator<=(oneTest.GetTicks()) passed value is less than or equal to test value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
+						}
+						else
+						{
+							pThis->Log(eTV_INFORMATION, "[9.6] operator<=(oneTest.GetTicks()) passed value is not less than or equal to test value");
+						}
+
+						testValue = 1.0;
+						if (testValue <= oneTest.GetTicks())
+						{
+							pThis->Log(eTV_INFORMATION, "[9.7] operator<=(oneTest.GetTicks()) passed value is less than or equal to test value");
+						}
+						else
+						{
+							pThis->Log(eTV_WARNING, "[9.7] operator<=(oneTest.GetTicks()) passed value is not less than or equal to test value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
+						}
+
+						testValue = 0.5;
+						if (testValue <= oneTest.GetTicks())
+						{
+							pThis->Log(eTV_INFORMATION, "[9.8] operator<=(oneTest.GetTicks()) test value is less than or equal to passed value");
+						}
+						else
+						{
+							pThis->Log(eTV_WARNING, "[9.8] operator<=(oneTest.GetTicks()) test value is not less than or equal to passed value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
+						}
+
+						++pThis->m_stage;
+					}
+					break;
+
+/*
+				case 10: // operator>
+					{
+						++pThis->m_stage;
+					}
+					break;
+
+				case 11: // operator>=
+					{
+						++pThis->m_stage;
+					}
+					break;
+*/
 				default:
 					status |= eSS_COMPLETE;
 					break;
