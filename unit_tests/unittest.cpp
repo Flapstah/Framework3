@@ -16,9 +16,10 @@ namespace test
 		, m_totalErrors(0)
 		,	m_pTime(GetITime())
 		, m_stage(0)
+		, m_subStage(0)
 		,	m_testStatus(eTS_UNINITIALISED)
 		,	m_stageStatus(eSS_SUCCESS)
-		,	m_verbosity(eTV_INFORMATION)
+		,	m_verbosity(eTV_WARNING)
 	{
 	}
 
@@ -92,6 +93,7 @@ namespace test
 					m_stageErrors = 0;
 
 					m_stage = 0;
+					m_subStage = 0;
 
 					++m_testIterator;
 				}

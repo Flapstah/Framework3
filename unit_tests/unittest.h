@@ -51,8 +51,8 @@ namespace test
 			enum eTestVerbosity
 			{
 				eTV_RESULT			= 0,
-				eTV_WARNING,
 				eTV_ERROR,
+				eTV_WARNING,
 				eTV_INFORMATION
 			}; // End [enum eTestVerbosity]
 
@@ -99,6 +99,7 @@ namespace test
 		protected:
 			ITime*										m_pTime;
 			uint32										m_stage;
+			uint32										m_subStage;
 			eTestStatus								m_testStatus;
 			eStageStatus							m_stageStatus;
 			eTestVerbosity						m_verbosity;

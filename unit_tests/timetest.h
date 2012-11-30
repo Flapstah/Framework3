@@ -14,7 +14,8 @@ namespace test
 	//============================================================================
 	class CTimeTest : public CUnitTest
 	{
-			//========================================================================
+		//==========================================================================
+		typedef CUnitTest PARENT;
 
 		public:
 																CTimeTest(void);
@@ -24,11 +25,12 @@ namespace test
 			virtual				bool				Initialise(eTestVerbosity verbosity);
 			// ~CUnitTest
 
-			//========================================================================
-
-			static	uint32 TimeValueOperations(CUnitTest* pParent);
+		//==========================================================================
 
 		protected:
+			static	uint32						TimeValueOperations(CUnitTest* pParent);
+
+		private:
 			CTimeValue m_testValue;
 	}; // End [struct class CTimeTest : public CUnitTest]
 

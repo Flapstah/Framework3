@@ -3,6 +3,23 @@
 #include "timetest.h"
 
 //==============================================================================
+// Helper macros
+//==============================================================================
+
+// Essentially checks (_value1_) == (_value2_) in a safe way for floating point numbers
+#define IS_FP_EQUIVALENT(_value1_, _value2_) (((_value1_) >= (_value2_)) && ((_value1_) <= (_value2_)))
+
+#define OPERATION_1_PARAM_NAMED_TEST(_name_, _test_, _param_) \
+	{ \
+		bool success = (_test_); \
+		pThis->Log((success == true) ? eTV_INFORMATION : eTV_WARNING, "[%d:%d] " _name_ " (%" PRId64 ") [%s]", pThis->m_stage, pThis->m_subStage, static_cast<int64>(_param_), ((success == true) ? "PASSED" : "FAILED")); \
+	}
+
+#define OPERATION_2_PARAM_TEST(_test_, _param1_, _param2_) \
+	{ \
+		bool success = (_test_); \
+		pThis->Log((success == true) ? eTV_INFORMATION : eTV_WARNING, "[%d:%d] %s (%" PRId64 ", %" PRId64 ") [%s]", pThis->m_stage, pThis->m_subStage, #_test_, static_cast<int64>(_param1_), static_cast<int64>(_param2_), ((success == true) ? "PASSED" : "FAILED")); \
+	}
 
 namespace test
 {
@@ -65,38 +82,17 @@ namespace test
 					{
 						// Test default constructor
 						CTimeValue zeroTest;
-						if ((zeroTest.GetSeconds() >= 0.0) && (zeroTest.GetSeconds() <= 0.0))
-						{
-							pThis->Log(eTV_INFORMATION, "[0.1] Default constructor initialised test value to 0.0s");
-						}
-						else
-						{
-							pThis->Log(eTV_WARNING, "[0.1] CTimeValue zeroTest; failed to initialise test value to 0.0s (%g)!", zeroTest.GetSeconds());
-						}
+						OPERATION_1_PARAM_NAMED_TEST("CTimeValue zeroTest", IS_FP_EQUIVALENT(zeroTest.GetSeconds(), 0.0), 0);
 
 						// Test value constructor
 						CTimeValue oneTest(1.0);
-						if ((oneTest.GetSeconds() >= 1.0) && (oneTest.GetSeconds() <= 1.0))
-						{
-							pThis->Log(eTV_INFORMATION, "[0.2] CTimeValue oneTest(1.0) initialised test value to 1.0s");
-						}
-						else
-						{
-							pThis->Log(eTV_WARNING, "[0.2] CTimeValue oneTest(1.0) failed to initialise test value to 1.0s (%g)!", oneTest.GetSeconds());
-						}
+						OPERATION_1_PARAM_NAMED_TEST("CTimeValue oneTest", IS_FP_EQUIVALENT(oneTest.GetSeconds(), 1.0), oneTest.GetTicks());
 
 						// Test copy constructor
 						CTimeValue copyTest(oneTest);
-						if ((copyTest.GetSeconds() >= 1.0) && (copyTest.GetSeconds() <= 1.0))
-						{
-							pThis->Log(eTV_INFORMATION, "[0.3] CTimeValue copyTest(oneTest) initialised test value to 1.0s");
-						}
-						else
-						{
-							pThis->Log(eTV_WARNING, "[0.3] CTimeValue copyTest(oneTest) failed to initialise test value to 1.0s (%g)!", copyTest.GetSeconds());
-						}
+						OPERATION_1_PARAM_NAMED_TEST("CTimeValue copyTest(oneTest)", IS_FP_EQUIVALENT(copyTest.GetSeconds(), oneTest.GetSeconds()), oneTest.GetTicks());
 
-						++pThis->m_stage;
+						++(pThis->m_stage);
 					}
 					break;
 
@@ -124,6 +120,7 @@ namespace test
 						}
 
 						// operator=(double seconds)
+						++(pThis->m_subStage);
 						testValue = 2.0;
 						if ((testValue.GetSeconds() >= 2.0) && (testValue.GetSeconds() <= 2.0))
 						{
@@ -135,6 +132,7 @@ namespace test
 						}
 
 						// operator=(double seconds)
+						++(pThis->m_subStage);
 						testValue = -2.0;
 						if ((testValue.GetSeconds() >= -2.0) && (testValue.GetSeconds() <= -2.0))
 						{
@@ -146,6 +144,7 @@ namespace test
 						}
 
 						// operator=(int64 ticks)
+						++(pThis->m_subStage);
 						testValue = int64(0);
 						if (testValue.GetTicks() == 0)
 						{
@@ -156,7 +155,7 @@ namespace test
 							pThis->Log(eTV_WARNING, "[1.3] operator=(int64(0)) did not set test value to 0 (%" PRId64 ")!", testValue.GetTicks());
 						}
 
-						++pThis->m_stage;
+						++(pThis->m_stage);
 					}
 					break;
 
@@ -184,6 +183,7 @@ namespace test
 						}
 
 						// operator+=(double seconds)
+						++(pThis->m_subStage);
 						testValue += 2.0;
 						if ((testValue.GetSeconds() >= 5.0) && (testValue.GetSeconds() <= 5.0))
 						{
@@ -195,6 +195,7 @@ namespace test
 						}
 
 						// operator+=(double seconds)
+						++(pThis->m_subStage);
 						testValue += -3.0;
 						if ((testValue.GetSeconds() >= 2.0) && (testValue.GetSeconds() <= 2.0))
 						{
@@ -206,6 +207,7 @@ namespace test
 						}
 
 						// operator+=(int64 ticks)
+						++(pThis->m_subStage);
 						testValue += twoTest.GetTicks();
 						if ((testValue.GetSeconds() >= 4.0) && (testValue.GetSeconds() <= 4.0))
 						{
@@ -216,7 +218,7 @@ namespace test
 							pThis->Log(eTV_WARNING, "[2.3] operator+=(twoTest.GetTicks()) did not set test value to 4.0s (%g)!", testValue.GetSeconds());
 						}
 
-						++pThis->m_stage;
+						++(pThis->m_stage);
 					}
 					break;
 
@@ -244,6 +246,7 @@ namespace test
 						}
 
 						// operator-=(double seconds)
+						++(pThis->m_subStage);
 						testValue -= 2.0;
 						if ((testValue.GetSeconds() >= -3.0) && (testValue.GetSeconds() <= -3.0))
 						{
@@ -255,6 +258,7 @@ namespace test
 						}
 
 						// operator-=(double seconds)
+						++(pThis->m_subStage);
 						testValue -= -5.0;
 						if ((testValue.GetSeconds() >= 2.0) && (testValue.GetSeconds() <= 2.0))
 						{
@@ -266,6 +270,7 @@ namespace test
 						}
 
 						// operator-=(int64 ticks)
+						++(pThis->m_subStage);
 						testValue -= twoTest.GetTicks();
 						if ((testValue.GetSeconds() >= 0.0) && (testValue.GetSeconds() <= 0.0))
 						{
@@ -276,7 +281,7 @@ namespace test
 							pThis->Log(eTV_WARNING, "[3.3] operator-=(twoTest.GetTicks()) did not set test value to 0.0s (%g)!", testValue.GetSeconds());
 						}
 
-						++pThis->m_stage;
+						++(pThis->m_stage);
 					}
 					break;
 
@@ -298,6 +303,7 @@ namespace test
 						}
 
 						// operator+(const CTimeValue& other)
+						++(pThis->m_subStage);
 						testValue = oneTest+minusTwoTest;
 						if ((testValue.GetSeconds() >= -1.0) && (testValue.GetSeconds() <= -1.0))
 						{
@@ -309,6 +315,7 @@ namespace test
 						}
 
 						// operator+(double seconds)
+						++(pThis->m_subStage);
 						testValue = twoTest+3.0;
 						if ((testValue.GetSeconds() >= 5.0) && (testValue.GetSeconds() <= 5.0))
 						{
@@ -320,6 +327,7 @@ namespace test
 						}
 
 						// operator+(double seconds)
+						++(pThis->m_subStage);
 						testValue = twoTest+(-3.0);
 						if ((testValue.GetSeconds() >= -1.0) && (testValue.GetSeconds() <= -1.0))
 						{
@@ -331,6 +339,7 @@ namespace test
 						}
 
 						// operator+(int64 ticks)
+						++(pThis->m_subStage);
 						testValue = oneTest.GetTicks()+twoTest.GetTicks();
 						if ((testValue.GetSeconds() >= 3.0) && (testValue.GetSeconds() <= 3.0))
 						{
@@ -342,6 +351,7 @@ namespace test
 						}
 
 						// operator+(int64 ticks)
+						++(pThis->m_subStage);
 						testValue = oneTest.GetTicks()+minusTwoTest.GetTicks();
 						if ((testValue.GetSeconds() >= -1.0) && (testValue.GetSeconds() <= -1.0))
 						{
@@ -352,7 +362,7 @@ namespace test
 							pThis->Log(eTV_WARNING, "[4.5] operator+ did not set test value to -1.0s (%g)!", testValue.GetSeconds());
 						}
 
-						++pThis->m_stage;
+						++(pThis->m_stage);
 					}
 					break;
 
@@ -374,6 +384,7 @@ namespace test
 						}
 
 						// operator-(const CTimeValue& other)
+						++(pThis->m_subStage);
 						testValue = oneTest-minusTwoTest;
 						if ((testValue.GetSeconds() >= 3.0) && (testValue.GetSeconds() <= 3.0))
 						{
@@ -385,6 +396,7 @@ namespace test
 						}
 
 						// operator-(double seconds)
+						++(pThis->m_subStage);
 						testValue = twoTest-1.0;
 						if ((testValue.GetSeconds() >= 1.0) && (testValue.GetSeconds() <= 1.0))
 						{
@@ -396,6 +408,7 @@ namespace test
 						}
 
 						// operator-(double seconds)
+						++(pThis->m_subStage);
 						testValue = twoTest-(-3.0);
 						if ((testValue.GetSeconds() >= 5.0) && (testValue.GetSeconds() <= 5.0))
 						{
@@ -407,6 +420,7 @@ namespace test
 						}
 
 						// operator-(int64 ticks)
+						++(pThis->m_subStage);
 						testValue = oneTest.GetTicks()-twoTest.GetTicks();
 						if ((testValue.GetSeconds() >= -1.0) && (testValue.GetSeconds() <= -1.0))
 						{
@@ -418,6 +432,7 @@ namespace test
 						}
 
 						// operator-(int64 ticks)
+						++(pThis->m_subStage);
 						testValue = oneTest.GetTicks()-minusTwoTest.GetTicks();
 						if ((testValue.GetSeconds() >= 3.0) && (testValue.GetSeconds() <= 3.0))
 						{
@@ -428,7 +443,7 @@ namespace test
 							pThis->Log(eTV_WARNING, "[5.5] operator- did not set test value to 3.0s (%g)!", testValue.GetSeconds());
 						}
 
-						++pThis->m_stage;
+						++(pThis->m_stage);
 					}
 					break;
 
@@ -446,6 +461,7 @@ namespace test
 							pThis->Log(eTV_WARNING, "[6.0] operator==(const CTimeValue& other) values are not equal (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
 						}
 
+						++(pThis->m_subStage);
 						if (testValue == 1.0)
 						{
 							pThis->Log(eTV_INFORMATION, "[6.1] operator==(1.0) values are equal");
@@ -455,6 +471,7 @@ namespace test
 							pThis->Log(eTV_WARNING, "[6.1] operator==(1.0) values are not equal (%g)", testValue.GetSeconds());
 						}
 
+						++(pThis->m_subStage);
 						if (testValue == oneTest.GetTicks())
 						{
 							pThis->Log(eTV_INFORMATION, "[6.2] operator==(oneTest.GetTicks()) values are equal");
@@ -464,7 +481,7 @@ namespace test
 							pThis->Log(eTV_WARNING, "[6.2] operator==(oneTest.GetTicks()) values are not equal (%" PRId64 ", %" PRId64 ")", testValue.GetTicks(), oneTest.GetTicks());
 						}
 
-						++pThis->m_stage;
+						++(pThis->m_stage);
 					}
 					break;
 
@@ -482,6 +499,7 @@ namespace test
 							pThis->Log(eTV_WARNING, "[7.0] operator!=(const CTimeValue& other) values are equal (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
 						}
 
+						++(pThis->m_subStage);
 						if (testValue != 1.0)
 						{
 							pThis->Log(eTV_INFORMATION, "[7.1] operator!=(1.0) values are not equal");
@@ -491,6 +509,7 @@ namespace test
 							pThis->Log(eTV_WARNING, "[7.1] operator!=(1.0) values are equal (%g)", testValue.GetSeconds());
 						}
 
+						++(pThis->m_subStage);
 						if (testValue != oneTest.GetTicks())
 						{
 							pThis->Log(eTV_INFORMATION, "[7.2] operator!=(oneTest.GetTicks()) values are not equal");
@@ -500,7 +519,7 @@ namespace test
 							pThis->Log(eTV_WARNING, "[7.2] operator!=(oneTest.GetTicks()) values are equal (%" PRId64 ", %" PRId64 ")", testValue.GetTicks(), oneTest.GetTicks());
 						}
 
-						++pThis->m_stage;
+						++(pThis->m_stage);
 					}
 					break;
 
@@ -518,6 +537,7 @@ namespace test
 							pThis->Log(eTV_INFORMATION, "[8.0] operator<(const CTimeValue& other) passed value is not less than test value");
 						}
 
+						++(pThis->m_subStage);
 						testValue = 1.0;
 						if (testValue < oneTest)
 						{
@@ -528,6 +548,7 @@ namespace test
 							pThis->Log(eTV_INFORMATION, "[8.1] operator<(const CTimeValue& other) passed value is not less than test value");
 						}
 
+						++(pThis->m_subStage);
 						testValue = 0.5;
 						if (testValue < oneTest)
 						{
@@ -538,6 +559,7 @@ namespace test
 							pThis->Log(eTV_WARNING, "[8.2] operator<(const CTimeValue& other) test value is not less than passed value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
 						}
 
+						++(pThis->m_subStage);
 						testValue = 2.0;
 						if (testValue < 1.0)
 						{
@@ -548,6 +570,7 @@ namespace test
 							pThis->Log(eTV_INFORMATION, "[8.3] operator<(1.0) passed value is not less than test value");
 						}
 
+						++(pThis->m_subStage);
 						testValue = 1.0;
 						if (testValue < 1.0)
 						{
@@ -558,6 +581,7 @@ namespace test
 							pThis->Log(eTV_INFORMATION, "[8.4] operator<(1.0) passed value is not less than test value");
 						}
 
+						++(pThis->m_subStage);
 						testValue = 0.5;
 						if (testValue < 1.0)
 						{
@@ -568,6 +592,7 @@ namespace test
 							pThis->Log(eTV_WARNING, "[8.5] operator<(1.0) test value is not less than passed value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
 						}
 
+						++(pThis->m_subStage);
 						testValue = 2.0;
 						if (testValue < oneTest.GetTicks())
 						{
@@ -578,6 +603,7 @@ namespace test
 							pThis->Log(eTV_INFORMATION, "[8.6] operator<(oneTest.GetTicks()) passed value is not less than test value");
 						}
 
+						++(pThis->m_subStage);
 						testValue = 1.0;
 						if (testValue < oneTest.GetTicks())
 						{
@@ -588,6 +614,7 @@ namespace test
 							pThis->Log(eTV_INFORMATION, "[8.7] operator<(oneTest.GetTicks()) passed value is not less than test value");
 						}
 
+						++(pThis->m_subStage);
 						testValue = 0.5;
 						if (testValue < oneTest.GetTicks())
 						{
@@ -598,7 +625,7 @@ namespace test
 							pThis->Log(eTV_WARNING, "[8.8] operator<(oneTest.GetTicks()) test value is not less than passed value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
 						}
 
-						++pThis->m_stage;
+						++(pThis->m_stage);
 					}
 					break;
 
@@ -616,6 +643,7 @@ namespace test
 							pThis->Log(eTV_INFORMATION, "[9.0] operator<=(const CTimeValue& other) passed value is not less than or equal to test value");
 						}
 
+						++(pThis->m_subStage);
 						testValue = 1.0;
 						if (testValue <= oneTest)
 						{
@@ -626,6 +654,7 @@ namespace test
 							pThis->Log(eTV_WARNING, "[9.1] operator<=(const CTimeValue& other) passed value is not less than or equal to test value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
 						}
 
+						++(pThis->m_subStage);
 						testValue = 0.5;
 						if (testValue <= oneTest)
 						{
@@ -636,6 +665,7 @@ namespace test
 							pThis->Log(eTV_WARNING, "[9.2] operator<=(const CTimeValue& other) test value is not less than or equal to passed value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
 						}
 
+						++(pThis->m_subStage);
 						testValue = 2.0;
 						if (testValue <= 1.0)
 						{
@@ -646,6 +676,7 @@ namespace test
 							pThis->Log(eTV_INFORMATION, "[9.3] operator<=(1.0) passed value is not less than or equal to test value");
 						}
 
+						++(pThis->m_subStage);
 						testValue = 1.0;
 						if (testValue <= 1.0)
 						{
@@ -656,6 +687,7 @@ namespace test
 							pThis->Log(eTV_WARNING, "[9.4] operator<=(1.0) passed value is not less than or equal to test value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
 						}
 
+						++(pThis->m_subStage);
 						testValue = 0.5;
 						if (testValue <= 1.0)
 						{
@@ -666,6 +698,7 @@ namespace test
 							pThis->Log(eTV_WARNING, "[9.5] operator<=(1.0) test value is not less than or equal to passed value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
 						}
 
+						++(pThis->m_subStage);
 						testValue = 2.0;
 						if (testValue <= oneTest.GetTicks())
 						{
@@ -676,6 +709,7 @@ namespace test
 							pThis->Log(eTV_INFORMATION, "[9.6] operator<=(oneTest.GetTicks()) passed value is not less than or equal to test value");
 						}
 
+						++(pThis->m_subStage);
 						testValue = 1.0;
 						if (testValue <= oneTest.GetTicks())
 						{
@@ -686,6 +720,7 @@ namespace test
 							pThis->Log(eTV_WARNING, "[9.7] operator<=(oneTest.GetTicks()) passed value is not less than or equal to test value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
 						}
 
+						++(pThis->m_subStage);
 						testValue = 0.5;
 						if (testValue <= oneTest.GetTicks())
 						{
@@ -696,23 +731,222 @@ namespace test
 							pThis->Log(eTV_WARNING, "[9.8] operator<=(oneTest.GetTicks()) test value is not less than or equal to passed value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
 						}
 
-						++pThis->m_stage;
+						++(pThis->m_stage);
 					}
 					break;
 
-/*
 				case 10: // operator>
 					{
-						++pThis->m_stage;
+						CTimeValue oneTest(1.0);
+						CTimeValue testValue(2.0);
+
+						if (testValue > oneTest)
+						{
+							pThis->Log(eTV_INFORMATION, "[10.0] operator>(const CTimeValue& other) passed value is greater than test value");
+						}
+						else
+						{
+							pThis->Log(eTV_WARNING, "[10.0] operator>(const CTimeValue& other) passed value is not greater than test value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
+						}
+
+						++(pThis->m_subStage);
+						testValue = 1.0;
+						if (testValue > oneTest)
+						{
+							pThis->Log(eTV_WARNING, "[10.1] operator>(const CTimeValue& other) passed value is greater than test value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
+						}
+						else
+						{
+							pThis->Log(eTV_INFORMATION, "[10.1] operator>(const CTimeValue& other) passed value is not greater than test value");
+						}
+
+						++(pThis->m_subStage);
+						testValue = 0.5;
+						if (testValue > oneTest)
+						{
+							pThis->Log(eTV_WARNING, "[10.2] operator>(const CTimeValue& other) test value is greater than passed value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
+						}
+						else
+						{
+							pThis->Log(eTV_INFORMATION, "[10.2] operator>(const CTimeValue& other) test value is not greater than passed value");
+						}
+
+						++(pThis->m_subStage);
+						testValue = 2.0;
+						if (testValue > 1.0)
+						{
+							pThis->Log(eTV_INFORMATION, "[10.3] operator>(1.0) passed value is greater than test value");
+						}
+						else
+						{
+							pThis->Log(eTV_WARNING, "[10.3] operator>(1.0) passed value is not greater than test value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
+						}
+
+						++(pThis->m_subStage);
+						testValue = 1.0;
+						if (testValue > 1.0)
+						{
+							pThis->Log(eTV_WARNING, "[10.4] operator>(1.0) passed value is greater than test value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
+						}
+						else
+						{
+							pThis->Log(eTV_INFORMATION, "[10.4] operator>(1.0) passed value is not greater than test value");
+						}
+
+						++(pThis->m_subStage);
+						testValue = 0.5;
+						if (testValue > 1.0)
+						{
+							pThis->Log(eTV_WARNING, "[10.5] operator>(1.0) test value is greater than passed value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
+						}
+						else
+						{
+							pThis->Log(eTV_INFORMATION, "[10.5] operator>(1.0) test value is not greater than passed value");
+						}
+
+						++(pThis->m_subStage);
+						testValue = 2.0;
+						if (testValue > oneTest.GetTicks())
+						{
+							pThis->Log(eTV_INFORMATION, "[10.6] operator>(oneTest.GetTicks()) passed value is greater than test value");
+						}
+						else
+						{
+							pThis->Log(eTV_WARNING, "[10.6] operator>(oneTest.GetTicks()) passed value is not greater than test value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
+						}
+
+						++(pThis->m_subStage);
+						testValue = 1.0;
+						if (testValue > oneTest.GetTicks())
+						{
+							pThis->Log(eTV_WARNING, "[10.7] operator>(oneTest.GetTicks()) passed value is greater than test value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
+						}
+						else
+						{
+							pThis->Log(eTV_INFORMATION, "[10.7] operator>(oneTest.GetTicks()) passed value is not greater than test value");
+						}
+
+						++(pThis->m_subStage);
+						testValue = 0.5;
+						if (testValue > oneTest.GetTicks())
+						{
+							pThis->Log(eTV_WARNING, "[10.8] operator>(oneTest.GetTicks()) test value is greater than passed value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
+						}
+						else
+						{
+							pThis->Log(eTV_INFORMATION, "[10.8] operator>(oneTest.GetTicks()) test value is not greater than passed value");
+						}
+
+						++(pThis->m_stage);
 					}
 					break;
 
 				case 11: // operator>=
 					{
-						++pThis->m_stage;
+						CTimeValue oneTest(1.0);
+						CTimeValue testValue(2.0);
+
+						if (testValue >= oneTest)
+						{
+							pThis->Log(eTV_INFORMATION, "[11.0] operator>=(const CTimeValue& other) passed value is greater than or equal to test value");
+						}
+						else
+						{
+							pThis->Log(eTV_WARNING, "[11.0] operator>=(const CTimeValue& other) passed value is not greater than or equal to test value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
+						}
+
+						++(pThis->m_subStage);
+						testValue = 1.0;
+						if (testValue >= oneTest)
+						{
+							pThis->Log(eTV_INFORMATION, "[11.1] operator>=(const CTimeValue& other) passed value is greater than or equal to test value");
+						}
+						else
+						{
+							pThis->Log(eTV_WARNING, "[11.1] operator>=(const CTimeValue& other) passed value is not greater than or equal to test value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
+						}
+
+						++(pThis->m_subStage);
+						testValue = 0.5;
+						if (testValue >= oneTest)
+						{
+							pThis->Log(eTV_WARNING, "[11.2] operator>=(const CTimeValue& other) test value is greater than or equal to passed value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
+						}
+						else
+						{
+							pThis->Log(eTV_INFORMATION, "[11.2] operator>=(const CTimeValue& other) test value is not greater than or equal to passed value");
+						}
+
+						++(pThis->m_subStage);
+						testValue = 2.0;
+						if (testValue >= 1.0)
+						{
+							pThis->Log(eTV_INFORMATION, "[11.3] operator>=(1.0) passed value is greater than or equal to test value");
+						}
+						else
+						{
+							pThis->Log(eTV_WARNING, "[11.3] operator>=(1.0) passed value is not greater than or equal to test value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
+						}
+
+						++(pThis->m_subStage);
+						testValue = 1.0;
+						if (testValue >= 1.0)
+						{
+							pThis->Log(eTV_INFORMATION, "[11.4] operator>=(1.0) passed value is greater than or equal to test value");
+						}
+						else
+						{
+							pThis->Log(eTV_WARNING, "[11.4] operator>=(1.0) passed value is not greater than or equal to test value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
+						}
+
+						++(pThis->m_subStage);
+						testValue = 0.5;
+						if (testValue >= 1.0)
+						{
+							pThis->Log(eTV_WARNING, "[11.5] operator>=(1.0) test value is greater than or equal to passed value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
+						}
+						else
+						{
+							pThis->Log(eTV_INFORMATION, "[11.5] operator>=(1.0) test value is not greater than or equal to passed value");
+						}
+
+						++(pThis->m_subStage);
+						testValue = 2.0;
+						if (testValue >= oneTest.GetTicks())
+						{
+							pThis->Log(eTV_INFORMATION, "[11.6] operator>=(oneTest.GetTicks()) passed value is greater than or equal to test value");
+						}
+						else
+						{
+							pThis->Log(eTV_WARNING, "[11.6] operator>=(oneTest.GetTicks()) passed value is not greater than or equal to test value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
+						}
+
+						++(pThis->m_subStage);
+						testValue = 1.0;
+						if (testValue >= oneTest.GetTicks())
+						{
+							pThis->Log(eTV_INFORMATION, "[11.7] operator>=(oneTest.GetTicks()) passed value is greater than or equal to test value");
+						}
+						else
+						{
+							pThis->Log(eTV_WARNING, "[11.7] operator>=(oneTest.GetTicks()) passed value is not greater than or equal to test value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
+						}
+
+						++(pThis->m_subStage);
+						testValue = 0.5;
+						if (testValue >= oneTest.GetTicks())
+						{
+							pThis->Log(eTV_WARNING, "[11.8] operator>=(oneTest.GetTicks()) test value is greater than or equal to passed value (%g, %g)", testValue.GetSeconds(), oneTest.GetSeconds());
+						}
+						else
+						{
+							pThis->Log(eTV_INFORMATION, "[11.8] operator>=(oneTest.GetTicks()) test value is not greater than or equal to passed value");
+						}
+
+						++(pThis->m_stage);
 					}
 					break;
-*/
+
 				default:
 					status |= eSS_COMPLETE;
 					break;
