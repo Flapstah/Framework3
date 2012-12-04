@@ -33,7 +33,17 @@ namespace test
 		float seconds;
 		elapsed.GetTime(days, hours, minutes, seconds);
 
-		Log(eTV_RESULT, "[%s] completed in %s%d days, %02u:%02u:%06.3fs, with %d warnings and %d errors\n", m_name, (elapsed.GetTicks() < 0) ? "-" : "",  days, hours, minutes, seconds, m_totalWarnings, m_totalErrors);
+		const char* colour = ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_GREEN));
+		if (m_totalWarnings != 0)
+		{
+			colour = ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_YELLOW));
+		}
+		if (m_totalErrors != 0)
+		{
+			colour = ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_RED));
+		}
+
+		Log(eTV_RESULT, "%s[%s] completed in %s%d days, %02u:%02u:%06.3fs, with %d warnings and %d errors\n", colour, m_name, (elapsed.GetTicks() < 0) ? "-" : "",  days, hours, minutes, seconds, m_totalWarnings, m_totalErrors);
 	}
 
 	//============================================================================
@@ -72,6 +82,8 @@ namespace test
 				}
 
 				uint32 status = test.m_function(this);
+				m_subStage = 0;
+
 				if (status & eSS_COMPLETE)
 				{
 					const char* colour = ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_GREEN));
@@ -93,7 +105,6 @@ namespace test
 					m_stageErrors = 0;
 
 					m_stage = 0;
-					m_subStage = 0;
 
 					++m_testIterator;
 				}
