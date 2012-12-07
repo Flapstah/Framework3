@@ -15,6 +15,11 @@ namespace engine
 		// Set properly during platform initialisation
 		int64 g_platformTicksPerSecond = 1;
 
+		// Base time to add high resolution timer to in order that GetCurrentTime()
+		// will return current time rather than time elapsed since the PC was turned
+		// on.
+		static int64 g_baseTime;
+
 		//==========================================================================
 
 		void CTime::Platform_Initialise(void)
@@ -23,6 +28,21 @@ namespace engine
 
 			::QueryPerformanceFrequency(&frequency);
 			g_platformTicksPerSecond = static_cast<uint64>(frequency.QuadPart);
+
+			// Grab current system time in 100ns units
+			FILETIME baseTime;
+			::GetSystemTimeAsFileTime(&baseTime);
+			// Grab high performance tick count since machine was turned on
+			LARGE_INTEGER time;
+			::QueryPerformanceCounter(&time);
+
+			int64 ns100 = baseTime.dwHighDateTime;
+			ns100 <<= 32;
+			ns100 |= baseTime.dwLowDateTime;
+
+			double ticksPer100Nanoseconds = static_cast<double>(frequency.QuadPart) / 10000000.0;
+			double base100nsTicks = static_cast<double>(ns100)-(static_cast<double>(time.QuadPart)/ticksPer100Nanoseconds);
+			g_baseTime = static_cast<int64>(base100nsTicks*ticksPer100Nanoseconds);
 		}
 
 		//==========================================================================
@@ -32,6 +52,7 @@ namespace engine
 			LARGE_INTEGER time;
 			::QueryPerformanceCounter(&time);
 
+			time.QuadPart += g_baseTime;
 			CTimeValue currentTime(static_cast<int64>(time.QuadPart));
 
 			return currentTime;
