@@ -24,14 +24,12 @@ int main(int argc, char* argv[])
 //	IGNORE_PARAMETER(argv);
 	DumpArgs(argc, argv);
 
-	/*
 	{
 		test::CTypeTest test;
 		test.Start();
 		while (test.Update() == test::CUnitTest::eTS_RUNNING);
 		test.End();
 	}
-	*/
 
 	{
 		test::CTimeTest test;

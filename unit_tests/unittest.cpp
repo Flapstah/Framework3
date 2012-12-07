@@ -19,7 +19,7 @@ namespace test
 		, m_subStage(1)
 		,	m_testStatus(eTS_UNINITIALISED)
 		,	m_stageStatus(eSS_SUCCESS)
-		,	m_verbosity(eTV_WARNING)
+		,	m_verbosity(eTV_INFORMATION)
 	{
 	}
 
@@ -27,6 +27,8 @@ namespace test
 
 	CUnitTest::~CUnitTest(void)
 	{
+		char timeBuffer[32];
+		TimeStamp(timeBuffer, sizeof(timeBuffer));
 		engine::time::CTimeValue elapsed = m_timeEnded-m_timeStarted;
 		
 		int32 days, hours, minutes;
@@ -43,14 +45,13 @@ namespace test
 			colour = ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_RED));
 		}
 
-		Log(eTV_RESULT, "%s[%s] completed in %s%d days, %02u:%02u:%06.3fs, with %d warnings and %d errors\n", colour, m_name, (elapsed.GetTicks() < 0) ? "-" : "",  days, hours, minutes, seconds, m_totalWarnings, m_totalErrors);
+		Log(eTV_RESULT, "%s[%s] [%s] completed in %s%d days, %02u:%02u:%06.3fs, with %d warnings and %d errors\n", colour, timeBuffer, m_name, (elapsed.GetTicks() < 0) ? "-" : "",  days, hours, minutes, seconds, m_totalWarnings, m_totalErrors);
 	}
 
 	//============================================================================
 
-	bool CUnitTest::Initialise(eTestVerbosity verbosity)
+	bool CUnitTest::Initialise(void)
 	{
-		m_verbosity = verbosity;
 		m_testStatus = eTS_INITIALISED;
 		m_testIterator = m_tests.begin();
 
@@ -71,6 +72,7 @@ namespace test
 
 	CUnitTest::eTestStatus CUnitTest::Update(void)
 	{
+		char timeBuffer[32];
 		if (m_testStatus == eTS_RUNNING)
 		{
 			if (m_testIterator != m_tests.end())
@@ -78,7 +80,9 @@ namespace test
 				STest& test = *m_testIterator;
 				if (m_stage == 1)
 				{
-					Log(eTV_RESULT, "[%s:%s] started", m_name, test.m_name.c_str());
+					m_verbosity = test.m_verbosity;
+					TimeStamp(timeBuffer, sizeof(timeBuffer));
+					Log(eTV_RESULT, "[%s] [%s:%s] started", timeBuffer, m_name, test.m_name.c_str());
 				}
 
 				uint32 status = test.m_function(this);
@@ -96,7 +100,8 @@ namespace test
 						colour = ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_RED));
 					}
 
-					Log(eTV_RESULT, "%s[%s:%s] complete; %d warnings, %d errors\n", colour, m_name, test.m_name.c_str(), m_stageWarnings, m_stageErrors);
+					TimeStamp(timeBuffer, sizeof(timeBuffer));
+					Log(eTV_RESULT, "%s[%s] [%s:%s] complete; %d warnings, %d errors\n", colour, timeBuffer, m_name, test.m_name.c_str(), m_stageWarnings, m_stageErrors);
 
 					m_totalWarnings += m_stageWarnings;
 					m_totalErrors += m_stageErrors;
@@ -130,6 +135,16 @@ namespace test
 
 	void CUnitTest::Uninitialise(void)
 	{
+	}
+
+	//============================================================================
+
+	void CUnitTest::AddStage(const char* name, TestFn function, eTestVerbosity verbosity /* = eTV_RESULT */)
+	{
+		if (m_testStatus == eTS_UNINITIALISED)
+		{
+			m_tests.push_back(STest(name, function, verbosity));
+		}
 	}
 
 	//============================================================================
@@ -172,12 +187,19 @@ namespace test
 
 	//============================================================================
 
-	void CUnitTest::AddStage(const char* name, TestFn function)
+	const char* CUnitTest::TimeStamp(char* const buffer, uint32 size)
 	{
-		if (m_testStatus == eTS_UNINITIALISED)
-		{
-			m_tests.push_back(STest(name, function));
-		}
+		char local_buffer[64];
+		CTimeValue now = engine::time::GetITime()->GetCurrentTime();
+		int32 days, hours, minutes;
+		float seconds;
+
+		now.GetTime(days, hours, minutes, seconds);
+		sprintf(local_buffer, "%02u:%02u:%06.3fs", hours, minutes, seconds);
+		strncpy(buffer, local_buffer, size);
+		buffer[size-1] = 0;
+
+		return buffer;
 	}
 
 	//============================================================================

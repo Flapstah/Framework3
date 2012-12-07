@@ -22,7 +22,7 @@ namespace test
 			virtual										~CTimeTest(void);
 
 			// CUnitTest
-			virtual				bool				Initialise(eTestVerbosity verbosity);
+			virtual				bool				Initialise(void);
 			// ~CUnitTest
 
 		//==========================================================================

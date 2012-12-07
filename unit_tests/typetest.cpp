@@ -11,7 +11,7 @@ namespace test
 	CTypeTest::CTypeTest(void)
 		: CUnitTest("Type")
 	{
-		Initialise(eTV_INFORMATION);
+		Initialise();
 	}
 
 	//============================================================================
@@ -23,11 +23,11 @@ namespace test
 
 	//============================================================================
 
-	bool CTypeTest::Initialise(eTestVerbosity verbosity)
+	bool CTypeTest::Initialise(void)
 	{
 		AddStage("Sizes", SizeTest);
 
-		return CUnitTest::Initialise(verbosity);
+		return CUnitTest::Initialise();
 	}
 
 	//============================================================================

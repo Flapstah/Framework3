@@ -33,7 +33,7 @@ namespace test
 	CTimeTest::CTimeTest(void)
 		: CUnitTest("Time")
 	{
-		Initialise(eTV_INFORMATION);
+		Initialise();
 	}
 
 	//============================================================================
@@ -45,11 +45,11 @@ namespace test
 
 	//============================================================================
 
-	bool CTimeTest::Initialise(eTestVerbosity verbosity)
+	bool CTimeTest::Initialise(void)
 	{
 		AddStage("CTimeValue Operations", TimeValueOperations);
 
-		return CUnitTest::Initialise(verbosity);
+		return CUnitTest::Initialise();
 	}
 
 	//============================================================================

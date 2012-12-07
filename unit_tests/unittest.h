@@ -65,25 +65,30 @@ namespace test
 																CUnitTest(const char* name);
 			virtual										~CUnitTest(void);
 
-			virtual				bool				Initialise(eTestVerbosity verbosity) = 0;
+			virtual				bool				Initialise(void) = 0;
 			virtual	const	CTimeValue&	Start(void);
 			virtual				eTestStatus	Update(void);
 			virtual	const	CTimeValue&	End(void);
 			virtual				void				Uninitialise(void);
 
+										void				AddStage(const char* name, TestFn function, eTestVerbosity verbosity = eTV_RESULT);
 										void				Log(eTestVerbosity targetLevel, const char* format, ...);
-
-										void				AddStage(const char* name, TestFn function);
 										
+			//========================================================================
+
+		private:
+							const	char*				TimeStamp(char* const buffer, uint32 size);
+
 			//========================================================================
 
 		private:
 			struct STest
 			{
-				STest(const char* name, TestFn function) : m_name(name), m_function(function) {}
+				STest(const char* name, TestFn function, eTestVerbosity verbosity) : m_name(name), m_function(function), m_verbosity(verbosity) {}
 
 				string									m_name;
 				TestFn									m_function;
+				eTestVerbosity					m_verbosity;
 			};
 
 			vector<STest>							m_tests;
