@@ -47,6 +47,7 @@ namespace test
 
 	bool CTimeTest::Initialise(void)
 	{
+		AddStage("CTimeValue Limits", TimeValueLimits);
 		AddStage("CTimeValue Operations", TimeValueOperations);
 
 		return CUnitTest::Initialise();
@@ -71,6 +72,51 @@ namespace test
 		 }
 		 break;
 		 */
+
+	//============================================================================
+
+	uint32 CTimeTest::TimeValueLimits(CUnitTest* pParent)
+	{
+		CTimeTest* pThis = static_cast<CTimeTest*>(pParent);
+		uint32 status = eSS_SUCCESS;
+
+		if (pThis->m_testStatus == eTS_RUNNING)
+		{
+			int32 days, hours, minutes;
+			float seconds;
+
+			switch (pThis->m_stage)
+			{
+				case 1: // Minimum negative time
+					{
+						CTimeValue testValue(DECLARE_64BIT(0x8000000000000001));
+						testValue.GetTime(days, hours, minutes, seconds);
+
+						pThis->Log(eTV_RESULT, "Minimum negative time value is %s%d days, %02u:%02u:%06.3fs", (testValue.GetTicks() < 0) ? "-" : "+",  days, hours, minutes, seconds);
+
+						++(pThis->m_stage);
+					}
+					break;
+
+				case 2: // Maximum positive time
+					{
+						CTimeValue testValue(DECLARE_64BIT(0x7fffffffffffffff));
+						testValue.GetTime(days, hours, minutes, seconds);
+
+						pThis->Log(eTV_RESULT, "Maximum positive time value is %s%d days, %02u:%02u:%06.3fs", (testValue.GetTicks() < 0) ? "-" : "+",  days, hours, minutes, seconds);
+
+						++(pThis->m_stage);
+					}
+					break;
+
+				default:
+					status |= eSS_COMPLETE;
+					break;
+			}
+		}
+
+		return status;
+	}
 
 	//============================================================================
 

@@ -7,9 +7,9 @@
 // Create environment independent 64 bit literals
 //------------------------------------------------------------------------------
 #if defined(ENVIRONMENT32)
-	#define DECLARE_64BIT(_val_) (_val_##ll)
+	#define DECLARE_64BIT(_val_) static_cast<int64>(_val_##ll)
 #elif defined(ENVIRONMENT64)
-	#define DECLARE_64BIT(_val_) (_val_##l)
+	#define DECLARE_64BIT(_val_) static_cast<int64>(_val_##l)
 #else
 	#error Unable to determine compilation environment (neither ENVIRONMENT32 or ENVIRONMENT64 defined)
 #endif // [defined(ENVIRONMENT32)]

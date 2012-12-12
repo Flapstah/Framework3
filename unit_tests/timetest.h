@@ -28,6 +28,7 @@ namespace test
 		//==========================================================================
 
 		protected:
+			static	uint32						TimeValueLimits(CUnitTest* pParent);
 			static	uint32						TimeValueOperations(CUnitTest* pParent);
 
 		private:
