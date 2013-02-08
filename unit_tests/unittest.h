@@ -72,7 +72,7 @@ namespace test
 			virtual				void				Uninitialise(void);
 
 										void				AddStage(const char* name, TestFn function, eTestVerbosity verbosity = eTV_RESULT);
-										void				Log(eTestVerbosity targetLevel, const char* format, ...);
+										void				Log(eTestVerbosity targetLevel, const char* format, ...) __attribute__((format(printf, 3, 4)));
 										
 			//========================================================================
 

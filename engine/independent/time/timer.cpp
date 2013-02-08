@@ -12,6 +12,7 @@ namespace engine
 
 		CTimer::CTimer(ITimer* pParent, float maxFrameTime, float scale, CTimeValue& callbackInterval, ITimer::TimerCallback pCallback, void* const pUserData)
 			: m_callbackInterval(callbackInterval)
+			, m_pParent(pParent)
 			, m_pCallback(pCallback)
 			, m_pUserData(pUserData)
 			,	m_maxFrameTime(maxFrameTime)

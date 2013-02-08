@@ -48,6 +48,12 @@ namespace engine
 
 		ITimer* CTime::CreateTimer(ITimer& parent, float maxFrameTime, float scale, CTimeValue& callbackInterval, ITimer::TimerCallback pCallback, void* const pUserData)
 		{
+			IGNORE_PARAMETER(parent);
+			IGNORE_PARAMETER(maxFrameTime);
+			IGNORE_PARAMETER(scale);
+			IGNORE_PARAMETER(callbackInterval);
+			IGNORE_PARAMETER(pCallback);
+			IGNORE_PARAMETER(pUserData);
 			return NULL;
 		}
 

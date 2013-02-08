@@ -254,7 +254,7 @@ namespace test
 
 						// operator+(const CTimeValue& other)
 						testValue = oneTest+minusTwoTest;
-						TEST2_NAMED("(testValue = oneTest+minusTwoTest) == -1.0", (testValue.GetSeconds() >= -1.0) && (testValue.GetSeconds() -1.0), oneTest.GetSeconds(), minusTwoTest.GetSeconds(), testValue.GetSeconds());
+						TEST2_NAMED("(testValue = oneTest+minusTwoTest) == -1.0", (testValue.GetSeconds() >= -1.0) && (testValue.GetSeconds() <= -1.0), oneTest.GetSeconds(), minusTwoTest.GetSeconds(), testValue.GetSeconds());
 						++(pThis->m_subStage);
 
 						// operator+(double seconds)
