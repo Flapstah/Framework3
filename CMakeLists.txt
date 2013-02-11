@@ -73,6 +73,14 @@ if (UNIX)
 endif (UNIX)
 
 
+# Start OpenGL SuperBible 5.0 stuff
+set(OPENGL_SUPERBIBLE_50 1)
+if (OPENGL_SUPERBIBLE_50)
+	set(OPENGL_SUPERBIBLE_50_INCLUDES "${test_SOURCE_DIR}/GLTools/include")
+endif (OPENGL_SUPERBIBLE_50)
+# End OpenGL SuperBible 5.0 stuff
+
+
 # Platform include paths
 set(PLATFORM_INCLUDES "${test_SOURCE_DIR}/engine/independent" "${test_SOURCE_DIR}/unit_tests")
 if (WIN32)
@@ -84,7 +92,7 @@ endif (UNIX)
 
 
 # Set up include and library paths
-include_directories(${PLATFORM_INCLUDES} ${GLFW_INCLUDE_DIR} ${OPENAL_INCLUDE_DIR} ${OPENGL_INCLUDE_DIR})
+include_directories(${PLATFORM_INCLUDES} ${GLFW_INCLUDE_DIR} ${OPENAL_INCLUDE_DIR} ${OPENGL_INCLUDE_DIR} ${OPENGL_SUPERBIBLE_50_INCLUDES})
 set(LIBS ${LIBS} ${GLFW_LIBRARY} ${OPENAL_LIBRARY} ${OPENGL_LIBRARY})
 
 
@@ -112,6 +120,14 @@ set(PLATFORM_INDEPENDENT_SOURCES
 	unit_tests/unittest.cpp
 	unit_tests/timetest.cpp
 	unit_tests/typetest.cpp
+	# Start OpenGL SuperBible 5.0 stuff
+	GLTools/src/GLBatch.cpp
+	GLTools/src/glew.c
+	GLTools/src/GLShaderManager.cpp
+	GLTools/src/GLTools.cpp
+	GLTools/src/GLTriangleBatch.cpp
+	GLTools/src/math3d.cpp
+	# End OpenGL SuperBible 5.0 stuff
 	)
 if (WIN32)
 set(PLATFORM_SPECIFIC_SOURCES
