@@ -79,7 +79,7 @@ endif (UNIX)
 # Start OpenGL SuperBible 5.0 stuff
 set(OPENGL_SUPERBIBLE_50 1)
 if (OPENGL_SUPERBIBLE_50)
-	set(OPENGL_SUPERBIBLE_50_INCLUDES "${test_SOURCE_DIR}/GLTools/include")
+	set(OPENGL_SUPERBIBLE_50_INCLUDES "${test_SOURCE_DIR}/GLTools/include" "${test_SOURCE_DIR}/GLTools/include/GL")
 endif (OPENGL_SUPERBIBLE_50)
 # End OpenGL SuperBible 5.0 stuff
 
