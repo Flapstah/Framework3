@@ -58,16 +58,19 @@ if (WIN32)
 	#set(OPENAL_LIBRARY "D:/msysgit/local/lib/OpenAL32.lib")
 	#set(FREETYPE_INCLUDE_DIRS "D:/msysgit/local/include;D:/msysgit/local/include/freetype2")
 	#set(FREETYPE_LIBRARIES "D:/msysgit/local/lib/libfreetype.a")
-	set(GLFW_INCLUDE_DIR "D:/msysgit/local/include")
-	if (MSYS)
-		set(GLFW_LIBRARY "D:/msysgit/local/lib/libglfw.a")
-	endif (MSYS)
-	if (MSVC)
-		set(GLFW_LIBRARY "D:/msysgit/local/lib/glfw.lib")
-	endif (MSVC)
+	#set(GLFW_INCLUDE_DIR "D:/msysgit/local/include")
+	#if (MSYS)
+	#	set(GLFW_LIBRARY "D:/msysgit/local/lib/libglfw.a")
+	#endif (MSYS)
+	#if (MSVC)
+	#	set(GLFW_LIBRARY "D:/msysgit/local/lib/glfw.lib")
+	#endif (MSVC)
+	set(GLUT_INCLUDE_DIR "D:/msysgit/local/include")
+	set(GLUT_LIBRARY "D:/msysgit/local/lib/glut32.lib")
 endif (WIN32)
 if (UNIX)
-	find_package(GLFW REQUIRED)
+	find_package(GLUT REQUIRED)
+	#find_package(GLFW REQUIRED)
 	#find_package(OpenAL REQUIRED)
 	#find_package(Freetype REQUIRED)
 endif (UNIX)
@@ -92,8 +95,8 @@ endif (UNIX)
 
 
 # Set up include and library paths
-include_directories(${PLATFORM_INCLUDES} ${GLFW_INCLUDE_DIR} ${OPENAL_INCLUDE_DIR} ${OPENGL_INCLUDE_DIR} ${OPENGL_SUPERBIBLE_50_INCLUDES})
-set(LIBS ${LIBS} ${GLFW_LIBRARY} ${OPENAL_LIBRARY} ${OPENGL_LIBRARY})
+include_directories(${PLATFORM_INCLUDES} ${GLUT_INCLUDE_DIR} ${GLFW_INCLUDE_DIR} ${OPENAL_INCLUDE_DIR} ${OPENGL_INCLUDE_DIR} ${OPENGL_SUPERBIBLE_50_INCLUDES})
+set(LIBS ${LIBS} ${GLUT_LIBRARY} ${GLFW_LIBRARY} ${OPENAL_LIBRARY} ${OPENGL_LIBRARY})
 
 
 #get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
@@ -120,15 +123,14 @@ set(PLATFORM_INDEPENDENT_SOURCES
 	unit_tests/unittest.cpp
 	unit_tests/timetest.cpp
 	unit_tests/typetest.cpp
+	)
+if (OPENGL_SUPERBIBLE_50)
+	set(OPENGL_SUPERBIBLE_50_SOURCES
 	# Start OpenGL SuperBible 5.0 stuff
-	GLTools/src/GLBatch.cpp
-	GLTools/src/glew.c
-	GLTools/src/GLShaderManager.cpp
-	GLTools/src/GLTools.cpp
-	GLTools/src/GLTriangleBatch.cpp
-	GLTools/src/math3d.cpp
+	GLTools/src/openglsuperbible_uber.cpp
 	# End OpenGL SuperBible 5.0 stuff
 	)
+endif (OPENGL_SUPERBIBLE_50)
 if (WIN32)
 set(PLATFORM_SPECIFIC_SOURCES
 	#engine/windows/common/platform_system.cpp
@@ -143,6 +145,6 @@ set(PLATFORM_SPECIFIC_SOURCES
 endif (UNIX)
 
 # Build rules for the executable
-add_executable (test main.cpp ${PLATFORM_INDEPENDENT_SOURCES} ${PLATFORM_SPECIFIC_SOURCES} )
+add_executable (test main.cpp ${PLATFORM_INDEPENDENT_SOURCES} ${PLATFORM_SPECIFIC_SOURCES} ${OPENGL_SUPERBIBLE_50_SOURCES})
 target_link_libraries (test ${LIBS})
 
