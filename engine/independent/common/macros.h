@@ -49,6 +49,15 @@
 #define IGNORE_PARAMETER(_parameter_) (void)(_parameter_)
 
 //------------------------------------------------------------------------------
+// Use STRINGIZE() to get a string version of a macro's value
+// e.g:
+// #define SOME_MACRO some text
+// STRINGIZE(SOME_MACRO) will yield "some text"
+//------------------------------------------------------------------------------
+#define _STRINGIZE(_thing_) #_thing_
+#define STRINGIZE(_thing_) _STRINGIZE(_thing_)
+
+//------------------------------------------------------------------------------
 // Size macros
 //------------------------------------------------------------------------------
 #define SIZE_IN_KB(_size_) ((_size_)*1024)

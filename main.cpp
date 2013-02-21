@@ -1,6 +1,6 @@
 #include "common/stdafx.h"
 
-#define USE_OPENGL_SUPERBIBLE (0)
+#define USE_OPENGL_SUPERBIBLE (1)
 
 enum eExample
 {
@@ -16,6 +16,8 @@ enum eExample
 #if (EXAMPLE == eE_Block)
 #include "GLSB/Block/Block.cpp"
 #endif // (EXAMPLE == eE_Block)
+
+#pragma message "GLAPI = [" STRINGIZE(GLAPI) "]"
 
 #else
 
@@ -57,10 +59,6 @@ int main(int argc, char* argv[])
 		test.End();
 	}
 */
-#define __STRINGIZE(_thing_) #_thing_
-#define _STRINGIZE(_thing_) __STRINGIZE(_thing_)
-#define A_TEST cock
-#pragma message "A_TEST = " _STRINGIZE(A_TEST)
 	printf("All done.\n");
 
 	return 0;
