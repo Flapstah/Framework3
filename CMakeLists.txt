@@ -124,13 +124,6 @@ set(PLATFORM_INDEPENDENT_SOURCES
 	unit_tests/timetest.cpp
 	unit_tests/typetest.cpp
 	)
-if (OPENGL_SUPERBIBLE_50)
-	set(OPENGL_SUPERBIBLE_50_SOURCES
-	# Start OpenGL SuperBible 5.0 stuff
-	GLTools/src/openglsuperbible_uber.cpp
-	# End OpenGL SuperBible 5.0 stuff
-	)
-endif (OPENGL_SUPERBIBLE_50)
 if (WIN32)
 set(PLATFORM_SPECIFIC_SOURCES
 	#engine/windows/common/platform_system.cpp
@@ -145,6 +138,6 @@ set(PLATFORM_SPECIFIC_SOURCES
 endif (UNIX)
 
 # Build rules for the executable
-add_executable (test main.cpp ${PLATFORM_INDEPENDENT_SOURCES} ${PLATFORM_SPECIFIC_SOURCES} ${OPENGL_SUPERBIBLE_50_SOURCES})
+add_executable (test main.cpp ${PLATFORM_INDEPENDENT_SOURCES} ${PLATFORM_SPECIFIC_SOURCES})
 target_link_libraries (test ${LIBS})
 
