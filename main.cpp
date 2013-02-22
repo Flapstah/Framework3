@@ -11,13 +11,31 @@ enum eExample
 
 #if USE_OPENGL_SUPERBIBLE
 
-#include "GLTools/src/openglsuperbible_uber.cpp"
+#if defined(__MINGW32__)
+#define WINGDIAPI __declspec(dllimport)
+#define GLAPI WINGDIAPI
+#define GLAPIENTRY APIENTRY
+#endif // defined(__MINGW32__)
+
+#include "GLTools/src/glew.c"
+
+#if defined(__MINGW32__)
+#define GLAPI WINGDIAPI
+#define GLAPIENTRY APIENTRY
+#endif // defined(__MINGW32__)
+
+//#pragma message "GLAPI = [" STRINGIZE(GLAPI) "]"
+//#pragma message "GLAPIENTRY = [" STRINGIZE(GLAPIENTRY) "]"
+
+#include "GLTools/src/math3d.cpp"
+#include "GLTools/src/GLTools.cpp"
+#include "GLTools/src/GLBatch.cpp"
+#include "GLTools/src/GLShaderManager.cpp"
+#include "GLTools/src/GLTriangleBatch.cpp"
 
 #if (EXAMPLE == eE_Block)
 #include "GLSB/Block/Block.cpp"
 #endif // (EXAMPLE == eE_Block)
-
-#pragma message "GLAPI = [" STRINGIZE(GLAPI) "]"
 
 #else
 
