@@ -2,14 +2,11 @@
 
 #define USE_OPENGL_SUPERBIBLE (1)
 
-enum eExample
-{
-	eE_Block
-};
-
-#define EXAMPLE (eE_Block)
-
 #if USE_OPENGL_SUPERBIBLE
+
+// 0: Block
+// 1: Triangle
+#define EXAMPLE (1)
 
 #if defined(__MINGW32__)
 #define WINGDIAPI __declspec(dllimport)
@@ -33,9 +30,11 @@ enum eExample
 #include "GLTools/src/GLShaderManager.cpp"
 #include "GLTools/src/GLTriangleBatch.cpp"
 
-#if (EXAMPLE == eE_Block)
+#if (EXAMPLE == 0)
 #include "GLSB/Block/Block.cpp"
-#endif // (EXAMPLE == eE_Block)
+#elif (EXAMPLE == 1)
+#include "GLSB/Triangle/Triangle.cpp"
+#endif // (EXAMPLE == <example id>)
 
 #else
 
