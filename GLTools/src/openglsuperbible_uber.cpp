@@ -3,7 +3,8 @@
 // 0: Block
 // 1: Triangle
 // 2: Move
-#define EXAMPLE (2)
+// 3: Bounce
+#define EXAMPLE (3)
 
 #if defined(__MINGW32__)
 #define WINGDIAPI __declspec(dllimport)
@@ -33,5 +34,7 @@
 #include "../../GLSB/Triangle/Triangle.cpp"
 #elif (EXAMPLE == 2)
 #include "../../GLSB/Move/Move.cpp"
+#elif (EXAMPLE == 3)
+#include "../../GLSB/Bounce/Bounce.cpp"
 #endif // (EXAMPLE == <example id>)
 
