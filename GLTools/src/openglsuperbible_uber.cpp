@@ -1,11 +1,5 @@
 #include "common/stdafx.h"
 
-// 0: Block
-// 1: Triangle
-// 2: Move
-// 3: Bounce
-#define EXAMPLE (3)
-
 #if defined(__MINGW32__)
 #define WINGDIAPI __declspec(dllimport)
 #define GLAPI WINGDIAPI
@@ -27,14 +21,4 @@
 #include "GLBatch.cpp"
 #include "GLShaderManager.cpp"
 #include "GLTriangleBatch.cpp"
-
-#if (EXAMPLE == 0)
-#include "../../GLSB/Block/Block.cpp"
-#elif (EXAMPLE == 1)
-#include "../../GLSB/Triangle/Triangle.cpp"
-#elif (EXAMPLE == 2)
-#include "../../GLSB/Move/Move.cpp"
-#elif (EXAMPLE == 3)
-#include "../../GLSB/Bounce/Bounce.cpp"
-#endif // (EXAMPLE == <example id>)
 

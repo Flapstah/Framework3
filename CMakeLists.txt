@@ -127,7 +127,8 @@ set(PLATFORM_INDEPENDENT_SOURCES
 if (OPENGL_SUPERBIBLE_50)
 	set(OPENGL_SUPERBIBLE_50_SOURCES
 	# Start OpenGL SuperBible 5.0 stuff
-	GLTools/src/openglsuperbible_uber.cpp
+	#GLTools/src/openglsuperbible_uber.cpp
+	GLSB/examples.cpp
 	# End OpenGL SuperBible 5.0 stuff
 	)
 endif (OPENGL_SUPERBIBLE_50)
