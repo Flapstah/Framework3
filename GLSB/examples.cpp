@@ -5,7 +5,8 @@
 // 2: Move
 // 3: Bounce
 // 4: Primitives
-#define EXAMPLE (4)
+// 5: GeoTest
+#define EXAMPLE (5)
 
 #include "../GLTools/src/openglsuperbible_uber.cpp"
 
@@ -19,5 +20,7 @@
 #include "Bounce/Bounce.cpp"
 #elif (EXAMPLE == 4)
 #include "Primitives/Primitives.cpp"
+#elif (EXAMPLE == 5)
+#include "GeoTest/GeoTest.cpp"
 #endif // (EXAMPLE == <example id>)
 
