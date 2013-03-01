@@ -7,7 +7,8 @@
 // 4: Primitives
 // 5: GeoTest
 // 6: Scissor
-#define EXAMPLE (6)
+// 7: Blending
+#define EXAMPLE (7)
 
 #include "../GLTools/src/openglsuperbible_uber.cpp"
 
@@ -25,5 +26,7 @@
 #include "GeoTest/GeoTest.cpp"
 #elif (EXAMPLE == 6)
 #include "Scissor/Scissor.cpp"
+#elif (EXAMPLE == 7)
+#include "Blending/Blending.cpp"
 #endif // (EXAMPLE == <example id>)
 
