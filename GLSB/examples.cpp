@@ -10,8 +10,9 @@
 // 7: Blending
 // 8: Smoother
 // 9: Objects
-#define EXAMPLE (10)
 // 10: Orthographic
+// 11: Perspective
+#define EXAMPLE (11)
 
 #include "../GLTools/src/openglsuperbible_uber.cpp"
 
@@ -37,5 +38,7 @@
 #include "Objects/Objects.cpp"
 #elif (EXAMPLE == 10)
 #include "Orthographic/Orthographic.cpp"
+#elif (EXAMPLE == 11)
+#include "Perspective/Perspective.cpp"
 #endif // (EXAMPLE == <example id>)
 
