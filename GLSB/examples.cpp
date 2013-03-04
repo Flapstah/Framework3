@@ -12,7 +12,8 @@
 // 9: Objects
 // 10: Orthographic
 // 11: Perspective
-#define EXAMPLE (11)
+// 12: ModelViewProjection
+#define EXAMPLE (12)
 
 #include "../GLTools/src/openglsuperbible_uber.cpp"
 
@@ -40,5 +41,7 @@
 #include "Orthographic/Orthographic.cpp"
 #elif (EXAMPLE == 11)
 #include "Perspective/Perspective.cpp"
+#elif (EXAMPLE == 12)
+#include "ModelViewProjection/ModelViewProjection.cpp"
 #endif // (EXAMPLE == <example id>)
 
