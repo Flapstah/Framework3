@@ -9,7 +9,8 @@
 // 6: Scissor
 // 7: Blending
 // 8: Smoother
-#define EXAMPLE (8)
+// 9: Objects
+#define EXAMPLE (9)
 
 #include "../GLTools/src/openglsuperbible_uber.cpp"
 
@@ -31,5 +32,7 @@
 #include "Blending/Blending.cpp"
 #elif (EXAMPLE == 8)
 #include "Smoother/Smoother.cpp"
+#elif (EXAMPLE == 9)
+#include "Objects/Objects.cpp"
 #endif // (EXAMPLE == <example id>)
 
