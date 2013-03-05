@@ -14,7 +14,8 @@
 // 11: Perspective
 // 12: ModelViewProjection
 // 13: SphereWorld
-#define EXAMPLE (13)
+// 14: SphereWorld2
+#define EXAMPLE (14)
 
 #include "../GLTools/src/openglsuperbible_uber.cpp"
 
@@ -46,5 +47,7 @@
 #include "ModelViewProjection/ModelViewProjection.cpp"
 #elif (EXAMPLE == 13)
 #include "SphereWorld/SphereWorld.cpp"
+#elif (EXAMPLE == 14)
+#include "SphereWorld2/SphereWorld2.cpp"
 #endif // (EXAMPLE == <example id>)
 
