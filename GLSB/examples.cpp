@@ -16,7 +16,8 @@
 // 13: SphereWorld
 // 14: SphereWorld2
 // 15: SphereWorld3
-#define EXAMPLE (15)
+// 16: SphereWorld4
+#define EXAMPLE (16)
 
 #include "../GLTools/src/openglsuperbible_uber.cpp"
 
@@ -52,5 +53,7 @@
 #include "SphereWorld2/SphereWorld2.cpp"
 #elif (EXAMPLE == 15)
 #include "SphereWorld3/SphereWorld3.cpp"
+#elif (EXAMPLE == 16)
+#include "SphereWorld4/SphereWorld4.cpp"
 #endif // (EXAMPLE == <example id>)
 
