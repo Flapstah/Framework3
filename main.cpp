@@ -1,6 +1,5 @@
 #include "common/stdafx.h"
 
-#define USE_OPENGL_SUPERBIBLE (1)
 #if !USE_OPENGL_SUPERBIBLE
 
 #include "common/itime.h"
@@ -48,6 +47,6 @@ int main(int argc, char* argv[])
 
 //==============================================================================
 
-#endif // USE_OPENGL_SUPERBIBLE
+#endif // !USE_OPENGL_SUPERBIBLE
 
 // [EOF]

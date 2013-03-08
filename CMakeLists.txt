@@ -38,8 +38,15 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 set (CMAKE_CXX_FLAGS "")
 set (CMAKE_CXX_WARNING_LEVEL 4)
 
+set(OPENGL_SUPERBIBLE_50 1)
+
 if (MSVC)
 	add_definitions(-D_HAS_EXCEPTIONS=0)
+	if (OPENGL_SUPERBIBLE_50)
+		add_definitions(-DUSE_OPENGL_SUPERBIBLE=1)
+	else()
+		add_definitions(-DUSE_OPENGL_SUPERBIBLE=0)
+	endif (OPENGL_SUPERBIBLE_50)
 endif (MSVC)
 
 if (CMAKE_COMPILER_IS_GNUCXX)
@@ -47,6 +54,11 @@ if (CMAKE_COMPILER_IS_GNUCXX)
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions")
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wshadow -Wunused -Wfloat-equal -Wpointer-arith -Wwrite-strings -Wformat-security -Wmissing-format-attribute")
 	#	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -pedantic-errors")
+	if (OPENGL_SUPERBIBLE_50)
+		add_definitions(-DUSE_OPENGL_SUPERBIBLE=1)
+	else()
+		add_definitions(-DUSE_OPENGL_SUPERBIBLE=0)
+	endif (OPENGL_SUPERBIBLE_50)
 endif (CMAKE_COMPILER_IS_GNUCXX)
 
 
@@ -77,7 +89,6 @@ endif (UNIX)
 
 
 # Start OpenGL SuperBible 5.0 stuff
-set(OPENGL_SUPERBIBLE_50 1)
 if (OPENGL_SUPERBIBLE_50)
 	set(OPENGL_SUPERBIBLE_50_INCLUDES "${test_SOURCE_DIR}/GLTools/include" "${test_SOURCE_DIR}/GLTools/include/GL")
 endif (OPENGL_SUPERBIBLE_50)

@@ -1,3 +1,5 @@
+#if USE_OPENGL_SUPERBIBLE
+
 #include "common/stdafx.h"
 
 // 0: Block
@@ -57,3 +59,4 @@
 #include "SphereWorld4/SphereWorld4.cpp"
 #endif // (EXAMPLE == <example id>)
 
+#endif // USE_OPENGL_SUPERBIBLE
