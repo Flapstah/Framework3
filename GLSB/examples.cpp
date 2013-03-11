@@ -2,26 +2,27 @@
 
 #include "common/stdafx.h"
 
-// 10: Block
-// 20: Triangle
-// 21: Move
-// 22: Bounce
-// 30: Primitives
-// 31: GeoTest
-// 32: Scissor
-// 33: Blending
-// 34: Smoother
-// 40: Move
-// 41: Objects
-// 42: Orthographic
-// 43: Perspective
-// 44: ModelViewProjection
-// 45: SphereWorld
-// 46: SphereWorld2
-// 47: SphereWorld3
-// 48: SphereWorld4
+// 10: Chapter01/Block
+// 20: Chapter02/Triangle
+// 21: Chapter02/Move
+// 22: Chapter02/Bounce
+// 30: Chapter03/Primitives
+// 31: Chapter03/GeoTest
+// 32: Chapter03/Scissor
+// 33: Chapter03/Blending
+// 34: Chapter03/Smoother
+// 40: Chapter04/Move
+// 41: Chapter04/Objects
+// 42: Chapter04/Orthographic
+// 43: Chapter04/Perspective
+// 44: Chapter04/ModelViewProjection
+// 45: Chapter04/SphereWorld
+// 46: Chapter04/SphereWorld2
+// 47: Chapter04/SphereWorld3
+// 48: Chapter04/SphereWorld4
+// 50: Chapter05/SphereWorld
 
-#define EXAMPLE (40)
+#define EXAMPLE (50)
 
 #include "../GLTools/src/openglsuperbible_uber.cpp"
 
@@ -61,6 +62,8 @@
 #include "Chapter04/SphereWorld3/SphereWorld3.cpp"
 #elif (EXAMPLE == 48)
 #include "Chapter04/SphereWorld4/SphereWorld4.cpp"
+#elif (EXAMPLE == 50)
+#include "Chapter05/SphereWorld/SphereWorld.cpp"
 #else
 #error "Unknown example"
 #endif // (EXAMPLE == <example id>)
