@@ -45,6 +45,14 @@ int main(int argc, char* argv[])
 		test.End();
 	}
 */
+
+//	printf("sizeof(\"hello\") = %d\n", sizeof("hello"));
+	uint32 x = engine::CompileTimeStringHash("a nice long string to hash");
+	printf("x %08x\n", x);
+	uint32 y = engine::CRunTimeStringHash::Calculate("a nice long string to hash");
+	printf("y %08x\n", y);
+//	printf("All done.\n");
+
 	}
 
 	printf("All done.\n");
