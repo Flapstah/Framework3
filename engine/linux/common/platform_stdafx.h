@@ -14,8 +14,10 @@
 #if defined(__GNUC__)
 #if defined(__x86_64__) || defined(__ppc64__)
 #define ENVIRONMENT64
+#define __ENVIRONMENT__ "64 bit"
 #else
 #define ENVIRONMENT32
+#define __ENVIRONMENT__ "32 bit"
 #endif // [defined(__x84_64__) || defined(__ppc64__)]
 #endif // [defined(__GNUC__)]
 

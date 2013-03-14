@@ -24,7 +24,10 @@ int main(int argc, char* argv[])
 {
 //	IGNORE_PARAMETER(argc);
 //	IGNORE_PARAMETER(argv);
-	DumpArgs(argc, argv);
+	
+	printf(__BUILD_SIGNATURE__ "\n");
+
+//	DumpArgs(argc, argv);
 /*
 	{
 		test::CTypeTest test;

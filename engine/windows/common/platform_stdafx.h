@@ -21,8 +21,10 @@
 #if defined(_WIN32) || defined(_WIN64)
 #if defined(_WIN64)
 #define ENVIRONMENT64
+#define __ENVIRONMENT__ "64 bit"
 #else
 #define ENVIRONMENT32
+#define __ENVIRONMENT__ "32 bit"
 #endif // [defined(_WIN64)]
 #endif // [defined(_WIN32) || defined(_WIN64)]
 
