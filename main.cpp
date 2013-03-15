@@ -3,6 +3,7 @@
 #if !USE_OPENGL_SUPERBIBLE
 
 #include "common/itime.h"
+#include "common/commandargs.h"
 #include "unit_tests/typetest.h"
 #include "unit_tests/timetest.h"
 
@@ -25,7 +26,9 @@ int main(int argc, char* argv[])
 //	IGNORE_PARAMETER(argc);
 //	IGNORE_PARAMETER(argv);
 	
-	printf(__BUILD_SIGNATURE__ "\n");
+	engine::CCommandArgs* pCommandArgs = new engine::CCommandArgs(argc, argv);
+	if ((pCommandArgs != NULL) && (pCommandArgs->ShouldExit() == false))
+	{
 
 //	DumpArgs(argc, argv);
 /*
@@ -43,6 +46,9 @@ int main(int argc, char* argv[])
 		test.End();
 	}
 */
+	}
+
+	delete pCommandArgs;
 	printf("All done.\n");
 
 	return 0;

@@ -128,6 +128,7 @@ set(PLATFORM_INDEPENDENT_SOURCES
 	#engine/independent/graphics/debugfont.cpp
 	#engine/independent/graphics/renderer.cpp
 	#engine/independent/input/keyboard.cpp
+	engine/independent/common/commandargs.cpp
 	engine/independent/time/time.cpp
 	engine/independent/time/timer.cpp
 	engine/independent/time/timevalue.cpp
