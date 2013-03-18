@@ -8,25 +8,38 @@ namespace engine
 {
 	//============================================================================
 
+	CCommandArgs::SOption::SOption(const char* pOption, char flag, const char* pHelp, TOptionFn pOptionFuntion)
+		: m_pOption(pOption)
+		, m_pHelp(pHelp)
+		, m_pOptionFuntion(pOptionFuntion)
+		, m_flag(flag)
+	{
+	}
+
+	//============================================================================
+
+	CCommandArgs::SOptionMap::SOptionMap(SOptionMap* pBase, SOption* pOptions, uint32 count)
+		: m_pOptions(pOptions)
+		, m_count(count)
+	{
+		if (pBase != NULL)
+		{
+			SOptionMap* pParent = pBase;
+			while (pParent->m_pNext != NULL)
+			{
+				pParent = pParent->m_pNext;
+			}
+			pParent->m_pNext = this;
+		}
+	}
+
+	//============================================================================
+
 	CCommandArgs::CCommandArgs(int argc, const char* const* argv)
-		: m_argc(argc)
-		, m_argv(argv)
+		: m_argv(argv)
+		, m_argc(argc)
 		, m_shouldExit(false)
 	{
-		for (int index = 0; index < m_argc; ++index)
-		{
-			if (m_argv[index][0] == '-')
-			{
-				if (m_argv[index][1] == '-')
-				{
-					index += ParseArgumentAsCommand(m_argv[index]+2);
-				}
-				else
-				{
-					index += ParseArgumentAsFlags(m_argv[index]+1);
-				}
-			}
-		}
 	}
 
 	//============================================================================
@@ -37,7 +50,33 @@ namespace engine
 
 	//============================================================================
 
-	uint32 CCommandArgs::ParseArgumentAsCommand(const char* argument)
+	bool CCommandArgs::Parse(int argc, const char* const* argv)
+	{
+		static CCommandArgs instance(argc, argv);
+
+		// CCommandArgs::SOption("help", "h", "Displays help", instance.ProcessHelp);
+
+		for (int index = 0; index < instance.m_argc; ++index)
+		{
+			if (instance.m_argv[index][0] == '-')
+			{
+				if (instance.m_argv[index][1] == '-')
+				{
+					index += instance.ParseOption(instance.m_argv[index]+2);
+				}
+				else
+				{
+					index += instance.ParseFlags(instance.m_argv[index]+1);
+				}
+			}
+		}
+
+		return instance.m_shouldExit;
+	}
+
+	//============================================================================
+
+	uint32 CCommandArgs::ParseOption(const char* argument)
 	{
 		uint32 skipCount = 0;
 
@@ -67,7 +106,7 @@ namespace engine
 
 	//============================================================================
 
-	uint32 CCommandArgs::ParseArgumentAsFlags(const char* flags)
+	uint32 CCommandArgs::ParseFlags(const char* flags)
 	{
 		uint32 skipCount = 0;
 		uint32 length = strlen(flags);

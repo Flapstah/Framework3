@@ -26,8 +26,7 @@ int main(int argc, char* argv[])
 //	IGNORE_PARAMETER(argc);
 //	IGNORE_PARAMETER(argv);
 	
-	engine::CCommandArgs* pCommandArgs = new engine::CCommandArgs(argc, argv);
-	if ((pCommandArgs != NULL) && (pCommandArgs->ShouldExit() == false))
+	if (CCommandArgs::Parse(argc, argv) == true)
 	{
 
 //	DumpArgs(argc, argv);
@@ -48,7 +47,6 @@ int main(int argc, char* argv[])
 */
 	}
 
-	delete pCommandArgs;
 	printf("All done.\n");
 
 	return 0;
