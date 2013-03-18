@@ -25,8 +25,8 @@ int main(int argc, char* argv[])
 {
 //	IGNORE_PARAMETER(argc);
 //	IGNORE_PARAMETER(argv);
-	
-	if (CCommandArgs::Parse(argc, argv) == true)
+
+	if (engine::CCommandArgs::Parse(argc, argv) == engine::CCommandArgs::ePS_SUCCESS)
 	{
 
 //	DumpArgs(argc, argv);

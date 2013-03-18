@@ -13,23 +13,45 @@ namespace engine
 			//------------------------------------------------------------------------
 
 		public:
+			enum EParseState
+			{
+				ePS_UNPARSED = 0,
+				ePS_SUCCESS,
+				ePS_UNKNOWN_ARGUMENT,
+				ePS_UNKNOWN_OPTION,
+				ePS_UNKNOWN_FLAG,
+				ePS_UNKNOWN_TYPE,
+				ePS_REQUEST_EXIT
+			};
+
+			//------------------------------------------------------------------------
+
+			enum EArgumentType
+			{
+				eAT_Argument,
+				eAT_Option,
+				eAT_Flag
+			};
+
+			//------------------------------------------------------------------------
+
 			struct SOption
 			{
-				typedef bool (*TOptionFn)(void);
+				typedef EParseState (*TOptionFn)(uint32& skipCount);
 
 				SOption(const char* pOption, char flag, const char* pHelp, TOptionFn pOptionFuntion);
 
-				const	char*	m_pOption;
-				const char* m_pHelp;
-				TOptionFn		m_pOptionFuntion;
-				const	char	m_flag;
+				const	char*				m_pOption;
+				const char* 			m_pHelp;
+							TOptionFn		m_pOptionFuntion;
+				const	char				m_flag;
 			};
 
 			//------------------------------------------------------------------------
 
 			struct SOptionMap
 			{
-				SOptionMap(SOptionMap* pBase, SOption* pOptions, uint32 count);
+				SOptionMap(SOptionMap*& pParent, SOption* pOptions, uint32 count);
 
 							SOptionMap*	m_pNext;
 				const	SOption*		m_pOptions;
@@ -38,30 +60,36 @@ namespace engine
 
 			//------------------------------------------------------------------------
 
-			virtual					~CCommandArgs(void);
+			virtual							~CCommandArgs(void);
 
-			static	bool		Parse(int argc, const char* const* argv);
+			static	EParseState	Parse(int argc, const char* const* argv);
 
 			//------------------------------------------------------------------------
+
+		private:
+													CCommandArgs(void);
+													CCommandArgs(int argc, const char* const* argv);
 
 		protected:
-											CCommandArgs(int argc, const char* const* argv);
+							EParseState UpdateState(EParseState state);
 
-			virtual	uint32	ParseArgument(const char* argument);
-			virtual	uint32	ParseOption(const char* option);
-			virtual	uint32	ParseFlags(const char* flags);
+			virtual	void				RegisterOptionMap(void);
 
-			virtual	bool		ProcessHelp(void);
-			virtual	bool		ProcessConfig(void);
-			virtual	bool		ProcessVersion(void);
+			virtual	uint32			ParseArgument(const char* pArgument, EArgumentType type);
+			virtual	EParseState	ProcessArgument(const char* pArgument, uint32& skipCount);
+
+			static	EParseState	ProcessHelp(uint32& skipCount);
+			static	EParseState	ProcessConfig(uint32& skipCount);
+			static	EParseState	ProcessVersion(uint32& skipCount);
 
 			//------------------------------------------------------------------------
 
+			static	CCommandArgs*	m_pThis;
 			SOptionMap*					m_pOptionMap;
 			const char* const*	m_argv;
-			int									m_argc;
-			bool								m_shouldExit;
-	};
+			uint32							m_argc;
+			EParseState					m_state;
+	}; // End [class CCommandArgs]
 
 	//============================================================================
 

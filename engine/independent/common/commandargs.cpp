@@ -8,6 +8,10 @@ namespace engine
 {
 	//============================================================================
 
+	CCommandArgs* CCommandArgs::m_pThis = NULL;
+
+	//============================================================================
+
 	CCommandArgs::SOption::SOption(const char* pOption, char flag, const char* pHelp, TOptionFn pOptionFuntion)
 		: m_pOption(pOption)
 		, m_pHelp(pHelp)
@@ -18,13 +22,18 @@ namespace engine
 
 	//============================================================================
 
-	CCommandArgs::SOptionMap::SOptionMap(SOptionMap* pBase, SOption* pOptions, uint32 count)
+	CCommandArgs::SOptionMap::SOptionMap(SOptionMap*& pParent, SOption* pOptions, uint32 count)
 		: m_pOptions(pOptions)
 		, m_count(count)
 	{
-		if (pBase != NULL)
+		if (pParent == NULL)
 		{
-			SOptionMap* pParent = pBase;
+			// We're the head of the list
+			pParent = this;
+		}
+		else
+		{
+			// Add ourself to the option map list
 			while (pParent->m_pNext != NULL)
 			{
 				pParent = pParent->m_pNext;
@@ -36,9 +45,10 @@ namespace engine
 	//============================================================================
 
 	CCommandArgs::CCommandArgs(int argc, const char* const* argv)
-		: m_argv(argv)
+		: m_pOptionMap(NULL)
+		, m_argv(argv)
 		, m_argc(argc)
-		, m_shouldExit(false)
+		, m_state(ePS_UNPARSED)
 	{
 	}
 
@@ -50,90 +60,115 @@ namespace engine
 
 	//============================================================================
 
-	bool CCommandArgs::Parse(int argc, const char* const* argv)
+	CCommandArgs::EParseState CCommandArgs::Parse(int argc, const char* const* argv)
 	{
 		static CCommandArgs instance(argc, argv);
+		m_pThis = &instance;
 
-		// CCommandArgs::SOption("help", "h", "Displays help", instance.ProcessHelp);
+		uint32 skipCount = 0;
 
-		for (int index = 0; index < instance.m_argc; ++index)
+		if (m_pThis->m_state == ePS_UNPARSED)
 		{
-			if (instance.m_argv[index][0] == '-')
+			m_pThis->RegisterOptionMap();
+
+			for (uint32 index = 1; index < m_pThis->m_argc; ++index)
 			{
-				if (instance.m_argv[index][1] == '-')
+				skipCount = 0;
+
+				if (m_pThis->m_argv[index][0] == '-')
 				{
-					index += instance.ParseOption(instance.m_argv[index]+2);
+					if (m_pThis->m_argv[index][1] == '-')
+					{
+						index += m_pThis->ParseArgument(m_pThis->m_argv[index]+2, eAT_Option);
+					}
+					else
+					{
+						uint32 numFlags = strlen(m_pThis->m_argv[index]);
+						for (uint32 flag = 1; flag < numFlags; ++flag)
+						{
+							index += m_pThis->ParseArgument(m_pThis->m_argv[index]+flag, eAT_Flag);
+						}
+					}
 				}
 				else
 				{
-					index += instance.ParseFlags(instance.m_argv[index]+1);
+					m_pThis->UpdateState(m_pThis->ProcessArgument(m_pThis->m_argv[index], skipCount));
+					index += skipCount;
 				}
 			}
+
+			m_pThis->UpdateState(ePS_SUCCESS);
 		}
 
-		return instance.m_shouldExit;
+		return m_pThis->m_state;
 	}
 
 	//============================================================================
 
-	uint32 CCommandArgs::ParseOption(const char* argument)
+	CCommandArgs::EParseState CCommandArgs::UpdateState(CCommandArgs::EParseState state)
 	{
-		uint32 skipCount = 0;
-
-		if (strcmp(argument, "help") == 0)
+		if ((m_state == ePS_UNPARSED) || (m_state == ePS_SUCCESS))
 		{
-			printf("Help:\n");
-			m_shouldExit = ProcessConfig();
-		}
-		else if (strcmp(argument, "config") == 0)
-		{
-			printf("Build configuration:\n");
-			m_shouldExit = ProcessConfig();
-		}
-		else if (strcmp(argument, "version") == 0)
-		{
-			printf("Version:\n");
-			m_shouldExit = ProcessVersion();
-		}
-		else
-		{
-			printf("Unknown argument [%s]\n", argument);
-			m_shouldExit = true;
+			m_state = state;
 		}
 
-		return skipCount;
+		return m_state;
 	}
 
 	//============================================================================
 
-	uint32 CCommandArgs::ParseFlags(const char* flags)
+	void CCommandArgs::RegisterOptionMap(void)
 	{
-		uint32 skipCount = 0;
-		uint32 length = strlen(flags);
+		static SOption options[] = {
+			SOption("help", 'h', "Displays help", ProcessHelp),
+			SOption("config", 'c', "Displays build configuration", ProcessConfig),
+			SOption("version", 'v', "Displays version information", ProcessVersion)
+		};
+		uint32 count = sizeof(options)/sizeof(SOption);
+		static SOptionMap optionMap(m_pOptionMap, options, count);
+	}
 
-		for (uint32 flag = 0; flag < length; ++flag)
+	//============================================================================
+
+	uint32 CCommandArgs::ParseArgument(const char* pArgument, CCommandArgs::EArgumentType type)
+	{
+		SOptionMap* pOptionMap = m_pOptionMap;
+		uint32 skipCount = 0;
+		uint32 index = 0;
+		bool parsed = false;
+
+		while ((!parsed) && (pOptionMap != NULL))
 		{
-			switch (flags[flag])
+			const SOption& option = pOptionMap->m_pOptions[index];
+
+			switch (type)
 			{
-				case 'h':
-					printf("Help:\n");
-					m_shouldExit = ProcessHelp();
+				case eAT_Option:
+					if (memcmp(option.m_pOption, pArgument, strlen(option.m_pOption)+1) == 0)
+					{
+						UpdateState(option.m_pOptionFuntion(skipCount));
+						parsed = true;
+					}
 					break;
 
-				case 'c':
-					printf("Build configuration:\n");
-					m_shouldExit = ProcessConfig();
-					break;
-
-				case 'v':
-					printf("Version:\n");
-					m_shouldExit = ProcessVersion();
+				case eAT_Flag:
+					if (option.m_flag == *pArgument)
+					{
+						UpdateState(option.m_pOptionFuntion(skipCount));
+						parsed = true;
+					}
 					break;
 
 				default:
-					printf("Unknown flag [%c]\n", flags[flag]);
-					m_shouldExit = true;
+					UpdateState(ePS_UNKNOWN_TYPE);
+					parsed = true;
 					break;
+			}
+
+			if (++index >= pOptionMap->m_count)
+			{
+				pOptionMap = pOptionMap->m_pNext;
+				index = 0;
 			}
 		}
 
@@ -142,24 +177,70 @@ namespace engine
 
 	//============================================================================
 
-	bool CCommandArgs::ProcessHelp(void)
+	CCommandArgs::EParseState	CCommandArgs::ProcessArgument(const char* pArgument, uint32& skipCount)
 	{
-		return true;
+		IGNORE_PARAMETER(pArgument);
+		IGNORE_PARAMETER(skipCount);
+		printf("argument [%s]\n", pArgument);
+		return ePS_SUCCESS;
 	}
 
 	//============================================================================
 
-	bool CCommandArgs::ProcessConfig(void)
+	CCommandArgs::EParseState CCommandArgs::ProcessHelp(uint32& skipCount)
 	{
-		return true;
+		IGNORE_PARAMETER(skipCount);
+
+		SOptionMap* pOptionMap = m_pThis->m_pOptionMap;
+		uint32 index = 0;
+
+		printf("Help:\n");
+
+		while (pOptionMap != NULL)
+		{
+			const SOption& option = pOptionMap->m_pOptions[index];
+
+			if (option.m_pHelp != NULL)
+			{
+				if ((option.m_pOption != NULL) && (option.m_flag != 0))
+				{
+					printf("  --%s, -%c\t\t%s\n", pOptionMap->m_pOptions[index].m_pOption, pOptionMap->m_pOptions[index].m_flag, pOptionMap->m_pOptions[index].m_pHelp);
+				}
+				else if ((option.m_pOption != NULL) && (option.m_flag == 0))
+				{
+					printf("  --%s\t\t%s\n", pOptionMap->m_pOptions[index].m_pOption, pOptionMap->m_pOptions[index].m_pHelp);
+				}
+				else if ((option.m_pOption == NULL) && (option.m_flag != 0))
+				{
+					printf("  -%c\t\t%s\n", pOptionMap->m_pOptions[index].m_flag, pOptionMap->m_pOptions[index].m_pHelp);
+				}
+			}
+
+			if (++index >= pOptionMap->m_count)
+			{
+				pOptionMap = pOptionMap->m_pNext;
+				index = 0;
+			}
+		}
+
+		return ePS_REQUEST_EXIT;
 	}
 
 	//============================================================================
 
-	bool CCommandArgs::ProcessVersion(void)
+	CCommandArgs::EParseState CCommandArgs::ProcessConfig(uint32& skipCount)
 	{
+		IGNORE_PARAMETER(skipCount);
+		return ePS_REQUEST_EXIT;
+	}
+
+	//============================================================================
+
+	CCommandArgs::EParseState CCommandArgs::ProcessVersion(uint32& skipCount)
+	{
+		IGNORE_PARAMETER(skipCount);
 		printf(__BUILD_SIGNATURE__ "\n");
-		return true;
+		return ePS_REQUEST_EXIT;
 	}
 
 	//============================================================================
