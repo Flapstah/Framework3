@@ -78,8 +78,9 @@ namespace engine
 			virtual	uint32			ParseArgument(const char* pArgument, EArgumentType type);
 			virtual	EParseState	ProcessArgument(const char* pArgument, uint32& skipCount);
 
-			static	EParseState	ProcessHelp(uint32& skipCount);
 			static	EParseState	ProcessConfig(uint32& skipCount);
+			static	EParseState	ProcessDumpArgs(uint32& skipCount);
+			static	EParseState	ProcessHelp(uint32& skipCount);
 			static	EParseState	ProcessVersion(uint32& skipCount);
 
 			//------------------------------------------------------------------------

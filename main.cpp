@@ -9,18 +9,6 @@
 
 //==============================================================================
 
-void DumpArgs(int argc, char* argv[])
-{
-	printf("\n*** Passed %d arguments:\n", argc);
-	for (int i = 0; i < argc; ++i)
-	{
-		printf("[%d]: [%s]\n", i, argv[i]);
-	}
-	printf("*** End argument list\n\n");
-}
-
-//==============================================================================
-
 int main(int argc, char* argv[])
 {
 //	IGNORE_PARAMETER(argc);

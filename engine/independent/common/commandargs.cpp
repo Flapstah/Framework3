@@ -120,8 +120,9 @@ namespace engine
 	void CCommandArgs::RegisterOptionMap(void)
 	{
 		static SOption options[] = {
-			SOption("help", 'h', "Displays help", ProcessHelp),
 			SOption("config", 'c', "Displays build configuration", ProcessConfig),
+			SOption("dumpargs", 'd', "Dumps all the arguments passed on the command line", ProcessDumpArgs),
+			SOption("help", 'h', "Displays help", ProcessHelp),
 			SOption("version", 'v', "Displays version information", ProcessVersion)
 		};
 		uint32 count = sizeof(options)/sizeof(SOption);
@@ -187,6 +188,29 @@ namespace engine
 
 	//============================================================================
 
+	CCommandArgs::EParseState CCommandArgs::ProcessConfig(uint32& skipCount)
+	{
+		IGNORE_PARAMETER(skipCount);
+		return ePS_REQUEST_EXIT;
+	}
+
+	//============================================================================
+
+	CCommandArgs::EParseState CCommandArgs::ProcessDumpArgs(uint32& skipCount)
+	{
+		IGNORE_PARAMETER(skipCount);
+		printf("Passed %d command line arguments:\n", m_pThis->m_argc);
+
+		for (uint32 index = 0; index < m_pThis->m_argc; ++index)
+		{
+			printf("[%02d] : [%s]\n", index, m_pThis->m_argv[index]);
+		}
+
+		return ePS_SUCCESS;
+	}
+
+	//============================================================================
+
 	CCommandArgs::EParseState CCommandArgs::ProcessHelp(uint32& skipCount)
 	{
 		IGNORE_PARAMETER(skipCount);
@@ -204,15 +228,15 @@ namespace engine
 			{
 				if ((option.m_pOption != NULL) && (option.m_flag != 0))
 				{
-					printf("  --%s, -%c\t\t%s\n", pOptionMap->m_pOptions[index].m_pOption, pOptionMap->m_pOptions[index].m_flag, pOptionMap->m_pOptions[index].m_pHelp);
+					printf("  --%s, -%c\n    %s\n", pOptionMap->m_pOptions[index].m_pOption, pOptionMap->m_pOptions[index].m_flag, pOptionMap->m_pOptions[index].m_pHelp);
 				}
 				else if ((option.m_pOption != NULL) && (option.m_flag == 0))
 				{
-					printf("  --%s\t\t%s\n", pOptionMap->m_pOptions[index].m_pOption, pOptionMap->m_pOptions[index].m_pHelp);
+					printf("  --%s\n    %s\n", pOptionMap->m_pOptions[index].m_pOption, pOptionMap->m_pOptions[index].m_pHelp);
 				}
 				else if ((option.m_pOption == NULL) && (option.m_flag != 0))
 				{
-					printf("  -%c\t\t%s\n", pOptionMap->m_pOptions[index].m_flag, pOptionMap->m_pOptions[index].m_pHelp);
+					printf("  -%c\n    %s\n", pOptionMap->m_pOptions[index].m_flag, pOptionMap->m_pOptions[index].m_pHelp);
 				}
 			}
 
@@ -223,14 +247,6 @@ namespace engine
 			}
 		}
 
-		return ePS_REQUEST_EXIT;
-	}
-
-	//============================================================================
-
-	CCommandArgs::EParseState CCommandArgs::ProcessConfig(uint32& skipCount)
-	{
-		IGNORE_PARAMETER(skipCount);
 		return ePS_REQUEST_EXIT;
 	}
 
