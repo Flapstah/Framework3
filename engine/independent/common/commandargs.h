@@ -10,7 +10,7 @@ namespace engine
 	//============================================================================
 	class CCommandArgs
 	{
-			//------------------------------------------------------------------------
+		//--------------------------------------------------------------------------
 
 		public:
 			enum EParseState
@@ -43,7 +43,7 @@ namespace engine
 
 				const	char*				m_pOption;
 				const char* 			m_pHelp;
-							TOptionFn		m_pOptionFuntion;
+				TOptionFn		m_pOptionFuntion;
 				const	char				m_flag;
 			};
 
@@ -53,7 +53,7 @@ namespace engine
 			{
 				SOptionMap(SOptionMap*& pParent, SOption* pOptions, uint32 count);
 
-							SOptionMap*	m_pNext;
+				SOptionMap*	m_pNext;
 				const	SOption*		m_pOptions;
 				const	uint32			m_count;
 			};
@@ -67,11 +67,11 @@ namespace engine
 			//------------------------------------------------------------------------
 
 		private:
-													CCommandArgs(void);
-													CCommandArgs(int argc, const char* const* argv);
+			CCommandArgs(void);
+			CCommandArgs(int argc, const char* const* argv);
 
 		protected:
-							EParseState UpdateState(EParseState state);
+			EParseState UpdateState(EParseState state);
 
 			virtual	void				RegisterOptionMap(void);
 
