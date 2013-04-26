@@ -189,7 +189,10 @@ int main(int argc, char* argv[])
 
 		/*
 		int32 variable = 0;
-		engine::CConsole::CI32Variable cvar(variable, 123, 100, 200, engine::CConsole::CI32Variable::eF_CLAMP_TO_RANGE, "variable", "test console variable", NULL);
+		uint32 flags = engine::CConsole::IVariable::eF_CLAMP_TO_RANGE;
+		engine::CConsole::IVariable::TOnChangeCallback pCallback;
+		pCallback.m_pOnChangeI32 = NULL;
+		engine::CConsole::CI32Variable cvar(variable, int32 123, int32 100, int32 200, uint32 engine::CConsole::CI32Variable::eF_CLAMP_TO_RANGE, "variable", "test console variable", NULL);
 		*/
 
 		//  x 6 x   x 3 x   x 7 x        4 6 8   9 3 1   5 7 2
