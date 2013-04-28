@@ -33,6 +33,124 @@ class CSudoku
 			return done;
 		}
 
+		bool Initialise(uint8 v00, uint8 v01, uint8 v02, uint8 v03, uint8 v04, uint8 v05, uint8 v06, uint8 v07, uint8 v08,
+										uint8 v10, uint8 v11, uint8 v12, uint8 v13, uint8 v14, uint8 v15, uint8 v16, uint8 v17, uint8 v18,
+										uint8 v20, uint8 v21, uint8 v22, uint8 v23, uint8 v24, uint8 v25, uint8 v26, uint8 v27, uint8 v28,
+										uint8 v30, uint8 v31, uint8 v32, uint8 v33, uint8 v34, uint8 v35, uint8 v36, uint8 v37, uint8 v38,
+										uint8 v40, uint8 v41, uint8 v42, uint8 v43, uint8 v44, uint8 v45, uint8 v46, uint8 v47, uint8 v48,
+										uint8 v50, uint8 v51, uint8 v52, uint8 v53, uint8 v54, uint8 v55, uint8 v56, uint8 v57, uint8 v58,
+										uint8 v60, uint8 v61, uint8 v62, uint8 v63, uint8 v64, uint8 v65, uint8 v66, uint8 v67, uint8 v68,
+										uint8 v70, uint8 v71, uint8 v72, uint8 v73, uint8 v74, uint8 v75, uint8 v76, uint8 v77, uint8 v78,
+										uint8 v80, uint8 v81, uint8 v82, uint8 v83, uint8 v84, uint8 v85, uint8 v86, uint8 v87, uint8 v88)
+		{
+			bool done = true;
+
+			(v00 < 10) ? m_grid[0][0] = ((1<<v00)>>1) : done = false;
+			(v01 < 10) ? m_grid[0][1] = ((1<<v01)>>1) : done = false;
+			(v02 < 10) ? m_grid[0][2] = ((1<<v02)>>1) : done = false;
+			(v03 < 10) ? m_grid[0][3] = ((1<<v03)>>1) : done = false;
+			(v04 < 10) ? m_grid[0][4] = ((1<<v04)>>1) : done = false;
+			(v05 < 10) ? m_grid[0][5] = ((1<<v05)>>1) : done = false;
+			(v06 < 10) ? m_grid[0][6] = ((1<<v06)>>1) : done = false;
+			(v07 < 10) ? m_grid[0][7] = ((1<<v07)>>1) : done = false;
+			(v08 < 10) ? m_grid[0][8] = ((1<<v08)>>1) : done = false;
+
+			(v10 < 10) ? m_grid[1][0] = ((1<<v10)>>1) : done = false;
+			(v11 < 10) ? m_grid[1][1] = ((1<<v11)>>1) : done = false;
+			(v12 < 10) ? m_grid[1][2] = ((1<<v12)>>1) : done = false;
+			(v13 < 10) ? m_grid[1][3] = ((1<<v13)>>1) : done = false;
+			(v14 < 10) ? m_grid[1][4] = ((1<<v14)>>1) : done = false;
+			(v15 < 10) ? m_grid[1][5] = ((1<<v15)>>1) : done = false;
+			(v16 < 10) ? m_grid[1][6] = ((1<<v16)>>1) : done = false;
+			(v17 < 10) ? m_grid[1][7] = ((1<<v17)>>1) : done = false;
+			(v18 < 10) ? m_grid[1][8] = ((1<<v18)>>1) : done = false;
+
+			(v20 < 10) ? m_grid[2][0] = ((1<<v20)>>1) : done = false;
+			(v21 < 10) ? m_grid[2][1] = ((1<<v21)>>1) : done = false;
+			(v22 < 10) ? m_grid[2][2] = ((1<<v22)>>1) : done = false;
+			(v23 < 10) ? m_grid[2][3] = ((1<<v23)>>1) : done = false;
+			(v24 < 10) ? m_grid[2][4] = ((1<<v24)>>1) : done = false;
+			(v25 < 10) ? m_grid[2][5] = ((1<<v25)>>1) : done = false;
+			(v26 < 10) ? m_grid[2][6] = ((1<<v26)>>1) : done = false;
+			(v27 < 10) ? m_grid[2][7] = ((1<<v27)>>1) : done = false;
+			(v28 < 10) ? m_grid[2][8] = ((1<<v28)>>1) : done = false;
+
+			(v30 < 10) ? m_grid[3][0] = ((1<<v30)>>1) : done = false;
+			(v31 < 10) ? m_grid[3][1] = ((1<<v31)>>1) : done = false;
+			(v32 < 10) ? m_grid[3][2] = ((1<<v32)>>1) : done = false;
+			(v33 < 10) ? m_grid[3][3] = ((1<<v33)>>1) : done = false;
+			(v34 < 10) ? m_grid[3][4] = ((1<<v34)>>1) : done = false;
+			(v35 < 10) ? m_grid[3][5] = ((1<<v35)>>1) : done = false;
+			(v36 < 10) ? m_grid[3][6] = ((1<<v36)>>1) : done = false;
+			(v37 < 10) ? m_grid[3][7] = ((1<<v37)>>1) : done = false;
+			(v38 < 10) ? m_grid[3][8] = ((1<<v38)>>1) : done = false;
+
+			(v40 < 10) ? m_grid[4][0] = ((1<<v40)>>1) : done = false;
+			(v41 < 10) ? m_grid[4][1] = ((1<<v41)>>1) : done = false;
+			(v42 < 10) ? m_grid[4][2] = ((1<<v42)>>1) : done = false;
+			(v43 < 10) ? m_grid[4][3] = ((1<<v43)>>1) : done = false;
+			(v44 < 10) ? m_grid[4][4] = ((1<<v44)>>1) : done = false;
+			(v45 < 10) ? m_grid[4][5] = ((1<<v45)>>1) : done = false;
+			(v46 < 10) ? m_grid[4][6] = ((1<<v46)>>1) : done = false;
+			(v47 < 10) ? m_grid[4][7] = ((1<<v47)>>1) : done = false;
+			(v48 < 10) ? m_grid[4][8] = ((1<<v48)>>1) : done = false;
+
+			(v50 < 10) ? m_grid[5][0] = ((1<<v50)>>1) : done = false;
+			(v51 < 10) ? m_grid[5][1] = ((1<<v51)>>1) : done = false;
+			(v52 < 10) ? m_grid[5][2] = ((1<<v52)>>1) : done = false;
+			(v53 < 10) ? m_grid[5][3] = ((1<<v53)>>1) : done = false;
+			(v54 < 10) ? m_grid[5][4] = ((1<<v54)>>1) : done = false;
+			(v55 < 10) ? m_grid[5][5] = ((1<<v55)>>1) : done = false;
+			(v56 < 10) ? m_grid[5][6] = ((1<<v56)>>1) : done = false;
+			(v57 < 10) ? m_grid[5][7] = ((1<<v57)>>1) : done = false;
+			(v58 < 10) ? m_grid[5][8] = ((1<<v58)>>1) : done = false;
+
+			(v60 < 10) ? m_grid[6][0] = ((1<<v60)>>1) : done = false;
+			(v61 < 10) ? m_grid[6][1] = ((1<<v61)>>1) : done = false;
+			(v62 < 10) ? m_grid[6][2] = ((1<<v62)>>1) : done = false;
+			(v63 < 10) ? m_grid[6][3] = ((1<<v63)>>1) : done = false;
+			(v64 < 10) ? m_grid[6][4] = ((1<<v64)>>1) : done = false;
+			(v65 < 10) ? m_grid[6][5] = ((1<<v65)>>1) : done = false;
+			(v66 < 10) ? m_grid[6][6] = ((1<<v66)>>1) : done = false;
+			(v67 < 10) ? m_grid[6][7] = ((1<<v67)>>1) : done = false;
+			(v68 < 10) ? m_grid[6][8] = ((1<<v68)>>1) : done = false;
+
+			(v70 < 10) ? m_grid[7][0] = ((1<<v70)>>1) : done = false;
+			(v71 < 10) ? m_grid[7][1] = ((1<<v71)>>1) : done = false;
+			(v72 < 10) ? m_grid[7][2] = ((1<<v72)>>1) : done = false;
+			(v73 < 10) ? m_grid[7][3] = ((1<<v73)>>1) : done = false;
+			(v74 < 10) ? m_grid[7][4] = ((1<<v74)>>1) : done = false;
+			(v75 < 10) ? m_grid[7][5] = ((1<<v75)>>1) : done = false;
+			(v76 < 10) ? m_grid[7][6] = ((1<<v76)>>1) : done = false;
+			(v77 < 10) ? m_grid[7][7] = ((1<<v77)>>1) : done = false;
+			(v78 < 10) ? m_grid[7][8] = ((1<<v78)>>1) : done = false;
+
+			(v80 < 10) ? m_grid[8][0] = ((1<<v80)>>1) : done = false;
+			(v81 < 10) ? m_grid[8][1] = ((1<<v81)>>1) : done = false;
+			(v82 < 10) ? m_grid[8][2] = ((1<<v82)>>1) : done = false;
+			(v83 < 10) ? m_grid[8][3] = ((1<<v83)>>1) : done = false;
+			(v84 < 10) ? m_grid[8][4] = ((1<<v84)>>1) : done = false;
+			(v85 < 10) ? m_grid[8][5] = ((1<<v85)>>1) : done = false;
+			(v86 < 10) ? m_grid[8][6] = ((1<<v86)>>1) : done = false;
+			(v87 < 10) ? m_grid[8][7] = ((1<<v87)>>1) : done = false;
+			(v88 < 10) ? m_grid[8][8] = ((1<<v88)>>1) : done = false;
+
+			return done;
+		}
+
+		void DisplayCell(uint32 row, uint32 column)
+		{
+			char* cell = "123456789";
+			for (uint32 index = 0; index < 9; ++index)
+			{
+				if (m_grid[row][column] & ((1<<index)>>1) == 0)
+				{
+					cell[index] = '.';
+				}
+			}
+			printf(cell);
+		}
+
 		void Display(void)
 		{
 			for (uint32 row = 0; row < 9; ++row)
@@ -100,7 +218,6 @@ class CSudoku
 			return solved;
 		}
 
-	protected:
 		bool Calculate(void)
 		{
 			bool solved = true;
@@ -122,7 +239,7 @@ class CSudoku
 							break;
 
 						default:
-							m_grid[row][column] = (1<<9)-1 & CalculateRow(row) & CalculateColumn(column) & Calculate3x3For(row, column);
+							m_grid[row][column] = (1<<9)-1 & (CalculateRow(row) & CalculateColumn(column) & Calculate3x3For(row, column));
 							solved = false;
 							break;
 					}
@@ -131,14 +248,57 @@ class CSudoku
 			return solved;
 		}
 
+//	protected:
 		uint16 CalculateRow(uint32 row)
 		{
-			return ~m_grid[row][0] & ~m_grid[row][1] & ~m_grid[row][2] & ~m_grid[row][3] & ~m_grid[row][4] & ~m_grid[row][5] & ~m_grid[row][6] & ~m_grid[row][7] & ~m_grid[row][8];
+			uint16 result = 0;
+			for (uint32 column = 0; column < 9; ++column)
+			{
+				switch (m_grid[row][column])
+				{
+					case 1:
+					case 2:
+					case 4:
+					case 8:
+					case 16:
+					case 32:
+					case 64:
+					case 128:
+					case 256:
+						result &= ~m_grid[row][column];
+						break;
+
+					default:
+						break;
+				}
+			}
+			return result;
 		}
 
 		uint16 CalculateColumn(uint32 column)
 		{
-			return ~m_grid[0][column] & ~m_grid[1][column] & ~m_grid[2][column] & ~m_grid[3][column] & ~m_grid[4][column] & ~m_grid[5][column] & ~m_grid[6][column] & ~m_grid[7][column] & ~m_grid[8][column];
+			uint16 result = 0;
+			for (uint32 row = 0; row < 9; ++row)
+			{
+				switch (m_grid[row][column])
+				{
+					case 1:
+					case 2:
+					case 4:
+					case 8:
+					case 16:
+					case 32:
+					case 64:
+					case 128:
+					case 256:
+						result &= ~m_grid[row][column];
+						break;
+
+					default:
+						break;
+				}
+			}
+			return result;
 		}
 
 		uint16 Calculate3x3For(uint32 row, uint32 column)
@@ -146,7 +306,31 @@ class CSudoku
 			row = (row/3)*3;
 			column = (column/3)*3;
 
-			return ~m_grid[row][column] & ~m_grid[row+1][column] & ~m_grid[row+2][column] & ~m_grid[row][column+1] & ~m_grid[row+1][column+1] & ~m_grid[row+2][column+1] & ~m_grid[row][column+2] & ~m_grid[row+1][column+2] & ~m_grid[row+2][column+2];
+			uint16 result = 0;
+			for (uint32 dr = 0; dr < 3; ++dr)
+			{
+				for (uint32 dc = 0; dc < 3; ++dc)
+				{
+					switch (m_grid[row][column])
+					{
+						case 1:
+						case 2:
+						case 4:
+						case 8:
+						case 16:
+						case 32:
+						case 64:
+						case 128:
+						case 256:
+							result &= ~m_grid[row+dr][column+dc];
+							break;
+
+						default:
+							break;
+					}
+				}
+			}
+			return result;
 		}
 
 	private:
@@ -209,22 +393,19 @@ int main(int argc, char* argv[])
 
 		// set up board here
 		CSudoku sudoku;
-#define SI sudoku.InitialiseCell
-		SI(0, 0, 0); SI(0, 1, 6); SI(0, 2, 0);		SI(0, 3, 0); SI(0, 4, 3); SI(0, 5, 0);		SI(0, 6, 0); SI(0, 7, 7); SI(0, 8, 0);
-		SI(1, 0, 0); SI(1, 1, 2); SI(1, 2, 0);		SI(1, 3, 8); SI(1, 4, 4); SI(1, 5, 0);		SI(1, 6, 3); SI(1, 7, 0); SI(1, 8, 0);
-		SI(2, 0, 0); SI(2, 1, 0); SI(2, 2, 0);		SI(2, 3, 0); SI(2, 4, 0); SI(2, 5, 0);		SI(2, 6, 4); SI(2, 7, 0); SI(2, 8, 6);
+		sudoku.Initialise( 0, 6, 0,   0, 3, 0,   0, 7, 0,
+											 0, 2, 0,   8, 4, 0,   3, 0, 0,
+											 0, 0, 0,   0, 0, 0,   4, 0, 6,
 
-		SI(3, 0, 1); SI(3, 1, 0); SI(3, 2, 0);		SI(3, 3, 0); SI(3, 4, 8); SI(3, 5, 0);		SI(3, 6, 0); SI(3, 7, 5); SI(3, 8, 0);
-		SI(4, 0, 0); SI(4, 1, 0); SI(4, 2, 0);		SI(4, 3, 0); SI(4, 4, 0); SI(4, 5, 0);		SI(4, 6, 9); SI(4, 7, 4); SI(4, 8, 0);
-		SI(5, 0, 8); SI(5, 1, 0); SI(5, 2, 0);		SI(5, 3, 0); SI(5, 4, 7); SI(5, 5, 0);		SI(5, 6, 0); SI(5, 7, 0); SI(5, 8, 0);
+											 1, 0, 0,   0, 8, 0,   0, 5, 0,
+											 0, 0, 0,   0, 0, 0,   9, 4, 0,
+											 8, 0, 0,   0, 7, 0,   0, 0, 0,
 
-		SI(6, 0, 9); SI(6, 1, 8); SI(6, 2, 0);		SI(6, 3, 4); SI(6, 4, 0); SI(6, 5, 0);		SI(6, 6, 2); SI(6, 7, 0); SI(6, 8, 5);
-		SI(7, 0, 5); SI(7, 1, 0); SI(7, 2, 0);		SI(7, 3, 7); SI(7, 4, 0); SI(7, 5, 2);		SI(7, 6, 0); SI(7, 7, 0); SI(7, 8, 0);
-		SI(8, 0, 0); SI(8, 1, 0); SI(8, 2, 0);		SI(8, 3, 0); SI(8, 4, 6); SI(8, 5, 0);		SI(8, 6, 0); SI(8, 7, 1); SI(8, 8, 0);
-
+											 9, 8, 0,   4, 0, 0,   2, 0, 5,
+											 5, 0, 0,   7, 0, 2,   0, 0, 0,
+											 0, 0, 0,   0, 6, 0,   0, 1, 0 );
 		sudoku.Display();
-		sudoku.Solve();
-
+		sudoku.Calculate();
 	}
 
 	printf("All done.\n");
