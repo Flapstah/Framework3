@@ -140,12 +140,14 @@ class CSudoku
 
 		void DisplayCell(uint32 row, uint32 column)
 		{
-			char* cell = "123456789";
+			char cell[16];
+			sprintf(cell, "|123456789|");
+
 			for (uint32 index = 0; index < 9; ++index)
 			{
-				if (m_grid[row][column] & ((1<<index)>>1) == 0)
+				if ((m_grid[row][column] & (1<<index)) == 0)
 				{
-					cell[index] = '.';
+					cell[index+1] = '.';
 				}
 			}
 			printf(cell);
@@ -157,6 +159,8 @@ class CSudoku
 			{
 				for (uint32 column = 0; column < 9; ++column)
 				{
+					DisplayCell(row, column);
+					/*
 					switch (m_grid[row][column])
 					{
 						case 1:
@@ -191,17 +195,18 @@ class CSudoku
 							printf(" ");
 							break;
 					}
+					*/
 
 					if ((column == 2) || (column == 5))
 					{
-						printf("|");
+						printf("*");
 					}
 				}
 
 				printf("\n");
 				if ((row == 2) || (row == 5))
 				{
-					printf("---+---+---\n");
+					printf("*****************************************************************************************************\n");
 				}
 			}
 			printf("\n");
@@ -405,7 +410,7 @@ int main(int argc, char* argv[])
 											 5, 0, 0,   7, 0, 2,   0, 0, 0,
 											 0, 0, 0,   0, 6, 0,   0, 1, 0 );
 		sudoku.Display();
-		sudoku.Calculate();
+//		sudoku.Calculate();
 	}
 
 	printf("All done.\n");
