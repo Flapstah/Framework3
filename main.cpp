@@ -223,6 +223,28 @@ class CSudoku
 			return solved;
 		}
 
+		bool Calculate(uint32 row, uint32 column)
+		{
+			switch (m_grid[row][column])
+			{
+				case 1:
+				case 2:
+				case 4:
+				case 8:
+				case 16:
+				case 32:
+				case 64:
+				case 128:
+				case 256:
+					break;
+
+				default:
+					m_grid[row][column] = (1<<9)-1 & ~(CalculateRow(row) | CalculateColumn(column) | Calculate3x3For(row, column));
+					break;
+			}
+			return true;
+		}
+
 		bool Calculate(void)
 		{
 			bool solved = true;
@@ -244,7 +266,7 @@ class CSudoku
 							break;
 
 						default:
-							m_grid[row][column] = (1<<9)-1 & (CalculateRow(row) & CalculateColumn(column) & Calculate3x3For(row, column));
+							m_grid[row][column] = (1<<9)-1 & ~(CalculateRow(row) | CalculateColumn(column) | Calculate3x3For(row, column));
 							solved = false;
 							break;
 					}
@@ -256,78 +278,160 @@ class CSudoku
 //	protected:
 		uint16 CalculateRow(uint32 row)
 		{
+			printf("CalculateRow(%d): ", row);
 			uint16 result = 0;
 			for (uint32 column = 0; column < 9; ++column)
 			{
 				switch (m_grid[row][column])
 				{
 					case 1:
+						printf("1");
+						result |= m_grid[row][column];
+						break;
 					case 2:
+						printf("2");
+						result |= m_grid[row][column];
+						break;
 					case 4:
+						printf("3");
+						result |= m_grid[row][column];
+						break;
 					case 8:
+						printf("4");
+						result |= m_grid[row][column];
+						break;
 					case 16:
+						printf("5");
+						result |= m_grid[row][column];
+						break;
 					case 32:
+						printf("6");
+						result |= m_grid[row][column];
+						break;
 					case 64:
+						printf("7");
+						result |= m_grid[row][column];
+						break;
 					case 128:
+						printf("8");
+						result |= m_grid[row][column];
+						break;
 					case 256:
-						result &= ~m_grid[row][column];
+						printf("9");
+						result |= m_grid[row][column];
 						break;
 
 					default:
 						break;
 				}
 			}
+			printf("\n");
 			return result;
 		}
 
 		uint16 CalculateColumn(uint32 column)
 		{
+			printf("CalculateColumn(%d): ", column);
 			uint16 result = 0;
 			for (uint32 row = 0; row < 9; ++row)
 			{
 				switch (m_grid[row][column])
 				{
 					case 1:
+						printf("1");
+						result |= m_grid[row][column];
+						break;
 					case 2:
+						printf("2");
+						result |= m_grid[row][column];
+						break;
 					case 4:
+						printf("3");
+						result |= m_grid[row][column];
+						break;
 					case 8:
+						printf("4");
+						result |= m_grid[row][column];
+						break;
 					case 16:
+						printf("5");
+						result |= m_grid[row][column];
+						break;
 					case 32:
+						printf("6");
+						result |= m_grid[row][column];
+						break;
 					case 64:
+						printf("7");
+						result |= m_grid[row][column];
+						break;
 					case 128:
+						printf("8");
+						result |= m_grid[row][column];
+						break;
 					case 256:
-						result &= ~m_grid[row][column];
+						printf("9");
+						result |= m_grid[row][column];
 						break;
 
 					default:
 						break;
 				}
 			}
+			printf("\n");
 			return result;
 		}
 
 		uint16 Calculate3x3For(uint32 row, uint32 column)
 		{
+			printf("Calculate3x3For(%d,%d) => ", row, column);
 			row = (row/3)*3;
 			column = (column/3)*3;
+			printf(" (%d,%d): ", row, column);
 
 			uint16 result = 0;
 			for (uint32 dr = 0; dr < 3; ++dr)
 			{
 				for (uint32 dc = 0; dc < 3; ++dc)
 				{
-					switch (m_grid[row][column])
+					uint16 cell = m_grid[row+dr][column+dc];
+					switch (cell)
 					{
 						case 1:
+							printf("1");
+							result |= cell;
+							break;
 						case 2:
+							printf("2");
+							result |= cell;
+							break;
 						case 4:
+							printf("3");
+							result |= cell;
+							break;
 						case 8:
+							printf("4");
+							result |= cell;
+							break;
 						case 16:
+							printf("5");
+							result |= cell;
+							break;
 						case 32:
+							printf("6");
+							result |= cell;
+							break;
 						case 64:
+							printf("7");
+							result |= cell;
+							break;
 						case 128:
+							printf("8");
+							result |= cell;
+							break;
 						case 256:
-							result &= ~m_grid[row+dr][column+dc];
+							printf("9");
+							result |= cell;
 							break;
 
 						default:
@@ -335,6 +439,7 @@ class CSudoku
 					}
 				}
 			}
+			printf("\n");
 			return result;
 		}
 
@@ -410,7 +515,11 @@ int main(int argc, char* argv[])
 											 5, 0, 0,   7, 0, 2,   0, 0, 0,
 											 0, 0, 0,   0, 6, 0,   0, 1, 0 );
 		sudoku.Display();
-//		sudoku.Calculate();
+		sudoku.Calculate();
+//		sudoku.Calculate(0,0);
+		sudoku.Display();
+		sudoku.Calculate(7,5);
+		sudoku.Display();
 	}
 
 	printf("All done.\n");
