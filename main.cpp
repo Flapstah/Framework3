@@ -25,6 +25,7 @@ class CSudoku
 		bool InitialiseCell(uint32 row, uint32 column, uint32 value)
 		{
 			bool done = false;
+			m_fullyPopulated = false;
 
 			if ((row < 9) && (column < 9) && (value < 10))
 			{
@@ -46,6 +47,7 @@ class CSudoku
 				uint8 v80, uint8 v81, uint8 v82, uint8 v83, uint8 v84, uint8 v85, uint8 v86, uint8 v87, uint8 v88)
 		{
 			bool done = true;
+			m_fullyPopulated = false;
 
 			(v00 < 10) ? m_grid[0][0] = ((1<<v00)>>1) : done = false;
 			(v01 < 10) ? m_grid[0][1] = ((1<<v01)>>1) : done = false;
@@ -239,6 +241,31 @@ class CSudoku
 			printf("\n");
 		}
 
+		bool IsSingleValue(uint16 bitMask)
+		{
+			bool isSingleValue = false;
+
+			switch (bitMask)
+			{
+				case 1:
+				case 2:
+				case 4:
+				case 8:
+				case 16:
+				case 32:
+				case 64:
+				case 128:
+				case 256:
+					isSingleValue = true;
+					break;
+
+				default:
+					break;
+			}
+
+			return isSingleValue;
+		}
+
 		bool Solve(bool expanded)
 		{
 			bool solved = false;
@@ -268,6 +295,7 @@ class CSudoku
 				}
 			}
 
+			m_fullyPopulated = true;
 			return solved;
 		}
 
@@ -279,173 +307,112 @@ class CSudoku
 			uint16 rowPossibilities = 0;
 			uint16 columnPossibilities = 0;
 			uint16 blockPossibilities = 0;
+			uint16 cell = m_grid[row][column];
 			bool solved = false;
 
-
-			switch (m_grid[row][column])
+			if (IsSingleValue(cell))
 			{
-				case 1:
-				case 2:
-				case 4:
-				case 8:
-				case 16:
-				case 32:
-				case 64:
-				case 128:
-				case 256:
-					// already worked out this cell, no need to do anything
-					if (showWorking)
-					{
-						printf("Cell (%d, %d) already known: %f", row, column, log((float)m_grid[row][column])/log(2.0f));
-					}
-					solved = true;
-					break;
-
-				default:
-					{
-						for (uint32 index = 0; index < 9; ++index)
-						{
-							// For all cells in this column (except the one specified)
-							// OR all the currently worked out values to create a mask
-							if (index != row)
-							{
-								switch (m_grid[index][column])
-								{
-									case 1:
-									case 2:
-									case 4:
-									case 8:
-									case 16:
-									case 32:
-									case 64:
-									case 128:
-									case 256:
-										columnUsage |= m_grid[index][column];
-										break;
-
-									default:
-										columnPossibilities |= m_grid[index][column];
-										break;
-								}
-							}
-
-							// For all cells in this row (except the one specified) OR
-							// all the currently worked out values to create a mask
-							if (index != column)
-							{
-								switch (m_grid[row][index])
-								{
-									case 1:
-									case 2:
-									case 4:
-									case 8:
-									case 16:
-									case 32:
-									case 64:
-									case 128:
-									case 256:
-										rowUsage |= m_grid[row][index];
-										break;
-
-									default:
-										rowPossibilities |= m_grid[row][index];
-										break;
-								}
-							}
-						}
-
-						// For all cells in this 3x3 block (except the one specified)
-						// OR all the currently worked out values to create a mask
-						uint32 blockRow = (row/3)*3;
-						uint32 blockColumn = (column/3)*3;
-
-						for (uint32 dr = 0; dr < 3; ++dr)
-						{
-							for (uint32 dc = 0; dc < 3; ++dc)
-							{
-								if (((blockRow+dr) != row) || ((blockColumn+dc) != column))
-								{
-									switch (m_grid[blockRow+dr][blockColumn+dc])
-									{
-										case 1:
-										case 2:
-										case 4:
-										case 8:
-										case 16:
-										case 32:
-										case 64:
-										case 128:
-										case 256:
-											blockUsage |= m_grid[blockRow+dr][blockColumn+dc];
-											break;
-
-										default:
-											blockPossibilities |= m_grid[blockRow+dr][blockColumn+dc];
-											break;
-									}
-								}
-							}
-						}
-					}
-
-					uint16 possibleNumbersBitmask = ~(rowUsage | columnUsage | blockUsage) & (1<<9)-1;
-//					uint16 otherCellsPossibilitiesBitMask = (rowPossibilities & ~columnPossibilities & ~blockPossibilities) & (1<<9)-1;
-					uint16 otherCellsPossibilitiesBitMask = ~(possibleNumbersBitmask) & (1<<9)-1;
-					uint16 inferredNumber = m_grid[row][column] & otherCellsPossibilitiesBitMask;
-
-					if (showWorking)
-					{
-						printf("Numbers in row %d:              ", row);
-						DisplayPossibilities(rowUsage);
-						printf("\nPossibilities in row %d:        ", row);
-						DisplayPossibilities(rowPossibilities);
-						printf("\nNumbers in column %d:           ", column);
-						DisplayPossibilities(columnUsage);
-						printf("\nPossibilities in column %d:     ", column);
-						DisplayPossibilities(columnPossibilities);
-						printf("\nNumbers in block (%d, %d):       ", (row/3)*3, (column/3)*3);
-						DisplayPossibilities(blockUsage);
-						printf("\nPossibilities in block (%d, %d): ", (row/3)*3, (column/3)*3);
-						DisplayPossibilities(blockPossibilities);
-						printf("\nCell (%d, %d) possibilities:     ", row, column);
-						DisplayPossibilities(possibleNumbersBitmask);
-						printf(", currently: ");
-						DisplayPossibilities(m_grid[row][column]);
-						printf("\nOther cell possibilities:      ");
-						DisplayPossibilities(otherCellsPossibilitiesBitMask);
-						printf("\nInferred number:               ");
-						DisplayPossibilities(inferredNumber);
-						printf("\n");
-					}
-
-					switch (inferredNumber)
-					{
-					case 1:
-					case 2:
-					case 4:
-					case 8:
-					case 16:
-					case 32:
-					case 64:
-					case 128:
-					case 256:
-						// This cell is the only possible location for the inferred number
-						//m_grid[row][column] = inferredNumber;
-						break;
-
-					default:
-						// This cell is still ambiguous because there are multiple possibilities
-						m_grid[row][column] = possibleNumbersBitmask;
-						break;
-					}
-					break;
+				// already worked out this cell, no need to do anything
+				if (showWorking)
+				{
+					printf("Cell (%d, %d) already known: %d\n", row, column, (int)(log((float)m_grid[row][column])/log(2.0f))+1);
+				}
+				solved = true;
 			}
+			else
+			{
+				for (uint32 index = 0; index < 9; ++index)
+				{
+					// For all cells in this column (except the one specified)
+					// OR all the currently worked out values to create a mask
+					if (index != row)
+					{
+						uint16 bitMask = m_grid[index][column];
+						IsSingleValue(bitMask) ? columnUsage |= bitMask : columnPossibilities |= bitMask;
+					}
 
+					// For all cells in this row (except the one specified) OR
+					// all the currently worked out values to create a mask
+					if (index != column)
+					{
+						uint16 bitMask = m_grid[row][index];
+						IsSingleValue(bitMask) ? rowUsage |= bitMask : rowPossibilities |= bitMask;
+					}
+				}
+
+				// For all cells in this 3x3 block (except the one specified)
+				// OR all the currently worked out values to create a mask
+				uint32 blockRow = (row/3)*3;
+				uint32 blockColumn = (column/3)*3;
+
+				for (uint32 dr = 0; dr < 3; ++dr)
+				{
+					for (uint32 dc = 0; dc < 3; ++dc)
+					{
+						if (((blockRow+dr) != row) || ((blockColumn+dc) != column))
+						{
+							uint16 bitMask = m_grid[blockRow+dr][blockColumn+dc];
+							IsSingleValue(bitMask) ? blockUsage |= bitMask : blockPossibilities |= bitMask;
+						}
+					}
+				}
+
+				uint16 possibleNumbersBitmask = ~(rowUsage | columnUsage | blockUsage) & (1<<9)-1;
+				uint16 inferredNumber = cell ^ rowPossibilities;
+				if (m_fullyPopulated && IsSingleValue(inferredNumber))
+				{
+					m_grid[row][column] = inferredNumber;
+				}
+				else
+				{
+					inferredNumber = cell ^ columnPossibilities;
+					if (m_fullyPopulated && IsSingleValue(inferredNumber))
+					{
+						m_grid[row][column] = inferredNumber;
+					}
+					else
+					{
+						inferredNumber = cell ^ blockPossibilities;
+						if (m_fullyPopulated && IsSingleValue(inferredNumber))
+						{
+							m_grid[row][column] = inferredNumber;
+						}
+						else
+						{
+							m_grid[row][column] = possibleNumbersBitmask;
+						}
+					}
+				}
+
+				if (showWorking)
+				{
+					printf("Numbers in row %d:              ", row);
+					DisplayPossibilities(rowUsage);
+					printf("\nPossibilities in row %d:        ", row);
+					DisplayPossibilities(rowPossibilities);
+					printf("\nNumbers in column %d:           ", column);
+					DisplayPossibilities(columnUsage);
+					printf("\nPossibilities in column %d:     ", column);
+					DisplayPossibilities(columnPossibilities);
+					printf("\nNumbers in block (%d, %d):       ", (row/3)*3, (column/3)*3);
+					DisplayPossibilities(blockUsage);
+					printf("\nPossibilities in block (%d, %d): ", (row/3)*3, (column/3)*3);
+					DisplayPossibilities(blockPossibilities);
+					printf("\nCell (%d, %d) possibilities:     ", row, column);
+					DisplayPossibilities(possibleNumbersBitmask);
+					printf(", currently: ");
+					DisplayPossibilities(m_grid[row][column]);
+					printf("\nInferred number:               ");
+					DisplayPossibilities(inferredNumber);
+					printf("\n");
+				}
+			}
 			return solved;
 		}
 
 	private:
 		uint16 m_grid[9][9];
+		bool m_fullyPopulated;
 };
 
 //==============================================================================
