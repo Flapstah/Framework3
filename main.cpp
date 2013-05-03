@@ -186,36 +186,23 @@ class CSudoku
 				{
 					switch (m_grid[row][column])
 					{
+					case 0:
+						printf(" ");
+						break;
 					case 1:
-						printf("1");
-						break;
 					case 2:
-						printf("2");
-						break;
 					case 4:
-						printf("3");
-						break;
 					case 8:
-						printf("4");
-						break;
 					case 16:
-						printf("5");
-						break;
 					case 32:
-						printf("6");
-						break;
 					case 64:
-						printf("7");
-						break;
 					case 128:
-						printf("8");
-						break;
 					case 256:
-						printf("9");
+						printf("%d", (int)(log((float)m_grid[row][column])/log(2.0f))+1);
 						break;
 
 					default:
-						printf(" ");
+						printf(".");
 						break;
 					}
 
@@ -266,7 +253,7 @@ class CSudoku
 			return isSingleValue;
 		}
 
-		bool Solve(bool expanded)
+		bool Solve(bool expanded, bool showWorking)
 		{
 			bool solved = false;
 			Display(expanded);
@@ -274,7 +261,7 @@ class CSudoku
 			printf("Working");
 			for (uint32 pass = 0; (!solved) && (pass < 81); ++pass)
 			{
-				solved = Calculate();
+				solved = Calculate(showWorking);
 				printf(".");
 			}
 			printf("\n\n");
@@ -283,7 +270,7 @@ class CSudoku
 			return solved;
 		}
 
-		bool Calculate(void)
+		bool Calculate(bool showWorking)
 		{
 			bool solved = true;
 
@@ -291,7 +278,7 @@ class CSudoku
 			{
 				for (uint32 column = 0; column < 9; ++column)
 				{
-					solved &= CalculateCell(row, column, false);
+					solved &= CalculateCell(row, column, showWorking);
 				}
 			}
 
@@ -310,13 +297,14 @@ class CSudoku
 			uint16 cell = m_grid[row][column];
 			bool solved = false;
 
+			if (showWorking)
+			{
+				printf("\nCalculating cell (%d, %d)...\n", row, column);
+			}
+
 			if (IsSingleValue(cell))
 			{
 				// already worked out this cell, no need to do anything
-				if (showWorking)
-				{
-					printf("Cell (%d, %d) already known: %d\n", row, column, (int)(log((float)m_grid[row][column])/log(2.0f))+1);
-				}
 				solved = true;
 			}
 			else
@@ -357,33 +345,6 @@ class CSudoku
 					}
 				}
 
-				uint16 possibleNumbersBitmask = ~(rowUsage | columnUsage | blockUsage) & (1<<9)-1;
-				uint16 inferredNumber = cell ^ rowPossibilities;
-				if (m_fullyPopulated && IsSingleValue(inferredNumber))
-				{
-					m_grid[row][column] = inferredNumber;
-				}
-				else
-				{
-					inferredNumber = cell ^ columnPossibilities;
-					if (m_fullyPopulated && IsSingleValue(inferredNumber))
-					{
-						m_grid[row][column] = inferredNumber;
-					}
-					else
-					{
-						inferredNumber = cell ^ blockPossibilities;
-						if (m_fullyPopulated && IsSingleValue(inferredNumber))
-						{
-							m_grid[row][column] = inferredNumber;
-						}
-						else
-						{
-							m_grid[row][column] = possibleNumbersBitmask;
-						}
-					}
-				}
-
 				if (showWorking)
 				{
 					printf("Numbers in row %d:              ", row);
@@ -398,14 +359,78 @@ class CSudoku
 					DisplayPossibilities(blockUsage);
 					printf("\nPossibilities in block (%d, %d): ", (row/3)*3, (column/3)*3);
 					DisplayPossibilities(blockPossibilities);
-					printf("\nCell (%d, %d) possibilities:     ", row, column);
-					DisplayPossibilities(possibleNumbersBitmask);
-					printf(", currently: ");
-					DisplayPossibilities(m_grid[row][column]);
-					printf("\nInferred number:               ");
-					DisplayPossibilities(inferredNumber);
 					printf("\n");
 				}
+
+				uint16 possibleNumbersBitmask = ~(rowUsage | columnUsage | blockUsage) & (1<<9)-1;
+				if (m_fullyPopulated)
+				{
+					if (showWorking)
+					{
+						printf("Attempting to infer single values this pass...\n");
+					}
+
+					uint16 inferredNumber = cell & ~rowPossibilities;
+					if (IsSingleValue(inferredNumber))
+					{
+						if (showWorking)
+						{
+							printf("Inferred number (from row):    ");
+							DisplayPossibilities(inferredNumber);
+							printf("\n");
+						}
+						m_grid[row][column] = inferredNumber;
+					}
+					else
+					{
+						inferredNumber = cell & ~columnPossibilities;
+						if (IsSingleValue(inferredNumber))
+						{
+							if (showWorking)
+							{
+								printf("Inferred number (from column): ");
+								DisplayPossibilities(inferredNumber);
+								printf("\n");
+							}
+							m_grid[row][column] = inferredNumber;
+						}
+						else
+						{
+							inferredNumber = cell & ~blockPossibilities;
+							if (IsSingleValue(inferredNumber))
+							{
+								if (showWorking)
+								{
+									printf("Inferred number (from block):  ");
+									DisplayPossibilities(inferredNumber);
+									printf("\n");
+								}
+								m_grid[row][column] = inferredNumber;
+							}
+							else
+							{
+								if (showWorking)
+								{
+									printf("Possibilities for (%d, %d):      ", row, column);
+									DisplayPossibilities(possibleNumbersBitmask);
+									printf("\n");
+								}
+								m_grid[row][column] = possibleNumbersBitmask;
+							}
+						}
+					}
+				}
+				else
+				{
+					if (showWorking)
+					{
+						printf("Possibilities for (%d, %d):      ", row, column);
+						DisplayPossibilities(possibleNumbersBitmask);
+						printf("\n");
+					}
+					m_grid[row][column] = possibleNumbersBitmask;
+				}
+
 			}
 			return solved;
 		}
@@ -587,16 +612,30 @@ int main(int argc, char* argv[])
 				0, 0, 0,   0, 0, 9,   7, 0, 0 );
 			 */
 
-		sudoku.Solve(true);
-		uint32 row = 1;
-		uint32 column = 2;
-		bool done = false;
-
-		//while (!done)
-		{
-			sudoku.Display(true);
-			sudoku.CalculateCell(row, column, true);
-		}
+		sudoku.Solve(false, false);
+/*
+		sudoku.Display(true);
+		sudoku.Calculate(true);
+		sudoku.Display(true);
+		sudoku.CalculateCell(1,2,true);
+		sudoku.Display(true);
+		sudoku.CalculateCell(0,1,true);
+		sudoku.Display(true);
+		sudoku.CalculateCell(0,2,true);
+		sudoku.Display(true);
+		sudoku.CalculateCell(1,0,true);
+		sudoku.Display(true);
+		sudoku.CalculateCell(1,1,true);
+		sudoku.Display(true);
+		sudoku.CalculateCell(1,2,true);
+		sudoku.Display(true);
+		sudoku.CalculateCell(2,0,true);
+		sudoku.Display(true);
+		sudoku.CalculateCell(2,1,true);
+		sudoku.Display(true);
+		sudoku.CalculateCell(2,2,true);
+		*/
+		sudoku.Display(true);
 	}
 
 	printf("All done.\n");
