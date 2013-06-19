@@ -64,7 +64,10 @@ endif (CMAKE_COMPILER_IS_GNUCXX)
 
 # Packages
 find_package(OpenGL REQUIRED)
+find_package(ZLIB REQUIRED)
 if (WIN32)
+	set(GLUT_INCLUDE_DIR "D:/msysgit/local/include")
+	set(GLUT_LIBRARY "D:/msysgit/local/lib/glut32.lib")
 	# Can't seem to use find_package for GLFW or OpenAL on my Windows 7 box...
 	#set(OPENAL_INCLUDE_DIR "D:/msysgit/local/include")
 	#set(OPENAL_LIBRARY "D:/msysgit/local/lib/OpenAL32.lib")
@@ -77,8 +80,6 @@ if (WIN32)
 	#if (MSVC)
 	#	set(GLFW_LIBRARY "D:/msysgit/local/lib/glfw.lib")
 	#endif (MSVC)
-	set(GLUT_INCLUDE_DIR "D:/msysgit/local/include")
-	set(GLUT_LIBRARY "D:/msysgit/local/lib/glut32.lib")
 endif (WIN32)
 if (UNIX)
 	find_package(GLUT REQUIRED)
@@ -106,8 +107,8 @@ endif (UNIX)
 
 
 # Set up include and library paths
-include_directories(${PLATFORM_INCLUDES} ${GLUT_INCLUDE_DIR} ${GLFW_INCLUDE_DIR} ${OPENAL_INCLUDE_DIR} ${OPENGL_INCLUDE_DIR} ${OPENGL_SUPERBIBLE_50_INCLUDES})
-set(LIBS ${LIBS} ${GLUT_LIBRARY} ${GLFW_LIBRARY} ${OPENAL_LIBRARY} ${OPENGL_LIBRARY})
+include_directories(${PLATFORM_INCLUDES} ${OPENGL_INCLUDE_DIR} ${ZLIB_INCLUDE_DIRS} ${GLUT_INCLUDE_DIR} ${GLFW_INCLUDE_DIR} ${OPENAL_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS} ${OPENGL_SUPERBIBLE_50_INCLUDES})
+set(LIBS ${LIBS} ${OPENGL_LIBRARY} ${ZLIB_LIBRARIES} ${GLUT_LIBRARY} ${GLFW_LIBRARY} ${OPENAL_LIBRARY} ${FREETYPE_LIBRARIES})
 
 
 #get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
