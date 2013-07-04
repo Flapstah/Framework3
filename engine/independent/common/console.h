@@ -19,14 +19,151 @@ namespace engine
 			CConsole(void);
 			~CConsole(void);
 
+			// TODO: storing the variable map
+			// Store the variable map as a map of name hash and pointer to variable
+			// Store a second map of name hash and pointer to name and description string
+			// This will ensure we only store strings for those variables that have names
+			// and descriptions (instead of spurious NULL pointers), and they're not easily
+			// linked with the variable in the first place.
+			struct SVariableDetails
+			{
+				const char* m_name;
+				const char* m_description;
+			}; // End [struct SVariableDetails]
+
+			// Intended supported types:
+			// int32, float and ostrstream
+			template <class _type_> class CVariable
+			{
+				public:
+					typedef bool (*OnChangeCallback)(CVariable& variable, const _type_& newValue);
+
+				private:
+					//--------------------------------------------------------------------
+					// Lifetime
+					//--------------------------------------------------------------------
+					CVariable(_type_& variable, OnChangeCallback pOnChangeCallback = NULL)
+						: m_pOnChangedCallback(pOnChangeCallback)
+						, m_variable(variable)
+#if defined(_DEBUG)
+						, m_minimum(0)
+						, m_maximum(0)
+#endif // defined(_DEBUG)
+						, m_flags(0)
+					{
+					}
+
+					~CVariable(void)
+					{
+					}
+
+				public:
+					//--------------------------------------------------------------------
+					// Behaviours
+					//--------------------------------------------------------------------
+					void SetRange(_type_& minimum, _type_& maximum, bool clamp)
+					{
+						m_minimum = minimum;
+						m_maximum = maximum;
+
+						m_flags |= eF_HAS_RANGE;
+						if (clamp)
+						{
+							m_flags |= eF_CLAMP_TO_RANGE;
+						}
+					}
+
+					//--------------------------------------------------------------------
+					// Mutators
+					//--------------------------------------------------------------------
+					const _type_& Get(void)
+					{
+						return m_variable;
+					}
+
+					const char* const GetString(void)
+					{
+						std::ostringstream buffer;
+						buffer << m_variable;
+						return buffer.str().c_str();
+					}
+
+					const _type_& Set(_type_& newValue)
+					{
+						_type_ oldValue = m_variable;
+						bool set = false;
+
+						if (m_pOnChangedCallback != NULL)
+						{
+							if (m_pCallback(this, newValue) == true)
+							{
+								// If we have an on changed callback, and it returns true, then set the new value
+								set = true;
+							}
+						}
+						else
+						{
+							// No callback so just set the value
+							set = true;
+						}
+
+						if (set == true)
+						{
+							if ((m_flags & eF_HAS_RANGE) == eF_HAS_RANGE)
+							{
+								if ((m_flags & eF_CLAMP_TO_RANGE) == eF_CLAMP_TO_RANGE)
+								{
+									// Either clamp the new value...
+									m_variable = min(max(newValue, m_minimum), m_maximum);
+								}
+								else
+								{
+									// ...or discard if out of range
+									if ((newValue >= m_minimum) && (newValue <= m_maximum))
+									{
+										m_variable = newValue;
+									}
+								}
+							}
+							else
+							{
+								m_variable = value;
+							}
+						}
+
+						return oldValue;
+					}
+
+				private:
+					//--------------------------------------------------------------------
+					// Flags
+					//--------------------------------------------------------------------
+					enum eFlags
+					{
+						eF_HAS_RANGE = BIT(0), // If set, a range is enforced
+						eF_CLAMP_TO_RANGE = BIT(0), // If set and a range is enforced, clamps new value to permitted range, otherwise out of range values are ignored
+					}; // End [enum eFlags]
+
+					OnChangeCallback m_pOnChangedCallback;
+					_type_& m_variable;
+					_type_ m_minimum;
+					_type_ m_maximum;
+					uint32 m_flags;
+			}; // End [template <class _type_> class CVariable]
+
+			bool RegisterVariable(int32& variable, const char* name, const char* description, CVariable<int32>::OnChangeCallback pOnChangeCallback);
+			bool RegisterVariable(float& variable, const char* name, const char* description, CVariable<float>::OnChangeCallback pOnChangeCallback);
+			bool RegisterVariable(std::ostrstream& variable, const char* name, const char* description, CVariable<std::ostrstream>::OnChangeCallback pOnChangeCallback);
+
+			/*
 			struct IVariable
 			{
 				enum eFlags
 				{
 					eF_CLAMP_TO_RANGE = 1 << 0, // If set, clamps new value to permitted range, otherwise out of range values are ignored
 				}; // End [enum eFlags]
-				IVariable(void)	{ printf("Registering console variable\n"); /* CConsole::Get()->Register(this); */ }
-				virtual ~IVariable(void) { printf("Unregistering console variable\n"); /* CConsole::Get()->Unregister(this); */ }
+				IVariable(void)	{ printf("Registering console variable\n"); // CConsole::Get()->Register(this); }
+				virtual ~IVariable(void) { printf("Unregistering console variable\n"); // CConsole::Get()->Unregister(this); }
 
 				virtual int32 GetI32Val(void) const = 0;
 				virtual int32 SetI32Val(int32 newValue) = 0;
@@ -302,6 +439,7 @@ namespace engine
 				std::string& m_variable;
 				uint32 m_flags;
 			}; // End [class CStringVariable]
+			*/
 
 	}; // End [class CConsole]
 
