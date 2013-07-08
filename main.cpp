@@ -44,11 +44,9 @@ int main(int argc, char* argv[])
 			 printf("y %08x\n", y);
 			 */
 
-			 int32 variable = 0;
-			 uint32 flags = engine::CConsole::IVariable::eF_CLAMP_TO_RANGE;
-			 engine::CConsole::IVariable::TOnChangeCallback pCallback;
-			 pCallback.m_pOnChangeI32 = NULL;
-			 engine::CConsole::CI32Variable cvar(variable, 123, 100, 200, flags, "variable", "test console variable", pCallback);
+		int32 x = 0;
+		engine::CConsole console;
+		console.RegisterVariable(x);
 	}
 
 	printf("All done.\n");
