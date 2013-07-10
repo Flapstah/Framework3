@@ -3,7 +3,10 @@
 
 //==============================================================================
 
+#include <map>
 #include <sstream>
+#include <boost/shared_ptr.hpp>
+#include "common/runtimestringhash.h"
 
 //==============================================================================
 
@@ -42,8 +45,8 @@ namespace engine
 					eF_RANGE_CLAMP = BIT(1), // If set, clamps new value to permitted range, otherwise out of range values are ignored
 				}; // End [enum eFlags]
 
-								IVariable(void) : m_flags(0) {}
-				virtual ~IVariable(void) = 0;
+								IVariable(void) : m_flags(0) { printf("IVariable()\n"); }
+				virtual ~IVariable(void) { printf("~IVariable()\n"); }
 
 				virtual int32 GetI32Val(void) const = 0;
 				virtual int32 SetI32Val(int32 newValue) = 0;
@@ -58,6 +61,8 @@ namespace engine
 				uint32 m_flags;
 			}; // End [struct IVariable]
 			
+			typedef boost::shared_ptr<IVariable> TIVariablePtr;
+
 			class CI32Variable : public IVariable
 			{
 				public:
@@ -71,9 +76,13 @@ namespace engine
 					, m_maxValue(0)
 #endif // defined(_DEBUG)
 				{
+					printf("CI32Variable()\n");
 				}
 
-				virtual ~CI32Variable(void) {}
+				virtual ~CI32Variable(void)
+			 	{
+					printf("~CI32Variable()\n");
+				}
 
 				// IVariable
 				virtual int32 GetI32Val(void) const { return m_variable; }
@@ -303,10 +312,22 @@ namespace engine
 				std::string& m_variable;
 			}; // End [class CStringVariable]
 
-			CI32Variable* RegisterVariable(int32& variable, CI32Variable::OnChangeCallback pOnChangeCallback = NULL);
-			CF32Variable* RegisterVariable(float& variable, CF32Variable::OnChangeCallback pOnChangeCallback = NULL);
-			CStringVariable* RegisterVariable(std::string& variable, CStringVariable::OnChangeCallback pOnChangeCallback = NULL);
+			TIVariablePtr RegisterVariable(const char* name, int32& variable, CI32Variable::OnChangeCallback pOnChangeCallback = NULL)
+			{
+				uint32 hash = CRunTimeStringHash::Calculate(name);
+				boost::shared_ptr<CI32Variable> pVariable(new CI32Variable(variable, pOnChangeCallback));
+				if (pVariable != NULL)
+				{
+					m_variables[hash] = pVariable;
+				}
+				return pVariable;
+			}
+			CF32Variable* RegisterVariable(const char* name, float& variable, CF32Variable::OnChangeCallback pOnChangeCallback = NULL);
+			CStringVariable* RegisterVariable(const char* name, std::string& variable, CStringVariable::OnChangeCallback pOnChangeCallback = NULL);
 
+		private:
+			std::map<uint32, TIVariablePtr> m_variables;
+			std::map<uint32, SVariableDetails*> m_variableDetails;
 	}; // End [class CConsole]
 
 } // End [namespace engine]

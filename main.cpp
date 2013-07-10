@@ -46,7 +46,7 @@ int main(int argc, char* argv[])
 
 		int32 x = 0;
 		engine::CConsole console;
-		console.RegisterVariable(x);
+		console.RegisterVariable("var", x);
 	}
 
 	printf("All done.\n");
