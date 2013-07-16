@@ -3,6 +3,7 @@ build/
 *.orig
 *.swp
 .vimrc
+.open_all_file_list
 make
 run
 tags
