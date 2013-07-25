@@ -43,6 +43,7 @@ set(OPENGL_SUPERBIBLE_50 0)
 
 if (MSVC)
 	if (SUPPORT_EXCEPTIONS)
+		set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc")
 		add_definitions(-D_HAS_EXCEPTIONS=1)
 	else()
 		add_definitions(-D_HAS_EXCEPTIONS=0)
@@ -146,6 +147,7 @@ set(PLATFORM_INDEPENDENT_SOURCES
 	#engine/independent/graphics/renderer.cpp
 	#engine/independent/input/keyboard.cpp
 	engine/independent/common/commandargs.cpp
+	engine/independent/common/console.cpp
 	engine/independent/time/time.cpp
 	engine/independent/time/timer.cpp
 	engine/independent/time/timevalue.cpp

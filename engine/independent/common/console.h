@@ -3,6 +3,7 @@
 
 //==============================================================================
 
+#include <limits>
 #include <map>
 #include <sstream>
 #include <boost/shared_ptr.hpp>
@@ -34,6 +35,9 @@ namespace engine
 				const char* m_description;
 			}; // End [struct SVariableDetails]
 
+			//========================================================================
+			// IVariable
+			//========================================================================
 			struct IVariable
 			{
 				//----------------------------------------------------------------------
@@ -41,8 +45,7 @@ namespace engine
 				//----------------------------------------------------------------------
 				enum eFlags
 				{
-					eF_ENFORCE_RANGE = BIT(0), // If set, this cvar has a range
-					eF_RANGE_CLAMP = BIT(1), // If set, clamps new value to permitted range, otherwise out of range values are ignored
+					eF_RANGE_CLAMP = BIT(0), // If set, clamps new value to permitted range, otherwise out of range values are ignored
 				}; // End [enum eFlags]
 
 								IVariable(void) : m_flags(0) { printf("IVariable()\n"); }
@@ -63,90 +66,26 @@ namespace engine
 			
 			typedef boost::shared_ptr<IVariable> TIVariablePtr;
 
+			//========================================================================
+			// CI32Variable
+			//========================================================================
 			class CI32Variable : public IVariable
 			{
 				public:
 				typedef void (*OnChangeCallback)(int32 newValue);
 
-				CI32Variable(int32& variable, OnChangeCallback pCallback = NULL)
-					: m_pCallback(pCallback)
-					, m_variable(variable)
-#if defined(_DEBUG)
-					, m_minValue(0)
-					, m_maxValue(0)
-#endif // defined(_DEBUG)
-				{
-					printf("CI32Variable()\n");
-				}
-
-				virtual ~CI32Variable(void)
-			 	{
-					printf("~CI32Variable()\n");
-				}
+				CI32Variable(int32& variable, int32 minValue, int32 maxValue, OnChangeCallback pCallback = NULL);
+				virtual ~CI32Variable(void);
 
 				// IVariable
-				virtual int32 GetI32Val(void) const { return m_variable; }
-
-				virtual int32 SetI32Val(int32 newValue)
-				{
-					int32 oldValue(m_variable);
-
-					if (m_flags & eF_ENFORCE_RANGE)
-					{
-						if (newValue < m_minValue)
-						{
-							if (m_flags & eF_RANGE_CLAMP)
-							{
-								m_variable = m_minValue;
-							}
-						}
-						else if (newValue > m_maxValue)
-						{
-							if (m_flags & eF_RANGE_CLAMP)
-							{
-								m_variable = m_maxValue;
-							}
-						}
-					}
-					else
-					{
-						m_variable = newValue;
-					}
-
-					return oldValue;
-				}
-
-				virtual float GetF32Val(void) const
-				{
-					return static_cast<float>(m_variable);
-				}
-
-				virtual float SetF32Val(float newValue)
-				{
-					return static_cast<float>(SetI32Val(static_cast<int32>(newValue)));
-				}
-
-				virtual const char* GetString(void) const
-				{
-					std::ostringstream buffer;
-					buffer << m_variable;
-					return buffer.str().c_str();
-				}
-
-				virtual const char* SetString(const char* newValue)
-				{
-					std::string oldValue(GetString());
-					SetI32Val(atoi(newValue));
-					return oldValue.c_str();
-				}
-
-				virtual uint32 GetFlags(void) const { return m_flags; }
-				virtual uint32 SetFlags(uint32 newFlags)
-			 	{
-				 	int32 oldflags = m_flags;
-					m_flags = newFlags;
-					return oldflags;
-			 	}
+				virtual int32 GetI32Val(void) const;
+				virtual int32 SetI32Val(int32 newValue);
+				virtual float GetF32Val(void) const;
+				virtual float SetF32Val(float newValue);
+				virtual const char* GetString(void) const;
+				virtual const char* SetString(const char* newValue);
+				virtual uint32 GetFlags(void) const;
+				virtual uint32 SetFlags(uint32 newFlags);
 				// ~IVariable
 
 				protected:
@@ -156,85 +95,26 @@ namespace engine
 				int32 m_maxValue;
 			}; // End [class CI32Variable]
 
+			//========================================================================
+			// CF32Variable
+			//========================================================================
 			class CF32Variable : public IVariable
 			{
 				public:
 				typedef void (*OnChangeCallback)(float newValue);
-				CF32Variable(float& variable, OnChangeCallback pCallback)
-					: m_pCallback(pCallback)
-					, m_variable(variable)
-#if defined(_DEBUG)
-					, m_minValue(minValue)
-					, m_maxValue(maxValue)
-#endif // defined(_DEBUG)
-				{
-				}
 
-				virtual ~CF32Variable(void) {}
+				CF32Variable(float& variable, int32 minValue, int32 maxValue, OnChangeCallback pCallback);
+				virtual ~CF32Variable(void);
 
 				// IVariable
-				virtual int32 GetI32Val(void) const
-				{
-					return static_cast<int32>(m_variable);
-				}
-
-				virtual int32 SetI32Val(int32 newValue)
-				{
-					return static_cast<int32>(SetF32Val(static_cast<float>(newValue)));
-				}
-
-				virtual float GetF32Val(void) const { return m_variable; }
-
-				virtual float SetF32Val(float newValue)
-				{
-					float oldValue(m_variable);
-
-					if (m_flags & eF_ENFORCE_RANGE)
-					{
-						if (newValue < m_minValue)
-						{
-							if (m_flags & eF_RANGE_CLAMP)
-							{
-								m_variable = m_minValue;
-							}
-						}
-						else if (newValue > m_maxValue)
-						{
-							if (m_flags & eF_RANGE_CLAMP)
-							{
-								m_variable = m_maxValue;
-							}
-						}
-					}
-					else
-					{
-						m_variable = newValue;
-					}
-
-					return oldValue;
-				}
-
-				virtual const char* GetString(void) const
-				{
-					std::ostringstream buffer;
-					buffer << m_variable;
-					return buffer.str().c_str();
-				}
-
-				virtual const char* SetString(const char* newValue)
-				{
-					std::string oldValue(GetString());
-					SetF32Val(atof(newValue));
-					return oldValue.c_str();
-				}
-
-				virtual uint32 GetFlags(void) const { return m_flags; }
-				virtual uint32 SetFlags(uint32 newFlags)
-			 	{
-				 	int32 oldflags = m_flags;
-					m_flags = newFlags;
-					return oldflags;
-			 	}
+				virtual int32 GetI32Val(void) const;
+				virtual int32 SetI32Val(int32 newValue);
+				virtual float GetF32Val(void) const;
+				virtual float SetF32Val(float newValue);
+				virtual const char* GetString(void) const;
+				virtual const char* SetString(const char* newValue);
+				virtual uint32 GetFlags(void) const;
+				virtual uint32 SetFlags(uint32 newFlags);
 				// ~IVariable
 
 				protected:
@@ -244,67 +124,26 @@ namespace engine
 				float m_maxValue;
 			}; // End [class CF32Variable]
 
+			//========================================================================
+			// CStringVariable
+			//========================================================================
 			class CStringVariable : public IVariable
 			{
 				public:
 				typedef void (*OnChangeCallback)(const char* newValue);
 
-				CStringVariable(std::string& variable, OnChangeCallback pCallback)
-					: m_pCallback(pCallback)
-					, m_variable(variable)
-				{
-				}
-
-				virtual ~CStringVariable(void) {};
+				CStringVariable(std::string& variable, OnChangeCallback pCallback);
+				virtual ~CStringVariable(void);
 
 				// IVariable
-				virtual int32 GetI32Val(void) const
-				{
-					return atoi(m_variable.c_str());
-				}
-
-				virtual int32 SetI32Val(int32 newValue)
-				{
-					int32 oldValue = atoi(m_variable.c_str());
-					std::ostringstream buffer;
-					buffer << newValue;
-					m_variable = buffer.str();
-					return oldValue;
-				}
-
-				virtual float GetF32Val(void) const
-				{
-					return atof(m_variable.c_str());
-				}
-
-				virtual float SetF32Val(float newValue)
-				{
-					float oldValue = atof(m_variable.c_str());
-					std::ostringstream buffer;
-					buffer << newValue;
-					m_variable = buffer.str();
-					return oldValue;
-				}
-
-				virtual const char* GetString(void) const
-				{
-					return m_variable.c_str();
-				}
-
-				virtual const char* SetString(const char* newValue)
-				{
-					std::string oldValue(m_variable);
-					m_variable = newValue;
-					return oldValue.c_str();
-				}
-
-				virtual uint32 GetFlags(void) const { return m_flags; }
-				virtual uint32 SetFlags(uint32 newFlags)
-			 	{
-				 	int32 oldflags = m_flags;
-					m_flags = newFlags;
-					return oldflags;
-			 	}
+				virtual int32 GetI32Val(void) const;
+				virtual int32 SetI32Val(int32 newValue);
+				virtual float GetF32Val(void) const;
+				virtual float SetF32Val(float newValue);
+				virtual const char* GetString(void) const;
+				virtual const char* SetString(const char* newValue);
+				virtual uint32 GetFlags(void) const;
+				virtual uint32 SetFlags(uint32 newFlags);
 				// ~IVariable
 
 				protected:
@@ -312,18 +151,9 @@ namespace engine
 				std::string& m_variable;
 			}; // End [class CStringVariable]
 
-			TIVariablePtr RegisterVariable(const char* name, int32& variable, CI32Variable::OnChangeCallback pOnChangeCallback = NULL)
-			{
-				uint32 hash = CRunTimeStringHash::Calculate(name);
-				boost::shared_ptr<CI32Variable> pVariable(new CI32Variable(variable, pOnChangeCallback));
-				if (pVariable != NULL)
-				{
-					m_variables[hash] = pVariable;
-				}
-				return pVariable;
-			}
-			CF32Variable* RegisterVariable(const char* name, float& variable, CF32Variable::OnChangeCallback pOnChangeCallback = NULL);
-			CStringVariable* RegisterVariable(const char* name, std::string& variable, CStringVariable::OnChangeCallback pOnChangeCallback = NULL);
+			TIVariablePtr RegisterVariable(uint32 nameHash, int32& variable, int32 minValue = std::numeric_limits<int32>::min(), int32 maxValue = std::numeric_limits<int32>::max(), CI32Variable::OnChangeCallback pOnChangeCallback = NULL, const char* name = NULL, const char* description = NULL);
+			TIVariablePtr RegisterVariable(uint32 nameHash, float& variable, int32 minValue = std::numeric_limits<float>::min(), int32 maxValue = std::numeric_limits<float>::max(), CF32Variable::OnChangeCallback pOnChangeCallback = NULL, const char* name = NULL, const char* description = NULL);
+			TIVariablePtr RegisterVariable(uint32 nameHash, std::string& variable, CStringVariable::OnChangeCallback pOnChangeCallback = NULL, const char* name = NULL, const char* description = NULL);
 
 		private:
 			std::map<uint32, TIVariablePtr> m_variables;
