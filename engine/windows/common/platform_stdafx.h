@@ -13,7 +13,17 @@
 
 #if defined(GetCurrentTime)
 #undef GetCurrentTime
-#endif
+#endif // defined(GetCurrentTime)
+
+#if defined(min)
+#undef min
+#endif // defined(min)
+
+#if defined(max)
+#undef max
+#endif // defined(min)
+
+//==============================================================================
 
 #define DEBUG_BREAK DebugBreak()
 
