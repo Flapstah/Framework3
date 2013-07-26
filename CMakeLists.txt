@@ -152,6 +152,7 @@ set(PLATFORM_INDEPENDENT_SOURCES
 	engine/independent/time/timer.cpp
 	engine/independent/time/timevalue.cpp
 	unit_tests/unittest.cpp
+	unit_tests/cvartest.cpp
 	unit_tests/timetest.cpp
 	unit_tests/typetest.cpp
 	)

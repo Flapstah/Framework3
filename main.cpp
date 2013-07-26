@@ -4,6 +4,7 @@
 
 #include "common/itime.h"
 #include "common/commandargs.h"
+#include "unit_tests/cvartest.h"
 #include "unit_tests/typetest.h"
 #include "unit_tests/timetest.h"
 #include "common/console.h"
@@ -37,6 +38,12 @@ int main(int argc, char* argv[])
 			 }
 			 */
 
+		{
+			test::CCVarTest test;
+			test.Start();
+			while (test.Update() == test::CUnitTest::eTS_RUNNING);
+			test.End();
+		}
 		/*
 			 uint32 x = engine::CompileTimeStringHash("a nice long string to hash");
 			 printf("x %08x\n", x);
@@ -44,6 +51,7 @@ int main(int argc, char* argv[])
 			 printf("y %08x\n", y);
 			 */
 
+		/*
 		engine::CConsole console;
 
 		int32 x = 0;
@@ -113,6 +121,7 @@ int main(int argc, char* argv[])
 			pIRVar->SetString("123.456");
 			printf("iface s: pIVar = %p, [%s] %d\n", pIRVar.get(), pIRVar->GetString(), v);
 		}
+		*/
 	}
 
 	printf("All done.\n");
