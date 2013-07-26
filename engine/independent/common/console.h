@@ -20,8 +20,8 @@ namespace engine
 	{
 		//--------------------------------------------------------------------------
 		public:
-			CConsole(void) {};
-			~CConsole(void) {};
+			CConsole(void);
+			~CConsole(void);
 
 			// TODO: storing the variable map
 			// Store the variable map as a map of name hash and pointer to variable
@@ -48,7 +48,24 @@ namespace engine
 					eF_RANGE_CLAMP = BIT(0), // If set, clamps new value to permitted range, otherwise out of range values are ignored
 				}; // End [enum eFlags]
 
-								IVariable(void) : m_flags(0) { printf("IVariable()\n"); }
+				//----------------------------------------------------------------------
+				// Type
+				//----------------------------------------------------------------------
+				enum eType
+				{
+					eT_FIRST,
+
+					eT_I32 = eT_FIRST,
+					eT_F32,
+					eT_STRING,
+
+					eT_MAX
+				}; // End [enum eType]
+
+				//----------------------------------------------------------------------
+				// Interface
+				//----------------------------------------------------------------------
+				IVariable(eType type) : m_flags(0), m_type(type) { printf("IVariable()\n"); }
 				virtual ~IVariable(void) { printf("~IVariable()\n"); }
 
 				virtual int32 GetI32Val(void) const = 0;
@@ -58,10 +75,14 @@ namespace engine
 				virtual const char* GetString(void) const = 0;
 				virtual const char* SetString(const char* newValue) = 0;
 
-				virtual uint32 GetFlags(void) const = 0;
-				virtual uint32 SetFlags(uint32 newFlags) = 0;
+				uint32 GetFlags(void) const;
+				uint32 SetFlags(uint32 newFlags);
 
+				uint32 GetType(void) const;
+
+				protected:
 				uint32 m_flags;
+				eType m_type;
 			}; // End [struct IVariable]
 			
 			typedef boost::shared_ptr<IVariable> TIVariablePtr;
@@ -71,6 +92,8 @@ namespace engine
 			//========================================================================
 			class CI32Variable : public IVariable
 			{
+				typedef IVariable PARENT;
+
 				public:
 				typedef void (*OnChangeCallback)(int32 newValue);
 
@@ -84,8 +107,6 @@ namespace engine
 				virtual float SetF32Val(float newValue);
 				virtual const char* GetString(void) const;
 				virtual const char* SetString(const char* newValue);
-				virtual uint32 GetFlags(void) const;
-				virtual uint32 SetFlags(uint32 newFlags);
 				// ~IVariable
 
 				protected:
@@ -100,6 +121,8 @@ namespace engine
 			//========================================================================
 			class CF32Variable : public IVariable
 			{
+				typedef IVariable PARENT;
+
 				public:
 				typedef void (*OnChangeCallback)(float newValue);
 
@@ -113,8 +136,6 @@ namespace engine
 				virtual float SetF32Val(float newValue);
 				virtual const char* GetString(void) const;
 				virtual const char* SetString(const char* newValue);
-				virtual uint32 GetFlags(void) const;
-				virtual uint32 SetFlags(uint32 newFlags);
 				// ~IVariable
 
 				protected:
@@ -129,6 +150,8 @@ namespace engine
 			//========================================================================
 			class CStringVariable : public IVariable
 			{
+				typedef IVariable PARENT;
+
 				public:
 				typedef void (*OnChangeCallback)(const char* newValue);
 
@@ -142,8 +165,6 @@ namespace engine
 				virtual float SetF32Val(float newValue);
 				virtual const char* GetString(void) const;
 				virtual const char* SetString(const char* newValue);
-				virtual uint32 GetFlags(void) const;
-				virtual uint32 SetFlags(uint32 newFlags);
 				// ~IVariable
 
 				protected:
@@ -154,10 +175,13 @@ namespace engine
 			TIVariablePtr RegisterVariable(uint32 nameHash, int32& variable, int32 minValue = std::numeric_limits<int32>::min(), int32 maxValue = std::numeric_limits<int32>::max(), CI32Variable::OnChangeCallback pOnChangeCallback = NULL, const char* name = NULL, const char* description = NULL);
 			TIVariablePtr RegisterVariable(uint32 nameHash, float& variable, int32 minValue = std::numeric_limits<float>::min(), int32 maxValue = std::numeric_limits<float>::max(), CF32Variable::OnChangeCallback pOnChangeCallback = NULL, const char* name = NULL, const char* description = NULL);
 			TIVariablePtr RegisterVariable(uint32 nameHash, std::string& variable, CStringVariable::OnChangeCallback pOnChangeCallback = NULL, const char* name = NULL, const char* description = NULL);
+			void UnregisterVariable(uint32 nameHash);
 
 		private:
-			std::map<uint32, TIVariablePtr> m_variables;
+			typedef std::map<uint32, TIVariablePtr> TVariableMap;
+			TVariableMap m_variables;
 			std::map<uint32, SVariableDetails*> m_variableDetails;
+			uint32 m_varCount[IVariable::eT_MAX];
 	}; // End [class CConsole]
 
 } // End [namespace engine]

@@ -6,10 +6,112 @@
 
 namespace engine
 {
+	CConsole::CConsole(void)
+	{
+		for (uint32 index = IVariable::eT_FIRST; index < IVariable::eT_MAX; ++index)
+		{
+			m_varCount[index] = 0;
+		}
+	}
+
+	//============================================================================
+
+	CConsole::~CConsole(void)
+	{
+		for (uint32 index = IVariable::eT_FIRST; index < IVariable::eT_MAX; ++index)
+		{
+			if (m_varCount[index] != 0)
+			{
+				printf("[CONSOLE]: still have %d vars of type %d registered/n", m_varCount[index], index);
+			}
+		}
+
+		for (TVariableMap::const_iterator it = m_variables.begin(), end = m_variables.end(); it != end; ++it)
+		{
+			printf("[CONSOLE]: still have variable %p registered\n", it->second.get());
+		}
+	}
+
+	//============================================================================
+
+	CConsole::TIVariablePtr CConsole::RegisterVariable(uint32 nameHash, int32& variable, int32 minValue, int32 maxValue, CI32Variable::OnChangeCallback pOnChangeCallback, const char* name, const char* description)
+	{
+		boost::shared_ptr<CI32Variable> pVariable(new CI32Variable(variable, minValue, maxValue, pOnChangeCallback));
+		if (pVariable != NULL)
+		{
+			m_variables[nameHash] = pVariable;
+			++m_varCount[IVariable::eT_I32];
+		}
+		return pVariable;
+	}
+
+	//============================================================================
+
+	CConsole::TIVariablePtr CConsole::RegisterVariable(uint32 nameHash, float& variable, int32 minValue, int32 maxValue, CF32Variable::OnChangeCallback pOnChangeCallback, const char* name, const char* description)
+	{
+		boost::shared_ptr<CF32Variable> pVariable(new CF32Variable(variable, minValue, maxValue, pOnChangeCallback));
+		if (pVariable != NULL)
+		{
+			m_variables[nameHash] = pVariable;
+			++m_varCount[IVariable::eT_F32];
+		}
+		return pVariable;
+	}
+
+	//============================================================================
+
+	CConsole::TIVariablePtr CConsole::RegisterVariable(uint32 nameHash, std::string& variable, CStringVariable::OnChangeCallback pOnChangeCallback, const char* name, const char* description)
+	{
+		boost::shared_ptr<CStringVariable> pVariable(new CStringVariable(variable, pOnChangeCallback));
+		if (pVariable != NULL)
+		{
+			m_variables[nameHash] = pVariable;
+			++m_varCount[IVariable::eT_STRING];
+		}
+		return pVariable;
+	}
+
+	//============================================================================
+
+	void CConsole::UnregisterVariable(uint32 nameHash)
+	{
+		TVariableMap::const_iterator it = m_variables.find(nameHash);
+		if (it != m_variables.end())
+		{
+			--m_varCount[it->second->GetType()];
+			m_variables.erase(nameHash);
+		}
+
+	}
+
+	//============================================================================
+
+	uint32 CConsole::IVariable::GetFlags(void) const
+	{
+		return m_flags;
+	}
+
+	//============================================================================
+
+	uint32 CConsole::IVariable::SetFlags(uint32 newFlags)
+	{
+		uint32 oldFlags = m_flags;
+		m_flags = newFlags;
+		return oldFlags;
+	}
+
+	//============================================================================
+
+	uint32 CConsole::IVariable::GetType(void) const
+	{
+		return m_type;
+	}
+
 	//============================================================================
 
 	CConsole::CI32Variable::CI32Variable(int32& variable, int32 minValue, int32 maxValue, CConsole::CI32Variable::OnChangeCallback pCallback)
-		: m_pCallback(pCallback)
+		: PARENT(eT_I32)
+		,	m_pCallback(pCallback)
 		, m_variable(variable)
 		, m_minValue(minValue)
 		, m_maxValue(maxValue)
@@ -89,24 +191,9 @@ namespace engine
 
 	//============================================================================
 
-	uint32 CConsole::CI32Variable::GetFlags(void) const
- 	{
-	 	return m_flags;
- 	}
-
-	//============================================================================
-
-	uint32 CConsole::CI32Variable::SetFlags(uint32 newFlags)
-	{
-		int32 oldflags = m_flags;
-		m_flags = newFlags;
-		return oldflags;
-	}
-
-	//============================================================================
-
 	CConsole::CF32Variable::CF32Variable(float& variable, int32 minValue, int32 maxValue, CConsole::CF32Variable::OnChangeCallback pCallback)
-		: m_pCallback(pCallback)
+		: PARENT(eT_F32)
+		, m_pCallback(pCallback)
 		, m_variable(variable)
 		, m_minValue(minValue)
 		, m_maxValue(maxValue)
@@ -186,24 +273,9 @@ namespace engine
 
 	//============================================================================
 
-	uint32 CConsole::CF32Variable::GetFlags(void) const
- 	{
-	 	return m_flags;
- 	}
-
-	//============================================================================
-
-	uint32 CConsole::CF32Variable::SetFlags(uint32 newFlags)
-	{
-		int32 oldflags = m_flags;
-		m_flags = newFlags;
-		return oldflags;
-	}
-
-	//============================================================================
-
 	CConsole::CStringVariable::CStringVariable(std::string& variable, CConsole::CStringVariable::OnChangeCallback pCallback)
-		: m_pCallback(pCallback)
+		: PARENT(eT_STRING)
+		, m_pCallback(pCallback)
 		, m_variable(variable)
 	{
 		printf("CStringVariable()\n");
@@ -266,58 +338,6 @@ namespace engine
 		std::string oldValue(m_variable);
 		m_variable = newValue;
 		return oldValue.c_str();
-	}
-
-	//============================================================================
-
-	uint32 CConsole::CStringVariable::GetFlags(void) const
- 	{
-	 	return m_flags;
- 	}
-
-	//============================================================================
-
-	uint32 CConsole::CStringVariable::SetFlags(uint32 newFlags)
-	{
-		int32 oldflags = m_flags;
-		m_flags = newFlags;
-		return oldflags;
-	}
-
-	//============================================================================
-
-	CConsole::TIVariablePtr CConsole::RegisterVariable(uint32 nameHash, int32& variable, int32 minValue, int32 maxValue, CI32Variable::OnChangeCallback pOnChangeCallback, const char* name, const char* description)
-	{
-		boost::shared_ptr<CI32Variable> pVariable(new CI32Variable(variable, minValue, maxValue, pOnChangeCallback));
-		if (pVariable != NULL)
-		{
-			m_variables[nameHash] = pVariable;
-		}
-		return pVariable;
-	}
-
-	//============================================================================
-
-	CConsole::TIVariablePtr CConsole::RegisterVariable(uint32 nameHash, float& variable, int32 minValue, int32 maxValue, CF32Variable::OnChangeCallback pOnChangeCallback, const char* name, const char* description)
-	{
-		boost::shared_ptr<CF32Variable> pVariable(new CF32Variable(variable, minValue, maxValue, pOnChangeCallback));
-		if (pVariable != NULL)
-		{
-			m_variables[nameHash] = pVariable;
-		}
-		return pVariable;
-	}
-
-	//============================================================================
-
-	CConsole::TIVariablePtr CConsole::RegisterVariable(uint32 nameHash, std::string& variable, CStringVariable::OnChangeCallback pOnChangeCallback, const char* name, const char* description)
-	{
-		boost::shared_ptr<CStringVariable> pVariable(new CStringVariable(variable, pOnChangeCallback));
-		if (pVariable != NULL)
-		{
-			m_variables[nameHash] = pVariable;
-		}
-		return pVariable;
 	}
 
 	//============================================================================
