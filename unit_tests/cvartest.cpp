@@ -15,7 +15,7 @@ namespace test
 	//============================================================================
 
 	CCVarTest::CCVarTest(void)
-		: CUnitTest("Time")
+		: CUnitTest("Console Variable")
 	{
 		Initialise();
 	}
@@ -31,7 +31,7 @@ namespace test
 
 	bool CCVarTest::Initialise(void)
 	{
-		AddStage("Console variable lifecycle", ConsoleVariableLifecycle);
+		AddStage("lifecycle", ConsoleVariableLifecycle, eTV_INFORMATION);
 /*		AddStage("Integer console variable operations", IntegerVariableOperations);
 		AddStage("Floating point console variable operations", FloatVariableOperations);
 		AddStage("String console variable operations", StringVariableOperations);
@@ -48,18 +48,18 @@ namespace test
 
 		if (pThis->m_testStatus == eTS_RUNNING)
 		{
-			switch (pThis->m_stage)
+			switch (pThis->GetStage())
 			{
 				case 1:
 					m_pCVar = m_console.RegisterVariable(engine::CRunTimeStringHash::Calculate("testIntegerVariable"), testIntegerVariable);
 					pThis->Log((m_pCVar != NULL) ? eTV_RESULT : eTV_ERROR, "Created console variable at address %p", m_pCVar.get());
-					++(pThis->m_stage);
+					pThis->NextStage();
 
 				case 2:
 					m_console.UnregisterVariable(engine::CRunTimeStringHash::Calculate("testIntegerVariable"));
 					pThis->Log(eTV_RESULT, "Released console variable at address %p", m_pCVar.get());
 					m_pCVar.reset();
-					++(pThis->m_stage);
+					pThis->NextStage();
 
 				default:
 					status |= eSS_COMPLETE;
@@ -79,7 +79,7 @@ namespace test
 
 		if (pThis->m_testStatus == eTS_RUNNING)
 		{
-			switch (pThis->m_stage)
+			switch (pThis->GetStage())
 			{
 				/*
 				case 1: // Minimum negative time
@@ -89,7 +89,7 @@ namespace test
 
 						pThis->Log(eTV_RESULT, "Minimum negative time value is %s%d days, %02u:%02u:%06.3fs", (testValue.GetTicks() < 0) ? "-" : "+",  days, hours, minutes, seconds);
 
-						++(pThis->m_stage);
+						pThis->NextStage();
 					}
 					break;
 
@@ -100,7 +100,7 @@ namespace test
 
 						pThis->Log(eTV_RESULT, "Maximum positive time value is %s%d days, %02u:%02u:%06.3fs", (testValue.GetTicks() < 0) ? "-" : "+",  days, hours, minutes, seconds);
 
-						++(pThis->m_stage);
+						pThis->NextStage();
 					}
 					break;
 					*/
@@ -123,7 +123,7 @@ namespace test
 
 		if (pThis->m_testStatus == eTS_RUNNING)
 		{
-			switch (pThis->m_stage)
+			switch (pThis->GetStage())
 			{
 				/*
 				case 1: // Minimum negative time
@@ -133,7 +133,7 @@ namespace test
 
 						pThis->Log(eTV_RESULT, "Minimum negative time value is %s%d days, %02u:%02u:%06.3fs", (testValue.GetTicks() < 0) ? "-" : "+",  days, hours, minutes, seconds);
 
-						++(pThis->m_stage);
+						pThis->NextStage();
 					}
 					break;
 
@@ -144,7 +144,7 @@ namespace test
 
 						pThis->Log(eTV_RESULT, "Maximum positive time value is %s%d days, %02u:%02u:%06.3fs", (testValue.GetTicks() < 0) ? "-" : "+",  days, hours, minutes, seconds);
 
-						++(pThis->m_stage);
+						pThis->NextStage();
 					}
 					break;
 					*/
@@ -167,7 +167,7 @@ namespace test
 
 		if (pThis->m_testStatus == eTS_RUNNING)
 		{
-			switch (pThis->m_stage)
+			switch (pThis->GetStage())
 			{
 				/*
 				case 1: // Minimum negative time
@@ -177,7 +177,7 @@ namespace test
 
 						pThis->Log(eTV_RESULT, "Minimum negative time value is %s%d days, %02u:%02u:%06.3fs", (testValue.GetTicks() < 0) ? "-" : "+",  days, hours, minutes, seconds);
 
-						++(pThis->m_stage);
+						pThis->NextStage();
 					}
 					break;
 
@@ -188,7 +188,7 @@ namespace test
 
 						pThis->Log(eTV_RESULT, "Maximum positive time value is %s%d days, %02u:%02u:%06.3fs", (testValue.GetTicks() < 0) ? "-" : "+",  days, hours, minutes, seconds);
 
-						++(pThis->m_stage);
+						pThis->NextStage();
 					}
 					break;
 					*/

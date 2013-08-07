@@ -14,7 +14,7 @@
 		bool success = (_test_); \
 		double param1 = static_cast<double>(_param1_); \
 		double result = static_cast<double>(_result_); \
-		pThis->Log((success == true) ? eTV_INFORMATION : eTV_WARNING, "[%d:%d]\t" _name_ "\n\tparameters: (%s [%g])\n\tresult: (%s [%g])\n\t[%s]", pThis->m_stage, pThis->m_subStage, #_param1_, param1, #_result_, result, ((success == true) ? "PASSED" : "FAILED")); \
+		pThis->Log((success == true) ? eTV_INFORMATION : eTV_WARNING, "[%d:%d]\t" _name_ "\n\tparameters: (%s [%g])\n\tresult: (%s [%g])\n\t[%s]", pThis->GetStage(), pThis->NextSubstage(), #_param1_, param1, #_result_, result, ((success == true) ? "PASSED" : "FAILED")); \
 	}
 
 #define TEST2_NAMED(_name_, _test_, _param1_, _param2_, _result_) \
@@ -23,7 +23,7 @@
 		double param1 = static_cast<double>(_param1_); \
 		double param2 = static_cast<double>(_param2_); \
 		double result = static_cast<double>(_result_); \
-		pThis->Log((success == true) ? eTV_INFORMATION : eTV_WARNING, "[%d:%d]\t" _name_ "\n\tparameters: (%s [%g], %s [%g])\n\tresult: (%s [%g])\n\t[%s]", pThis->m_stage, pThis->m_subStage,  #_param1_, param1, #_param2_, param2, #_result_, result, ((success == true) ? "PASSED" : "FAILED")); \
+		pThis->Log((success == true) ? eTV_INFORMATION : eTV_WARNING, "[%d:%d]\t" _name_ "\n\tparameters: (%s [%g], %s [%g])\n\tresult: (%s [%g])\n\t[%s]", pThis->GetStage(), pThis->NextSubstage(), #_param1_, param1, #_param2_, param2, #_result_, result, ((success == true) ? "PASSED" : "FAILED")); \
 	}
 
 namespace test
@@ -47,8 +47,8 @@ namespace test
 
 	bool CTimeTest::Initialise(void)
 	{
-		AddStage("CTimeValue Limits", TimeValueLimits);
-		AddStage("CTimeValue Operations", TimeValueOperations);
+		AddStage("CTimeValue Limits", TimeValueLimits, eTV_INFORMATION);
+		AddStage("CTimeValue Operations", TimeValueOperations, eTV_INFORMATION);
 
 		return CUnitTest::Initialise();
 	}
@@ -85,7 +85,7 @@ namespace test
 			int32 days, hours, minutes;
 			float seconds;
 
-			switch (pThis->m_stage)
+			switch (pThis->GetStage())
 			{
 				case 1: // Minimum negative time
 					{
@@ -93,8 +93,7 @@ namespace test
 						testValue.GetTime(days, hours, minutes, seconds);
 
 						pThis->Log(eTV_RESULT, "Minimum negative time value is %s%d days, %02u:%02u:%06.3fs", (testValue.GetTicks() < 0) ? "-" : "+",  days, hours, minutes, seconds);
-
-						++(pThis->m_stage);
+						pThis->NextStage();
 					}
 					break;
 
@@ -104,8 +103,7 @@ namespace test
 						testValue.GetTime(days, hours, minutes, seconds);
 
 						pThis->Log(eTV_RESULT, "Maximum positive time value is %s%d days, %02u:%02u:%06.3fs", (testValue.GetTicks() < 0) ? "-" : "+",  days, hours, minutes, seconds);
-
-						++(pThis->m_stage);
+						pThis->NextStage();
 					}
 					break;
 
@@ -127,25 +125,23 @@ namespace test
 
 		if (pThis->m_testStatus == eTS_RUNNING)
 		{
-			switch (pThis->m_stage)
+			switch (pThis->GetStage())
 			{
 				case 1: // Constructors
 					{
 						// Test default constructor
 						CTimeValue zeroTest;
 						TEST1_NAMED("CTimeValue zeroTest", IS_FP_EQUIVALENT(zeroTest.GetSeconds(), 0.0), 0, zeroTest.GetSeconds());
-						++(pThis->m_subStage);
 
 						// Test value constructor
 						CTimeValue oneTest(1.0);
 						TEST1_NAMED("CTimeValue oneTest", IS_FP_EQUIVALENT(oneTest.GetSeconds(), 1.0), 1.0, oneTest.GetSeconds());
-						++(pThis->m_subStage);
 
 						// Test copy constructor
 						CTimeValue copyTest(oneTest);
 						TEST1_NAMED("CTimeValue copyTest(oneTest)", IS_FP_EQUIVALENT(copyTest.GetSeconds(), oneTest.GetSeconds()), oneTest.GetSeconds(), copyTest.GetSeconds());
 
-						++(pThis->m_stage);
+						pThis->NextStage();
 					}
 					break;
 
@@ -157,23 +153,20 @@ namespace test
 						// operator=(const CTimeValue& other)
 						testValue = oneTest;
 						TEST1_NAMED("testValue.GetSeconds() == 1.0", (testValue.GetSeconds() >= 1.0) && (testValue.GetSeconds() <= 1.0), 1.0, testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						// operator=(double seconds)
 						testValue = 2.0;
 						TEST1_NAMED("testValue.GetSeconds() == 2.0", (testValue.GetSeconds() >= 2.0) && (testValue.GetSeconds() <= 2.0), 2.0, testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						// operator=(double seconds)
 						testValue = -2.0;
 						TEST1_NAMED("testValue.GetSeconds() == -2.0", (testValue.GetSeconds() >= -2.0) && (testValue.GetSeconds() <= -2.0), -2.0, testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						// operator=(int64 ticks)
 						testValue = int64(0);
 						TEST1_NAMED("testValue.GetTicks() == 0", testValue.GetTicks() == 0, 0, testValue.GetTicks());
 
-						++(pThis->m_stage);
+						pThis->NextStage();
 					}
 					break;
 
@@ -186,26 +179,23 @@ namespace test
 						CTimeValue oldValue(testValue);
 						testValue += twoTest;
 						TEST2_NAMED("(testValue += twoTest) == 3.0", (testValue.GetSeconds() >= 3.0) && (testValue.GetSeconds() <= 3.0), oldValue.GetSeconds(), twoTest.GetSeconds(), testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						// operator+=(double seconds)
 						oldValue = testValue;
 						testValue += 2.0;
 						TEST2_NAMED("(testValue += 2.0) == 5.0", (testValue.GetSeconds() >= 5.0) && (testValue.GetSeconds() <= 5.0), oldValue.GetSeconds(), 2.0, testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						// operator+=(double seconds)
 						oldValue = testValue;
 						testValue += -3.0;
 						TEST2_NAMED("(testValue += -3.0) == 2.0", (testValue.GetSeconds() >= 2.0) && (testValue.GetSeconds() <= 2.0), oldValue.GetSeconds(), -3.0, testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						// operator+=(int64 ticks)
 						oldValue = testValue;
 						testValue += twoTest.GetTicks();
 						TEST2_NAMED("(testValue += twoTest.GetTicks()) == 4.0s", (testValue.GetSeconds() >= 4.0) && (testValue.GetSeconds() <= 4.0), oldValue.GetTicks(), twoTest.GetTicks(), testValue.GetTicks());
 
-						++(pThis->m_stage);
+						pThis->NextStage();
 					}
 					break;
 
@@ -218,26 +208,23 @@ namespace test
 						CTimeValue oldValue(testValue);
 						testValue -= twoTest;
 						TEST2_NAMED("(testValue -= twoTest) == -1.0", (testValue.GetSeconds() >= -1.0) && (testValue.GetSeconds() <= -1.0), oldValue.GetSeconds(), twoTest.GetSeconds(), testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						// operator-=(double seconds)
 						oldValue = testValue;
 						testValue -= 2.0;
 						TEST2_NAMED("(testValue -= 2.0) == -3.0", (testValue.GetSeconds() >= -3.0) && (testValue.GetSeconds() <= -3.0), oldValue.GetSeconds(), -2.0, testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						// operator-=(double seconds)
 						oldValue = testValue;
 						testValue -= -5.0;
 						TEST2_NAMED("(testValue -= -5.0) == 2.0", (testValue.GetSeconds() >= 2.0) && (testValue.GetSeconds() <= 2.0), oldValue.GetSeconds(), -5.0, testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						// operator-=(int64 ticks)
 						oldValue = testValue;
 						testValue -= twoTest.GetTicks();
 						TEST2_NAMED("(testValue -= twoTest.GetTicks()) == 0.0s", (testValue.GetSeconds() >= 0.0) && (testValue.GetSeconds() <= 0.0), oldValue.GetTicks(), 0.0, testValue.GetTicks());
 
-						++(pThis->m_stage);
+						pThis->NextStage();
 					}
 					break;
 
@@ -250,34 +237,28 @@ namespace test
 						// operator+(const CTimeValue& other)
 						CTimeValue testValue = oneTest+twoTest;
 						TEST2_NAMED("(testValue = oneTest+twoTest) == 3.0", (testValue.GetSeconds() >= 3.0) && (testValue.GetSeconds() <= 3.0), oneTest.GetSeconds(), twoTest.GetSeconds(), testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						// operator+(const CTimeValue& other)
 						testValue = oneTest+minusTwoTest;
 						TEST2_NAMED("(testValue = oneTest+minusTwoTest) == -1.0", (testValue.GetSeconds() >= -1.0) && (testValue.GetSeconds() <= -1.0), oneTest.GetSeconds(), minusTwoTest.GetSeconds(), testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						// operator+(double seconds)
 						testValue = twoTest+3.0;
 						TEST2_NAMED("(testValue = twoTest+3.0) == 5.0", (testValue.GetSeconds() >= 5.0) && (testValue.GetSeconds() <= 5.0), twoTest.GetSeconds(), 3.0, testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						// operator+(double seconds)
 						testValue = twoTest+(-3.0);
 						TEST2_NAMED("(testValue = twoTest+(-3.0)) == -1.0", (testValue.GetSeconds() >= -1.0) && (testValue.GetSeconds() <= -1.0), twoTest.GetSeconds(), -3.0, testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						// operator+(int64 ticks)
 						testValue = oneTest.GetTicks()+twoTest.GetTicks();
 						TEST2_NAMED("(testValue = oneTest.GetTicks()+TwoTest.GetTicks()) == 3.0s", (testValue.GetSeconds() >= 3.0) && (testValue.GetSeconds() <= 3.0), oneTest.GetTicks(), twoTest.GetTicks(), testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						// operator+(int64 ticks)
 						testValue = oneTest.GetTicks()+minusTwoTest.GetTicks();
 						TEST2_NAMED("(testValue = oneTest.GetTicks()+minusTwoTest.GetTicks()) == -1.0s", (testValue.GetSeconds() >= -1.0) && (testValue.GetSeconds() <= -1.0), oneTest.GetTicks(), minusTwoTest.GetTicks(), testValue.GetSeconds());
-						++(pThis->m_subStage);
 
-						++(pThis->m_stage);
+						pThis->NextStage();
 					}
 					break;
 
@@ -290,33 +271,28 @@ namespace test
 						// operator-(const CTimeValue& other)
 						CTimeValue testValue = oneTest-twoTest;
 						TEST2_NAMED("(testValue = oneTest-twoTest) == -1.0", (testValue.GetSeconds() >= -1.0) && (testValue.GetSeconds() <= -1.0), oneTest.GetSeconds(), twoTest.GetSeconds(), testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						// operator-(const CTimeValue& other)
 						testValue = oneTest-minusTwoTest;
 						TEST2_NAMED("(testValue = oneTest-minusTwoTest) == 3.0", (testValue.GetSeconds() >= 3.0) && (testValue.GetSeconds() <= 3.0), oneTest.GetSeconds(), minusTwoTest.GetSeconds(), testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						// operator-(double seconds)
 						testValue = twoTest-1.0;
 						TEST2_NAMED("(testValue = twoTest-1.0) == 1.0", (testValue.GetSeconds() >= 1.0) && (testValue.GetSeconds() <= 1.0), twoTest.GetSeconds(), 1.0, testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						// operator-(double seconds)
 						testValue = twoTest-(-3.0);
 						TEST2_NAMED("(testValue = twoTest-(-3.0)) == 5.0", (testValue.GetSeconds() >= 5.0) && (testValue.GetSeconds() <= 5.0), twoTest.GetSeconds(), 5.0, testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						// operator-(int64 ticks)
 						testValue = oneTest.GetTicks()-twoTest.GetTicks();
 						TEST2_NAMED("(oneTest.GetTicks()-twoTest.GetTicks()) == -1.0s", (testValue.GetSeconds() >= -1.0) && (testValue.GetSeconds() <= -1.0), oneTest.GetTicks(), twoTest.GetTicks(), testValue.GetTicks());
-						++(pThis->m_subStage);
 
 						// operator-(int64 ticks)
 						testValue = oneTest.GetTicks()-minusTwoTest.GetTicks();
 						TEST2_NAMED("(oneTest.GetTicks()-minusTwoTest.GetTicks()) == 3.0s", (testValue.GetSeconds() >= 3.0) && (testValue.GetSeconds() <= 3.0), oneTest.GetTicks(), minusTwoTest.GetTicks(), testValue.GetTicks());
 
-						++(pThis->m_stage);
+						pThis->NextStage();
 					}
 					break;
 
@@ -326,14 +302,12 @@ namespace test
 						CTimeValue testValue(1.0);
 
 						TEST1_NAMED("testValue == oneTest", testValue == oneTest, oneTest.GetSeconds(), testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						TEST1_NAMED("testValue == 1.0", testValue == 1.0, 1.0, testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						TEST1_NAMED("testValue == oneTest.GetTicks()", testValue == oneTest.GetTicks(), oneTest.GetTicks(), testValue.GetTicks());
 
-						++(pThis->m_stage);
+						pThis->NextStage();
 					}
 					break;
 
@@ -343,14 +317,12 @@ namespace test
 						CTimeValue testValue(2.0);
 
 						TEST1_NAMED("testValue != oneTest", testValue != oneTest, oneTest.GetSeconds(), testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						TEST1_NAMED("testValue != 1.0", testValue != 1.0, 1.0, testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						TEST1_NAMED("testValue != oneTest.GetTicks()", testValue != oneTest.GetTicks(), oneTest.GetTicks(), testValue.GetTicks());
 
-						++(pThis->m_stage);
+						pThis->NextStage();
 					}
 					break;
 
@@ -360,40 +332,32 @@ namespace test
 						CTimeValue testValue(2.0);
 
 						TEST1_NAMED("!(testValue < oneTest)", !(testValue < oneTest), oneTest.GetSeconds(), testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						testValue = 1.0;
 						TEST1_NAMED("!(testValue < oneTest)", !(testValue < oneTest), oneTest.GetSeconds(), testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						testValue = 0.5;
 						TEST1_NAMED("testValue < oneTest", testValue < oneTest, oneTest.GetSeconds(), testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						testValue = 2.0;
 						TEST1_NAMED("!(testValue < 1.0)", !(testValue < 1.0), 1.0, testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						testValue = 1.0;
 						TEST1_NAMED("!(testValue < 1.0)", !(testValue < 1.0), 1.0, testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						testValue = 0.5;
 						TEST1_NAMED("testValue < 1.0", testValue < 1.0, 1.0, testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						testValue = 2.0;
 						TEST1_NAMED("!(testValue < oneTest.GetTicks())", !(testValue < oneTest.GetTicks()), oneTest.GetTicks(), testValue.GetTicks());
-						++(pThis->m_subStage);
 
 						testValue = 1.0;
 						TEST1_NAMED("!(testValue < oneTest.GetTicks())", !(testValue < oneTest.GetTicks()), oneTest.GetTicks(), testValue.GetTicks());
-						++(pThis->m_subStage);
 
 						testValue = 0.5;
 						TEST1_NAMED("testValue < oneTest.GetTicks()", testValue < oneTest.GetTicks(), oneTest.GetTicks(), testValue.GetTicks());
 
-						++(pThis->m_stage);
+						pThis->NextStage();
 					}
 					break;
 
@@ -403,40 +367,32 @@ namespace test
 						CTimeValue testValue(2.0);
 
 						TEST1_NAMED("!(testValue <= oneTest)", !(testValue <= oneTest), oneTest.GetSeconds(), testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						testValue = 1.0;
 						TEST1_NAMED("testValue <= oneTest", testValue <= oneTest, oneTest.GetSeconds(), testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						testValue = 0.5;
 						TEST1_NAMED("testValue <= oneTest", testValue <= oneTest, oneTest.GetSeconds(), testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						testValue = 2.0;
 						TEST1_NAMED("!(testValue <= 1.0)", !(testValue <= 1.0), 1.0, testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						testValue = 1.0;
 						TEST1_NAMED("testValue <= 1.0", testValue <= 1.0, 1.0, testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						testValue = 0.5;
 						TEST1_NAMED("testValue <= 1.0", testValue <= 1.0, 1.0, testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						testValue = 2.0;
 						TEST1_NAMED("!(testValue <= oneTest.GetTicks())", !(testValue <= oneTest.GetTicks()), oneTest.GetTicks(), testValue.GetTicks());
-						++(pThis->m_subStage);
 
 						testValue = 1.0;
 						TEST1_NAMED("testValue <= oneTest.GetTicks()", testValue <= oneTest.GetTicks(), oneTest.GetTicks(), testValue.GetTicks());
-						++(pThis->m_subStage);
 
 						testValue = 0.5;
 						TEST1_NAMED("testValue <= oneTest.GetTicks()", testValue <= oneTest.GetTicks(), oneTest.GetTicks(), testValue.GetTicks());
 
-						++(pThis->m_stage);
+						pThis->NextStage();
 					}
 					break;
 
@@ -446,40 +402,32 @@ namespace test
 						CTimeValue testValue(2.0);
 
 						TEST1_NAMED("testValue > oneTest", testValue > oneTest, oneTest.GetSeconds(), testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						testValue = 1.0;
 						TEST1_NAMED("!(testValue > oneTest)", !(testValue > oneTest), oneTest.GetSeconds(), testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						testValue = 0.5;
 						TEST1_NAMED("!(testValue > oneTest)", !(testValue > oneTest), oneTest.GetSeconds(), testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						testValue = 2.0;
 						TEST1_NAMED("testValue > 1.0", testValue > 1.0, 1.0, testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						testValue = 1.0;
 						TEST1_NAMED("!(testValue > 1.0)", !(testValue > 1.0), 1.0, testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						testValue = 0.5;
 						TEST1_NAMED("!(testValue > 1.0)", !(testValue > 1.0), 1.0, testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						testValue = 2.0;
 						TEST1_NAMED("testValue > oneTest.GetTicks()", testValue > oneTest.GetTicks(), oneTest.GetTicks(), testValue.GetTicks());
-						++(pThis->m_subStage);
 
 						testValue = 1.0;
 						TEST1_NAMED("!(testValue > oneTest.GetTicks())", !(testValue > oneTest.GetTicks()), oneTest.GetTicks(), testValue.GetTicks());
-						++(pThis->m_subStage);
 
 						testValue = 0.5;
 						TEST1_NAMED("!(testValue > oneTest.GetTicks())", !(testValue > oneTest.GetTicks()), oneTest.GetTicks(), testValue.GetTicks());
 
-						++(pThis->m_stage);
+						pThis->NextStage();
 					}
 					break;
 
@@ -489,40 +437,32 @@ namespace test
 						CTimeValue testValue(2.0);
 
 						TEST1_NAMED("testValue >= oneTest", testValue >= oneTest, oneTest.GetSeconds(), testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						testValue = 1.0;
 						TEST1_NAMED("testValue >= oneTest", testValue >= oneTest, oneTest.GetSeconds(), testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						testValue = 0.5;
 						TEST1_NAMED("!(testValue >= oneTest)", !(testValue >= oneTest), oneTest.GetSeconds(), testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						testValue = 2.0;
 						TEST1_NAMED("testValue >= 1.0", testValue >= 1.0, 1.0, testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						testValue = 1.0;
 						TEST1_NAMED("testValue >= 1.0", testValue >= 1.0, 1.0, testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						testValue = 0.5;
 						TEST1_NAMED("!(testValue >= 1.0)", !(testValue >= 1.0), 1.0, testValue.GetSeconds());
-						++(pThis->m_subStage);
 
 						testValue = 2.0;
 						TEST1_NAMED("testValue >= oneTest.GetTicks()", testValue >= oneTest.GetTicks(), oneTest.GetTicks(), testValue.GetTicks());
-						++(pThis->m_subStage);
 
 						testValue = 1.0;
 						TEST1_NAMED("testValue >= oneTest.GetTicks()", testValue >= oneTest.GetTicks(), oneTest.GetTicks(), testValue.GetTicks());
-						++(pThis->m_subStage);
 
 						testValue = 0.5;
 						TEST1_NAMED("!(testValue >= oneTest.GetTicks())", !(testValue >= oneTest.GetTicks()), oneTest.GetTicks(), testValue.GetTicks());
 
-						++(pThis->m_stage);
+						pThis->NextStage();
 					}
 					break;
 

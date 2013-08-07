@@ -76,8 +76,15 @@ namespace test
 										
 			//========================================================================
 
+		protected:
+										uint32			GetStage(void)			{ return m_stage+1;																}
+										uint32			NextStage(void)			{ return ++m_stage;																}
+										uint32			GetSubstage(void)		{ return m_subStage+1;														}
+										uint32			NextSubstage(void)	{ return ++m_subStage;														}
 		private:
 							const	char*				TimeStamp(char* const buffer, uint32 size);
+										void				ResetStage(void)		{ m_stageWarnings = m_stageErrors = m_stage = 0;	}
+										void				ResetSubstage(void)	{ m_subStage = 0;																	}
 
 			//========================================================================
 
@@ -100,11 +107,11 @@ namespace test
 			uint32										m_stageErrors;
 			uint32										m_totalWarnings;
 			uint32										m_totalErrors;
+			uint32										m_stage;
+			uint32										m_subStage;
 
 		protected:
 			ITime*										m_pTime;
-			uint32										m_stage;
-			uint32										m_subStage;
 			eTestStatus								m_testStatus;
 			eStageStatus							m_stageStatus;
 			eTestVerbosity						m_verbosity;

@@ -14,9 +14,9 @@ namespace test
 		, m_stageErrors(0)
 		, m_totalWarnings(0)
 		, m_totalErrors(0)
+		, m_stage(0)
+		, m_subStage(0)
 		,	m_pTime(GetITime())
-		, m_stage(1)
-		, m_subStage(1)
 		,	m_testStatus(eTS_UNINITIALISED)
 		,	m_stageStatus(eSS_SUCCESS)
 		,	m_verbosity(eTV_INFORMATION)
@@ -52,6 +52,9 @@ namespace test
 
 	bool CUnitTest::Initialise(void)
 	{
+		ResetStage();
+		ResetSubstage();
+
 		m_testStatus = eTS_INITIALISED;
 		m_testIterator = m_tests.begin();
 
@@ -78,7 +81,7 @@ namespace test
 			if (m_testIterator != m_tests.end())
 			{
 				STest& test = *m_testIterator;
-				if (m_stage == 1)
+				if (GetStage() == 1)
 				{
 					m_verbosity = test.m_verbosity;
 					TimeStamp(timeBuffer, sizeof(timeBuffer));
@@ -86,7 +89,7 @@ namespace test
 				}
 
 				uint32 status = test.m_function(this);
-				m_subStage = 1;
+				ResetSubstage();
 
 				if (status & eSS_COMPLETE)
 				{
@@ -106,10 +109,7 @@ namespace test
 					m_totalWarnings += m_stageWarnings;
 					m_totalErrors += m_stageErrors;
 
-					m_stageWarnings = 0;
-					m_stageErrors = 0;
-
-					m_stage = 1;
+					ResetStage();
 
 					++m_testIterator;
 				}

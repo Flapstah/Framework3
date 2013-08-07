@@ -22,21 +22,19 @@ int main(int argc, char* argv[])
 	{
 
 		//	DumpArgs(argc, argv);
-		/*
-			 {
-			 test::CTypeTest test;
-			 test.Start();
-			 while (test.Update() == test::CUnitTest::eTS_RUNNING);
-			 test.End();
-			 }
+		{
+			test::CTypeTest test;
+			test.Start();
+			while (test.Update() == test::CUnitTest::eTS_RUNNING);
+			test.End();
+		}
 
-			 {
-			 test::CTimeTest test;
-			 test.Start();
-			 while (test.Update() == test::CUnitTest::eTS_RUNNING);
-			 test.End();
-			 }
-			 */
+		{
+			test::CTimeTest test;
+			test.Start();
+			while (test.Update() == test::CUnitTest::eTS_RUNNING);
+			test.End();
+		}
 
 		{
 			test::CCVarTest test;
