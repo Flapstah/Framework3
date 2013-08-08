@@ -12,6 +12,29 @@ using namespace std;
 using namespace engine::time;
 
 //==============================================================================
+// Helper macros (for usage case, see timetest.cpp)
+//==============================================================================
+
+// Single parameter named test
+#define TEST1_NAMED(_name_, _test_, _param1_, _result_) \
+	{ \
+		bool success = (_test_); \
+		double param1 = static_cast<double>(_param1_); \
+		double result = static_cast<double>(_result_); \
+		pThis->Log((success == true) ? eTV_INFORMATION : eTV_WARNING, "[%d:%d]\ttest:\t\t" _name_ "\n\tparameters:\t%s is [%g]\n\tresult:\t\t%s is [%g]\n\t[%s]", pThis->GetStage(), pThis->NextSubstage(), #_param1_, param1, #_result_, result, ((success == true) ? "PASSED" : "FAILED")); \
+	}
+
+// Double parameter named test
+#define TEST2_NAMED(_name_, _test_, _param1_, _param2_, _result_) \
+	{ \
+		bool success = (_test_); \
+		double param1 = static_cast<double>(_param1_); \
+		double param2 = static_cast<double>(_param2_); \
+		double result = static_cast<double>(_result_); \
+		pThis->Log((success == true) ? eTV_INFORMATION : eTV_WARNING, "[%d:%d]\ttest:\t\t" _name_ "\n\tparameters:\t%s is [%g], %s is [%g]\n\tresult:\t\t%s is [%g]\n\t[%s]", pThis->GetStage(), pThis->NextSubstage(), #_param1_, param1, #_param2_, param2, #_result_, result, ((success == true) ? "PASSED" : "FAILED")); \
+	}
+
+//==============================================================================
 
 namespace test
 {
@@ -77,14 +100,28 @@ namespace test
 			//========================================================================
 
 		protected:
-										uint32			GetStage(void)			{ return m_stage+1;																}
-										uint32			NextStage(void)			{ return ++m_stage;																}
-										uint32			GetSubstage(void)		{ return m_subStage+1;														}
-										uint32			NextSubstage(void)	{ return ++m_subStage;														}
+										uint32			GetStage(void);
+										uint32			NextStage(void);
+										uint32			GetSubstage(void);
+										uint32			NextSubstage(void);
+
+										bool				IsEqual(double param1, double param2, double epsilon = 0.0);
+
+			//========================================================================
+
 		private:
 							const	char*				TimeStamp(char* const buffer, uint32 size);
-										void				ResetStage(void)		{ m_stageWarnings = m_stageErrors = m_stage = 0;	}
-										void				ResetSubstage(void)	{ m_subStage = 0;																	}
+										void				ResetStage(void);
+										void				ResetSubstage(void);
+
+
+			//========================================================================
+
+		protected:
+			ITime*										m_pTime;
+			eTestStatus								m_testStatus;
+			eStageStatus							m_stageStatus;
+			eTestVerbosity						m_verbosity;
 
 			//========================================================================
 
@@ -107,14 +144,9 @@ namespace test
 			uint32										m_stageErrors;
 			uint32										m_totalWarnings;
 			uint32										m_totalErrors;
+			uint32										m_totalTests;
 			uint32										m_stage;
 			uint32										m_subStage;
-
-		protected:
-			ITime*										m_pTime;
-			eTestStatus								m_testStatus;
-			eStageStatus							m_stageStatus;
-			eTestVerbosity						m_verbosity;
 	}; // End [class CUnitTest]
 
 	//============================================================================

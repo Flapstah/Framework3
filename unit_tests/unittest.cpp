@@ -9,17 +9,18 @@ namespace test
 	//============================================================================
 
 	CUnitTest::CUnitTest(const char* name)
-		:	m_name(name)
+		:	m_pTime(GetITime())
+		,	m_testStatus(eTS_UNINITIALISED)
+		,	m_stageStatus(eSS_SUCCESS)
+		,	m_verbosity(eTV_INFORMATION)
+		,	m_name(name)
 		, m_stageWarnings(0)
 		, m_stageErrors(0)
 		, m_totalWarnings(0)
 		, m_totalErrors(0)
+		, m_totalTests(0)
 		, m_stage(0)
 		, m_subStage(0)
-		,	m_pTime(GetITime())
-		,	m_testStatus(eTS_UNINITIALISED)
-		,	m_stageStatus(eSS_SUCCESS)
-		,	m_verbosity(eTV_INFORMATION)
 	{
 	}
 
@@ -45,7 +46,7 @@ namespace test
 			colour = ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_RED));
 		}
 
-		Log(eTV_RESULT, "%s[%s] [%s] completed in %s%d days, %02u:%02u:%06.3fs, with %d warnings and %d errors\n", colour, timeBuffer, m_name, (elapsed.GetTicks() < 0) ? "-" : "",  days, hours, minutes, seconds, m_totalWarnings, m_totalErrors);
+		Log(eTV_RESULT, "%s[%s] [%s] %d tests completed in %s%d days, %02u:%02u:%06.3fs, with %d warnings and %d errors\n", colour, timeBuffer, m_name, m_totalTests, (elapsed.GetTicks() < 0) ? "-" : "",  days, hours, minutes, seconds, m_totalWarnings, m_totalErrors);
 	}
 
 	//============================================================================
@@ -93,22 +94,14 @@ namespace test
 
 				if (status & eSS_COMPLETE)
 				{
-					const char* colour = ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_GREEN));
-					if (m_stageWarnings != 0)
-					{
-						colour = ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_YELLOW));
-					}
-					if (m_stageErrors != 0)
-					{
-						colour = ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_RED));
-					}
+					const char* warningColour = (m_stageWarnings != 0) ? ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_YELLOW)) : ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_GREEN));
+					const char* errorColour = (m_stageErrors != 0) ? ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_RED)) : ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_GREEN));
 
 					TimeStamp(timeBuffer, sizeof(timeBuffer));
-					Log(eTV_RESULT, "%s[%s] [%s:%s] complete; %d warnings, %d errors\n", colour, timeBuffer, m_name, test.m_name.c_str(), m_stageWarnings, m_stageErrors);
+					Log(eTV_RESULT, "[%s] [%s:%s] complete; %s%d warnings" ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_GREEN)) ", %s%d errors\n", timeBuffer, m_name, test.m_name.c_str(), warningColour, m_stageWarnings, errorColour, m_stageErrors);
 
 					m_totalWarnings += m_stageWarnings;
 					m_totalErrors += m_stageErrors;
-
 					ResetStage();
 
 					++m_testIterator;
@@ -187,6 +180,41 @@ namespace test
 
 	//============================================================================
 
+	uint32 CUnitTest::GetStage(void)
+	{
+		return m_stage+1;
+	}
+
+	//============================================================================
+
+	uint32 CUnitTest::NextStage(void)
+	{
+		m_totalTests += (GetSubstage() == 1) ? 1 : 0; return ++m_stage;
+	}
+
+	//============================================================================
+
+	uint32 CUnitTest::GetSubstage(void)
+	{
+		return m_subStage+1;
+	}
+
+	//============================================================================
+
+	uint32 CUnitTest::NextSubstage(void)
+	{
+		++m_totalTests; return ++m_subStage;
+	}
+
+	//============================================================================
+
+	bool CUnitTest::IsEqual(double param1, double param2, double epsilon /* = 0.0 */)
+	{
+		return ((param1 >= (param2-epsilon)) && (param1 <= (param2+epsilon)));
+	}
+
+	//============================================================================
+
 	const char* CUnitTest::TimeStamp(char* const buffer, uint32 size)
 	{
 		char local_buffer[64];
@@ -200,6 +228,20 @@ namespace test
 		buffer[size-1] = 0;
 
 		return buffer;
+	}
+
+	//============================================================================
+
+	void CUnitTest::ResetStage(void)
+	{
+		m_stageWarnings = m_stageErrors = m_stage = 0;
+	}
+
+	//============================================================================
+
+	void CUnitTest::ResetSubstage(void)
+	{
+		m_subStage = 0;
 	}
 
 	//============================================================================
