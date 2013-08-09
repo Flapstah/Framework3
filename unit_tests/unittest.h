@@ -35,6 +35,16 @@ using namespace engine::time;
 	}
 
 //==============================================================================
+// Helper macros for ANSI colours
+//==============================================================================
+
+#define COLOUR_SUCCESS ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_GREEN))
+#define COLOUR_WARNING ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_YELLOW))
+#define COLOUR_ERROR ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_RED))
+#define COLOUR_INFO ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_DEFAULT_COLOUR))
+#define COLOUR_RESET ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_DEFAULT_COLOUR))
+
+//==============================================================================
 
 namespace test
 {

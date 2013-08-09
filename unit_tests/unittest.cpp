@@ -36,14 +36,14 @@ namespace test
 		float seconds;
 		elapsed.GetTime(days, hours, minutes, seconds);
 
-		const char* colour = ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_GREEN));
+		const char* colour = COLOUR_SUCCESS;
 		if (m_totalWarnings != 0)
 		{
-			colour = ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_YELLOW));
+			colour = COLOUR_WARNING;
 		}
 		if (m_totalErrors != 0)
 		{
-			colour = ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_RED));
+			colour = COLOUR_ERROR;
 		}
 
 		Log(eTV_RESULT, "%s[%s] [%s] %d tests completed in %s%d days, %02u:%02u:%06.3fs, with %d warnings and %d errors\n", colour, timeBuffer, m_name, m_totalTests, (elapsed.GetTicks() < 0) ? "-" : "",  days, hours, minutes, seconds, m_totalWarnings, m_totalErrors);
@@ -94,11 +94,11 @@ namespace test
 
 				if (status & eSS_COMPLETE)
 				{
-					const char* warningColour = (m_stageWarnings != 0) ? ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_YELLOW)) : ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_GREEN));
-					const char* errorColour = (m_stageErrors != 0) ? ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_RED)) : ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_GREEN));
+					const char* warningColour = (m_stageWarnings != 0) ? COLOUR_WARNING : COLOUR_SUCCESS;
+					const char* errorColour = (m_stageErrors != 0) ? COLOUR_ERROR : COLOUR_SUCCESS;
 
 					TimeStamp(timeBuffer, sizeof(timeBuffer));
-					Log(eTV_RESULT, "[%s] [%s:%s] complete; %s%d warnings" ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_GREEN)) ", %s%d errors\n", timeBuffer, m_name, test.m_name.c_str(), warningColour, m_stageWarnings, errorColour, m_stageErrors);
+					Log(eTV_RESULT, "[%s] [%s:%s] complete; %s%d warnings" COLOUR_RESET ", %s%d errors\n", timeBuffer, m_name, test.m_name.c_str(), warningColour, m_stageWarnings, errorColour, m_stageErrors);
 
 					m_totalWarnings += m_stageWarnings;
 					m_totalErrors += m_stageErrors;
@@ -152,22 +152,25 @@ namespace test
 			switch (targetLevel)
 			{
 				case eTV_RESULT:
+					printf(COLOUR_SUCCESS);
+					break;
+
 				case eTV_INFORMATION:
-					printf(ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_GREEN)));
+					printf(COLOUR_INFO);
 					break;
 
 				case eTV_WARNING:
 					++m_stageWarnings;
-					printf(ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_YELLOW)) "[WARNING] ");
+					printf(COLOUR_WARNING "[WARNING] ");
 					break;
 
 				case eTV_ERROR:
 					++m_stageErrors;
-					printf(ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_RED)) "[ERROR] ");
+					printf(COLOUR_ERROR "[ERROR] ");
 					break;
 
 				default:
-					printf(ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_CYAN)) "[UNKNOWN] ");
+					printf(ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_DEFAULT_COLOUR)) "[UNKNOWN] ");
 					break;
 			}
 
