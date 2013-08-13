@@ -21,6 +21,7 @@ namespace test
 		, m_totalTests(0)
 		, m_stage(0)
 		, m_subStage(0)
+		, m_supressNewline(false)
 	{
 	}
 
@@ -36,17 +37,10 @@ namespace test
 		float seconds;
 		elapsed.GetTime(days, hours, minutes, seconds);
 
-		const char* colour = COLOUR_SUCCESS;
-		if (m_totalWarnings != 0)
-		{
-			colour = COLOUR_WARNING;
-		}
-		if (m_totalErrors != 0)
-		{
-			colour = COLOUR_ERROR;
-		}
+		const char* warningColour = (m_stageWarnings != 0) ? COLOUR_WARNING : COLOUR_SUCCESS;
+		const char* errorColour = (m_stageErrors != 0) ? COLOUR_ERROR : COLOUR_SUCCESS;
 
-		Log(eTV_RESULT, "%s[%s] [%s] %d tests completed in %s%d days, %02u:%02u:%06.3fs, with %d warnings and %d errors\n", colour, timeBuffer, m_name, m_totalTests, (elapsed.GetTicks() < 0) ? "-" : "",  days, hours, minutes, seconds, m_totalWarnings, m_totalErrors);
+		Log(eTV_RESULT, COLOUR_PROGRESS "[%s] " COLOUR_TEST_INFO "[%s] " COLOUR_RESET "%d tests completed in %s%d days, %02u:%02u:%06.3fs; %s%d warnings " COLOUR_RESET ", %s%d errors\n", timeBuffer, m_name, m_totalTests, (elapsed.GetTicks() < 0) ? "-" : "",  days, hours, minutes, seconds, warningColour, m_totalWarnings, errorColour, m_totalErrors);
 	}
 
 	//============================================================================
@@ -86,7 +80,7 @@ namespace test
 				{
 					m_verbosity = test.m_verbosity;
 					TimeStamp(timeBuffer, sizeof(timeBuffer));
-					Log(eTV_RESULT, "[%s] [%s:%s] started", timeBuffer, m_name, test.m_name.c_str());
+					Log(eTV_RESULT, COLOUR_PROGRESS "[%s] " COLOUR_TEST_INFO "[%s:%s] " COLOUR_RESET "started", timeBuffer, m_name, test.m_name.c_str());
 				}
 
 				uint32 status = test.m_function(this);
@@ -98,7 +92,7 @@ namespace test
 					const char* errorColour = (m_stageErrors != 0) ? COLOUR_ERROR : COLOUR_SUCCESS;
 
 					TimeStamp(timeBuffer, sizeof(timeBuffer));
-					Log(eTV_RESULT, "[%s] [%s:%s] complete; %s%d warnings" COLOUR_RESET ", %s%d errors\n", timeBuffer, m_name, test.m_name.c_str(), warningColour, m_stageWarnings, errorColour, m_stageErrors);
+					Log(eTV_RESULT, COLOUR_PROGRESS "[%s] " COLOUR_TEST_INFO "[%s:%s] " COLOUR_RESET "complete; %s%d warnings" COLOUR_RESET ", %s%d errors\n", timeBuffer, m_name, test.m_name.c_str(), warningColour, m_stageWarnings, errorColour, m_stageErrors);
 
 					m_totalWarnings += m_stageWarnings;
 					m_totalErrors += m_stageErrors;
@@ -175,7 +169,11 @@ namespace test
 			}
 
 			vprintf(format, args);
-			printf(ANSI_1SEQUENCE(ANSI_RESET_ALL) "\n");
+			printf(ANSI_1SEQUENCE(ANSI_RESET_ALL));
+			if (m_supressNewline == false)
+			{
+				printf("\n");
+			}
 		}
 
 		va_end(args);
@@ -214,6 +212,15 @@ namespace test
 	bool CUnitTest::IsEqual(double param1, double param2, double epsilon /* = 0.0 */)
 	{
 		return ((param1 >= (param2-epsilon)) && (param1 <= (param2+epsilon)));
+	}
+
+	//============================================================================
+
+	bool CUnitTest::SupressNewline(bool supress)
+	{
+		bool oldValue = m_supressNewline;
+		m_supressNewline = supress;
+		return oldValue;
 	}
 
 	//============================================================================

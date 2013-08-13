@@ -23,31 +23,11 @@ namespace test
 
 	bool CTimeTest::Initialise(void)
 	{
-		AddStage("CTimeValue Limits", TimeValueLimits, eTV_INFORMATION);
-		AddStage("CTimeValue Operations", TimeValueOperations, eTV_INFORMATION);
+		AddStage("CTimeValue Limits", TimeValueLimits, eTV_RESULT);
+		AddStage("CTimeValue Operations", TimeValueOperations, eTV_RESULT);
 
 		return CUnitTest::Initialise();
 	}
-
-	//============================================================================
-
-	/*
-		 case 1: // Test getting interface pointer
-		 {
-		 ITime* pTime = GetITime();
-		 if (pTime == pThis->m_pTime)
-		 {
-		 pThis->Log(eTV_INFORMATION, "Time interface obtained correctly (behaving as a singleton)");
-		 }
-		 else
-		 {
-		 pThis->Log(eTV_ERROR, "Time interface different! (Not behaving as a singleton)");
-		 }
-
-		 ++pThis->m_stage;
-		 }
-		 break;
-		 */
 
 	//============================================================================
 

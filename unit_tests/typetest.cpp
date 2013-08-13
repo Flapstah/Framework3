@@ -25,7 +25,7 @@ namespace test
 
 	bool CTypeTest::Initialise(void)
 	{
-		AddStage("Sizes", SizeTest, eTV_INFORMATION);
+		AddStage("Sizes", SizeTest, eTV_RESULT);
 
 		return CUnitTest::Initialise();
 	}
