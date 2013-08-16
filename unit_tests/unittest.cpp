@@ -40,7 +40,7 @@ namespace test
 		const char* warningColour = (m_stageWarnings != 0) ? COLOUR_WARNING : COLOUR_SUCCESS;
 		const char* errorColour = (m_stageErrors != 0) ? COLOUR_ERROR : COLOUR_SUCCESS;
 
-		Log(eTV_RESULT, COLOUR_PROGRESS "[%s] " COLOUR_TEST_INFO "[%s] " COLOUR_RESET "%d tests completed in %s%d days, %02u:%02u:%06.3fs; %s%d warnings " COLOUR_RESET ", %s%d errors\n", timeBuffer, m_name, m_totalTests, (elapsed.GetTicks() < 0) ? "-" : "",  days, hours, minutes, seconds, warningColour, m_totalWarnings, errorColour, m_totalErrors);
+		Log(eTV_RESULT, COLOUR_PROGRESS "[%s] " COLOUR_TEST_INFO "[%s] " COLOUR_RESET "%d tests completed in %s%d days, %02u:%02u:%06.3fs; %s%d warnings" COLOUR_RESET ", %s%d errors\n", timeBuffer, m_name, m_totalTests, (elapsed.GetTicks() < 0) ? "-" : "",  days, hours, minutes, seconds, warningColour, m_totalWarnings, errorColour, m_totalErrors);
 	}
 
 	//============================================================================

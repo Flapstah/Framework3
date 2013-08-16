@@ -36,7 +36,6 @@ namespace test
 			static	uint32						StringVariableOperations(CUnitTest* pParent);
 
 		private:
-			static	engine::CConsole	m_console;
 			static	engine::CConsole::TIVariablePtr m_pCVar;
 	}; // End [struct class CCVarTest : public CUnitTest]
 

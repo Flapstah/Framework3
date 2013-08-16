@@ -34,7 +34,7 @@ namespace engine
 
 	//============================================================================
 
-	CConsole::TIVariablePtr CConsole::RegisterVariable(uint32 nameHash, int32& variable, int32 minValue, int32 maxValue, CI32Variable::OnChangeCallback pOnChangeCallback, const char* name, const char* description)
+	CConsole::TIVariablePtr CConsole::RegisterVariable(uint32 nameHash, int32& variable, CI32Variable::OnChangeCallback pOnChangeCallback /* = NULL */, const char* name /* = NULL */, const char* description /* = NULL */, int32 minValue /* = std::numeric_limits<int32>::min() */, int32 maxValue /* = std::numeric_limits<int32>::max() */)
 	{
 		boost::shared_ptr<CI32Variable> pVariable(new CI32Variable(variable, minValue, maxValue, pOnChangeCallback));
 		if (pVariable != NULL)
@@ -47,7 +47,7 @@ namespace engine
 
 	//============================================================================
 
-	CConsole::TIVariablePtr CConsole::RegisterVariable(uint32 nameHash, float& variable, int32 minValue, int32 maxValue, CF32Variable::OnChangeCallback pOnChangeCallback, const char* name, const char* description)
+	CConsole::TIVariablePtr CConsole::RegisterVariable(uint32 nameHash, float& variable, CF32Variable::OnChangeCallback pOnChangeCallback /* = NULL */, const char* name /* = NULL */, const char* description /* = NULL */, float minValue /* = std::numeric_limits<float>::min */, float maxValue /* = std::numeric_limits<float>::max() */)
 	{
 		boost::shared_ptr<CF32Variable> pVariable(new CF32Variable(variable, minValue, maxValue, pOnChangeCallback));
 		if (pVariable != NULL)
@@ -60,7 +60,7 @@ namespace engine
 
 	//============================================================================
 
-	CConsole::TIVariablePtr CConsole::RegisterVariable(uint32 nameHash, std::string& variable, CStringVariable::OnChangeCallback pOnChangeCallback, const char* name, const char* description)
+	CConsole::TIVariablePtr CConsole::RegisterVariable(uint32 nameHash, std::string& variable, CStringVariable::OnChangeCallback pOnChangeCallback /* = NULL */, const char* name /* = NULL */, const char* description /* = NULL */, int32 dummyMinValue /* = 0 */, int32 dummyMaxValue /* = 0 */)
 	{
 		boost::shared_ptr<CStringVariable> pVariable(new CStringVariable(variable, pOnChangeCallback));
 		if (pVariable != NULL)
@@ -160,6 +160,7 @@ namespace engine
 	//============================================================================
 
 	float CConsole::CI32Variable::GetF32Val(void) const
+
 	{
 		return static_cast<float>(m_variable);
 	}

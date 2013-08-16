@@ -9,7 +9,6 @@ namespace test
 
 	//============================================================================
 
-	engine::CConsole CCVarTest::m_console;
 	engine::CConsole::TIVariablePtr CCVarTest::m_pCVar;
 
 	//============================================================================
@@ -31,7 +30,7 @@ namespace test
 
 	bool CCVarTest::Initialise(void)
 	{
-		AddStage("lifecycle", ConsoleVariableLifecycle, eTV_INFORMATION);
+		AddStage("Lifecycle", ConsoleVariableLifecycle, eTV_INFORMATION);
 /*		AddStage("Integer console variable operations", IntegerVariableOperations);
 		AddStage("Floating point console variable operations", FloatVariableOperations);
 		AddStage("String console variable operations", StringVariableOperations);
@@ -51,12 +50,12 @@ namespace test
 			switch (pThis->GetStage())
 			{
 				case 1:
-					m_pCVar = m_console.RegisterVariable(engine::CRunTimeStringHash::Calculate("testIntegerVariable"), testIntegerVariable);
+					m_pCVar = engine::CConsole::Get().RegisterVariable(engine::CRunTimeStringHash::Calculate("testIntegerVariable"), testIntegerVariable);
 					pThis->Log((m_pCVar != NULL) ? eTV_RESULT : eTV_ERROR, "Created console variable at address %p", m_pCVar.get());
 					pThis->NextStage();
 
 				case 2:
-					m_console.UnregisterVariable(engine::CRunTimeStringHash::Calculate("testIntegerVariable"));
+					engine::CConsole::Get().UnregisterVariable(engine::CRunTimeStringHash::Calculate("testIntegerVariable"));
 					pThis->Log(eTV_RESULT, "Released console variable at address %p", m_pCVar.get());
 					m_pCVar.reset();
 					pThis->NextStage();
