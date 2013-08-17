@@ -36,12 +36,22 @@ namespace engine
 
 	CConsole::TIVariablePtr CConsole::RegisterVariable(uint32 nameHash, int32& variable, CI32Variable::OnChangeCallback pOnChangeCallback /* = NULL */, const char* name /* = NULL */, const char* description /* = NULL */, int32 minValue /* = std::numeric_limits<int32>::min() */, int32 maxValue /* = std::numeric_limits<int32>::max() */)
 	{
-		boost::shared_ptr<CI32Variable> pVariable(new CI32Variable(variable, minValue, maxValue, pOnChangeCallback));
-		if (pVariable != NULL)
+		boost::shared_ptr<CI32Variable> pVariable;
+
+		if (FindVariable(nameHash) == NULL)
 		{
-			m_variables[nameHash] = pVariable;
-			++m_varCount[IVariable::eT_I32];
+			pVariable = boost::make_shared<CI32Variable>(CI32Variable(variable, minValue, maxValue, pOnChangeCallback));
+			if (pVariable != NULL)
+			{
+				m_variables[nameHash] = pVariable;
+				++m_varCount[IVariable::eT_I32];
+			}
 		}
+		else
+		{
+			printf("[CONSOLE]: Trying to register an int32 variable named [%s] (hash [%d]), with description [%s], but it already exists!\n", name, nameHash, description);
+		}
+
 		return pVariable;
 	}
 
@@ -49,12 +59,22 @@ namespace engine
 
 	CConsole::TIVariablePtr CConsole::RegisterVariable(uint32 nameHash, float& variable, CF32Variable::OnChangeCallback pOnChangeCallback /* = NULL */, const char* name /* = NULL */, const char* description /* = NULL */, float minValue /* = std::numeric_limits<float>::min */, float maxValue /* = std::numeric_limits<float>::max() */)
 	{
-		boost::shared_ptr<CF32Variable> pVariable(new CF32Variable(variable, minValue, maxValue, pOnChangeCallback));
-		if (pVariable != NULL)
+		boost::shared_ptr<CF32Variable> pVariable;
+
+		if (FindVariable(nameHash) == NULL)
 		{
-			m_variables[nameHash] = pVariable;
-			++m_varCount[IVariable::eT_F32];
+			pVariable = boost::make_shared<CF32Variable>(CF32Variable(variable, minValue, maxValue, pOnChangeCallback));
+			if (pVariable != NULL)
+			{
+				m_variables[nameHash] = pVariable;
+				++m_varCount[IVariable::eT_F32];
+			}
 		}
+		else
+		{
+			printf("[CONSOLE]: Trying to register a float variable named [%s] (hash [%d]), with description [%s], but it already exists!\n", name, nameHash, description);
+		}
+
 		return pVariable;
 	}
 
@@ -62,12 +82,25 @@ namespace engine
 
 	CConsole::TIVariablePtr CConsole::RegisterVariable(uint32 nameHash, std::string& variable, CStringVariable::OnChangeCallback pOnChangeCallback /* = NULL */, const char* name /* = NULL */, const char* description /* = NULL */, int32 dummyMinValue /* = 0 */, int32 dummyMaxValue /* = 0 */)
 	{
-		boost::shared_ptr<CStringVariable> pVariable(new CStringVariable(variable, pOnChangeCallback));
-		if (pVariable != NULL)
+		IGNORE_PARAMETER(dummyMinValue);
+		IGNORE_PARAMETER(dummyMaxValue);
+
+		boost::shared_ptr<CStringVariable> pVariable;
+
+		if (FindVariable(nameHash) == NULL)
 		{
-			m_variables[nameHash] = pVariable;
-			++m_varCount[IVariable::eT_STRING];
+			pVariable = boost::make_shared<CStringVariable>(CStringVariable(variable, pOnChangeCallback));
+			if (pVariable != NULL)
+			{
+				m_variables[nameHash] = pVariable;
+				++m_varCount[IVariable::eT_STRING];
+			}
 		}
+		else
+		{
+			printf("[CONSOLE]: Trying to register an string variable named [%s] (hash [%d]), with description [%s], but it already exists!\n", name, nameHash, description);
+		}
+
 		return pVariable;
 	}
 
@@ -82,6 +115,28 @@ namespace engine
 			m_variables.erase(nameHash);
 		}
 
+	}
+
+	//============================================================================
+
+	CConsole::TIVariablePtr CConsole::FindVariable(uint32 nameHash)
+	{
+		TVariableMap::iterator it = m_variables.find(nameHash);
+		TIVariablePtr pVar;
+
+		if (it != m_variables.end())
+		{
+			pVar = it->second;
+		}
+
+		return pVar;
+	}
+
+	//============================================================================
+
+	CConsole::TIVariablePtr CConsole::FindVariable(const char* name)
+	{
+		return FindVariable(engine::CRunTimeStringHash::Calculate(name));
 	}
 
 	//============================================================================

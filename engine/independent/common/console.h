@@ -7,6 +7,7 @@
 #include <map>
 #include <sstream>
 #include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 #include "common/runtimestringhash.h"
 
 //==============================================================================
@@ -190,6 +191,9 @@ namespace engine
 			TIVariablePtr RegisterVariable(uint32 nameHash, float& variable, CF32Variable::OnChangeCallback pOnChangeCallback = NULL, const char* name = NULL, const char* description = NULL, float minValue = std::numeric_limits<float>::min(), float maxValue = std::numeric_limits<float>::max());
 			TIVariablePtr RegisterVariable(uint32 nameHash, std::string& variable, CStringVariable::OnChangeCallback pOnChangeCallback = NULL, const char* name = NULL, const char* description = NULL, int32 dummyMinValue = 0, int32 dummyMaxValue = 0);
 			void UnregisterVariable(uint32 nameHash);
+
+			TIVariablePtr FindVariable(uint32 nameHash);
+			TIVariablePtr FindVariable(const char* name);
 
 		private:
 			typedef std::map<uint32, TIVariablePtr> TVariableMap;
