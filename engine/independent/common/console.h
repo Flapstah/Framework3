@@ -13,16 +13,18 @@
 //==============================================================================
 
 #define REGISTER_VARIABLE(_variable_, _on_change_callback_, _description_, _min_, _max_) \
-	engine::CConsole::Get().RegisterVariable(engine::CRunTimeStringHash::Calculate(#_variable_), _variable_, _on_change_callback_, #_variable_, _description_, _min_, _max_)
+	engine::CConsole::Get().RegisterVariable(engine::CompileTimeStringHash(#_variable_), _variable_, _on_change_callback_, #_variable_, _description_, _min_, _max_)
 
 #define REGISTER_HIDDEN_VARIABLE(_variable_, _on_change_callback_, _min_, _max_) \
-	engine::CConsole::Get().RegisterVariable(engine::CRunTimeStringHash::Calculate(#_variable_), _variable_, _on_change_callback_, NULL, NULL, _min_, _max_)
+	engine::CConsole::Get().RegisterVariable(engine::CompileTimeStringHash(#_variable_), _variable_, _on_change_callback_, NULL, NULL, _min_, _max_)
 
 #if defined(_DEBUG)
 #define REGISTER_DEBUG_VARIABLE(_variable_, _on_change_callback_, _description_, _min_, _max_) REGISTER_VARIABLE(_variable_, _on_change_callback_, _description_, _min_, _max_)
 #else
 #define REGISTER_DEBUG_VARIABLE(_variable_, _on_change_callback_, _description_, _min_, _max_) REGISTER_HIDDEN_VARIABLE(_variable_, _on_change_callback_, _min_, _max_)
 #endif // defined(_DEBUG)
+
+#define UNREGISTER_VARIABLE(_variable_) engine::CConsole::Get().UnregisterVariable(engine::CompileTimeStringHash(#_variable_))
 
 //==============================================================================
 
@@ -191,6 +193,7 @@ namespace engine
 			TIVariablePtr RegisterVariable(uint32 nameHash, float& variable, CF32Variable::OnChangeCallback pOnChangeCallback = NULL, const char* name = NULL, const char* description = NULL, float minValue = std::numeric_limits<float>::min(), float maxValue = std::numeric_limits<float>::max());
 			TIVariablePtr RegisterVariable(uint32 nameHash, std::string& variable, CStringVariable::OnChangeCallback pOnChangeCallback = NULL, const char* name = NULL, const char* description = NULL, int32 dummyMinValue = 0, int32 dummyMaxValue = 0);
 			void UnregisterVariable(uint32 nameHash);
+			void UnregisterVariable(const char* name);
 
 			TIVariablePtr FindVariable(uint32 nameHash);
 			TIVariablePtr FindVariable(const char* name);

@@ -31,6 +31,7 @@ namespace test
 
 		protected:
 			static	uint32						ConsoleVariableLifecycle(CUnitTest* pParent);
+			static	uint32						GenericVariableOperations(CUnitTest* pParent);
 			static	uint32						IntegerVariableOperations(CUnitTest* pParent);
 			static	uint32						FloatVariableOperations(CUnitTest* pParent);
 			static	uint32						StringVariableOperations(CUnitTest* pParent);
