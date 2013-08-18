@@ -46,6 +46,11 @@ namespace engine
 				m_variables[nameHash] = pVariable;
 				++m_varCount[IVariable::eT_I32];
 			}
+
+			if (name != NULL)
+			{
+				AddDescription(nameHash, name, description);
+			}
 		}
 		else
 		{
@@ -68,6 +73,11 @@ namespace engine
 			{
 				m_variables[nameHash] = pVariable;
 				++m_varCount[IVariable::eT_F32];
+			}
+
+			if (name != NULL)
+			{
+				AddDescription(nameHash, name, description);
 			}
 		}
 		else
@@ -95,6 +105,11 @@ namespace engine
 				m_variables[nameHash] = pVariable;
 				++m_varCount[IVariable::eT_STRING];
 			}
+
+			if (name != NULL)
+			{
+				AddDescription(nameHash, name, description);
+			}
 		}
 		else
 		{
@@ -108,13 +123,14 @@ namespace engine
 
 	void CConsole::UnregisterVariable(uint32 nameHash)
 	{
-		TVariableMap::const_iterator it = m_variables.find(nameHash);
-		if (it != m_variables.end())
-		{
-			--m_varCount[it->second->GetType()];
-			m_variables.erase(nameHash);
-		}
+		TIVariablePtr pVariable = FindVariable(nameHash);
 
+		if (pVariable != NULL)
+		{
+			--m_varCount[pVariable->GetType()];
+			m_variables.erase(nameHash);
+			m_variableDetails.erase(nameHash);
+		}
 	}
 
 	//============================================================================
@@ -137,6 +153,41 @@ namespace engine
 	CConsole::TIVariablePtr CConsole::FindVariable(const char* name)
 	{
 		return FindVariable(engine::CRunTimeStringHash::Calculate(name));
+	}
+
+	//============================================================================
+
+	const CConsole::SVariableDetails* CConsole::FindDetails(uint32 nameHash)
+	{
+		SVariableDetails* pDetails = NULL;
+		TVariableDetailsMap::iterator it = m_variableDetails.find(nameHash);
+
+		if (it != m_variableDetails.end())
+		{
+			pDetails = it->second;
+		}
+		
+		return pDetails;
+	}
+
+	//============================================================================
+
+	const CConsole::SVariableDetails* CConsole::FindDetails(const char* name)
+	{
+		return FindDetails(engine::CRunTimeStringHash::Calculate(name));
+	}
+
+	//============================================================================
+
+	void CConsole::AddDescription(uint32 nameHash, const char* name, const char* description)
+	{
+		SVariableDetails* pDetails = new SVariableDetails();
+		if (pDetails != NULL)
+		{
+			pDetails->m_name = name;
+			pDetails->m_description = description;
+			m_variableDetails[nameHash] = pDetails;
+		}
 	}
 
 	//============================================================================

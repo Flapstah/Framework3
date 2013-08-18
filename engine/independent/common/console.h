@@ -46,8 +46,8 @@ namespace engine
 			// linked with the variable in the first place.
 			struct SVariableDetails
 			{
-				const char* m_name;
-				const char* m_description;
+				std::string m_name;
+				std::string m_description;
 			}; // End [struct SVariableDetails]
 
 			//========================================================================
@@ -100,8 +100,6 @@ namespace engine
 				eType m_type;
 			}; // End [struct IVariable]
 			
-			typedef boost::shared_ptr<IVariable> TIVariablePtr;
-
 			//========================================================================
 			// CI32Variable
 			//========================================================================
@@ -187,6 +185,8 @@ namespace engine
 				std::string& m_variable;
 			}; // End [class CStringVariable]
 
+			typedef boost::shared_ptr<IVariable> TIVariablePtr;
+
 			TIVariablePtr RegisterVariable(uint32 nameHash, int32& variable, CI32Variable::OnChangeCallback pOnChangeCallback = NULL, const char* name = NULL, const char* description = NULL, int32 minValue = std::numeric_limits<int32>::min(), int32 maxValue = std::numeric_limits<int32>::max());
 			TIVariablePtr RegisterVariable(uint32 nameHash, float& variable, CF32Variable::OnChangeCallback pOnChangeCallback = NULL, const char* name = NULL, const char* description = NULL, float minValue = std::numeric_limits<float>::min(), float maxValue = std::numeric_limits<float>::max());
 			TIVariablePtr RegisterVariable(uint32 nameHash, std::string& variable, CStringVariable::OnChangeCallback pOnChangeCallback = NULL, const char* name = NULL, const char* description = NULL, int32 dummyMinValue = 0, int32 dummyMaxValue = 0);
@@ -195,10 +195,17 @@ namespace engine
 			TIVariablePtr FindVariable(uint32 nameHash);
 			TIVariablePtr FindVariable(const char* name);
 
+			const SVariableDetails* FindDetails(uint32 nameHash);
+			const SVariableDetails* FindDetails(const char* name);
+
+		protected:
+			void AddDescription(uint32 nameHash, const char* name, const char* description);
+
 		private:
 			typedef std::map<uint32, TIVariablePtr> TVariableMap;
+			typedef std::map<uint32, SVariableDetails*> TVariableDetailsMap;
 			TVariableMap m_variables;
-			std::map<uint32, SVariableDetails*> m_variableDetails;
+			TVariableDetailsMap m_variableDetails;
 			uint32 m_varCount[IVariable::eT_MAX];
 	}; // End [class CConsole]
 
