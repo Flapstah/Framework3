@@ -8,43 +8,38 @@ namespace engine
 {
 	CConsole::CConsole(void)
 	{
-		for (uint32 index = IVariable::eT_FIRST; index < IVariable::eT_MAX; ++index)
-		{
-			m_varCount[index] = 0;
-		}
 	}
 
 	//============================================================================
 
 	CConsole::~CConsole(void)
 	{
-		for (uint32 index = IVariable::eT_FIRST; index < IVariable::eT_MAX; ++index)
-		{
-			if (m_varCount[index] != 0)
-			{
-				printf("[CONSOLE]: still have %d vars of type %d registered/n", m_varCount[index], index);
-			}
-		}
-
 		for (TVariableMap::const_iterator it = m_variables.begin(), end = m_variables.end(); it != end; ++it)
 		{
-			printf("[CONSOLE]: still have variable %p registered\n", it->second.get());
+			const SVariableDetails* pDetails = FindDetails(it->first);
+			if (pDetails != NULL)
+			{
+				printf("[CONSOLE]: still have variable [%s] @ %p registered\n", pDetails->m_name.c_str(), it->second.get());
+			}
+			else
+			{
+				printf("[CONSOLE]: still have variable %p registered\n", it->second.get());
+			}
 		}
 	}
 
 	//============================================================================
 
-	CConsole::TIVariablePtr CConsole::RegisterVariable(uint32 nameHash, int32& variable, CI32Variable::OnChangeCallback pOnChangeCallback /* = NULL */, const char* name /* = NULL */, const char* description /* = NULL */, int32 minValue /* = std::numeric_limits<int32>::min() */, int32 maxValue /* = std::numeric_limits<int32>::max() */)
+	CConsole::TIVariablePtr CConsole::RegisterVariable(uint32 nameHash, int64& variable, TInteger::OnChangeCallback pOnChangeCallback /* = NULL */, const char* name /* = NULL */, const char* description /* = NULL */)
 	{
-		boost::shared_ptr<CI32Variable> pVariable;
+		boost::shared_ptr<TInteger> pVariable;
 
 		if (FindVariable(nameHash) == NULL)
 		{
-			pVariable = boost::make_shared<CI32Variable>(CI32Variable(variable, minValue, maxValue, pOnChangeCallback));
+			pVariable = boost::make_shared<TInteger>(TInteger(variable, pOnChangeCallback));
 			if (pVariable != NULL)
 			{
 				m_variables[nameHash] = pVariable;
-				++m_varCount[IVariable::eT_I32];
 			}
 
 			if (name != NULL)
@@ -54,7 +49,7 @@ namespace engine
 		}
 		else
 		{
-			printf("[CONSOLE]: Trying to register an int32 variable named [%s] (hash [%d]), with description [%s], but it already exists!\n", name, nameHash, description);
+			printf("[CONSOLE]: Trying to register an integer variable named [%s] (hash [%d]), with description [%s], but it already exists!\n", name, nameHash, description);
 		}
 
 		return pVariable;
@@ -62,17 +57,16 @@ namespace engine
 
 	//============================================================================
 
-	CConsole::TIVariablePtr CConsole::RegisterVariable(uint32 nameHash, float& variable, CF32Variable::OnChangeCallback pOnChangeCallback /* = NULL */, const char* name /* = NULL */, const char* description /* = NULL */, float minValue /* = std::numeric_limits<float>::min */, float maxValue /* = std::numeric_limits<float>::max() */)
+	CConsole::TIVariablePtr CConsole::RegisterVariable(uint32 nameHash, double& variable, TDouble::OnChangeCallback pOnChangeCallback /* = NULL */, const char* name /* = NULL */, const char* description /* = NULL */)
 	{
-		boost::shared_ptr<CF32Variable> pVariable;
+		boost::shared_ptr<TDouble> pVariable;
 
 		if (FindVariable(nameHash) == NULL)
 		{
-			pVariable = boost::make_shared<CF32Variable>(CF32Variable(variable, minValue, maxValue, pOnChangeCallback));
+			pVariable = boost::make_shared<TDouble>(TDouble(variable, pOnChangeCallback));
 			if (pVariable != NULL)
 			{
 				m_variables[nameHash] = pVariable;
-				++m_varCount[IVariable::eT_F32];
 			}
 
 			if (name != NULL)
@@ -82,7 +76,7 @@ namespace engine
 		}
 		else
 		{
-			printf("[CONSOLE]: Trying to register a float variable named [%s] (hash [%d]), with description [%s], but it already exists!\n", name, nameHash, description);
+			printf("[CONSOLE]: Trying to register a double variable named [%s] (hash [%d]), with description [%s], but it already exists!\n", name, nameHash, description);
 		}
 
 		return pVariable;
@@ -90,20 +84,16 @@ namespace engine
 
 	//============================================================================
 
-	CConsole::TIVariablePtr CConsole::RegisterVariable(uint32 nameHash, std::string& variable, CStringVariable::OnChangeCallback pOnChangeCallback /* = NULL */, const char* name /* = NULL */, const char* description /* = NULL */, int32 dummyMinValue /* = 0 */, int32 dummyMaxValue /* = 0 */)
+	CConsole::TIVariablePtr CConsole::RegisterVariable(uint32 nameHash, std::string& variable, TString::OnChangeCallback pOnChangeCallback /* = NULL */, const char* name /* = NULL */, const char* description /* = NULL */)
 	{
-		IGNORE_PARAMETER(dummyMinValue);
-		IGNORE_PARAMETER(dummyMaxValue);
-
-		boost::shared_ptr<CStringVariable> pVariable;
+		boost::shared_ptr<TString> pVariable;
 
 		if (FindVariable(nameHash) == NULL)
 		{
-			pVariable = boost::make_shared<CStringVariable>(CStringVariable(variable, pOnChangeCallback));
+			pVariable = boost::make_shared<TString>(TString(variable, pOnChangeCallback));
 			if (pVariable != NULL)
 			{
 				m_variables[nameHash] = pVariable;
-				++m_varCount[IVariable::eT_STRING];
 			}
 
 			if (name != NULL)
@@ -127,7 +117,6 @@ namespace engine
 
 		if (pVariable != NULL)
 		{
-			--m_varCount[pVariable->GetType()];
 			m_variables.erase(nameHash);
 			m_variableDetails.erase(nameHash);
 		}
@@ -192,262 +181,213 @@ namespace engine
 
 	//============================================================================
 
-	uint32 CConsole::IVariable::GetFlags(void) const
-	{
-		return m_flags;
-	}
+
+	//============================================================================
+	// TVariable specialisation for int64
+	//============================================================================
+
+	template class CConsole::TVariable<int64>;
 
 	//============================================================================
 
-	uint32 CConsole::IVariable::SetFlags(uint32 newFlags)
-	{
-		uint32 oldFlags = m_flags;
-		m_flags = newFlags;
-		return oldFlags;
-	}
-
-	//============================================================================
-
-	uint32 CConsole::IVariable::GetType(void) const
-	{
-		return m_type;
-	}
-
-	//============================================================================
-
-	CConsole::CI32Variable::CI32Variable(int32& variable, int32 minValue, int32 maxValue, CConsole::CI32Variable::OnChangeCallback pCallback)
-		: PARENT(eT_I32)
-		,	m_pCallback(pCallback)
-		, m_variable(variable)
-		, m_minValue(minValue)
-		, m_maxValue(maxValue)
-	{
-		printf("CI32Variable()\n");
-	}
-
-	//============================================================================
-
-	CConsole::CI32Variable::~CI32Variable(void)
-	{
-		printf("~CI32Variable()\n");
-	}
-
-	//============================================================================
-
-	int32 CConsole::CI32Variable::GetI32Val(void) const
- 	{
-	 	return m_variable;
- 	}
-
-	//============================================================================
-
-	int32 CConsole::CI32Variable::SetI32Val(int32 newValue)
-	{
-		int32 oldValue(m_variable);
-
-		if (newValue < m_minValue)
-		{
-			if (m_flags & eF_RANGE_CLAMP)
-			{
-				m_variable = m_minValue;
-			}
-		}
-		else if (newValue > m_maxValue)
-		{
-			if (m_flags & eF_RANGE_CLAMP)
-			{
-				m_variable = m_maxValue;
-			}
-		}
-
-		return oldValue;
-	}
-
-	//============================================================================
-
-	float CConsole::CI32Variable::GetF32Val(void) const
-
-	{
-		return static_cast<float>(m_variable);
-	}
-
-	//============================================================================
-
-	float CConsole::CI32Variable::SetF32Val(float newValue)
-	{
-		return static_cast<float>(SetI32Val(static_cast<int32>(newValue)));
-	}
-
-	//============================================================================
-
-	const char* CConsole::CI32Variable::GetString(void) const
+	template<> const char* CConsole::TVariable<int64>::SetString(const char* value)
 	{
 		std::ostringstream buffer;
 		buffer << m_variable;
+
+		if ((m_flags & eF_CONST) == 0)
+		{
+			m_variable = m_pCallback(atol(value));
+		}
+
 		return buffer.str().c_str();
 	}
 
 	//============================================================================
+	// TVariable specialisation for double
+	//============================================================================
 
-	const char* CConsole::CI32Variable::SetString(const char* newValue)
-	{
-		std::string oldValue(GetString());
-		SetI32Val(atoi(newValue));
-		return oldValue.c_str();
-	}
+	template class CConsole::TVariable<double>;
 
 	//============================================================================
 
-	CConsole::CF32Variable::CF32Variable(float& variable, int32 minValue, int32 maxValue, CConsole::CF32Variable::OnChangeCallback pCallback)
-		: PARENT(eT_F32)
-		, m_pCallback(pCallback)
-		, m_variable(variable)
-		, m_minValue(minValue)
-		, m_maxValue(maxValue)
-	{
-		printf("CF32Variable()\n");
-	}
-
-	//============================================================================
-
-	CConsole::CF32Variable::~CF32Variable(void)
- 	{
-		printf("~CF32Variable()\n");
-	}
-
-	//============================================================================
-
-	int32 CConsole::CF32Variable::GetI32Val(void) const
-	{
-		return static_cast<int32>(m_variable);
-	}
-
-	//============================================================================
-
-	int32 CConsole::CF32Variable::SetI32Val(int32 newValue)
-	{
-		return static_cast<int32>(SetF32Val(static_cast<float>(newValue)));
-	}
-
-	//============================================================================
-
-	float CConsole::CF32Variable::GetF32Val(void) const
- 	{
-	 	return m_variable;
- 	}
-
-	//============================================================================
-
-	float CConsole::CF32Variable::SetF32Val(float newValue)
-	{
-		float oldValue(m_variable);
-
-		if (newValue < m_minValue)
-		{
-			if (m_flags & eF_RANGE_CLAMP)
-			{
-				m_variable = m_minValue;
-			}
-		}
-		else if (newValue > m_maxValue)
-		{
-			if (m_flags & eF_RANGE_CLAMP)
-			{
-				m_variable = m_maxValue;
-			}
-		}
-
-		return oldValue;
-	}
-
-	//============================================================================
-
-	const char* CConsole::CF32Variable::GetString(void) const
+	template<> const char* CConsole::TVariable<double>::SetString(const char* value)
 	{
 		std::ostringstream buffer;
 		buffer << m_variable;
+
+		if ((m_flags & eF_CONST) == 0)
+		{
+			m_variable = m_pCallback(atof(value));
+		}
+
 		return buffer.str().c_str();
 	}
 
 	//============================================================================
+	// TVariable specialisation for std::string
+	//============================================================================
 
-	const char* CConsole::CF32Variable::SetString(const char* newValue)
+	template class CConsole::TVariable<std::string>;
+
+	//============================================================================
+
+	template<> int64 CConsole::TVariable<std::string>::GetInteger(void) const
 	{
-		std::string oldValue(GetString());
-		SetF32Val(atof(newValue));
-		return oldValue.c_str();
+		return atol(m_variable.c_str());
 	}
 
 	//============================================================================
 
-	CConsole::CStringVariable::CStringVariable(std::string& variable, CConsole::CStringVariable::OnChangeCallback pCallback)
-		: PARENT(eT_STRING)
-		, m_pCallback(pCallback)
-		, m_variable(variable)
+	template<> int64 CConsole::TVariable<std::string>::SetInteger(const int64 value)
 	{
-		printf("CStringVariable()\n");
-	}
+		int64 old = GetInteger();
 
-	//============================================================================
-
-	CConsole::CStringVariable::~CStringVariable(void)
- 	{
-		printf("~CStringVariable()\n");
-	};
-
-	//============================================================================
-
-	int32 CConsole::CStringVariable::GetI32Val(void) const
-	{
-		return atoi(m_variable.c_str());
-	}
-
-	//============================================================================
-
-	int32 CConsole::CStringVariable::SetI32Val(int32 newValue)
-	{
-		int32 oldValue = atoi(m_variable.c_str());
 		std::ostringstream buffer;
-		buffer << newValue;
-		m_variable = buffer.str();
-		return oldValue;
+		buffer << value;
+
+		if ((m_flags & eF_CONST) == 0)
+		{
+			m_variable = m_pCallback(buffer.str());
+		}
+
+		return old;
 	}
 
 	//============================================================================
 
-	float CConsole::CStringVariable::GetF32Val(void) const
+	template<> double CConsole::TVariable<std::string>::GetDouble(void) const
 	{
 		return atof(m_variable.c_str());
 	}
 
 	//============================================================================
 
-	float CConsole::CStringVariable::SetF32Val(float newValue)
+	template<> double CConsole::TVariable<std::string>::SetDouble(const double value)
 	{
-		float oldValue = atof(m_variable.c_str());
+		double old = GetInteger();
+
 		std::ostringstream buffer;
-		buffer << newValue;
-		m_variable = buffer.str();
-		return oldValue;
+		buffer << value;
+
+		if ((m_flags & eF_CONST) == 0)
+		{
+			m_variable = m_pCallback(buffer.str());
+		}
+
+		return old;
 	}
 
 	//============================================================================
 
-	const char* CConsole::CStringVariable::GetString(void) const
+	template<> const char* CConsole::TVariable<std::string>::GetString(void) const
 	{
 		return m_variable.c_str();
 	}
 
 	//============================================================================
 
-	const char* CConsole::CStringVariable::SetString(const char* newValue)
+	template<> const char* CConsole::TVariable<std::string>::SetString(const char* value)
 	{
-		std::string oldValue(m_variable);
-		m_variable = newValue;
-		return oldValue.c_str();
+		std::string old(m_variable);
+
+		if ((m_flags & eF_CONST) == 0)
+		{
+			m_variable = m_pCallback(std::string(value));
+		}
+
+		return old.c_str();
 	}
 
 	//============================================================================
+	// TVariable generic template functions
+	//============================================================================
+
+	template<typename _type_> CConsole::TVariable<_type_>::TVariable(_type_& variable,	typename CConsole::TVariable<_type_>::OnChangeCallback pCallback /* = NULL */)
+		: m_variable(variable)
+		, m_pCallback(pCallback)
+	{
+		if (m_pCallback == NULL)
+		{
+			m_pCallback = &CConsole::TVariable<_type_>::DefaultOnChange;
+		}
+	}
+
+	//============================================================================
+
+	template<typename _type_> CConsole::TVariable<_type_>::~TVariable(void)
+	{
+	}
+
+	//============================================================================
+
+	template<typename _type_> int64 CConsole::TVariable<_type_>::GetInteger(void) const
+	{
+		return static_cast<int64>(m_variable);
+	}
+
+	//============================================================================
+
+	template<typename _type_> int64 CConsole::TVariable<_type_>::SetInteger(const int64 value)
+	{
+		int64 old = GetInteger();
+
+		if ((m_flags & eF_CONST) == 0)
+		{
+			m_variable = m_pCallback(value);
+		}
+
+		return old;
+	}
+
+	//============================================================================
+
+	template<typename _type_> double CConsole::TVariable<_type_>::GetDouble(void) const
+	{
+		return static_cast<double>(m_variable);
+	}
+
+	//============================================================================
+
+	template<typename _type_> double CConsole::TVariable<_type_>::SetDouble(const double value)
+	{
+		double old = GetDouble();
+
+		if ((m_flags & eF_CONST) == 0)
+		{
+			m_variable = m_pCallback(value);
+		}
+
+		return old;
+	}
+
+	//============================================================================
+
+	template<typename _type_> const char* CConsole::TVariable<_type_>::GetString(void) const
+	{
+		std::ostringstream buffer;
+		buffer << m_variable;
+		return buffer.str().c_str();
+	}
+
+	//============================================================================
+
+	template<typename _type_> uint32 CConsole::TVariable<_type_>::ModifyFlags(uint32 set, uint32 clear)
+	{
+		uint32 old = m_flags;
+		m_flags = ((m_flags | set) & ~clear);
+		return old;
+	}
+
+	//============================================================================
+
+	template<typename _type_> const _type_& CConsole::TVariable<_type_>::DefaultOnChange(const _type_& value)
+	{
+		return value;
+	}
+
+	//============================================================================
+
 } // End [namespace engine]
 
 //==============================================================================

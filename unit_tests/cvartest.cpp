@@ -5,7 +5,7 @@
 
 namespace test
 {
-	static int32 testIntegerVariable = 0;
+	static int64 testIntegerVariable = 0;
 
 	//============================================================================
 
@@ -51,7 +51,7 @@ namespace test
 			switch (pThis->GetStage())
 			{
 				case 1:
-					m_pCVar = REGISTER_VARIABLE(testIntegerVariable, NULL, "A test variable", 0, 100);
+					m_pCVar = REGISTER_VARIABLE(testIntegerVariable, NULL, "A test variable");
 					pThis->Log((m_pCVar != NULL) ? eTV_RESULT : eTV_ERROR, "Created console variable at address %p", m_pCVar.get());
 					pThis->NextStage();
 
