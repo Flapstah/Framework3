@@ -12,17 +12,29 @@
 
 //==============================================================================
 
-#define REGISTER_VARIABLE(_variable_, _on_change_callback_, _description_) \
-	engine::CConsole::Get().RegisterVariable(engine::CompileTimeStringHash(#_variable_), _variable_, _on_change_callback_, #_variable_, _description_)
+#define REGISTER_VARIABLE(_variable_, _value_, _flags_, _on_change_callback_, _description_) \
+	engine::CConsole::Get().RegisterVariable(engine::CompileTimeStringHash(#_variable_), _variable_, _value_, _flags_, _on_change_callback_, #_variable_, _description_)
 
-#define REGISTER_HIDDEN_VARIABLE(_variable_, _on_change_callback_) \
-	engine::CConsole::Get().RegisterVariable(engine::CompileTimeStringHash(#_variable_), _variable_, _on_change_callback_, NULL, NULL)
-
-#if defined(_DEBUG)
-#define REGISTER_DEBUG_VARIABLE(_variable_, _on_change_callback_, _description_) REGISTER_VARIABLE(_variable_, _on_change_callback_, _description_)
+//------------------------------------------------------------------------------
+// A "hidden" variable will have no plain text details stored when
+// CONSOLE_HIDDEN_VARIABLES_ENABLED
+//------------------------------------------------------------------------------
+#if CONSOLE_HIDDEN_VARIABLES_ENABLED
+#define REGISTER_HIDDEN_VARIABLE(_variable_, _value_, _flags_, _on_change_callback_, _description_) \
+	engine::CConsole::Get().RegisterVariable(engine::CompileTimeStringHash(#_variable_), _variable_, _value_, _flags_, _on_change_callback_, NULL, NULL)
 #else
-#define REGISTER_DEBUG_VARIABLE(_variable_, _on_change_callback_, _description_) REGISTER_HIDDEN_VARIABLE(_variable_, _on_change_callback_)
-#endif // defined(_DEBUG)
+#define REGISTER_HIDDEN_VARIABLE(_variable_, _value_, _flags_, _on_change_callback_, _description_) REGISTER_VARIABLE(_variable_, _value_, _flags_, _on_change_callback_, _description_)
+#endif // CONSOLE_HIDDEN_VARIABLES_ENABLED
+
+//------------------------------------------------------------------------------
+// A "development" variable will only exist as a console variable when
+// CONSOLE_DEVELOPMENT_VARIABLES_ENABLED
+//------------------------------------------------------------------------------
+#if CONSOLE_DEVELOPMENT_VARIABLES_ENABLED
+#define REGISTER_DEBUG_VARIABLE(_variable_, _value_, _flags_, _on_change_callback_, _description_) REGISTER_VARIABLE(_variable_, _value_, _flags_, _on_change_callback_, _description_)
+#else
+#define REGISTER_DEBUG_VARIABLE(_variable_, _value_, _flags_, _on_change_callback_, _description_) _variable_ = (_value_);
+#endif // DEVELOPMENT_CONSOLE_VARIABLES_ENABLED
 
 #define UNREGISTER_VARIABLE(_variable_) engine::CConsole::Get().UnregisterVariable(engine::CompileTimeStringHash(#_variable_))
 
@@ -80,7 +92,7 @@ namespace engine
 			public:
 				typedef const _type_& (*OnChangeCallback)(const _type_& value);
 
-				TVariable(_type_& variable, OnChangeCallback pCallback = NULL);
+				TVariable(_type_& variable, uint32 flags, OnChangeCallback pCallback = NULL);
 				~TVariable(void);
 
 				// IVariable
@@ -109,9 +121,9 @@ namespace engine
 			typedef TVariable<double> TDouble;
 			typedef TVariable<std::string> TString;
 
-			TIVariablePtr RegisterVariable(uint32 nameHash, int64& variable, TInteger::OnChangeCallback pOnChangeCallback = NULL, const char* name = NULL, const char* description = NULL);
-			TIVariablePtr RegisterVariable(uint32 nameHash, double& variable, TDouble::OnChangeCallback pOnChangeCallback = NULL, const char* name = NULL, const char* description = NULL);
-			TIVariablePtr RegisterVariable(uint32 nameHash, std::string& variable, TString::OnChangeCallback pOnChangeCallback = NULL, const char* name = NULL, const char* description = NULL);
+			TIVariablePtr RegisterVariable(uint32 nameHash, int64& variable, int64 value, uint32 flags, TInteger::OnChangeCallback pOnChangeCallback = NULL, const char* name = NULL, const char* description = NULL);
+			TIVariablePtr RegisterVariable(uint32 nameHash, double& variable, double value, uint32 flags, TDouble::OnChangeCallback pOnChangeCallback = NULL, const char* name = NULL, const char* description = NULL);
+			TIVariablePtr RegisterVariable(uint32 nameHash, std::string& variable, const char* value, uint32 flags, TString::OnChangeCallback pOnChangeCallback = NULL, const char* name = NULL, const char* description = NULL);
 			void UnregisterVariable(uint32 nameHash);
 			void UnregisterVariable(const char* name);
 

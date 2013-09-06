@@ -51,7 +51,7 @@ namespace test
 			switch (pThis->GetStage())
 			{
 				case 1:
-					m_pCVar = REGISTER_VARIABLE(testIntegerVariable, NULL, "A test variable");
+					m_pCVar = REGISTER_VARIABLE(testIntegerVariable, 1, 0, NULL, "A test variable");
 					pThis->Log((m_pCVar != NULL) ? eTV_RESULT : eTV_ERROR, "Created console variable at address %p", m_pCVar.get());
 					pThis->NextStage();
 
@@ -82,7 +82,7 @@ namespace test
 			switch (pThis->GetStage())
 			{
 				case 1:
-					m_pCVar = engine::CConsole::Get().RegisterVariable(engine::CRunTimeStringHash::Calculate("testIntegerVariable"), testIntegerVariable);
+					m_pCVar = engine::CConsole::Get().RegisterVariable(engine::CRunTimeStringHash::Calculate("testIntegerVariable"), testIntegerVariable, 2, 0);
 					pThis->Log((m_pCVar != NULL) ? eTV_RESULT : eTV_ERROR, "Created console variable at address %p", m_pCVar.get());
 					pThis->NextStage();
 

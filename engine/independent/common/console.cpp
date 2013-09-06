@@ -6,182 +6,6 @@
 
 namespace engine
 {
-	CConsole::CConsole(void)
-	{
-	}
-
-	//============================================================================
-
-	CConsole::~CConsole(void)
-	{
-		for (TVariableMap::const_iterator it = m_variables.begin(), end = m_variables.end(); it != end; ++it)
-		{
-			const SVariableDetails* pDetails = FindDetails(it->first);
-			if (pDetails != NULL)
-			{
-				printf("[CONSOLE]: still have variable [%s] @ %p registered\n", pDetails->m_name.c_str(), it->second.get());
-			}
-			else
-			{
-				printf("[CONSOLE]: still have variable %p registered\n", it->second.get());
-			}
-		}
-	}
-
-	//============================================================================
-
-	CConsole::TIVariablePtr CConsole::RegisterVariable(uint32 nameHash, int64& variable, TInteger::OnChangeCallback pOnChangeCallback /* = NULL */, const char* name /* = NULL */, const char* description /* = NULL */)
-	{
-		boost::shared_ptr<TInteger> pVariable;
-
-		if (FindVariable(nameHash) == NULL)
-		{
-			pVariable = boost::make_shared<TInteger>(TInteger(variable, pOnChangeCallback));
-			if (pVariable != NULL)
-			{
-				m_variables[nameHash] = pVariable;
-			}
-
-			if (name != NULL)
-			{
-				AddDescription(nameHash, name, description);
-			}
-		}
-		else
-		{
-			printf("[CONSOLE]: Trying to register an integer variable named [%s] (hash [%d]), with description [%s], but it already exists!\n", name, nameHash, description);
-		}
-
-		return pVariable;
-	}
-
-	//============================================================================
-
-	CConsole::TIVariablePtr CConsole::RegisterVariable(uint32 nameHash, double& variable, TDouble::OnChangeCallback pOnChangeCallback /* = NULL */, const char* name /* = NULL */, const char* description /* = NULL */)
-	{
-		boost::shared_ptr<TDouble> pVariable;
-
-		if (FindVariable(nameHash) == NULL)
-		{
-			pVariable = boost::make_shared<TDouble>(TDouble(variable, pOnChangeCallback));
-			if (pVariable != NULL)
-			{
-				m_variables[nameHash] = pVariable;
-			}
-
-			if (name != NULL)
-			{
-				AddDescription(nameHash, name, description);
-			}
-		}
-		else
-		{
-			printf("[CONSOLE]: Trying to register a double variable named [%s] (hash [%d]), with description [%s], but it already exists!\n", name, nameHash, description);
-		}
-
-		return pVariable;
-	}
-
-	//============================================================================
-
-	CConsole::TIVariablePtr CConsole::RegisterVariable(uint32 nameHash, std::string& variable, TString::OnChangeCallback pOnChangeCallback /* = NULL */, const char* name /* = NULL */, const char* description /* = NULL */)
-	{
-		boost::shared_ptr<TString> pVariable;
-
-		if (FindVariable(nameHash) == NULL)
-		{
-			pVariable = boost::make_shared<TString>(TString(variable, pOnChangeCallback));
-			if (pVariable != NULL)
-			{
-				m_variables[nameHash] = pVariable;
-			}
-
-			if (name != NULL)
-			{
-				AddDescription(nameHash, name, description);
-			}
-		}
-		else
-		{
-			printf("[CONSOLE]: Trying to register an string variable named [%s] (hash [%d]), with description [%s], but it already exists!\n", name, nameHash, description);
-		}
-
-		return pVariable;
-	}
-
-	//============================================================================
-
-	void CConsole::UnregisterVariable(uint32 nameHash)
-	{
-		TIVariablePtr pVariable = FindVariable(nameHash);
-
-		if (pVariable != NULL)
-		{
-			m_variables.erase(nameHash);
-			m_variableDetails.erase(nameHash);
-		}
-	}
-
-	//============================================================================
-
-	CConsole::TIVariablePtr CConsole::FindVariable(uint32 nameHash)
-	{
-		TVariableMap::iterator it = m_variables.find(nameHash);
-		TIVariablePtr pVar;
-
-		if (it != m_variables.end())
-		{
-			pVar = it->second;
-		}
-
-		return pVar;
-	}
-
-	//============================================================================
-
-	CConsole::TIVariablePtr CConsole::FindVariable(const char* name)
-	{
-		return FindVariable(engine::CRunTimeStringHash::Calculate(name));
-	}
-
-	//============================================================================
-
-	const CConsole::SVariableDetails* CConsole::FindDetails(uint32 nameHash)
-	{
-		SVariableDetails* pDetails = NULL;
-		TVariableDetailsMap::iterator it = m_variableDetails.find(nameHash);
-
-		if (it != m_variableDetails.end())
-		{
-			pDetails = it->second;
-		}
-		
-		return pDetails;
-	}
-
-	//============================================================================
-
-	const CConsole::SVariableDetails* CConsole::FindDetails(const char* name)
-	{
-		return FindDetails(engine::CRunTimeStringHash::Calculate(name));
-	}
-
-	//============================================================================
-
-	void CConsole::AddDescription(uint32 nameHash, const char* name, const char* description)
-	{
-		SVariableDetails* pDetails = new SVariableDetails();
-		if (pDetails != NULL)
-		{
-			pDetails->m_name = name;
-			pDetails->m_description = description;
-			m_variableDetails[nameHash] = pDetails;
-		}
-	}
-
-	//============================================================================
-
-
 	//============================================================================
 	// TVariable specialisation for int64
 	//============================================================================
@@ -303,9 +127,10 @@ namespace engine
 	// TVariable generic template functions
 	//============================================================================
 
-	template<typename _type_> CConsole::TVariable<_type_>::TVariable(_type_& variable,	typename CConsole::TVariable<_type_>::OnChangeCallback pCallback /* = NULL */)
+	template<typename _type_> CConsole::TVariable<_type_>::TVariable(_type_& variable, uint32 flags, typename CConsole::TVariable<_type_>::OnChangeCallback pCallback /* = NULL */)
 		: m_variable(variable)
 		, m_pCallback(pCallback)
+		, m_flags(flags)
 	{
 		if (m_pCallback == NULL)
 		{
@@ -384,6 +209,189 @@ namespace engine
 	template<typename _type_> const _type_& CConsole::TVariable<_type_>::DefaultOnChange(const _type_& value)
 	{
 		return value;
+	}
+
+	//============================================================================
+	// CConsole
+	//============================================================================
+
+	CConsole::CConsole(void)
+	{
+	}
+
+	//============================================================================
+
+	CConsole::~CConsole(void)
+	{
+		for (TVariableMap::const_iterator it = m_variables.begin(), end = m_variables.end(); it != end; ++it)
+		{
+			const SVariableDetails* pDetails = FindDetails(it->first);
+			if (pDetails != NULL)
+			{
+				printf("[CONSOLE]: still have variable [%s] @ %p registered\n", pDetails->m_name.c_str(), it->second.get());
+			}
+			else
+			{
+				printf("[CONSOLE]: still have variable %p registered\n", it->second.get());
+			}
+		}
+	}
+
+	//============================================================================
+
+	CConsole::TIVariablePtr CConsole::RegisterVariable(uint32 nameHash, int64& variable, int64 value, uint32 flags, TInteger::OnChangeCallback pOnChangeCallback /* = NULL */, const char* name /* = NULL */, const char* description /* = NULL */)
+	{
+		boost::shared_ptr<TInteger> pVariable;
+
+		if (FindVariable(nameHash) == NULL)
+		{
+			pVariable = boost::make_shared<TInteger>(TInteger(variable, flags, pOnChangeCallback));
+			if (pVariable != NULL)
+			{
+				m_variables[nameHash] = pVariable;
+			}
+
+			pVariable->SetInteger(value);
+
+			if (name != NULL)
+			{
+				AddDescription(nameHash, name, description);
+			}
+		}
+		else
+		{
+			printf("[CONSOLE]: Trying to register an integer variable named [%s] (hash [%d]), with description [%s], but it already exists!\n", name, nameHash, description);
+		}
+
+		return pVariable;
+	}
+
+	//============================================================================
+
+	CConsole::TIVariablePtr CConsole::RegisterVariable(uint32 nameHash, double& variable, double value, uint32 flags, TDouble::OnChangeCallback pOnChangeCallback /* = NULL */, const char* name /* = NULL */, const char* description /* = NULL */)
+	{
+		boost::shared_ptr<TDouble> pVariable;
+
+		if (FindVariable(nameHash) == NULL)
+		{
+			pVariable = boost::make_shared<TDouble>(TDouble(variable, flags, pOnChangeCallback));
+			if (pVariable != NULL)
+			{
+				m_variables[nameHash] = pVariable;
+			}
+
+			pVariable->SetDouble(value);
+
+			if (name != NULL)
+			{
+				AddDescription(nameHash, name, description);
+			}
+		}
+		else
+		{
+			printf("[CONSOLE]: Trying to register a double variable named [%s] (hash [%d]), with description [%s], but it already exists!\n", name, nameHash, description);
+		}
+
+		return pVariable;
+	}
+
+	//============================================================================
+
+	CConsole::TIVariablePtr CConsole::RegisterVariable(uint32 nameHash, std::string& variable, const char* value, uint32 flags, TString::OnChangeCallback pOnChangeCallback /* = NULL */, const char* name /* = NULL */, const char* description /* = NULL */)
+	{
+		boost::shared_ptr<TString> pVariable;
+
+		if (FindVariable(nameHash) == NULL)
+		{
+			pVariable = boost::make_shared<TString>(TString(variable, flags, pOnChangeCallback));
+			if (pVariable != NULL)
+			{
+				m_variables[nameHash] = pVariable;
+			}
+
+			pVariable->SetString(value);
+
+			if (name != NULL)
+			{
+				AddDescription(nameHash, name, description);
+			}
+		}
+		else
+		{
+			printf("[CONSOLE]: Trying to register an string variable named [%s] (hash [%d]), with description [%s], but it already exists!\n", name, nameHash, description);
+		}
+
+		return pVariable;
+	}
+
+	//============================================================================
+
+	void CConsole::UnregisterVariable(uint32 nameHash)
+	{
+		TIVariablePtr pVariable = FindVariable(nameHash);
+
+		if (pVariable != NULL)
+		{
+			m_variables.erase(nameHash);
+			m_variableDetails.erase(nameHash);
+		}
+	}
+
+	//============================================================================
+
+	CConsole::TIVariablePtr CConsole::FindVariable(uint32 nameHash)
+	{
+		TVariableMap::iterator it = m_variables.find(nameHash);
+		TIVariablePtr pVar;
+
+		if (it != m_variables.end())
+		{
+			pVar = it->second;
+		}
+
+		return pVar;
+	}
+
+	//============================================================================
+
+	CConsole::TIVariablePtr CConsole::FindVariable(const char* name)
+	{
+		return FindVariable(engine::CRunTimeStringHash::Calculate(name));
+	}
+
+	//============================================================================
+
+	const CConsole::SVariableDetails* CConsole::FindDetails(uint32 nameHash)
+	{
+		SVariableDetails* pDetails = NULL;
+		TVariableDetailsMap::iterator it = m_variableDetails.find(nameHash);
+
+		if (it != m_variableDetails.end())
+		{
+			pDetails = it->second;
+		}
+		
+		return pDetails;
+	}
+
+	//============================================================================
+
+	const CConsole::SVariableDetails* CConsole::FindDetails(const char* name)
+	{
+		return FindDetails(engine::CRunTimeStringHash::Calculate(name));
+	}
+
+	//============================================================================
+
+	void CConsole::AddDescription(uint32 nameHash, const char* name, const char* description)
+	{
+		SVariableDetails* pDetails = new SVariableDetails();
+		if (pDetails != NULL)
+		{
+			pDetails->m_name = name;
+			pDetails->m_description = description;
+			m_variableDetails[nameHash] = pDetails;
+		}
 	}
 
 	//============================================================================
