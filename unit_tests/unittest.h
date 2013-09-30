@@ -21,7 +21,8 @@ using namespace engine::time;
 #define COLOUR_INFO ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_DEFAULT_COLOUR))
 #define COLOUR_PROGRESS ANSI_2SEQUENCE(ANSI_BRIGHT, ANSI_FOREGROUND(ANSI_CYAN))
 #define COLOUR_TEST_INFO ANSI_2SEQUENCE(ANSI_BRIGHT, ANSI_FOREGROUND(ANSI_MAGENTA))
-#define COLOUR_RESET ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_DEFAULT_COLOUR))
+#define COLOUR_DEFAULT ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_DEFAULT_COLOUR))
+#define COLOUR_RESET ANSI_1SEQUENCE(ANSI_RESET_ALL)
 
 //==============================================================================
 // Helper macros (for usage case, see timetest.cpp)
@@ -29,8 +30,10 @@ using namespace engine::time;
 
 #define LOG_STAGE_SUBSTAGE(_stage_, _substage_) pThis->Log(eTV_INFORMATION, COLOUR_PROGRESS "[%d:%d]", _stage_, _substage_);
 #define LOG_STAGE_NAME(_name_) pThis->Log(eTV_INFORMATION, COLOUR_TEST_INFO _name_);
-#define LOG_STAGE_PARAM(_id_, _param_string_, _param_) pThis->Log(eTV_INFORMATION, "\tparameter [%d]:\t" #_param_string_ " is [%g]\n", _id_, _param_);
-#define LOG_STAGE_RESULT(_result_) pThis->Log((success == true) ? eTV_INFORMATION : eTV_WARNING, "\tresult:\t\t" #_result_ " is [%g]\n\t%s[%s]", result, ((success == true) ? COLOUR_SUCCESS : COLOUR_WARNING), ((success == true) ? "PASSED" : "FAILED"));
+#define LOG_STAGE_PARAM(_id_, _param_string_, _param_) pThis->Log(eTV_INFORMATION, "\t\tparameter [%d]:\t" #_param_string_ " is [%g]\n", _id_, _param_);
+#define LOG_STAGE_STRING_PARAM(_id_, _param_string_, _param_) pThis->Log(eTV_INFORMATION, "\t\tparameter [%d]:\t" #_param_string_ " is [%s]\n", _id_, _param_);
+#define LOG_STAGE_RESULT(_result_) pThis->Log((success == true) ? eTV_INFORMATION : eTV_WARNING, "\t\tresult:\t\t" #_result_ " is [%g]\n\t\t%s[%s]", result, ((success == true) ? COLOUR_SUCCESS : COLOUR_WARNING), ((success == true) ? "PASSED" : "FAILED"));
+#define LOG_STAGE_STRING_RESULT(_result_) pThis->Log((success == true) ? eTV_INFORMATION : eTV_WARNING, "\t\tresult:\t\t" #_result_ " is [%s]\n\t\t%s[%s]", result, ((success == true) ? COLOUR_SUCCESS : COLOUR_WARNING), ((success == true) ? "PASSED" : "FAILED"));
 
 // Single parameter named test
 #define TEST1_NAMED(_name_, _test_, _param1_, _result_) \
@@ -44,6 +47,33 @@ using namespace engine::time;
 		LOG_STAGE_PARAM(1, #_param1_, param1); \
 		pThis->SupressNewline(false); \
 		LOG_STAGE_RESULT(_result_); \
+	}
+
+/*
+#define TEST1_NAMED_STRING(_name_, _test_, _param1_, _result_) \
+	{ \
+		bool success = (_test_); \
+		double param1 = static_cast<double>(_param1_); \
+		double result = static_cast<double>(_result_); \
+		pThis->SupressNewline(true); \
+		LOG_STAGE_SUBSTAGE(pThis->GetStage(), pThis->NextSubstage()); \
+		LOG_STAGE_NAME("\ttest:\t\t" _name_ "\n"); \
+		LOG_STAGE_STRING_PARAM(1, #_param1_, param1); \
+		pThis->SupressNewline(false); \
+		LOG_STAGE_STRING_RESULT(_result_); \
+	}
+*/
+#define TEST1_NAMED_STRING(_name_, _test_, _param1_, _result_) \
+	{ \
+		bool success = (_test_); \
+		const char* param1 = (_param1_); \
+		const char* result = (_result_); \
+		pThis->SupressNewline(true); \
+		LOG_STAGE_SUBSTAGE(pThis->GetStage(), pThis->NextSubstage()); \
+		LOG_STAGE_NAME("\ttest:\t\t" _name_ "\n"); \
+		LOG_STAGE_STRING_PARAM(1, #_param1_, param1); \
+		pThis->SupressNewline(false); \
+		LOG_STAGE_STRING_RESULT(_result_); \
 	}
 
 // Double parameter named test

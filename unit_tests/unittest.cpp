@@ -40,7 +40,7 @@ namespace test
 		const char* warningColour = (m_stageWarnings != 0) ? COLOUR_WARNING : COLOUR_SUCCESS;
 		const char* errorColour = (m_stageErrors != 0) ? COLOUR_ERROR : COLOUR_SUCCESS;
 
-		Log(eTV_RESULT, COLOUR_PROGRESS "[%s] " COLOUR_TEST_INFO "[%s] " COLOUR_RESET "%d tests completed in %s%d days, %02u:%02u:%06.3fs; %s%d warnings" COLOUR_RESET ", %s%d errors\n", timeBuffer, m_name, m_totalTests, (elapsed.GetTicks() < 0) ? "-" : "",  days, hours, minutes, seconds, warningColour, m_totalWarnings, errorColour, m_totalErrors);
+		Log(eTV_RESULT, COLOUR_PROGRESS "[%s] " COLOUR_TEST_INFO "[%s] " COLOUR_DEFAULT "%d tests completed in %s%d days, %02u:%02u:%06.3fs; %s%d warnings" COLOUR_DEFAULT ", %s%d errors\n", timeBuffer, m_name, m_totalTests, (elapsed.GetTicks() < 0) ? "-" : "",  days, hours, minutes, seconds, warningColour, m_totalWarnings, errorColour, m_totalErrors);
 	}
 
 	//============================================================================
@@ -80,7 +80,7 @@ namespace test
 				{
 					m_verbosity = test.m_verbosity;
 					TimeStamp(timeBuffer, sizeof(timeBuffer));
-					Log(eTV_RESULT, COLOUR_PROGRESS "[%s] " COLOUR_TEST_INFO "[%s:%s] " COLOUR_RESET "started", timeBuffer, m_name, test.m_name.c_str());
+					Log(eTV_RESULT, COLOUR_PROGRESS "[%s] " COLOUR_TEST_INFO "[%s:%s] " COLOUR_DEFAULT "started", timeBuffer, m_name, test.m_name.c_str());
 				}
 
 				uint32 status = test.m_function(this);
@@ -92,7 +92,7 @@ namespace test
 					const char* errorColour = (m_stageErrors != 0) ? COLOUR_ERROR : COLOUR_SUCCESS;
 
 					TimeStamp(timeBuffer, sizeof(timeBuffer));
-					Log(eTV_RESULT, COLOUR_PROGRESS "[%s] " COLOUR_TEST_INFO "[%s:%s] " COLOUR_RESET "complete; %s%d warnings" COLOUR_RESET ", %s%d errors\n", timeBuffer, m_name, test.m_name.c_str(), warningColour, m_stageWarnings, errorColour, m_stageErrors);
+					Log(eTV_RESULT, COLOUR_PROGRESS "[%s] " COLOUR_TEST_INFO "[%s:%s] " COLOUR_DEFAULT "complete; %s%d warnings" COLOUR_DEFAULT ", %s%d errors\n", timeBuffer, m_name, test.m_name.c_str(), warningColour, m_stageWarnings, errorColour, m_stageErrors);
 
 					m_totalWarnings += m_stageWarnings;
 					m_totalErrors += m_stageErrors;
@@ -141,35 +141,43 @@ namespace test
 		va_list args;
 		va_start(args, format);
 
+		switch (targetLevel)
+		{
+		case eTV_ERROR:
+			++m_stageErrors;
+			break;
+
+		case eTV_WARNING:
+			++m_stageWarnings;
+			break;
+
+		default:
+			break;
+		}
+
 		if (m_verbosity >= targetLevel)
 		{
 			switch (targetLevel)
 			{
-				case eTV_RESULT:
-					printf(COLOUR_SUCCESS);
-					break;
-
-				case eTV_INFORMATION:
-					printf(COLOUR_INFO);
-					break;
-
-				case eTV_WARNING:
-					++m_stageWarnings;
-					printf(COLOUR_WARNING "[WARNING] ");
-					break;
-
-				case eTV_ERROR:
-					++m_stageErrors;
-					printf(COLOUR_ERROR "[ERROR] ");
-					break;
-
-				default:
-					printf(ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_DEFAULT_COLOUR)) "[UNKNOWN] ");
-					break;
+			case eTV_RESULT:
+				printf(COLOUR_SUCCESS);
+				break;
+			case eTV_ERROR:
+				printf(COLOUR_ERROR "[ERROR] ");
+				break;
+			case eTV_WARNING:
+				printf(COLOUR_WARNING "[WARNING] ");
+				break;
+			case eTV_INFORMATION:
+				printf(COLOUR_INFO);
+				break;
+			default:
+				printf(COLOUR_DEFAULT "[UNKNOWN] ");
+				break;
 			}
 
 			vprintf(format, args);
-			printf(ANSI_1SEQUENCE(ANSI_RESET_ALL));
+			printf(COLOUR_RESET);
 			if (m_supressNewline == false)
 			{
 				printf("\n");

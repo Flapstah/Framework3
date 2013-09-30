@@ -31,10 +31,12 @@ namespace test
 
 		protected:
 			static	uint32						ConsoleVariableLifecycle(CUnitTest* pParent);
-			static	uint32						GenericVariableOperations(CUnitTest* pParent);
 			static	uint32						IntegerVariableOperations(CUnitTest* pParent);
+			static	uint32						IntegerConstantVariableOperations(CUnitTest* pParent);
 			static	uint32						FloatVariableOperations(CUnitTest* pParent);
+			static	uint32						FloatConstantVariableOperations(CUnitTest* pParent);
 			static	uint32						StringVariableOperations(CUnitTest* pParent);
+			static	uint32						StringConstantVariableOperations(CUnitTest* pParent);
 
 		private:
 			static	engine::CConsole::TIVariablePtr m_pCVar;
