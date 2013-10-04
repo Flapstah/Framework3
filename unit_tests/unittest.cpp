@@ -11,12 +11,10 @@ namespace test
 	CUnitTest::CUnitTest(const char* name)
 		:	m_pTime(GetITime())
 		,	m_testStatus(eTS_UNINITIALISED)
-		,	m_stageStatus(eSS_SUCCESS)
+		,	m_stageStatus(eSS_PASS)
 		,	m_verbosity(eTV_INFORMATION)
 		,	m_name(name)
-		, m_stageWarnings(0)
 		, m_stageErrors(0)
-		, m_totalWarnings(0)
 		, m_totalErrors(0)
 		, m_totalTests(0)
 		, m_stage(0)
@@ -37,10 +35,9 @@ namespace test
 		float seconds;
 		elapsed.GetTime(days, hours, minutes, seconds);
 
-		const char* warningColour = (m_stageWarnings != 0) ? COLOUR_WARNING : COLOUR_SUCCESS;
-		const char* errorColour = (m_stageErrors != 0) ? COLOUR_ERROR : COLOUR_SUCCESS;
+		const char* errorColour = (m_stageErrors != 0) ? COLOUR_ERROR : COLOUR_DEFAULT;
 
-		Log(eTV_RESULT, COLOUR_PROGRESS "[%s] " COLOUR_TEST_INFO "[%s] " COLOUR_DEFAULT "%d tests completed in %s%d days, %02u:%02u:%06.3fs; %s%d warnings" COLOUR_DEFAULT ", %s%d errors\n", timeBuffer, m_name, m_totalTests, (elapsed.GetTicks() < 0) ? "-" : "",  days, hours, minutes, seconds, warningColour, m_totalWarnings, errorColour, m_totalErrors);
+		Log(eTV_RESULT, COLOUR_PROGRESS "[%s] " COLOUR_TEST_INFO "[%s] " COLOUR_DEFAULT "%d tests completed in %s%d days, %02u:%02u:%06.3fs; " COLOUR_DEFAULT ", %s%d errors\n", timeBuffer, m_name, m_totalTests, (elapsed.GetTicks() < 0) ? "-" : "",  days, hours, minutes, seconds, errorColour, m_totalErrors);
 	}
 
 	//============================================================================
@@ -88,13 +85,11 @@ namespace test
 
 				if (status & eSS_COMPLETE)
 				{
-					const char* warningColour = (m_stageWarnings != 0) ? COLOUR_WARNING : COLOUR_SUCCESS;
-					const char* errorColour = (m_stageErrors != 0) ? COLOUR_ERROR : COLOUR_SUCCESS;
+					const char* errorColour = (m_stageErrors != 0) ? COLOUR_ERROR : COLOUR_DEFAULT;
 
 					TimeStamp(timeBuffer, sizeof(timeBuffer));
-					Log(eTV_RESULT, COLOUR_PROGRESS "[%s] " COLOUR_TEST_INFO "[%s:%s] " COLOUR_DEFAULT "complete; %s%d warnings" COLOUR_DEFAULT ", %s%d errors\n", timeBuffer, m_name, test.m_name.c_str(), warningColour, m_stageWarnings, errorColour, m_stageErrors);
+					Log(eTV_RESULT, COLOUR_PROGRESS "[%s] " COLOUR_TEST_INFO "[%s:%s] " COLOUR_DEFAULT "complete; " COLOUR_DEFAULT ", %s%d errors\n", timeBuffer, m_name, test.m_name.c_str(), errorColour, m_stageErrors);
 
-					m_totalWarnings += m_stageWarnings;
 					m_totalErrors += m_stageErrors;
 					ResetStage();
 
@@ -147,10 +142,6 @@ namespace test
 			++m_stageErrors;
 			break;
 
-		case eTV_WARNING:
-			++m_stageWarnings;
-			break;
-
 		default:
 			break;
 		}
@@ -163,16 +154,13 @@ namespace test
 				printf(COLOUR_SUCCESS);
 				break;
 			case eTV_ERROR:
-				printf(COLOUR_ERROR "[ERROR] ");
-				break;
-			case eTV_WARNING:
-				printf(COLOUR_WARNING "[WARNING] ");
+				printf(COLOUR_ERROR);
 				break;
 			case eTV_INFORMATION:
 				printf(COLOUR_INFO);
 				break;
 			default:
-				printf(COLOUR_DEFAULT "[UNKNOWN] ");
+				printf(COLOUR_DEFAULT);
 				break;
 			}
 
@@ -252,7 +240,7 @@ namespace test
 
 	void CUnitTest::ResetStage(void)
 	{
-		m_stageWarnings = m_stageErrors = m_stage = 0;
+		m_stageErrors = m_stage = 0;
 	}
 
 	//============================================================================

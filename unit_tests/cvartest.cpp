@@ -48,7 +48,7 @@ namespace test
 	uint32 CCVarTest::ConsoleVariableLifecycle(CUnitTest* pParent)
 	{
 		CCVarTest* pThis = static_cast<CCVarTest*>(pParent);
-		uint32 status = eSS_SUCCESS;
+		uint32 status = eSS_PASS;
 
 		if (pThis->m_testStatus == eTS_RUNNING)
 		{
@@ -79,7 +79,7 @@ namespace test
 	uint32 CCVarTest::IntegerVariableOperations(CUnitTest* pParent)
 	{
 		CCVarTest* pThis = static_cast<CCVarTest*>(pParent);
-		uint32 status = eSS_SUCCESS;
+		uint32 status = eSS_PASS;
 
 		if (pThis->m_testStatus == eTS_RUNNING)
 		{
@@ -142,7 +142,7 @@ namespace test
 	uint32 CCVarTest::IntegerConstantVariableOperations(CUnitTest* pParent)
 	{
 		CCVarTest* pThis = static_cast<CCVarTest*>(pParent);
-		uint32 status = eSS_SUCCESS;
+		uint32 status = eSS_PASS;
 
 		if (pThis->m_testStatus == eTS_RUNNING)
 		{
@@ -208,7 +208,7 @@ namespace test
 	uint32 CCVarTest::FloatVariableOperations(CUnitTest* pParent)
 	{
 		CCVarTest* pThis = static_cast<CCVarTest*>(pParent);
-		uint32 status = eSS_SUCCESS;
+		uint32 status = eSS_PASS;
 
 		if (pThis->m_testStatus == eTS_RUNNING)
 		{
@@ -228,7 +228,7 @@ namespace test
 	uint32 CCVarTest::FloatConstantVariableOperations(CUnitTest* pParent)
 	{
 		CCVarTest* pThis = static_cast<CCVarTest*>(pParent);
-		uint32 status = eSS_SUCCESS;
+		uint32 status = eSS_PASS;
 
 		if (pThis->m_testStatus == eTS_RUNNING)
 		{
@@ -248,7 +248,7 @@ namespace test
 	uint32 CCVarTest::StringVariableOperations(CUnitTest* pParent)
 	{
 		CCVarTest* pThis = static_cast<CCVarTest*>(pParent);
-		uint32 status = eSS_SUCCESS;
+		uint32 status = eSS_PASS;
 
 		if (pThis->m_testStatus == eTS_RUNNING)
 		{
@@ -268,7 +268,7 @@ namespace test
 	uint32 CCVarTest::StringConstantVariableOperations(CUnitTest* pParent)
 	{
 		CCVarTest* pThis = static_cast<CCVarTest*>(pParent);
-		uint32 status = eSS_SUCCESS;
+		uint32 status = eSS_PASS;
 
 		if (pThis->m_testStatus == eTS_RUNNING)
 		{

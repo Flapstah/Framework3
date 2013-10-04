@@ -34,7 +34,7 @@ namespace test
 	uint32 CTimeTest::TimeValueLimits(CUnitTest* pParent)
 	{
 		CTimeTest* pThis = static_cast<CTimeTest*>(pParent);
-		uint32 status = eSS_SUCCESS;
+		uint32 status = eSS_PASS;
 
 		if (pThis->m_testStatus == eTS_RUNNING)
 		{
@@ -77,7 +77,7 @@ namespace test
 	uint32 CTimeTest::TimeValueOperations(CUnitTest* pParent)
 	{
 		CTimeTest* pThis = static_cast<CTimeTest*>(pParent);
-		uint32 status = eSS_SUCCESS;
+		uint32 status = eSS_PASS;
 
 		if (pThis->m_testStatus == eTS_RUNNING)
 		{

@@ -61,7 +61,7 @@ namespace test
 #undef LOG_SIZE
 		}
 
-		return eSS_SUCCESS | eSS_COMPLETE;
+		return eSS_PASS | eSS_COMPLETE;
 	}
 
 	//============================================================================
