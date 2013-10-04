@@ -32,13 +32,13 @@ namespace test
 
 	bool CCVarTest::Initialise(void)
 	{
-		AddStage("Lifecycle", ConsoleVariableLifecycle, eTV_INFORMATION);
-		AddStage("Integer console variable operations", IntegerVariableOperations, eTV_INFORMATION);
-		AddStage("Integer constant console variable operations", IntegerConstantVariableOperations, eTV_INFORMATION);
-/*		AddStage("Floating point console variable operations", FloatVariableOperations, eTV_INFORMATION);
-		AddStage("Floating point constant console variable operations", FloatVariableOperations, eTV_INFORMATION);
-		AddStage("String console variable operations", StringVariableOperations, eTV_INFORMATION);
-		AddStage("String constant console variable operations", StringVariableOperations, eTV_INFORMATION);
+		AddStage("Lifecycle", ConsoleVariableLifecycle, eTV_VERBOSE);
+		AddStage("Integer console variable operations", IntegerVariableOperations, eTV_VERBOSE);
+		AddStage("Integer constant console variable operations", IntegerConstantVariableOperations, eTV_VERBOSE);
+/*		AddStage("Floating point console variable operations", FloatVariableOperations, eTV_VERBOSE);
+		AddStage("Floating point constant console variable operations", FloatVariableOperations, eTV_VERBOSE);
+		AddStage("String console variable operations", StringVariableOperations, eTV_VERBOSE);
+		AddStage("String constant console variable operations", StringVariableOperations, eTV_VERBOSE);
 */
 		return CUnitTest::Initialise();
 	}
@@ -56,12 +56,12 @@ namespace test
 			{
 				case 1:
 					m_pCVar = REGISTER_VARIABLE(testIntegerVariable, 1, 0, NULL, "A test variable");
-					pThis->Log((m_pCVar != NULL) ? eTV_RESULT : eTV_ERROR, "Created console variable at address %p", m_pCVar.get());
+					pThis->Log((m_pCVar != NULL) ? eTV_TERSE : eTV_ERROR, "Created console variable at address %p", m_pCVar.get());
 					pThis->NextStage();
 
 				case 2:
 					UNREGISTER_VARIABLE(testIntegerVariable);
-					pThis->Log(eTV_RESULT, "Released console variable at address %p", m_pCVar.get());
+					pThis->Log(eTV_TERSE, "Released console variable at address %p", m_pCVar.get());
 					m_pCVar.reset();
 					pThis->NextStage();
 
@@ -89,7 +89,7 @@ namespace test
 					{
 						int64 initialValue = rand();
 						m_pCVar = REGISTER_VARIABLE(testIntegerVariable, initialValue, 0, NULL, "A test variable");
-						pThis->Log((m_pCVar != NULL) ? eTV_RESULT : eTV_ERROR, "Created console variable at address %p", m_pCVar.get());
+						pThis->Log((m_pCVar != NULL) ? eTV_TERSE : eTV_ERROR, "Created console variable at address %p", m_pCVar.get());
 						TEST1_NAMED("Initial value", m_pCVar->GetInteger() == initialValue, m_pCVar->GetInteger(), initialValue); 
 						pThis->NextStage();
 					}
@@ -124,7 +124,7 @@ namespace test
 
 				case 5:
 					UNREGISTER_VARIABLE(testIntegerVariable);
-					pThis->Log(eTV_RESULT, "Released console variable at address %p", m_pCVar.get());
+					pThis->Log(eTV_TERSE, "Released console variable at address %p", m_pCVar.get());
 					m_pCVar.reset();
 					pThis->NextStage();
 
@@ -152,7 +152,7 @@ namespace test
 					{
 						int64 initialValue = rand();
 						m_pCVar = REGISTER_VARIABLE(testIntegerVariable, initialValue, engine::CConsole::IVariable::eF_CONST, NULL, "A test variable");
-						pThis->Log((m_pCVar != NULL) ? eTV_RESULT : eTV_ERROR, "Created console variable at address %p", m_pCVar.get());
+						pThis->Log((m_pCVar != NULL) ? eTV_TERSE : eTV_ERROR, "Created console variable at address %p", m_pCVar.get());
 						TEST1_NAMED("Initial value", m_pCVar->GetInteger() == initialValue, m_pCVar->GetInteger(), initialValue); 
 						pThis->NextStage();
 					}
@@ -190,7 +190,7 @@ namespace test
 
 				case 5:
 					UNREGISTER_VARIABLE(testIntegerVariable);
-					pThis->Log(eTV_RESULT, "Released console variable at address %p", m_pCVar.get());
+					pThis->Log(eTV_TERSE, "Released console variable at address %p", m_pCVar.get());
 					m_pCVar.reset();
 					pThis->NextStage();
 

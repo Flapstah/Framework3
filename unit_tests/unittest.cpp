@@ -12,10 +12,10 @@ namespace test
 		:	m_pTime(GetITime())
 		,	m_testStatus(eTS_UNINITIALISED)
 		,	m_stageStatus(eSS_PASS)
-		,	m_verbosity(eTV_INFORMATION)
+		,	m_verbosity(eTV_VERBOSE)
 		,	m_name(name)
-		, m_stageErrors(0)
-		, m_totalErrors(0)
+		, m_errors(0)
+		, m_errorTotal(0)
 		, m_totalTests(0)
 		, m_stage(0)
 		, m_subStage(0)
@@ -35,9 +35,9 @@ namespace test
 		float seconds;
 		elapsed.GetTime(days, hours, minutes, seconds);
 
-		const char* errorColour = (m_stageErrors != 0) ? COLOUR_ERROR : COLOUR_DEFAULT;
+		const char* errorColour = (m_errors != 0) ? COLOUR_ERROR : COLOUR_DEFAULT;
 
-		Log(eTV_RESULT, COLOUR_PROGRESS "[%s] " COLOUR_TEST_INFO "[%s] " COLOUR_DEFAULT "%d tests completed in %s%d days, %02u:%02u:%06.3fs; " COLOUR_DEFAULT ", %s%d errors\n", timeBuffer, m_name, m_totalTests, (elapsed.GetTicks() < 0) ? "-" : "",  days, hours, minutes, seconds, errorColour, m_totalErrors);
+		Log(eTV_TERSE, COLOUR_PROGRESS "[%s] " COLOUR_TEST_INFO "[%s] " COLOUR_DEFAULT "%d tests (%d stages) completed in %s%d days, %02u:%02u:%06.3fs; " COLOUR_DEFAULT ", %s%d errors\n", timeBuffer, m_name, m_tests.size(), m_totalTests, (elapsed.GetTicks() < 0) ? "-" : "",  days, hours, minutes, seconds, errorColour, m_errorTotal);
 	}
 
 	//============================================================================
@@ -72,12 +72,14 @@ namespace test
 		{
 			if (m_testIterator != m_tests.end())
 			{
-				STest& test = *m_testIterator;
+				SStage& test = *m_testIterator;
 				if (GetStage() == 1)
 				{
 					m_verbosity = test.m_verbosity;
 					TimeStamp(timeBuffer, sizeof(timeBuffer));
-					Log(eTV_RESULT, COLOUR_PROGRESS "[%s] " COLOUR_TEST_INFO "[%s:%s] " COLOUR_DEFAULT "started", timeBuffer, m_name, test.m_name.c_str());
+					SupressNewline(true);
+					Log(eTV_TERSE, COLOUR_PROGRESS "[%s] " COLOUR_TEST_INFO "[%s:%s] " COLOUR_DEFAULT "started", timeBuffer, m_name, test.m_name.c_str());
+					SupressNewline(false);
 				}
 
 				uint32 status = test.m_function(this);
@@ -85,12 +87,19 @@ namespace test
 
 				if (status & eSS_COMPLETE)
 				{
-					const char* errorColour = (m_stageErrors != 0) ? COLOUR_ERROR : COLOUR_DEFAULT;
+					const char* errorColour = (m_errors != 0) ? COLOUR_ERROR : COLOUR_DEFAULT;
 
-					TimeStamp(timeBuffer, sizeof(timeBuffer));
-					Log(eTV_RESULT, COLOUR_PROGRESS "[%s] " COLOUR_TEST_INFO "[%s:%s] " COLOUR_DEFAULT "complete; " COLOUR_DEFAULT ", %s%d errors\n", timeBuffer, m_name, test.m_name.c_str(), errorColour, m_stageErrors);
+					if (m_verbosity == eTV_VERBOSE)
+					{
+						TimeStamp(timeBuffer, sizeof(timeBuffer));
+						Log(eTV_TERSE, COLOUR_PROGRESS "\n[%s] " COLOUR_TEST_INFO "[%s:%s] " COLOUR_DEFAULT "complete; " COLOUR_DEFAULT "%s%d errors\n", timeBuffer, m_name, test.m_name.c_str(), errorColour, m_errors);
+					}
+					else
+					{
+						Log(eTV_TERSE, COLOUR_DEFAULT "complete.");
+					}
 
-					m_totalErrors += m_stageErrors;
+					m_errorTotal += m_errors;
 					ResetStage();
 
 					++m_testIterator;
@@ -121,11 +130,11 @@ namespace test
 
 	//============================================================================
 
-	void CUnitTest::AddStage(const char* name, TestFn function, eTestVerbosity verbosity /* = eTV_RESULT */)
+	void CUnitTest::AddStage(const char* name, TestFn function, eTestVerbosity verbosity /* = eTV_TERSE */)
 	{
 		if (m_testStatus == eTS_UNINITIALISED)
 		{
-			m_tests.push_back(STest(name, function, verbosity));
+			m_tests.push_back(SStage(name, function, verbosity));
 		}
 	}
 
@@ -136,27 +145,17 @@ namespace test
 		va_list args;
 		va_start(args, format);
 
-		switch (targetLevel)
-		{
-		case eTV_ERROR:
-			++m_stageErrors;
-			break;
-
-		default:
-			break;
-		}
-
-		if (m_verbosity >= targetLevel)
+		if (targetLevel <= m_verbosity)
 		{
 			switch (targetLevel)
 			{
-			case eTV_RESULT:
+			case eTV_TERSE:
 				printf(COLOUR_SUCCESS);
 				break;
 			case eTV_ERROR:
 				printf(COLOUR_ERROR);
 				break;
-			case eTV_INFORMATION:
+			case eTV_VERBOSE:
 				printf(COLOUR_INFO);
 				break;
 			default:
@@ -186,7 +185,8 @@ namespace test
 
 	uint32 CUnitTest::NextStage(void)
 	{
-		m_totalTests += (GetSubstage() == 1) ? 1 : 0; return ++m_stage;
+		m_totalTests += (GetSubstage() == 1) ? 1 : 0;
+		return ++m_stage;
 	}
 
 	//============================================================================
@@ -200,7 +200,8 @@ namespace test
 
 	uint32 CUnitTest::NextSubstage(void)
 	{
-		++m_totalTests; return ++m_subStage;
+		++m_totalTests;
+		return ++m_subStage;
 	}
 
 	//============================================================================
@@ -208,6 +209,18 @@ namespace test
 	bool CUnitTest::IsEqual(double param1, double param2, double epsilon /* = 0.0 */)
 	{
 		return ((param1 >= (param2-epsilon)) && (param1 <= (param2+epsilon)));
+	}
+
+	//============================================================================
+
+	bool CUnitTest::Test(bool test)
+	{
+		if (!test)
+		{
+			++m_errors;
+		}
+
+		return test;
 	}
 
 	//============================================================================
@@ -240,7 +253,7 @@ namespace test
 
 	void CUnitTest::ResetStage(void)
 	{
-		m_stageErrors = m_stage = 0;
+		m_errors = m_stage = 0;
 	}
 
 	//============================================================================

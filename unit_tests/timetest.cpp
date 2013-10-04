@@ -23,8 +23,8 @@ namespace test
 
 	bool CTimeTest::Initialise(void)
 	{
-		AddStage("CTimeValue Limits", TimeValueLimits, eTV_RESULT);
-		AddStage("CTimeValue Operations", TimeValueOperations, eTV_RESULT);
+		AddStage("CTimeValue Limits", TimeValueLimits, eTV_TERSE);
+		AddStage("CTimeValue Operations", TimeValueOperations, eTV_TERSE);
 
 		return CUnitTest::Initialise();
 	}
@@ -48,7 +48,7 @@ namespace test
 						CTimeValue testValue(DECLARE_64BIT(0x8000000000000001));
 						testValue.GetTime(days, hours, minutes, seconds);
 
-						pThis->Log(eTV_RESULT, "Minimum negative time value is %s%d days, %02u:%02u:%06.3fs", (testValue.GetTicks() < 0) ? "-" : "+",  days, hours, minutes, seconds);
+						pThis->Log(eTV_TERSE, "Minimum negative time value is %s%d days, %02u:%02u:%06.3fs", (testValue.GetTicks() < 0) ? "-" : "+",  days, hours, minutes, seconds);
 						pThis->NextStage();
 					}
 					break;
@@ -58,7 +58,7 @@ namespace test
 						CTimeValue testValue(DECLARE_64BIT(0x7fffffffffffffff));
 						testValue.GetTime(days, hours, minutes, seconds);
 
-						pThis->Log(eTV_RESULT, "Maximum positive time value is %s%d days, %02u:%02u:%06.3fs", (testValue.GetTicks() < 0) ? "-" : "+",  days, hours, minutes, seconds);
+						pThis->Log(eTV_TERSE, "Maximum positive time value is %s%d days, %02u:%02u:%06.3fs", (testValue.GetTicks() < 0) ? "-" : "+",  days, hours, minutes, seconds);
 						pThis->NextStage();
 					}
 					break;

@@ -25,7 +25,7 @@ namespace test
 
 	bool CTypeTest::Initialise(void)
 	{
-		AddStage("Sizes", SizeTest, eTV_RESULT);
+		AddStage("Sizes", SizeTest, eTV_TERSE);
 
 		return CUnitTest::Initialise();
 	}
@@ -39,12 +39,12 @@ namespace test
 		if (pThis->m_testStatus == eTS_RUNNING)
 		{
 #if defined(ENVIRONMENT32)
-			pThis->Log(eTV_INFORMATION, "(32 bit environment)");
+			pThis->Log(eTV_VERBOSE, "(32 bit environment)");
 #endif // [defined(ENVIRONMENT32)]
 #if defined(ENVIRONMENT64)
-			pThis->Log(eTV_INFORMATION, "(64 bit environment)");
+			pThis->Log(eTV_VERBOSE, "(64 bit environment)");
 #endif // [defined(ENVIRONMENT64)]
-#define LOG_SIZE(_type_) pThis->Log(eTV_INFORMATION, #_type_ "\t: %u", static_cast<uint32>(sizeof(_type_)))
+#define LOG_SIZE(_type_) pThis->Log(eTV_VERBOSE, #_type_ "\t: %u", static_cast<uint32>(sizeof(_type_)))
 			LOG_SIZE(int8);
 			LOG_SIZE(int16);
 			LOG_SIZE(int32);
