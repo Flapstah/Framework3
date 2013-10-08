@@ -32,9 +32,9 @@ namespace test
 
 	bool CCVarTest::Initialise(void)
 	{
-		AddStage("Lifecycle", ConsoleVariableLifecycle, eTV_VERBOSE);
-		AddStage("Integer console variable operations", IntegerVariableOperations, eTV_VERBOSE);
-		AddStage("Integer constant console variable operations", IntegerConstantVariableOperations, eTV_VERBOSE);
+		AddStage("Lifecycle", ConsoleVariableLifecycle, eTV_TERSE);
+		AddStage("Integer console variable operations", IntegerVariableOperations, eTV_TERSE);
+		AddStage("Integer constant console variable operations", IntegerConstantVariableOperations, eTV_TERSE);
 /*		AddStage("Floating point console variable operations", FloatVariableOperations, eTV_VERBOSE);
 		AddStage("Floating point constant console variable operations", FloatVariableOperations, eTV_VERBOSE);
 		AddStage("String console variable operations", StringVariableOperations, eTV_VERBOSE);
@@ -47,6 +47,7 @@ namespace test
 
 	uint32 CCVarTest::ConsoleVariableLifecycle(CUnitTest* pParent)
 	{
+		char buffer[64];
 		CCVarTest* pThis = static_cast<CCVarTest*>(pParent);
 		uint32 status = eSS_PASS;
 
@@ -56,12 +57,14 @@ namespace test
 			{
 				case 1:
 					m_pCVar = REGISTER_VARIABLE(testIntegerVariable, 1, 0, NULL, "A test variable");
-					pThis->Log((m_pCVar != NULL) ? eTV_TERSE : eTV_ERROR, "Created console variable at address %p", m_pCVar.get());
+					sprintf(buffer, "%p", m_pCVar.get());
+					TEST_INFORMATION("Created console variable at address", buffer);
 					pThis->NextStage();
 
 				case 2:
 					UNREGISTER_VARIABLE(testIntegerVariable);
-					pThis->Log(eTV_TERSE, "Released console variable at address %p", m_pCVar.get());
+					sprintf(buffer, "%p", m_pCVar.get());
+					TEST_INFORMATION("Released console variable at address", buffer);
 					m_pCVar.reset();
 					pThis->NextStage();
 
@@ -78,6 +81,7 @@ namespace test
 
 	uint32 CCVarTest::IntegerVariableOperations(CUnitTest* pParent)
 	{
+		char buffer[64];
 		CCVarTest* pThis = static_cast<CCVarTest*>(pParent);
 		uint32 status = eSS_PASS;
 
@@ -89,7 +93,8 @@ namespace test
 					{
 						int64 initialValue = rand();
 						m_pCVar = REGISTER_VARIABLE(testIntegerVariable, initialValue, 0, NULL, "A test variable");
-						pThis->Log((m_pCVar != NULL) ? eTV_TERSE : eTV_ERROR, "Created console variable at address %p", m_pCVar.get());
+						sprintf(buffer, "%p", m_pCVar.get());
+						TEST_INFORMATION("Created console variable at address", buffer);
 						TEST1_NAMED("Initial value", m_pCVar->GetInteger() == initialValue, m_pCVar->GetInteger(), initialValue); 
 						pThis->NextStage();
 					}
@@ -124,7 +129,8 @@ namespace test
 
 				case 5:
 					UNREGISTER_VARIABLE(testIntegerVariable);
-					pThis->Log(eTV_TERSE, "Released console variable at address %p", m_pCVar.get());
+					sprintf(buffer, "%p", m_pCVar.get());
+					TEST_INFORMATION("Released console variable at address", buffer);
 					m_pCVar.reset();
 					pThis->NextStage();
 
@@ -141,6 +147,7 @@ namespace test
 
 	uint32 CCVarTest::IntegerConstantVariableOperations(CUnitTest* pParent)
 	{
+		char buffer[64];
 		CCVarTest* pThis = static_cast<CCVarTest*>(pParent);
 		uint32 status = eSS_PASS;
 
@@ -152,7 +159,8 @@ namespace test
 					{
 						int64 initialValue = rand();
 						m_pCVar = REGISTER_VARIABLE(testIntegerVariable, initialValue, engine::CConsole::IVariable::eF_CONST, NULL, "A test variable");
-						pThis->Log((m_pCVar != NULL) ? eTV_TERSE : eTV_ERROR, "Created console variable at address %p", m_pCVar.get());
+						sprintf(buffer, "%p", m_pCVar.get());
+						TEST_INFORMATION("Created console variable at address", buffer);
 						TEST1_NAMED("Initial value", m_pCVar->GetInteger() == initialValue, m_pCVar->GetInteger(), initialValue); 
 						pThis->NextStage();
 					}
@@ -190,7 +198,8 @@ namespace test
 
 				case 5:
 					UNREGISTER_VARIABLE(testIntegerVariable);
-					pThis->Log(eTV_TERSE, "Released console variable at address %p", m_pCVar.get());
+					sprintf(buffer, "%p", m_pCVar.get());
+					TEST_INFORMATION("Released console variable at address", buffer);
 					m_pCVar.reset();
 					pThis->NextStage();
 

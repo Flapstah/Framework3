@@ -33,6 +33,7 @@ namespace test
 
 	uint32 CTimeTest::TimeValueLimits(CUnitTest* pParent)
 	{
+		char buffer[64];
 		CTimeTest* pThis = static_cast<CTimeTest*>(pParent);
 		uint32 status = eSS_PASS;
 
@@ -48,7 +49,8 @@ namespace test
 						CTimeValue testValue(DECLARE_64BIT(0x8000000000000001));
 						testValue.GetTime(days, hours, minutes, seconds);
 
-						pThis->Log(eTV_TERSE, "Minimum negative time value is %s%d days, %02u:%02u:%06.3fs", (testValue.GetTicks() < 0) ? "-" : "+",  days, hours, minutes, seconds);
+						sprintf(buffer, "%s%d days, %02u:%02u:%06.3fs", (testValue.GetTicks() < 0) ? "-" : "+",  days, hours, minutes, seconds);
+						TEST_INFORMATION("Minimum negative time value", buffer);
 						pThis->NextStage();
 					}
 					break;
@@ -58,7 +60,8 @@ namespace test
 						CTimeValue testValue(DECLARE_64BIT(0x7fffffffffffffff));
 						testValue.GetTime(days, hours, minutes, seconds);
 
-						pThis->Log(eTV_TERSE, "Maximum positive time value is %s%d days, %02u:%02u:%06.3fs", (testValue.GetTicks() < 0) ? "-" : "+",  days, hours, minutes, seconds);
+						sprintf(buffer, "%s%d days, %02u:%02u:%06.3fs", (testValue.GetTicks() < 0) ? "-" : "+",  days, hours, minutes, seconds);
+						TEST_INFORMATION("Maximum positive time value", buffer);
 						pThis->NextStage();
 					}
 					break;
