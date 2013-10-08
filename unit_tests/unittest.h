@@ -219,17 +219,17 @@ namespace test
 			//========================================================================
 
 		private:
-			struct SStage
+			struct STest
 			{
-				SStage(const char* name, TestFn function, eTestVerbosity verbosity) : m_name(name), m_function(function), m_verbosity(verbosity) {}
+				STest(const char* name, TestFn function, eTestVerbosity verbosity) : m_name(name), m_function(function), m_verbosity(verbosity) {}
 
 				string									m_name;
 				TestFn									m_function;
 				eTestVerbosity					m_verbosity;
 			};
 
-			vector<SStage>						m_tests;
-			vector<SStage>::iterator	m_testIterator;
+			vector<STest>							m_tests;
+			vector<STest>::iterator		m_testIterator;
 			CTimeValue								m_timeStarted;
 			CTimeValue								m_timeEnded;
 			const char*								m_name;

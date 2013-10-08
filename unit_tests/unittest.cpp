@@ -72,7 +72,7 @@ namespace test
 		{
 			if (m_testIterator != m_tests.end())
 			{
-				SStage& test = *m_testIterator;
+				STest& test = *m_testIterator;
 				if (GetStage() == 1)
 				{
 					m_verbosity = test.m_verbosity;
@@ -134,7 +134,7 @@ namespace test
 	{
 		if (m_testStatus == eTS_UNINITIALISED)
 		{
-			m_tests.push_back(SStage(name, function, verbosity));
+			m_tests.push_back(STest(name, function, verbosity));
 		}
 	}
 
