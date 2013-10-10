@@ -111,9 +111,9 @@ namespace test
 
 				case 3:
 					{
-						double value = static_cast<double>(rand())/RAND_MAX;
+						double value = static_cast<double>(rand());
 						m_pCVar->SetDouble(value);
-						TEST1_NAMED("Set double value", pThis->IsEqual(m_pCVar->GetDouble(), value), m_pCVar->GetDouble(), value); 
+						TEST1_NAMED("Set double value", pThis->IsEqual(m_pCVar->GetDouble(), value), m_pCVar->GetDouble(), static_cast<int64>(value)); 
 						pThis->NextStage();
 					}
 					break;
