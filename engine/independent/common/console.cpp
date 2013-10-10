@@ -245,13 +245,17 @@ namespace engine
 
 		if (FindVariable(nameHash) == NULL)
 		{
-			pVariable = boost::make_shared<TInteger>(TInteger(variable, flags, pOnChangeCallback));
+			// Make sure the variable is non-const before setting it's initial value...
+			uint32 adjustedFlags = flags&~IVariable::eF_CONST;
+			pVariable = boost::make_shared<TInteger>(TInteger(variable, adjustedFlags, pOnChangeCallback));
 			if (pVariable != NULL)
 			{
 				m_variables[nameHash] = pVariable;
 			}
 
 			pVariable->SetInteger(value);
+			//...then restore the flags
+			pVariable->ModifyFlags(flags, 0);
 
 			if (name != NULL)
 			{
@@ -274,13 +278,17 @@ namespace engine
 
 		if (FindVariable(nameHash) == NULL)
 		{
-			pVariable = boost::make_shared<TDouble>(TDouble(variable, flags, pOnChangeCallback));
+			// Make sure the variable is non-const before setting it's initial value...
+			uint32 adjustedFlags = flags&~IVariable::eF_CONST;
+			pVariable = boost::make_shared<TDouble>(TDouble(variable, adjustedFlags, pOnChangeCallback));
 			if (pVariable != NULL)
 			{
 				m_variables[nameHash] = pVariable;
 			}
 
 			pVariable->SetDouble(value);
+			//...then restore the flags
+			pVariable->ModifyFlags(flags, 0);
 
 			if (name != NULL)
 			{
@@ -303,13 +311,17 @@ namespace engine
 
 		if (FindVariable(nameHash) == NULL)
 		{
-			pVariable = boost::make_shared<TString>(TString(variable, flags, pOnChangeCallback));
+			// Make sure the variable is non-const before setting it's initial value...
+			uint32 adjustedFlags = flags&~IVariable::eF_CONST;
+			pVariable = boost::make_shared<TString>(TString(variable, adjustedFlags, pOnChangeCallback));
 			if (pVariable != NULL)
 			{
 				m_variables[nameHash] = pVariable;
 			}
 
 			pVariable->SetString(value);
+			//...then restore the flags
+			pVariable->ModifyFlags(flags, 0);
 
 			if (name != NULL)
 			{
