@@ -51,8 +51,8 @@
 //------------------------------------------------------------------------------
 // Use STRINGIZE() to get a string version of a macro's value
 // e.g:
-// #define SOME_MACRO some text
-// STRINGIZE(SOME_MACRO) will yield "some text"
+// #define SOME_MACRO some_text
+// STRINGIZE(SOME_MACRO) will yield "some_text"
 //------------------------------------------------------------------------------
 #define _STRINGIZE(_thing_) #_thing_
 #define STRINGIZE(_thing_) _STRINGIZE(_thing_)
