@@ -71,7 +71,10 @@ namespace engine
 				//----------------------------------------------------------------------
 				enum eFlags
 				{
-					eF_CONST = BIT(0), // If set, the mapped variable cannot be changed by Get/Set methods
+					eF_CONST = BIT(0),		// If set, the mapped variable cannot be changed by
+																// Get/Set methods (with the exception of variable
+																// registration, where it's initial value *will*
+																// be passed to Set (and any OnChange callback)
 				}; // End [enum eFlags]
 
 				virtual int64 GetInteger(void) const = 0;
@@ -134,6 +137,7 @@ namespace engine
 			const SVariableDetails* FindDetails(const char* name);
 
 		protected:
+			// Variables without a description cannot be searched for or tab completed.
 			void AddDescription(uint32 nameHash, const char* name, const char* description);
 
 		private:

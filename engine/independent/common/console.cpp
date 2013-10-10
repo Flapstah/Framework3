@@ -23,6 +23,13 @@ namespace engine
 		{
 			m_variable = m_pCallback(atol(value));
 		}
+#if !defined(_RELEASE)
+		else
+		{
+			printf("[CONSOLE]: failed to set const integer variable with %s", value);
+		}
+#endif // !defined(_RELEASE)
+
 
 		return buffer.str().c_str();
 	}
@@ -44,6 +51,12 @@ namespace engine
 		{
 			m_variable = m_pCallback(atof(value));
 		}
+#if !defined(_RELEASE)
+		else
+		{
+			printf("[CONSOLE]: failed to set const double variable with %s", value);
+		}
+#endif // !defined(_RELEASE)
 
 		return buffer.str().c_str();
 	}
@@ -74,6 +87,12 @@ namespace engine
 		{
 			m_variable = m_pCallback(buffer.str());
 		}
+#if !defined(_RELEASE)
+		else
+		{
+			printf("[CONSOLE]: failed to set const string variable with %s", buffer.str().c_str());
+		}
+#endif // !defined(_RELEASE)
 
 		return old;
 	}
@@ -98,6 +117,12 @@ namespace engine
 		{
 			m_variable = m_pCallback(buffer.str());
 		}
+#if !defined(_RELEASE)
+		else
+		{
+			printf("[CONSOLE]: failed to set const string variable with %s", buffer.str().c_str());
+		}
+#endif // !defined(_RELEASE)
 
 		return old;
 	}
@@ -119,6 +144,12 @@ namespace engine
 		{
 			m_variable = m_pCallback(std::string(value));
 		}
+#if !defined(_RELEASE)
+		else
+		{
+			printf("[CONSOLE]: failed to set const string variable with %s", value);
+		}
+#endif // !defined(_RELEASE)
 
 		return old.c_str();
 	}
@@ -161,6 +192,12 @@ namespace engine
 		{
 			m_variable = m_pCallback(value);
 		}
+#if !defined(_RELEASE)
+		else
+		{
+			printf("[CONSOLE]: failed to set const variable with %" PRId64, value);
+		}
+#endif // !defined(_RELEASE)
 
 		return old;
 	}
@@ -182,6 +219,12 @@ namespace engine
 		{
 			m_variable = m_pCallback(value);
 		}
+#if !defined(_RELEASE)
+		else
+		{
+			printf("[CONSOLE]: failed to set const variable with %g", value);
+		}
+#endif // !defined(_RELEASE)
 
 		return old;
 	}
