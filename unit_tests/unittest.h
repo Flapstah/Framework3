@@ -151,8 +151,8 @@ namespace test
 			enum eStageStatus
 			{
 				eSS_PASS			= 0,			// Default stage status
-				eSS_FAIL			= 1 << 0,	// Set if any test in a stage fails
-				eSS_COMPLETE	= 1 << 2	// Set when this stage is complete
+				eSS_FAIL			= BIT(0),	// Set if any test in a stage fails
+				eSS_COMPLETE	= BIT(1)	// Set when this stage is complete
 			}; // End [enum eStageStatus]
 
 			//========================================================================
@@ -182,10 +182,14 @@ namespace test
 			virtual				void				Uninitialise(void);
 
 										void				AddStage(const char* name, TestFn function, eTestVerbosity verbosity = eTV_TERSE);
-										// N.B. A member function has a hidden 1st paramater (the
-										// hidden 'this') pointer, so 'format' is actually the 3rd
-										// parameter, and the variadic part is the 4th parameter
+																// N.B. A member function has a hidden 1st paramater (the
+																// hidden 'this') pointer, so 'format' is actually the 3rd
+																// parameter, and the variadic part is the 4th parameter
 										void				Log(eTestVerbosity targetLevel, const char* format, ...) __attribute__((format(printf, 3, 4)));
+										
+										void				StageTest(const char* description, bool test, const char* failureMessage);
+										void				SubstageTest(const char* description, bool test, const char* failureMessage);
+										void				Information(const char* description);
 										
 			//========================================================================
 
@@ -197,6 +201,7 @@ namespace test
 
 										bool				IsEqual(double param1, double param2, double epsilon = 0.0);
 										bool				Test(bool test);
+										void				PerformTest(const char* description, bool test, const char* failureMessage);
 
 										bool				SupressNewline(bool supress);
 
@@ -219,6 +224,9 @@ namespace test
 			//========================================================================
 
 		private:
+			//========================================================================
+			// STest should be a function containing one or more test stages
+			//========================================================================
 			struct STest
 			{
 				STest(const char* name, TestFn function, eTestVerbosity verbosity) : m_name(name), m_function(function), m_verbosity(verbosity) {}
@@ -227,6 +235,8 @@ namespace test
 				TestFn									m_function;
 				eTestVerbosity					m_verbosity;
 			};
+
+			//========================================================================
 
 			vector<STest>							m_tests;
 			vector<STest>::iterator		m_testIterator;

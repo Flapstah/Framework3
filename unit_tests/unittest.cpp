@@ -176,6 +176,36 @@ namespace test
 
 	//============================================================================
 
+	void CUnitTest::StageTest(const char* description, bool test, const char* failureMessage)
+	{
+		PerformTest(description, test, failureMessage);
+		++m_stage;
+	}
+
+	//============================================================================
+
+	void CUnitTest::SubstageTest(const char* description, bool test, const char* failureMessage)
+	{
+		PerformTest(description, test, failureMessage);
+		++m_subStage;
+	}
+
+	//============================================================================
+
+	void CUnitTest::Information(const char* description)
+	{
+		if (m_verbosity == eTV_VERBOSE)
+		{
+			Log(eTV_VERBOSE, COLOUR_PROGRESS "\n[%d:%d]", m_stage, m_subStage);
+			Log(eTV_VERBOSE, COLOUR_TEST_INFO "[%s]", description);
+		}
+		else
+		{
+			Log(eTV_TERSE, ".");
+		}
+	}
+	//============================================================================
+
 	uint32 CUnitTest::GetStage(void)
 	{
 		return m_stage+1;
@@ -221,6 +251,26 @@ namespace test
 		}
 
 		return test;
+	}
+
+	//============================================================================
+
+	void CUnitTest::PerformTest(const char* description, bool test, const char* failureMessage)
+	{
+		if ((test != true) || (m_verbosity == eTV_VERBOSE))
+		{
+			Log(eTV_TERSE, COLOUR_PROGRESS "\n[%d:%d]", m_stage, m_subStage);
+			Log(eTV_TERSE, COLOUR_TEST_INFO "[%s]", description);
+			if (test != true)
+			{
+				Log(eTV_ERROR, COLOUR_ERROR "[%s]", failureMessage);
+				++m_errors;
+			}
+		}
+		else
+		{
+			Log(eTV_TERSE, ".");
+		}
 	}
 
 	//============================================================================
