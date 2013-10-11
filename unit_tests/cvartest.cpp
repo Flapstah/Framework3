@@ -56,13 +56,13 @@ namespace test
 			{
 				case 1:
 					m_pCVar = REGISTER_VARIABLE(testIntegerVariable, 1, 0, NULL, "A test variable");
-					pThis->StageTest("Registering a console variable", m_pCVar.get() != NULL, "CVar pointer is NULL");
+					pThis->PerformTest("Registering a console variable", m_pCVar.get() != NULL, "CVar pointer is NULL");
 					break;
 
 				case 2:
 					UNREGISTER_VARIABLE(testIntegerVariable);
 					m_pCVar.reset();
-					pThis->StageTest("Unregistering a console variable", m_pCVar.get() == NULL, "CVar pointer is not NULL");
+					pThis->PerformTest("Unregistering a console variable", m_pCVar.get() == NULL, "CVar pointer is not NULL");
 					break;
 
 				default:
@@ -89,7 +89,7 @@ namespace test
 					{
 						int64 initialValue = rand();
 						m_pCVar = REGISTER_VARIABLE(testIntegerVariable, initialValue, 0, NULL, "A test variable");
-						pThis->StageTest("Setting initial value of integer cvar", m_pCVar->GetInteger() == initialValue, "Initial value is not set correctly");
+						pThis->PerformTest("Setting initial value of integer cvar", m_pCVar->GetInteger() == initialValue, "Initial value is not set correctly");
 					}
 					break;
 
@@ -97,7 +97,7 @@ namespace test
 					{
 						int64 value = rand();
 						m_pCVar->SetInteger(value);
-						pThis->StageTest("Setting integer cvar with integer value", m_pCVar->GetInteger() == value, "Value is not set correctly");
+						pThis->PerformTest("Setting integer cvar with integer value", m_pCVar->GetInteger() == value, "Value is not set correctly");
 					}
 					break;
 
@@ -105,7 +105,7 @@ namespace test
 					{
 						double value = static_cast<double>(rand());
 						m_pCVar->SetDouble(value);
-						pThis->StageTest("Setting integer cvar with double value", pThis->IsEqual(m_pCVar->GetDouble(), value), "Value is not set correctly");
+						pThis->PerformTest("Setting integer cvar with double value", pThis->IsEqual(m_pCVar->GetDouble(), value), "Value is not set correctly");
 					}
 					break;
 
@@ -113,7 +113,7 @@ namespace test
 					{
 						const char* value = "3.1415926535897932384626433832795";
 						m_pCVar->SetString(value);
-						pThis->StageTest("Setting integer cvar with string value", strcmp(m_pCVar->GetString(), "3") == 0, "Value is not set correctly");
+						pThis->PerformTest("Setting integer cvar with string value", strcmp(m_pCVar->GetString(), "3") == 0, "Value is not set correctly");
 						UNREGISTER_VARIABLE(testIntegerVariable);
 						m_pCVar.reset();
 					}
@@ -143,7 +143,7 @@ namespace test
 					{
 						int64 initialValue = rand();
 						m_pCVar = REGISTER_VARIABLE(testIntegerVariable, initialValue, engine::CConsole::IVariable::eF_CONST, NULL, "A test variable");
-						pThis->StageTest("Setting initial value of const integer cvar", m_pCVar->GetInteger() == initialValue, "Initial value is not set correctly");
+						pThis->PerformTest("Setting initial value of const integer cvar", m_pCVar->GetInteger() == initialValue, "Initial value is not set correctly");
 					}
 					break;
 
@@ -152,7 +152,7 @@ namespace test
 						int64 initialValue = m_pCVar->GetInteger();
 						int64 value = rand();
 						m_pCVar->SetInteger(value);
-						pThis->StageTest("Setting const integer cvar with integer value", m_pCVar->GetInteger() == initialValue, "Value has changed");
+						pThis->PerformTest("Setting const integer cvar with integer value", m_pCVar->GetInteger() == initialValue, "Value has changed");
 					}
 					break;
 
@@ -161,7 +161,7 @@ namespace test
 						double initialValue = m_pCVar->GetDouble();
 						double value = static_cast<double>(rand())/RAND_MAX;
 						m_pCVar->SetDouble(value);
-						pThis->StageTest("Setting const integer cvar with double value", pThis->IsEqual(m_pCVar->GetDouble(), initialValue), "Value has changed");
+						pThis->PerformTest("Setting const integer cvar with double value", pThis->IsEqual(m_pCVar->GetDouble(), initialValue), "Value has changed");
 					}
 					break;
 
@@ -170,7 +170,7 @@ namespace test
 						const char* initialValue = m_pCVar->GetString();
 						const char* value = "3.1415926535897932384626433832795";
 						m_pCVar->SetString(value);
-						pThis->StageTest("Setting integer cvar with string value", strcmp(m_pCVar->GetString(), initialValue) == 0, "Value has changed");
+						pThis->PerformTest("Setting integer cvar with string value", strcmp(m_pCVar->GetString(), initialValue) == 0, "Value has changed");
 						UNREGISTER_VARIABLE(testIntegerVariable);
 						m_pCVar.reset();
 					}

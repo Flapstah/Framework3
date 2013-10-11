@@ -176,23 +176,39 @@ namespace test
 
 	//============================================================================
 
-	void CUnitTest::StageTest(const char* description, bool test, const char* failureMessage)
-	{
-		PerformTest(description, test, failureMessage);
-		++m_stage;
+	void CUnitTest::PerformTest(const char* description, bool test, const char* failureMessage, int32 testType /* = eTT_Stage */)
+	{	
+		const char* none = "None";
+
+		if ((test != true) || (m_verbosity == eTV_VERBOSE))
+		{
+			Log(eTV_TERSE, COLOUR_PROGRESS "\n[%d:%d]", m_stage, m_subStage);
+			Log(eTV_TERSE, COLOUR_TEST_INFO "[%s]", (description != NULL) ? description : none);
+			if (test != true)
+			{
+				Log(eTV_ERROR, COLOUR_ERROR "[%s]", (failureMessage != NULL) ? failureMessage : none);
+				++m_errors;
+			}
+		}
+		else
+		{
+			Log(eTV_TERSE, ".");
+		}
+
+		switch (testType)
+		{
+		case eTT_Stage:
+			++m_stage;
+			break;
+		case eTT_SubStage:
+			++m_subStage;
+			break;
+		}
 	}
 
 	//============================================================================
 
-	void CUnitTest::SubstageTest(const char* description, bool test, const char* failureMessage)
-	{
-		PerformTest(description, test, failureMessage);
-		++m_subStage;
-	}
-
-	//============================================================================
-
-	void CUnitTest::Information(const char* description)
+	void CUnitTest::Information(const char* description, int32 testType)
 	{
 		if (m_verbosity == eTV_VERBOSE)
 		{
@@ -202,6 +218,16 @@ namespace test
 		else
 		{
 			Log(eTV_TERSE, ".");
+		}
+
+		switch (testType)
+		{
+		case eTT_Stage:
+			++m_stage;
+			break;
+		case eTT_SubStage:
+			++m_subStage;
+			break;
 		}
 	}
 	//============================================================================
@@ -251,26 +277,6 @@ namespace test
 		}
 
 		return test;
-	}
-
-	//============================================================================
-
-	void CUnitTest::PerformTest(const char* description, bool test, const char* failureMessage)
-	{
-		if ((test != true) || (m_verbosity == eTV_VERBOSE))
-		{
-			Log(eTV_TERSE, COLOUR_PROGRESS "\n[%d:%d]", m_stage, m_subStage);
-			Log(eTV_TERSE, COLOUR_TEST_INFO "[%s]", description);
-			if (test != true)
-			{
-				Log(eTV_ERROR, COLOUR_ERROR "[%s]", failureMessage);
-				++m_errors;
-			}
-		}
-		else
-		{
-			Log(eTV_TERSE, ".");
-		}
 	}
 
 	//============================================================================

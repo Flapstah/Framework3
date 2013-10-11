@@ -33,7 +33,7 @@ namespace test
 
 	uint32 CTimeTest::TimeValueLimits(CUnitTest* pParent)
 	{
-		char buffer[64];
+		char buffer[128];
 		CTimeTest* pThis = static_cast<CTimeTest*>(pParent);
 		uint32 status = eSS_PASS;
 
@@ -49,9 +49,8 @@ namespace test
 						CTimeValue testValue(DECLARE_64BIT(0x8000000000000001));
 						testValue.GetTime(days, hours, minutes, seconds);
 
-						sprintf(buffer, "%s%d days, %02u:%02u:%06.3fs", (testValue.GetTicks() < 0) ? "-" : "+",  days, hours, minutes, seconds);
-						TEST_INFORMATION("Minimum negative time value", buffer);
-						pThis->NextStage();
+						sprintf(buffer, "Minimum negative time value: %s%d days, %02u:%02u:%06.3fs", (testValue.GetTicks() < 0) ? "-" : "+",  days, hours, minutes, seconds);
+						pThis->PerformTest(buffer, true, NULL);
 					}
 					break;
 
@@ -60,9 +59,8 @@ namespace test
 						CTimeValue testValue(DECLARE_64BIT(0x7fffffffffffffff));
 						testValue.GetTime(days, hours, minutes, seconds);
 
-						sprintf(buffer, "%s%d days, %02u:%02u:%06.3fs", (testValue.GetTicks() < 0) ? "-" : "+",  days, hours, minutes, seconds);
-						TEST_INFORMATION("Maximum positive time value", buffer);
-						pThis->NextStage();
+						sprintf(buffer, "Maximum positive time value: %s%d days, %02u:%02u:%06.3fs", (testValue.GetTicks() < 0) ? "-" : "+",  days, hours, minutes, seconds);
+						pThis->PerformTest(buffer, true, NULL);
 					}
 					break;
 
@@ -90,17 +88,15 @@ namespace test
 					{
 						// Test default constructor
 						CTimeValue zeroTest;
-						TEST1_NAMED("CTimeValue zeroTest", pThis->IsEqual(zeroTest.GetSeconds(), 0.0), 0, zeroTest.GetSeconds());
+						pThis->PerformTest("Default constructor", pThis->IsEqual(zeroTest.GetSeconds(), 0.0), "CTimeValue not zero", eTT_SubStage);
 
 						// Test value constructor
 						CTimeValue oneTest(1.0);
-						TEST1_NAMED("CTimeValue oneTest", pThis->IsEqual(oneTest.GetSeconds(), 1.0), 1.0, oneTest.GetSeconds());
+						pThis->PerformTest("Construct with value", pThis->IsEqual(oneTest.GetSeconds(), 1.0), "CTimeValue not set to value", eTT_SubStage);
 
 						// Test copy constructor
 						CTimeValue copyTest(oneTest);
-						TEST1_NAMED("CTimeValue copyTest(oneTest)", pThis->IsEqual(copyTest.GetSeconds(), oneTest.GetSeconds()), oneTest.GetSeconds(), copyTest.GetSeconds());
-
-						pThis->NextStage();
+						pThis->PerformTest("Copy constructor", pThis->IsEqual(copyTest.GetSeconds(), oneTest.GetSeconds()), "CTimeValue copy not equal to original");
 					}
 					break;
 
