@@ -47,7 +47,6 @@ namespace test
 
 	uint32 CCVarTest::ConsoleVariableLifecycle(CUnitTest* pParent)
 	{
-		char buffer[64];
 		CCVarTest* pThis = static_cast<CCVarTest*>(pParent);
 		uint32 status = eSS_PASS;
 
@@ -57,16 +56,14 @@ namespace test
 			{
 				case 1:
 					m_pCVar = REGISTER_VARIABLE(testIntegerVariable, 1, 0, NULL, "A test variable");
-					sprintf(buffer, "%p", m_pCVar.get());
-					TEST_INFORMATION("Created console variable at address", buffer);
-					pThis->NextStage();
+					pThis->StageTest("Registering a console variable", m_pCVar.get() != NULL, "CVar pointer is NULL");
+					break;
 
 				case 2:
 					UNREGISTER_VARIABLE(testIntegerVariable);
-					sprintf(buffer, "%p", m_pCVar.get());
-					TEST_INFORMATION("Released console variable at address", buffer);
 					m_pCVar.reset();
-					pThis->NextStage();
+					pThis->StageTest("Unregistering a console variable", m_pCVar.get() == NULL, "CVar pointer is not NULL");
+					break;
 
 				default:
 					status |= eSS_COMPLETE;
@@ -81,7 +78,6 @@ namespace test
 
 	uint32 CCVarTest::IntegerVariableOperations(CUnitTest* pParent)
 	{
-		char buffer[64];
 		CCVarTest* pThis = static_cast<CCVarTest*>(pParent);
 		uint32 status = eSS_PASS;
 
@@ -93,10 +89,7 @@ namespace test
 					{
 						int64 initialValue = rand();
 						m_pCVar = REGISTER_VARIABLE(testIntegerVariable, initialValue, 0, NULL, "A test variable");
-						sprintf(buffer, "%p", m_pCVar.get());
-						TEST_INFORMATION("Created console variable at address", buffer);
-						TEST1_NAMED("Initial value", m_pCVar->GetInteger() == initialValue, m_pCVar->GetInteger(), initialValue); 
-						pThis->NextStage();
+						pThis->StageTest("Setting initial value of integer cvar", m_pCVar->GetInteger() == initialValue, "Initial value is not set correctly");
 					}
 					break;
 
@@ -104,8 +97,7 @@ namespace test
 					{
 						int64 value = rand();
 						m_pCVar->SetInteger(value);
-						TEST1_NAMED("Set integer value", m_pCVar->GetInteger() == value, m_pCVar->GetInteger(), value); 
-						pThis->NextStage();
+						pThis->StageTest("Setting integer cvar with integer value", m_pCVar->GetInteger() == value, "Value is not set correctly");
 					}
 					break;
 
@@ -113,8 +105,7 @@ namespace test
 					{
 						double value = static_cast<double>(rand());
 						m_pCVar->SetDouble(value);
-						TEST1_NAMED("Set double value", pThis->IsEqual(m_pCVar->GetDouble(), value), m_pCVar->GetDouble(), static_cast<int64>(value)); 
-						pThis->NextStage();
+						pThis->StageTest("Setting integer cvar with double value", pThis->IsEqual(m_pCVar->GetDouble(), value), "Value is not set correctly");
 					}
 					break;
 
@@ -122,17 +113,11 @@ namespace test
 					{
 						const char* value = "3.1415926535897932384626433832795";
 						m_pCVar->SetString(value);
-						TEST1_NAMED_STRING("Set string value", strcmp(m_pCVar->GetString(), "3") == 0, m_pCVar->GetString(), m_pCVar->GetString()); 
-						pThis->NextStage();
+						pThis->StageTest("Setting integer cvar with string value", strcmp(m_pCVar->GetString(), "3") == 0, "Value is not set correctly");
+						UNREGISTER_VARIABLE(testIntegerVariable);
+						m_pCVar.reset();
 					}
 					break;
-
-				case 5:
-					UNREGISTER_VARIABLE(testIntegerVariable);
-					sprintf(buffer, "%p", m_pCVar.get());
-					TEST_INFORMATION("Released console variable at address", buffer);
-					m_pCVar.reset();
-					pThis->NextStage();
 
 				default:
 					status |= eSS_COMPLETE;
@@ -147,7 +132,6 @@ namespace test
 
 	uint32 CCVarTest::IntegerConstantVariableOperations(CUnitTest* pParent)
 	{
-		char buffer[64];
 		CCVarTest* pThis = static_cast<CCVarTest*>(pParent);
 		uint32 status = eSS_PASS;
 
@@ -159,10 +143,7 @@ namespace test
 					{
 						int64 initialValue = rand();
 						m_pCVar = REGISTER_VARIABLE(testIntegerVariable, initialValue, engine::CConsole::IVariable::eF_CONST, NULL, "A test variable");
-						sprintf(buffer, "%p", m_pCVar.get());
-						TEST_INFORMATION("Created console variable at address", buffer);
-						TEST1_NAMED("Initial value", m_pCVar->GetInteger() == initialValue, m_pCVar->GetInteger(), initialValue); 
-						pThis->NextStage();
+						pThis->StageTest("Setting initial value of const integer cvar", m_pCVar->GetInteger() == initialValue, "Initial value is not set correctly");
 					}
 					break;
 
@@ -171,8 +152,7 @@ namespace test
 						int64 initialValue = m_pCVar->GetInteger();
 						int64 value = rand();
 						m_pCVar->SetInteger(value);
-						TEST1_NAMED("Set integer value", m_pCVar->GetInteger() == initialValue, m_pCVar->GetInteger(), value); 
-						pThis->NextStage();
+						pThis->StageTest("Setting const integer cvar with integer value", m_pCVar->GetInteger() == initialValue, "Value has changed");
 					}
 					break;
 
@@ -181,8 +161,7 @@ namespace test
 						double initialValue = m_pCVar->GetDouble();
 						double value = static_cast<double>(rand())/RAND_MAX;
 						m_pCVar->SetDouble(value);
-						TEST1_NAMED("Set double value", pThis->IsEqual(m_pCVar->GetDouble(), initialValue), m_pCVar->GetDouble(), value); 
-						pThis->NextStage();
+						pThis->StageTest("Setting const integer cvar with double value", pThis->IsEqual(m_pCVar->GetDouble(), initialValue), "Value has changed");
 					}
 					break;
 
@@ -191,17 +170,11 @@ namespace test
 						const char* initialValue = m_pCVar->GetString();
 						const char* value = "3.1415926535897932384626433832795";
 						m_pCVar->SetString(value);
-						TEST1_NAMED_STRING("Set string value", strcmp(m_pCVar->GetString(), initialValue) == 0, m_pCVar->GetString(), value); 
-						pThis->NextStage();
+						pThis->StageTest("Setting integer cvar with string value", strcmp(m_pCVar->GetString(), initialValue) == 0, "Value has changed");
+						UNREGISTER_VARIABLE(testIntegerVariable);
+						m_pCVar.reset();
 					}
 					break;
-
-				case 5:
-					UNREGISTER_VARIABLE(testIntegerVariable);
-					sprintf(buffer, "%p", m_pCVar.get());
-					TEST_INFORMATION("Released console variable at address", buffer);
-					m_pCVar.reset();
-					pThis->NextStage();
 
 				default:
 					status |= eSS_COMPLETE;
