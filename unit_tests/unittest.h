@@ -95,21 +95,19 @@ namespace test
 			virtual				void				Uninitialise(void);
 
 										void				AddStage(const char* name, TestFn function, eTestVerbosity verbosity = eTV_TERSE);
-																// N.B. A member function has a hidden 1st paramater (the
-																// hidden 'this') pointer, so 'format' is actually the 3rd
-																// parameter, and the variadic part is the 4th parameter
-										void				Log(eTestVerbosity targetLevel, const char* format, ...) __attribute__((format(printf, 3, 4)));
-										
 										void				Test(const char* description, bool test, const char* failureMessage, int32 testType = eTT_Stage);
 /* need? */					void				Information(const char* description, int32 testType);
 										
 			//========================================================================
 
 		protected:
+																// N.B. A member function has a hidden 1st parameter (the
+																// hidden 'this') pointer, so 'format' is actually the 3rd
+																// parameter, and the variadic part is the 4th parameter
+										void				Log(eTestVerbosity targetLevel, const char* format, ...) __attribute__((format(printf, 3, 4)));
+										
 										uint32			GetStage(void);
-										uint32			NextStage(void);
 										uint32			GetSubstage(void);
-										uint32			NextSubstage(void);
 
 										bool				IsEqual(double param1, double param2, double epsilon = 0.0);
 

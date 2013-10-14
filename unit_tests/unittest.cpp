@@ -37,7 +37,7 @@ namespace test
 
 		const char* errorColour = (m_errors != 0) ? COLOUR_ERROR : COLOUR_DEFAULT;
 
-		Log(eTV_TERSE, COLOUR_PROGRESS "[%s] " COLOUR_TEST_INFO "[%s] " COLOUR_DEFAULT "%d tests (%d stages) completed in %s%d days, %02u:%02u:%06.3fs; " COLOUR_DEFAULT ", %s%d errors\n", timeBuffer, m_name, static_cast<uint32>(m_tests.size()), m_totalTests, (elapsed.GetTicks() < 0) ? "-" : "",  days, hours, minutes, seconds, errorColour, m_errorTotal);
+		Log(eTV_TERSE, COLOUR_PROGRESS "[%s] " COLOUR_TEST_INFO "[%s] " COLOUR_DEFAULT "%d tests completed in %s%d days, %02u:%02u:%06.3fs; " COLOUR_DEFAULT ", %s%d errors\n", timeBuffer, m_name, m_totalTests, (elapsed.GetTicks() < 0) ? "-" : "",  days, hours, minutes, seconds, errorColour, m_errorTotal);
 	}
 
 	//============================================================================
@@ -204,6 +204,8 @@ namespace test
 			++m_subStage;
 			break;
 		}
+
+		++m_totalTests;
 	}
 
 	//============================================================================
@@ -239,25 +241,9 @@ namespace test
 
 	//============================================================================
 
-	uint32 CUnitTest::NextStage(void)
-	{
-		m_totalTests += (GetSubstage() == 1) ? 1 : 0;
-		return ++m_stage;
-	}
-
-	//============================================================================
-
 	uint32 CUnitTest::GetSubstage(void)
 	{
 		return m_subStage+1;
-	}
-
-	//============================================================================
-
-	uint32 CUnitTest::NextSubstage(void)
-	{
-		++m_totalTests;
-		return ++m_subStage;
 	}
 
 	//============================================================================
