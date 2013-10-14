@@ -107,21 +107,19 @@ namespace test
 
 						// operator=(const CTimeValue& other)
 						testValue = oneTest;
-						TEST1_NAMED("testValue.GetSeconds() == 1.0", pThis->IsEqual(testValue.GetSeconds(), 1.0), 1.0, testValue.GetSeconds());
+						pThis->PerformTest("operator=(const CTimeValue& other)", pThis->IsEqual(testValue.GetSeconds(), oneTest.GetSeconds()), "CTimeValue not set to value", eTT_SubStage);
 
 						// operator=(double seconds)
 						testValue = 2.0;
-						TEST1_NAMED("testValue.GetSeconds() == 2.0", pThis->IsEqual(testValue.GetSeconds(), 2.0), 2.0, testValue.GetSeconds());
+						pThis->PerformTest("operator=(double seconds)", pThis->IsEqual(testValue.GetSeconds(), 2.0), "CTimeValue not set to value", eTT_SubStage);
 
 						// operator=(double seconds)
 						testValue = -2.0;
-						TEST1_NAMED("testValue.GetSeconds() == -2.0", pThis->IsEqual(testValue.GetSeconds(), -2.0), -2.0, testValue.GetSeconds());
+						pThis->PerformTest("operator=(double seconds) (negative)", pThis->IsEqual(testValue.GetSeconds(), -2.0), "CTimeValue not set to value", eTT_SubStage);
 
 						// operator=(int64 ticks)
 						testValue = int64(0);
-						TEST1_NAMED("testValue.GetTicks() == 0", testValue.GetTicks() == 0, 0, testValue.GetTicks());
-
-						pThis->NextStage();
+						pThis->PerformTest("operator=(int64 ticks)", testValue.GetTicks() == 0, "CTimeValue not set to value");
 					}
 					break;
 
@@ -133,24 +131,22 @@ namespace test
 						// operator+=(const CTimeValue& other)
 						CTimeValue oldValue(testValue);
 						testValue += twoTest;
-						TEST2_NAMED("(testValue += twoTest) == 3.0", pThis->IsEqual(testValue.GetSeconds(), 3.0), oldValue.GetSeconds(), twoTest.GetSeconds(), testValue.GetSeconds());
+						pThis->PerformTest("operator+=(const CTimeValue& other)", pThis->IsEqual(testValue.GetSeconds(), 3.0), "CTimeValue not set to value", eTT_SubStage);
 
 						// operator+=(double seconds)
 						oldValue = testValue;
 						testValue += 2.0;
-						TEST2_NAMED("(testValue += 2.0) == 5.0", pThis->IsEqual(testValue.GetSeconds(), 5.0), oldValue.GetSeconds(), 2.0, testValue.GetSeconds());
+						pThis->PerformTest("operator+=(double seconds)", pThis->IsEqual(testValue.GetSeconds(), 5.0), "CTimeValue not set to value", eTT_SubStage);
 
 						// operator+=(double seconds)
 						oldValue = testValue;
 						testValue += -3.0;
-						TEST2_NAMED("(testValue += -3.0) == 2.0", pThis->IsEqual(testValue.GetSeconds(), 2.0), oldValue.GetSeconds(), -3.0, testValue.GetSeconds());
+						pThis->PerformTest("operator+=(double seconds) (negative)", pThis->IsEqual(testValue.GetSeconds(), 2.0), "CTimeValue not set to value", eTT_SubStage);
 
 						// operator+=(int64 ticks)
 						oldValue = testValue;
 						testValue += twoTest.GetTicks();
-						TEST2_NAMED("(testValue += twoTest.GetTicks()) == 4.0s", pThis->IsEqual(testValue.GetSeconds(), 4.0), oldValue.GetTicks(), twoTest.GetTicks(), testValue.GetTicks());
-
-						pThis->NextStage();
+						pThis->PerformTest("operator+=(int64 ticks)", pThis->IsEqual(testValue.GetSeconds(), 4.0), "CTimeValue not set to value");
 					}
 					break;
 
@@ -162,24 +158,22 @@ namespace test
 						// operator-=(const CTimeValue& other)
 						CTimeValue oldValue(testValue);
 						testValue -= twoTest;
-						TEST2_NAMED("(testValue -= twoTest) == -1.0", pThis->IsEqual(testValue.GetSeconds(), -1.0), oldValue.GetSeconds(), twoTest.GetSeconds(), testValue.GetSeconds());
+						pThis->PerformTest("operator-=(const CTimeValue& other)", pThis->IsEqual(testValue.GetSeconds(), -1.0), "CTimeValue not set to value", eTT_SubStage);
 
 						// operator-=(double seconds)
 						oldValue = testValue;
 						testValue -= 2.0;
-						TEST2_NAMED("(testValue -= 2.0) == -3.0", pThis->IsEqual(testValue.GetSeconds(), -3.0), oldValue.GetSeconds(), -2.0, testValue.GetSeconds());
+						pThis->PerformTest("operator-=(double seconds)", pThis->IsEqual(testValue.GetSeconds(), -3.0), "CTimeValue not set to value", eTT_SubStage);
 
 						// operator-=(double seconds)
 						oldValue = testValue;
 						testValue -= -5.0;
-						TEST2_NAMED("(testValue -= -5.0) == 2.0", pThis->IsEqual(testValue.GetSeconds(), 2.0), oldValue.GetSeconds(), -5.0, testValue.GetSeconds());
+						pThis->PerformTest("operator-=(double seconds) (negative)", pThis->IsEqual(testValue.GetSeconds(), 2.0), "CTimeValue not set to value", eTT_SubStage);
 
 						// operator-=(int64 ticks)
 						oldValue = testValue;
 						testValue -= twoTest.GetTicks();
-						TEST2_NAMED("(testValue -= twoTest.GetTicks()) == 0.0s", pThis->IsEqual(testValue.GetSeconds(), 0.0), oldValue.GetTicks(), 0.0, testValue.GetTicks());
-
-						pThis->NextStage();
+						pThis->PerformTest("operator-=(int64 ticks)", pThis->IsEqual(testValue.GetSeconds(), 0.0), "CTimeValue not set to value");
 					}
 					break;
 
@@ -191,29 +185,27 @@ namespace test
 
 						// operator+(const CTimeValue& other)
 						CTimeValue testValue = oneTest+twoTest;
-						TEST2_NAMED("(testValue = oneTest+twoTest) == 3.0", pThis->IsEqual(testValue.GetSeconds(), 3.0), oneTest.GetSeconds(), twoTest.GetSeconds(), testValue.GetSeconds());
+						pThis->PerformTest("operator+(const CTimeValue& other)", pThis->IsEqual(testValue.GetSeconds(), 3.0), "CTimeValue not set to value", eTT_SubStage);
 
 						// operator+(const CTimeValue& other)
 						testValue = oneTest+minusTwoTest;
-						TEST2_NAMED("(testValue = oneTest+minusTwoTest) == -1.0", pThis->IsEqual(testValue.GetSeconds(), -1.0), oneTest.GetSeconds(), minusTwoTest.GetSeconds(), testValue.GetSeconds());
+						pThis->PerformTest("operator+(const CTimeValue& other) (negative)", pThis->IsEqual(testValue.GetSeconds(), -1.0), "CTimeValue not set to value", eTT_SubStage);
 
 						// operator+(double seconds)
 						testValue = twoTest+3.0;
-						TEST2_NAMED("(testValue = twoTest+3.0) == 5.0", pThis->IsEqual(testValue.GetSeconds(), 5.0), twoTest.GetSeconds(), 3.0, testValue.GetSeconds());
+						pThis->PerformTest("operator+(double seconds)", pThis->IsEqual(testValue.GetSeconds(), 5.0), "CTimeValue not set to value", eTT_SubStage);
 
 						// operator+(double seconds)
 						testValue = twoTest+(-3.0);
-						TEST2_NAMED("(testValue = twoTest+(-3.0)) == -1.0", pThis->IsEqual(testValue.GetSeconds(), -1.0), twoTest.GetSeconds(), -3.0, testValue.GetSeconds());
+						pThis->PerformTest("operator+(double seconds) (negative)", pThis->IsEqual(testValue.GetSeconds(), -1.0), "CTimeValue not set to value", eTT_SubStage);
 
 						// operator+(int64 ticks)
 						testValue = oneTest.GetTicks()+twoTest.GetTicks();
-						TEST2_NAMED("(testValue = oneTest.GetTicks()+twoTest.GetTicks()) == 3.0s", pThis->IsEqual(testValue.GetSeconds(), 3.0), oneTest.GetTicks(), twoTest.GetTicks(), testValue.GetSeconds());
+						pThis->PerformTest("operator+(int64 ticks)", pThis->IsEqual(testValue.GetSeconds(), 3.0), "CTimeValue not set to value", eTT_SubStage);
 
 						// operator+(int64 ticks)
 						testValue = oneTest.GetTicks()+minusTwoTest.GetTicks();
-						TEST2_NAMED("(testValue = oneTest.GetTicks()+minusTwoTest.GetTicks()) == -1.0s", pThis->IsEqual(testValue.GetSeconds(), -1.0), oneTest.GetTicks(), minusTwoTest.GetTicks(), testValue.GetSeconds());
-
-						pThis->NextStage();
+						pThis->PerformTest("operator+(int64 ticks) (negative)", pThis->IsEqual(testValue.GetSeconds(), -1.0), "CTimeValue not set to value");
 					}
 					break;
 
@@ -225,29 +217,27 @@ namespace test
 
 						// operator-(const CTimeValue& other)
 						CTimeValue testValue = oneTest-twoTest;
-						TEST2_NAMED("(testValue = oneTest-twoTest) == -1.0", pThis->IsEqual(testValue.GetSeconds(), -1.0), oneTest.GetSeconds(), twoTest.GetSeconds(), testValue.GetSeconds());
+						pThis->PerformTest("operator-(const CTimeValue& other)", pThis->IsEqual(testValue.GetSeconds(), -1.0), "CTimeValue not set to value", eTT_SubStage);
 
 						// operator-(const CTimeValue& other)
 						testValue = oneTest-minusTwoTest;
-						TEST2_NAMED("(testValue = oneTest-minusTwoTest) == 3.0", pThis->IsEqual(testValue.GetSeconds(), 3.0), oneTest.GetSeconds(), minusTwoTest.GetSeconds(), testValue.GetSeconds());
+						pThis->PerformTest("operator-(const CTimeValue& other) (negative)", pThis->IsEqual(testValue.GetSeconds(), 3.0), "CTimeValue not set to value", eTT_SubStage);
 
 						// operator-(double seconds)
 						testValue = twoTest-1.0;
-						TEST2_NAMED("(testValue = twoTest-1.0) == 1.0", pThis->IsEqual(testValue.GetSeconds(), 1.0), twoTest.GetSeconds(), 1.0, testValue.GetSeconds());
+						pThis->PerformTest("operator-(double seconds)", pThis->IsEqual(testValue.GetSeconds(), 1.0), "CTimeValue not set to value", eTT_SubStage);
 
 						// operator-(double seconds)
 						testValue = twoTest-(-3.0);
-						TEST2_NAMED("(testValue = twoTest-(-3.0)) == 5.0", pThis->IsEqual(testValue.GetSeconds(), 5.0), twoTest.GetSeconds(), 5.0, testValue.GetSeconds());
+						pThis->PerformTest("operator-(double seconds) (negative)", pThis->IsEqual(testValue.GetSeconds(), 5.0), "CTimeValue not set to value", eTT_SubStage);
 
 						// operator-(int64 ticks)
 						testValue = oneTest.GetTicks()-twoTest.GetTicks();
-						TEST2_NAMED("(oneTest.GetTicks()-twoTest.GetTicks()) == -1.0s", pThis->IsEqual(testValue.GetSeconds(), -1.0), oneTest.GetTicks(), twoTest.GetTicks(), testValue.GetTicks());
+						pThis->PerformTest("operator-(int64 ticks)", pThis->IsEqual(testValue.GetSeconds(), -1.0), "CTimeValue not set to value", eTT_SubStage);
 
 						// operator-(int64 ticks)
 						testValue = oneTest.GetTicks()-minusTwoTest.GetTicks();
-						TEST2_NAMED("(oneTest.GetTicks()-minusTwoTest.GetTicks()) == 3.0s", pThis->IsEqual(testValue.GetSeconds(), 3.0), oneTest.GetTicks(), minusTwoTest.GetTicks(), testValue.GetTicks());
-
-						pThis->NextStage();
+						pThis->PerformTest("operator-(int64 ticks) (negative)", pThis->IsEqual(testValue.GetSeconds(), 3.0), "CTimeValue not set to value");
 					}
 					break;
 
@@ -256,13 +246,14 @@ namespace test
 						CTimeValue oneTest(1.0);
 						CTimeValue testValue(1.0);
 
-						TEST1_NAMED("testValue == oneTest", testValue == oneTest, oneTest.GetSeconds(), testValue.GetSeconds());
+						// operator==(const CTimeValue& other)
+						pThis->PerformTest("operator==(const CTimeValue& other)", testValue == oneTest, "CTimeValue not equal", eTT_SubStage);
 
-						TEST1_NAMED("testValue == 1.0", testValue == 1.0, 1.0, testValue.GetSeconds());
+						// operator==(double seconds)
+						pThis->PerformTest("operator==(double seconds)", testValue == 1.0, "CTimeValue not equal", eTT_SubStage);
 
-						TEST1_NAMED("testValue == oneTest.GetTicks()", testValue == oneTest.GetTicks(), oneTest.GetTicks(), testValue.GetTicks());
-
-						pThis->NextStage();
+						// operator==(int64 ticks)
+						pThis->PerformTest("operator==(int64 ticks)", testValue.GetTicks() == oneTest.GetTicks(), "CTimeValue not equal");
 					}
 					break;
 
@@ -271,13 +262,14 @@ namespace test
 						CTimeValue oneTest(1.0);
 						CTimeValue testValue(2.0);
 
-						TEST1_NAMED("testValue != oneTest", testValue != oneTest, oneTest.GetSeconds(), testValue.GetSeconds());
+						// operator!=(const CTimeValue& other)
+						pThis->PerformTest("operator==(const CTimeValue& other)", testValue != oneTest, "CTimeValue not equal", eTT_SubStage);
 
-						TEST1_NAMED("testValue != 1.0", testValue != 1.0, 1.0, testValue.GetSeconds());
+						// operator!=(double seconds)
+						pThis->PerformTest("operator==(double seconds)", testValue != 1.0, "CTimeValue not equal", eTT_SubStage);
 
-						TEST1_NAMED("testValue != oneTest.GetTicks()", testValue != oneTest.GetTicks(), oneTest.GetTicks(), testValue.GetTicks());
-
-						pThis->NextStage();
+						// operator!=(int64 ticks)
+						pThis->PerformTest("operator==(int64 ticks)", testValue.GetTicks() != oneTest.GetTicks(), "CTimeValue not equal");
 					}
 					break;
 
@@ -286,33 +278,28 @@ namespace test
 						CTimeValue oneTest(1.0);
 						CTimeValue testValue(2.0);
 
-						TEST1_NAMED("!(testValue < oneTest)", !(testValue < oneTest), oneTest.GetSeconds(), testValue.GetSeconds());
-
+						// operator<(const CTimeValue& other)
+						pThis->PerformTest("operator<(const CTimeValue& other) (other is less)", !(testValue < oneTest), "CTimeValue greater than or equal", eTT_SubStage);
 						testValue = 1.0;
-						TEST1_NAMED("!(testValue < oneTest)", !(testValue < oneTest), oneTest.GetSeconds(), testValue.GetSeconds());
-
+						pThis->PerformTest("operator<(const CTimeValue& other) (other is equal)", !(testValue < oneTest), "CTimeValue greater than or equal", eTT_SubStage);
 						testValue = 0.5;
-						TEST1_NAMED("testValue < oneTest", testValue < oneTest, oneTest.GetSeconds(), testValue.GetSeconds());
+						pThis->PerformTest("operator<(const CTimeValue& other) (other is greater)", testValue < oneTest, "CTimeValue greater than or equal", eTT_SubStage);
 
+						// operator<(double seconds)
 						testValue = 2.0;
-						TEST1_NAMED("!(testValue < 1.0)", !(testValue < 1.0), 1.0, testValue.GetSeconds());
-
+						pThis->PerformTest("operator<(double seconds) (seconds is less)", !(testValue < 1.0), "CTimeValue greater than or equal", eTT_SubStage);
 						testValue = 1.0;
-						TEST1_NAMED("!(testValue < 1.0)", !(testValue < 1.0), 1.0, testValue.GetSeconds());
-
+						pThis->PerformTest("operator<(double seconds) (seconds is equal)", !(testValue < 1.0), "CTimeValue greater than or equal", eTT_SubStage);
 						testValue = 0.5;
-						TEST1_NAMED("testValue < 1.0", testValue < 1.0, 1.0, testValue.GetSeconds());
+						pThis->PerformTest("operator<(double seconds) (seconds is greater)", testValue < 1.0, "CTimeValue greater than or equal", eTT_SubStage);
 
+						// operator<(int64 ticks)
 						testValue = 2.0;
-						TEST1_NAMED("!(testValue < oneTest.GetTicks())", !(testValue < oneTest.GetTicks()), oneTest.GetTicks(), testValue.GetTicks());
-
+						pThis->PerformTest("operator<(const CTimeValue& other) (other is less)", !(testValue < oneTest.GetTicks()), "CTimeValue greater than or equal", eTT_SubStage);
 						testValue = 1.0;
-						TEST1_NAMED("!(testValue < oneTest.GetTicks())", !(testValue < oneTest.GetTicks()), oneTest.GetTicks(), testValue.GetTicks());
-
+						pThis->PerformTest("operator<(const CTimeValue& other) (other is equal)", !(testValue < oneTest.GetTicks()), "CTimeValue greater than or equal", eTT_SubStage);
 						testValue = 0.5;
-						TEST1_NAMED("testValue < oneTest.GetTicks()", testValue < oneTest.GetTicks(), oneTest.GetTicks(), testValue.GetTicks());
-
-						pThis->NextStage();
+						pThis->PerformTest("operator<(const CTimeValue& other) (other is greater)", testValue < oneTest.GetTicks(), "CTimeValue greater than or equal");
 					}
 					break;
 
@@ -321,33 +308,28 @@ namespace test
 						CTimeValue oneTest(1.0);
 						CTimeValue testValue(2.0);
 
-						TEST1_NAMED("!(testValue <= oneTest)", !(testValue <= oneTest), oneTest.GetSeconds(), testValue.GetSeconds());
-
+						// operator<=(const CTimeValue& other)
+						pThis->PerformTest("operator<=(const CTimeValue& other) (other is less)", !(testValue <= oneTest), "CTimeValue greater", eTT_SubStage);
 						testValue = 1.0;
-						TEST1_NAMED("testValue <= oneTest", testValue <= oneTest, oneTest.GetSeconds(), testValue.GetSeconds());
-
+						pThis->PerformTest("operator<=(const CTimeValue& other) (other is equal)", testValue <= oneTest, "CTimeValue greater", eTT_SubStage);
 						testValue = 0.5;
-						TEST1_NAMED("testValue <= oneTest", testValue <= oneTest, oneTest.GetSeconds(), testValue.GetSeconds());
+						pThis->PerformTest("operator<=(const CTimeValue& other) (other is greater)", testValue <= oneTest, "CTimeValue greater", eTT_SubStage);
 
+						// operator<=(double seconds)
 						testValue = 2.0;
-						TEST1_NAMED("!(testValue <= 1.0)", !(testValue <= 1.0), 1.0, testValue.GetSeconds());
-
+						pThis->PerformTest("operator<=(double seconds) (seconds is less)", !(testValue <= 1.0), "CTimeValue greater", eTT_SubStage);
 						testValue = 1.0;
-						TEST1_NAMED("testValue <= 1.0", testValue <= 1.0, 1.0, testValue.GetSeconds());
-
+						pThis->PerformTest("operator<=(double seconds) (seconds is equal)", testValue <= 1.0, "CTimeValue greater", eTT_SubStage);
 						testValue = 0.5;
-						TEST1_NAMED("testValue <= 1.0", testValue <= 1.0, 1.0, testValue.GetSeconds());
+						pThis->PerformTest("operator<=(double seconds) (seconds is greater)", testValue <= 1.0, "CTimeValue greater", eTT_SubStage);
 
+						// operator<=(int64 ticks)
 						testValue = 2.0;
-						TEST1_NAMED("!(testValue <= oneTest.GetTicks())", !(testValue <= oneTest.GetTicks()), oneTest.GetTicks(), testValue.GetTicks());
-
+						pThis->PerformTest("operator<=(const CTimeValue& other) (other is less)", !(testValue <= oneTest.GetTicks()), "CTimeValue greater", eTT_SubStage);
 						testValue = 1.0;
-						TEST1_NAMED("testValue <= oneTest.GetTicks()", testValue <= oneTest.GetTicks(), oneTest.GetTicks(), testValue.GetTicks());
-
+						pThis->PerformTest("operator<=(const CTimeValue& other) (other is equal)", testValue <= oneTest.GetTicks(), "CTimeValue greater", eTT_SubStage);
 						testValue = 0.5;
-						TEST1_NAMED("testValue <= oneTest.GetTicks()", testValue <= oneTest.GetTicks(), oneTest.GetTicks(), testValue.GetTicks());
-
-						pThis->NextStage();
+						pThis->PerformTest("operator<=(const CTimeValue& other) (other is greater)", testValue <= oneTest.GetTicks(), "CTimeValue greater");
 					}
 					break;
 
@@ -356,33 +338,28 @@ namespace test
 						CTimeValue oneTest(1.0);
 						CTimeValue testValue(2.0);
 
-						TEST1_NAMED("testValue > oneTest", testValue > oneTest, oneTest.GetSeconds(), testValue.GetSeconds());
-
+						// operator>(const CTimeValue& other)
+						pThis->PerformTest("operator>(const CTimeValue& other) (other is less)", testValue > oneTest, "CTimeValue less than or equal", eTT_SubStage);
 						testValue = 1.0;
-						TEST1_NAMED("!(testValue > oneTest)", !(testValue > oneTest), oneTest.GetSeconds(), testValue.GetSeconds());
-
+						pThis->PerformTest("operator>(const CTimeValue& other) (other is equal)", !(testValue > oneTest), "CTimeValue less than or equal", eTT_SubStage);
 						testValue = 0.5;
-						TEST1_NAMED("!(testValue > oneTest)", !(testValue > oneTest), oneTest.GetSeconds(), testValue.GetSeconds());
+						pThis->PerformTest("operator>(const CTimeValue& other) (other is greater)", !(testValue > oneTest), "CTimeValue less than or equal", eTT_SubStage);
 
+						// operator>(double seconds)
 						testValue = 2.0;
-						TEST1_NAMED("testValue > 1.0", testValue > 1.0, 1.0, testValue.GetSeconds());
-
+						pThis->PerformTest("operator>(double seconds) (seconds is less)", testValue > 1.0, "CTimeValue less than or equal", eTT_SubStage);
 						testValue = 1.0;
-						TEST1_NAMED("!(testValue > 1.0)", !(testValue > 1.0), 1.0, testValue.GetSeconds());
-
+						pThis->PerformTest("operator>(double seconds) (seconds is equal)", !(testValue > 1.0), "CTimeValue less than or equal", eTT_SubStage);
 						testValue = 0.5;
-						TEST1_NAMED("!(testValue > 1.0)", !(testValue > 1.0), 1.0, testValue.GetSeconds());
+						pThis->PerformTest("operator>(double seconds) (seconds is greater)", !(testValue > 1.0), "CTimeValue less than or equal", eTT_SubStage);
 
+						// operator>(int64 ticks)
 						testValue = 2.0;
-						TEST1_NAMED("testValue > oneTest.GetTicks()", testValue > oneTest.GetTicks(), oneTest.GetTicks(), testValue.GetTicks());
-
+						pThis->PerformTest("operator>(const CTimeValue& other) (other is less)", testValue > oneTest.GetTicks(), "CTimeValue less than or equal", eTT_SubStage);
 						testValue = 1.0;
-						TEST1_NAMED("!(testValue > oneTest.GetTicks())", !(testValue > oneTest.GetTicks()), oneTest.GetTicks(), testValue.GetTicks());
-
+						pThis->PerformTest("operator>(const CTimeValue& other) (other is equal)", !(testValue > oneTest.GetTicks()), "CTimeValue less than or equal", eTT_SubStage);
 						testValue = 0.5;
-						TEST1_NAMED("!(testValue > oneTest.GetTicks())", !(testValue > oneTest.GetTicks()), oneTest.GetTicks(), testValue.GetTicks());
-
-						pThis->NextStage();
+						pThis->PerformTest("operator>(const CTimeValue& other) (other is greater)", !(testValue > oneTest.GetTicks()), "CTimeValue less than or equal");
 					}
 					break;
 
@@ -391,33 +368,28 @@ namespace test
 						CTimeValue oneTest(1.0);
 						CTimeValue testValue(2.0);
 
-						TEST1_NAMED("testValue >= oneTest", testValue >= oneTest, oneTest.GetSeconds(), testValue.GetSeconds());
-
+						// operator>=(const CTimeValue& other)
+						pThis->PerformTest("operator>=(const CTimeValue& other) (other is less)", testValue >= oneTest, "CTimeValue less than", eTT_SubStage);
 						testValue = 1.0;
-						TEST1_NAMED("testValue >= oneTest", testValue >= oneTest, oneTest.GetSeconds(), testValue.GetSeconds());
-
+						pThis->PerformTest("operator>=(const CTimeValue& other) (other is equal)", testValue >= oneTest, "CTimeValue less than", eTT_SubStage);
 						testValue = 0.5;
-						TEST1_NAMED("!(testValue >= oneTest)", !(testValue >= oneTest), oneTest.GetSeconds(), testValue.GetSeconds());
+						pThis->PerformTest("operator>=(const CTimeValue& other) (other is greater)", !(testValue >= oneTest), "CTimeValue less than", eTT_SubStage);
 
+						// operator>(double seconds)
 						testValue = 2.0;
-						TEST1_NAMED("testValue >= 1.0", testValue >= 1.0, 1.0, testValue.GetSeconds());
-
+						pThis->PerformTest("operator>=(double seconds) (seconds is less)", testValue >= 1.0, "CTimeValue less than", eTT_SubStage);
 						testValue = 1.0;
-						TEST1_NAMED("testValue >= 1.0", testValue >= 1.0, 1.0, testValue.GetSeconds());
-
+						pThis->PerformTest("operator>=(double seconds) (seconds is equal)", testValue >= 1.0, "CTimeValue less than", eTT_SubStage);
 						testValue = 0.5;
-						TEST1_NAMED("!(testValue >= 1.0)", !(testValue >= 1.0), 1.0, testValue.GetSeconds());
+						pThis->PerformTest("operator>=(double seconds) (seconds is greater)", !(testValue >= 1.0), "CTimeValue less than", eTT_SubStage);
 
+						// operator>(int64 ticks)
 						testValue = 2.0;
-						TEST1_NAMED("testValue >= oneTest.GetTicks()", testValue >= oneTest.GetTicks(), oneTest.GetTicks(), testValue.GetTicks());
-
+						pThis->PerformTest("operator>=(const CTimeValue& other) (other is less)", testValue >= oneTest.GetTicks(), "CTimeValue less than", eTT_SubStage);
 						testValue = 1.0;
-						TEST1_NAMED("testValue >= oneTest.GetTicks()", testValue >= oneTest.GetTicks(), oneTest.GetTicks(), testValue.GetTicks());
-
+						pThis->PerformTest("operator>=(const CTimeValue& other) (other is equal)", testValue >= oneTest.GetTicks(), "CTimeValue less than", eTT_SubStage);
 						testValue = 0.5;
-						TEST1_NAMED("!(testValue >= oneTest.GetTicks())", !(testValue >= oneTest.GetTicks()), oneTest.GetTicks(), testValue.GetTicks());
-
-						pThis->NextStage();
+						pThis->PerformTest("operator>=(const CTimeValue& other) (other is greater)", !(testValue >= oneTest.GetTicks()), "CTimeValue less than");
 					}
 					break;
 
