@@ -176,7 +176,7 @@ namespace test
 
 	//============================================================================
 
-	void CUnitTest::PerformTest(const char* description, bool test, const char* failureMessage, int32 testType /* = eTT_Stage */)
+	void CUnitTest::Test(const char* description, bool test, const char* failureMessage, int32 testType /* = eTT_Stage */)
 	{	
 		const char* none = "None";
 
@@ -265,18 +265,6 @@ namespace test
 	bool CUnitTest::IsEqual(double param1, double param2, double epsilon /* = 0.0 */)
 	{
 		return ((param1 >= (param2-epsilon)) && (param1 <= (param2+epsilon)));
-	}
-
-	//============================================================================
-
-	bool CUnitTest::Test(bool test)
-	{
-		if (!test)
-		{
-			++m_errors;
-		}
-
-		return test;
 	}
 
 	//============================================================================

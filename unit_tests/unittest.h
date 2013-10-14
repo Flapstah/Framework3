@@ -100,7 +100,7 @@ namespace test
 																// parameter, and the variadic part is the 4th parameter
 										void				Log(eTestVerbosity targetLevel, const char* format, ...) __attribute__((format(printf, 3, 4)));
 										
-										void				PerformTest(const char* description, bool test, const char* failureMessage, int32 testType = eTT_Stage);
+										void				Test(const char* description, bool test, const char* failureMessage, int32 testType = eTT_Stage);
 /* need? */					void				Information(const char* description, int32 testType);
 										
 			//========================================================================
@@ -112,7 +112,6 @@ namespace test
 										uint32			NextSubstage(void);
 
 										bool				IsEqual(double param1, double param2, double epsilon = 0.0);
-										bool				Test(bool test);
 
 										bool				SupressNewline(bool supress);
 
