@@ -35,8 +35,8 @@ namespace test
 		AddStage("Lifecycle", ConsoleVariableLifecycle, eTV_TERSE);
 		AddStage("Integer console variable operations", IntegerVariableOperations, eTV_TERSE);
 		AddStage("Integer constant console variable operations", IntegerConstantVariableOperations, eTV_TERSE);
-/*		AddStage("Floating point console variable operations", FloatVariableOperations, eTV_VERBOSE);
-		AddStage("Floating point constant console variable operations", FloatVariableOperations, eTV_VERBOSE);
+		AddStage("Floating point console variable operations", FloatVariableOperations, eTV_VERBOSE);
+/*		AddStage("Floating point constant console variable operations", FloatVariableOperations, eTV_VERBOSE);
 		AddStage("String console variable operations", StringVariableOperations, eTV_VERBOSE);
 		AddStage("String constant console variable operations", StringVariableOperations, eTV_VERBOSE);
 */
@@ -111,7 +111,7 @@ namespace test
 
 				case 4:
 					{
-						const char* value = "3.1415926535897932384626433832795";
+						const char* value = "3.1415926535897931";
 						m_pCVar->SetString(value);
 						pThis->Test("Setting integer cvar with string value", strcmp(m_pCVar->GetString(), "3") == 0, "Value is not set correctly");
 						UNREGISTER_VARIABLE(testIntegerVariable);
@@ -168,7 +168,7 @@ namespace test
 				case 4:
 					{
 						const char* initialValue = m_pCVar->GetString();
-						const char* value = "3.1415926535897932384626433832795";
+						const char* value = "3.1415926535897931";
 						m_pCVar->SetString(value);
 						pThis->Test("Setting integer cvar with string value", strcmp(m_pCVar->GetString(), initialValue) == 0, "Value has changed");
 						UNREGISTER_VARIABLE(testIntegerVariable);
@@ -196,6 +196,40 @@ namespace test
 		{
 			switch (pThis->GetStage())
 			{
+				case 1:
+					{
+						double initialValue = static_cast<double>(rand()) / static_cast<double>(rand()+1);
+						m_pCVar = REGISTER_VARIABLE(testDoubleVariable, initialValue, 0, NULL, "A test variable");
+						pThis->Test("Setting initial value of double cvar", pThis->IsEqual(m_pCVar->GetDouble(), initialValue), "Initial value is not set correctly");
+					}
+					break;
+
+				case 2:
+					{
+						int64 value = rand();
+						m_pCVar->SetInteger(value);
+						pThis->Test("Setting double cvar with integer value", m_pCVar->GetInteger() == value, "Value is not set correctly");
+					}
+					break;
+
+				case 3:
+					{
+						double value = static_cast<double>(rand()) / static_cast<double>(rand()+1);
+						m_pCVar->SetDouble(value);
+						pThis->Test("Setting double cvar with double value", pThis->IsEqual(m_pCVar->GetDouble(), value), "Value is not set correctly");
+					}
+					break;
+
+				case 4:
+					{
+						const char* value = "3.1415926535897931";
+						m_pCVar->SetString(value);
+						pThis->Test("Setting double cvar with string value", strcmp(m_pCVar->GetString(), value) == 0, "Value is not set correctly");
+						UNREGISTER_VARIABLE(testDoubleVariable);
+						m_pCVar.reset();
+					}
+					break;
+
 				default:
 					status |= eSS_COMPLETE;
 					break;
