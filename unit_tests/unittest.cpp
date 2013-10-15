@@ -19,7 +19,6 @@ namespace test
 		, m_totalTests(0)
 		, m_stage(0)
 		, m_subStage(0)
-		, m_supressNewline(false)
 	{
 	}
 
@@ -37,7 +36,7 @@ namespace test
 
 		const char* errorColour = (m_errors != 0) ? COLOUR_ERROR : COLOUR_DEFAULT;
 
-		Log(eTV_TERSE, COLOUR_PROGRESS "[%s] " COLOUR_TEST_INFO "[%s] " COLOUR_DEFAULT "%d tests completed in %s%d days, %02u:%02u:%06.3fs; " COLOUR_DEFAULT ", %s%d errors\n", timeBuffer, m_name, m_totalTests, (elapsed.GetTicks() < 0) ? "-" : "",  days, hours, minutes, seconds, errorColour, m_errorTotal);
+		Log(eTV_TERSE, COLOUR_PROGRESS "[%s] " COLOUR_TEST_INFO "[%s] " COLOUR_DEFAULT "%d tests completed in %s%d days, %02u:%02u:%06.3fs; " COLOUR_DEFAULT "%s%d errors\n\n", timeBuffer, m_name, m_totalTests, (elapsed.GetTicks() < 0) ? "-" : "",  days, hours, minutes, seconds, errorColour, m_errorTotal);
 	}
 
 	//============================================================================
@@ -77,9 +76,7 @@ namespace test
 				{
 					m_verbosity = test.m_verbosity;
 					TimeStamp(timeBuffer, sizeof(timeBuffer));
-					SupressNewline(true);
 					Log(eTV_TERSE, COLOUR_PROGRESS "[%s] " COLOUR_TEST_INFO "[%s:%s] " COLOUR_DEFAULT "started", timeBuffer, m_name, test.m_name.c_str());
-					SupressNewline(false);
 				}
 
 				uint32 status = test.m_function(this);
@@ -96,7 +93,7 @@ namespace test
 					}
 					else
 					{
-						Log(eTV_TERSE, COLOUR_DEFAULT "complete.");
+						Log(eTV_TERSE, COLOUR_DEFAULT "complete.\n");
 					}
 
 					m_errorTotal += m_errors;
@@ -165,10 +162,6 @@ namespace test
 
 			vprintf(format, args);
 			printf(COLOUR_RESET);
-			if (m_supressNewline == false)
-			{
-				printf("\n");
-			}
 		}
 
 		va_end(args);
@@ -182,8 +175,8 @@ namespace test
 
 		if ((test != true) || (m_verbosity == eTV_VERBOSE))
 		{
-			Log(eTV_TERSE, COLOUR_PROGRESS "\n[%d:%d]", m_stage, m_subStage);
-			Log(eTV_TERSE, COLOUR_TEST_INFO "[%s]", (description != NULL) ? description : none);
+			Log(eTV_TERSE, COLOUR_PROGRESS "\n\t\t[%d:%d]", m_stage+1, m_subStage+1);
+			Log(eTV_TERSE, COLOUR_INFO "\t[%s]", (description != NULL) ? description : none);
 			if (test != true)
 			{
 				Log(eTV_ERROR, COLOUR_ERROR "[%s]", (failureMessage != NULL) ? failureMessage : none);
@@ -251,15 +244,6 @@ namespace test
 	bool CUnitTest::IsEqual(double param1, double param2, double epsilon /* = 0.0 */)
 	{
 		return ((param1 >= (param2-epsilon)) && (param1 <= (param2+epsilon)));
-	}
-
-	//============================================================================
-
-	bool CUnitTest::SupressNewline(bool supress)
-	{
-		bool oldValue = m_supressNewline;
-		m_supressNewline = supress;
-		return oldValue;
 	}
 
 	//============================================================================

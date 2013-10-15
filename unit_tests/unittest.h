@@ -111,8 +111,6 @@ namespace test
 
 										bool				IsEqual(double param1, double param2, double epsilon = 0.0);
 
-										bool				SupressNewline(bool supress);
-
 			//========================================================================
 
 		private:
@@ -156,7 +154,6 @@ namespace test
 			uint32										m_totalTests;
 			uint32										m_stage;
 			uint32										m_subStage;
-			bool											m_supressNewline;
 	}; // End [class CUnitTest]
 
 	//============================================================================
