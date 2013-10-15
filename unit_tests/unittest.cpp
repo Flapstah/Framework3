@@ -137,6 +137,61 @@ namespace test
 
 	//============================================================================
 
+	void CUnitTest::Test(const char* description, bool test, const char* failureMessage, int32 testType /* = eTT_Stage */)
+	{	
+		const char* none = "None";
+
+		if ((test != true) || (m_verbosity == eTV_VERBOSE))
+		{
+			Log(eTV_TERSE, COLOUR_PROGRESS "\n\t\t[%d:%d]", GetStage(), GetSubstage());
+			Log(eTV_TERSE, COLOUR_INFO "\t[%s]", (description != NULL) ? description : none);
+			if (test != true)
+			{
+				Log(eTV_ERROR, COLOUR_ERROR "[%s]", (failureMessage != NULL) ? failureMessage : none);
+				++m_errors;
+			}
+		}
+		else
+		{
+			Log(eTV_TERSE, ".");
+		}
+
+		switch (testType)
+		{
+		case eTT_Stage:
+			++m_stage;
+			break;
+		case eTT_SubStage:
+			++m_subStage;
+			break;
+		}
+
+		++m_totalTests;
+	}
+
+	//============================================================================
+
+	uint32 CUnitTest::GetStage(void)
+	{
+		return m_stage+1;
+	}
+
+	//============================================================================
+
+	uint32 CUnitTest::GetSubstage(void)
+	{
+		return m_subStage+1;
+	}
+
+	//============================================================================
+
+	bool CUnitTest::IsEqual(double param1, double param2, double epsilon /* = 0.0 */)
+	{
+		return ((param1 >= (param2-epsilon)) && (param1 <= (param2+epsilon)));
+	}
+
+	//============================================================================
+
 	void CUnitTest::Log(eTestVerbosity targetLevel, const char* format, ...)
 	{
 		va_list args;
@@ -165,85 +220,6 @@ namespace test
 		}
 
 		va_end(args);
-	}
-
-	//============================================================================
-
-	void CUnitTest::Test(const char* description, bool test, const char* failureMessage, int32 testType /* = eTT_Stage */)
-	{	
-		const char* none = "None";
-
-		if ((test != true) || (m_verbosity == eTV_VERBOSE))
-		{
-			Log(eTV_TERSE, COLOUR_PROGRESS "\n\t\t[%d:%d]", m_stage+1, m_subStage+1);
-			Log(eTV_TERSE, COLOUR_INFO "\t[%s]", (description != NULL) ? description : none);
-			if (test != true)
-			{
-				Log(eTV_ERROR, COLOUR_ERROR "[%s]", (failureMessage != NULL) ? failureMessage : none);
-				++m_errors;
-			}
-		}
-		else
-		{
-			Log(eTV_TERSE, ".");
-		}
-
-		switch (testType)
-		{
-		case eTT_Stage:
-			++m_stage;
-			break;
-		case eTT_SubStage:
-			++m_subStage;
-			break;
-		}
-
-		++m_totalTests;
-	}
-
-	//============================================================================
-
-	void CUnitTest::Information(const char* description, int32 testType)
-	{
-		if (m_verbosity == eTV_VERBOSE)
-		{
-			Log(eTV_VERBOSE, COLOUR_PROGRESS "\n[%d:%d]", m_stage, m_subStage);
-			Log(eTV_VERBOSE, COLOUR_TEST_INFO "[%s]", description);
-		}
-		else
-		{
-			Log(eTV_TERSE, ".");
-		}
-
-		switch (testType)
-		{
-		case eTT_Stage:
-			++m_stage;
-			break;
-		case eTT_SubStage:
-			++m_subStage;
-			break;
-		}
-	}
-	//============================================================================
-
-	uint32 CUnitTest::GetStage(void)
-	{
-		return m_stage+1;
-	}
-
-	//============================================================================
-
-	uint32 CUnitTest::GetSubstage(void)
-	{
-		return m_subStage+1;
-	}
-
-	//============================================================================
-
-	bool CUnitTest::IsEqual(double param1, double param2, double epsilon /* = 0.0 */)
-	{
-		return ((param1 >= (param2-epsilon)) && (param1 <= (param2+epsilon)));
 	}
 
 	//============================================================================
