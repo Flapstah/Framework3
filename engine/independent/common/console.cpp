@@ -1,6 +1,7 @@
 #include "common/stdafx.h"
 
 #include "common/console.h"
+#include <iomanip>
 
 //==============================================================================
 
@@ -45,7 +46,7 @@ namespace engine
 	template<> const char* CConsole::TVariable<double>::SetString(const char* value)
 	{
 		std::ostringstream buffer;
-		buffer << m_variable;
+		buffer << std::setprecision(std::numeric_limits<double>::digits10+2) << m_variable;
 
 		if ((m_flags & eF_CONST) == 0)
 		{
@@ -111,7 +112,7 @@ namespace engine
 		double old = GetInteger();
 
 		std::ostringstream buffer;
-		buffer << value;
+		buffer << std::setprecision(std::numeric_limits<double>::digits10+2) << value;
 
 		if ((m_flags & eF_CONST) == 0)
 		{
@@ -234,7 +235,7 @@ namespace engine
 	template<typename _type_> const char* CConsole::TVariable<_type_>::GetString(void) const
 	{
 		std::ostringstream buffer;
-		buffer << m_variable;
+		buffer << std::setprecision(std::numeric_limits<double>::digits10+2) << m_variable;
 		return buffer.str().c_str();
 	}
 
