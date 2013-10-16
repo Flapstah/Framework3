@@ -56,15 +56,24 @@ namespace test
 			{
 				case 1:
 					m_pCVar = REGISTER_VARIABLE(testIntegerVariable, 1, 0, NULL, "A test variable");
-					pThis->Test("Registering a console variable", m_pCVar.get() != NULL, "CVar pointer is NULL");
+					pThis->Test("Registering console variable", m_pCVar.get() != NULL, "CVar pointer is NULL");
 					break;
 
 				case 2:
-					UNREGISTER_VARIABLE(testIntegerVariable);
+					UNREGISTER_VARIABLE_BY_NAME(testIntegerVariable);
 					m_pCVar.reset();
-					pThis->Test("Unregistering a console variable", m_pCVar.get() == NULL, "CVar pointer is not NULL");
+					pThis->Test("Unregistering console variable by name", m_pCVar.get() == NULL, "CVar pointer is not NULL");
 					break;
 
+				case 3:
+					m_pCVar = REGISTER_VARIABLE(testDoubleVariable, 1, 0, NULL, "A test variable");
+					pThis->Test("Registering console variable", m_pCVar.get() != NULL, "CVar pointer is NULL");
+					break;
+
+				case 4:
+					UNREGISTER_VARIABLE_BY_POINTER(m_pCVar);
+					pThis->Test("Unregistering console variable by pointer", m_pCVar.get() == NULL, "CVar pointer is not NULL");
+					break;
 				default:
 					status |= eSS_COMPLETE;
 					break;
@@ -114,8 +123,7 @@ namespace test
 						const char* value = "3.1415926535897931";
 						m_pCVar->SetString(value);
 						pThis->Test("Setting integer cvar with string value", strcmp(m_pCVar->GetString(), "3") == 0, "Value is not set correctly");
-						UNREGISTER_VARIABLE(testIntegerVariable);
-						m_pCVar.reset();
+						UNREGISTER_VARIABLE_BY_POINTER(m_pCVar);
 					}
 					break;
 
@@ -171,7 +179,7 @@ namespace test
 						const char* value = "3.1415926535897931";
 						m_pCVar->SetString(value);
 						pThis->Test("Setting integer cvar with string value", strcmp(m_pCVar->GetString(), initialValue) == 0, "Value has changed");
-						UNREGISTER_VARIABLE(testIntegerVariable);
+						UNREGISTER_VARIABLE_BY_POINTER(m_pCVar);
 						m_pCVar.reset();
 					}
 					break;
@@ -225,7 +233,7 @@ namespace test
 						const char* value = "3.1415926535897931";
 						m_pCVar->SetString(value);
 						pThis->Test("Setting double cvar with string value", strcmp(m_pCVar->GetString(), value) == 0, "Value is not set correctly");
-						UNREGISTER_VARIABLE(testDoubleVariable);
+						UNREGISTER_VARIABLE_BY_POINTER(m_pCVar);
 						m_pCVar.reset();
 					}
 					break;
@@ -282,7 +290,7 @@ namespace test
 						const char* value = "3.1415926535897931";
 						m_pCVar->SetString(value);
 						pThis->Test("Setting const double cvar with string value", strcmp(m_pCVar->GetString(), initialValue) == 0, "Value has changed");
-						UNREGISTER_VARIABLE(testDoubleVariable);
+						UNREGISTER_VARIABLE_BY_POINTER(m_pCVar);
 						m_pCVar.reset();
 					}
 					break;
@@ -336,7 +344,7 @@ namespace test
 						const char* value = "3.1415926535897931";
 						m_pCVar->SetString(value);
 						pThis->Test("Setting string cvar with string value", strcmp(m_pCVar->GetString(), value) == 0, "Value is not set correctly");
-						UNREGISTER_VARIABLE(testStringVariable);
+						UNREGISTER_VARIABLE_BY_POINTER(m_pCVar);
 						m_pCVar.reset();
 					}
 					break;
@@ -393,7 +401,7 @@ namespace test
 						const char* value = "3.1415926535897931";
 						m_pCVar->SetString(value);
 						pThis->Test("Setting const string cvar with string value", strcmp(m_pCVar->GetString(), initialValue) == 0, "Value has changed");
-						UNREGISTER_VARIABLE(testDoubleVariable);
+						UNREGISTER_VARIABLE_BY_POINTER(m_pCVar);
 						m_pCVar.reset();
 					}
 					break;
