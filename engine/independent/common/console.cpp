@@ -276,7 +276,7 @@ namespace engine
 			}
 			else
 			{
-				printf("[CONSOLE]: still have variable %p registered\n", it->second.get());
+				printf("[CONSOLE]: still have variable [0x%08X] @ %p registered\n", it->first, it->second.get());
 			}
 		}
 	}

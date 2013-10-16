@@ -36,7 +36,8 @@
 #define REGISTER_DEBUG_VARIABLE(_variable_, _value_, _flags_, _on_change_callback_, _description_) _variable_ = (_value_);
 #endif // DEVELOPMENT_CONSOLE_VARIABLES_ENABLED
 
-#define UNREGISTER_VARIABLE(_variable_) engine::CConsole::Get().UnregisterVariable(engine::CompileTimeStringHash(#_variable_))
+#define UNREGISTER_VARIABLE_BY_NAME(_variable_) engine::CConsole::Get().UnregisterVariable(engine::CompileTimeStringHash(#_variable_))
+#define UNREGISTER_VARIABLE_BY_POINTER(_tivariableptr_) engine::CConsole::Get().UnregisterVariable(_tivariableptr_)
 
 //==============================================================================
 
