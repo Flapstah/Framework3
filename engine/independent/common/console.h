@@ -128,7 +128,7 @@ namespace engine
 			TIVariablePtr RegisterVariable(uint32 nameHash, double& variable, double value, uint32 flags, TDouble::OnChangeCallback pOnChangeCallback = NULL, const char* name = NULL, const char* description = NULL);
 			TIVariablePtr RegisterVariable(uint32 nameHash, std::string& variable, const char* value, uint32 flags, TString::OnChangeCallback pOnChangeCallback = NULL, const char* name = NULL, const char* description = NULL);
 			void UnregisterVariable(uint32 nameHash);
-			void UnregisterVariable(const char* name);
+			void UnregisterVariable(TIVariablePtr& pVariable);
 
 			TIVariablePtr FindVariable(uint32 nameHash);
 			TIVariablePtr FindVariable(const char* name);

@@ -395,6 +395,22 @@ namespace engine
 
 	//============================================================================
 
+	void CConsole::UnregisterVariable(TIVariablePtr&	pVariable)
+	{
+		for (TVariableMap::iterator it = m_variables.begin(), end = m_variables.end(); it != end; ++it)
+		{
+			if (it->second == pVariable)
+			{
+				m_variableDetails.erase(it->first);
+				m_variables.erase(it);
+				pVariable.reset();
+				break;
+			}
+		}
+	}
+
+	//============================================================================
+
 	CConsole::TIVariablePtr CConsole::FindVariable(uint32 nameHash)
 	{
 		TVariableMap::iterator it = m_variables.find(nameHash);
