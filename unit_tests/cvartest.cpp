@@ -7,7 +7,7 @@ namespace test
 {
 	static int64 testIntegerVariable = 0;
 	static double testDoubleVariable = 0.0;
-	static std::string testString = "";
+	static std::string testStringVariable = "";
 
 	//============================================================================
 
@@ -35,11 +35,11 @@ namespace test
 		AddStage("Lifecycle", ConsoleVariableLifecycle, eTV_TERSE);
 		AddStage("Integer console variable operations", IntegerVariableOperations, eTV_TERSE);
 		AddStage("Integer constant console variable operations", IntegerConstantVariableOperations, eTV_TERSE);
-		AddStage("Floating point console variable operations", FloatVariableOperations, eTV_VERBOSE);
-/*		AddStage("Floating point constant console variable operations", FloatVariableOperations, eTV_VERBOSE);
+		AddStage("Floating point console variable operations", FloatVariableOperations, eTV_TERSE);
+		AddStage("Floating point constant console variable operations", FloatConstantVariableOperations, eTV_TERSE);
 		AddStage("String console variable operations", StringVariableOperations, eTV_VERBOSE);
-		AddStage("String constant console variable operations", StringVariableOperations, eTV_VERBOSE);
-*/
+		AddStage("String constant console variable operations", StringConstantVariableOperations, eTV_VERBOSE);
+
 		return CUnitTest::Initialise();
 	}
 
@@ -159,7 +159,7 @@ namespace test
 				case 3:
 					{
 						double initialValue = m_pCVar->GetDouble();
-						double value = static_cast<double>(rand())/RAND_MAX;
+						double value = static_cast<double>(rand()) / static_cast<double>(rand()+1);
 						m_pCVar->SetDouble(value);
 						pThis->Test("Setting const integer cvar with double value", pThis->IsEqual(m_pCVar->GetDouble(), initialValue), "Value has changed");
 					}
@@ -250,6 +250,43 @@ namespace test
 		{
 			switch (pThis->GetStage())
 			{
+				case 1:
+					{
+						double initialValue = static_cast<double>(rand()) / static_cast<double>(rand()+1);
+						m_pCVar = REGISTER_VARIABLE(testDoubleVariable, initialValue, engine::CConsole::IVariable::eF_CONST, NULL, "A test variable");
+						pThis->Test("Setting initial value of const double cvar", pThis->IsEqual(m_pCVar->GetDouble(), initialValue), "Initial value is not set correctly");
+					}
+					break;
+
+				case 2:
+					{
+						int64 initialValue = m_pCVar->GetInteger();
+						int64 value = rand();
+						m_pCVar->SetInteger(value);
+						pThis->Test("Setting const double cvar with integer value", m_pCVar->GetInteger() == initialValue, "Value has changed");
+					}
+					break;
+
+				case 3:
+					{
+						double initialValue = m_pCVar->GetDouble();
+						double value = static_cast<double>(rand()) / static_cast<double>(rand()+1);
+						m_pCVar->SetDouble(value);
+						pThis->Test("Setting const double cvar with double value", pThis->IsEqual(m_pCVar->GetDouble(), initialValue), "Value has changed");
+					}
+					break;
+
+				case 4:
+					{
+						const char* initialValue = m_pCVar->GetString();
+						const char* value = "3.1415926535897931";
+						m_pCVar->SetString(value);
+						pThis->Test("Setting const double cvar with string value", strcmp(m_pCVar->GetString(), initialValue) == 0, "Value has changed");
+						UNREGISTER_VARIABLE(testDoubleVariable);
+						m_pCVar.reset();
+					}
+					break;
+
 				default:
 					status |= eSS_COMPLETE;
 					break;
@@ -270,6 +307,40 @@ namespace test
 		{
 			switch (pThis->GetStage())
 			{
+				case 1:
+					{
+						const char* initialValue = "A test value";
+						m_pCVar = REGISTER_VARIABLE(testStringVariable, initialValue, 0, NULL, "A test variable");
+						pThis->Test("Setting initial value of string cvar", strcmp(m_pCVar->GetString(), initialValue) == 0, "Initial value is not set correctly");
+					}
+					break;
+
+				case 2:
+					{
+						int64 value = rand();
+						m_pCVar->SetInteger(value);
+						pThis->Test("Setting string cvar with integer value", m_pCVar->GetInteger() == value, "Value is not set correctly");
+					}
+					break;
+
+				case 3:
+					{
+						double value = static_cast<double>(rand()) / static_cast<double>(rand()+1);
+						m_pCVar->SetDouble(value);
+						pThis->Test("Setting string cvar with double value", pThis->IsEqual(m_pCVar->GetDouble(), value), "Value is not set correctly");
+					}
+					break;
+
+				case 4:
+					{
+						const char* value = "3.1415926535897931";
+						m_pCVar->SetString(value);
+						pThis->Test("Setting string cvar with string value", strcmp(m_pCVar->GetString(), value) == 0, "Value is not set correctly");
+						UNREGISTER_VARIABLE(testStringVariable);
+						m_pCVar.reset();
+					}
+					break;
+
 				default:
 					status |= eSS_COMPLETE;
 					break;
@@ -290,6 +361,43 @@ namespace test
 		{
 			switch (pThis->GetStage())
 			{
+				case 1:
+					{
+						const char* initialValue = "A test value";
+						m_pCVar = REGISTER_VARIABLE(testStringVariable, initialValue, engine::CConsole::IVariable::eF_CONST, NULL, "A test variable");
+						pThis->Test("Setting initial value of constant string cvar", strcmp(m_pCVar->GetString(), initialValue) == 0, "Initial value is not set correctly");
+					}
+					break;
+
+				case 2:
+					{
+						int64 initialValue = m_pCVar->GetInteger();
+						int64 value = rand();
+						m_pCVar->SetInteger(value);
+						pThis->Test("Setting const string cvar with integer value", m_pCVar->GetInteger() == initialValue, "Value has changed");
+					}
+					break;
+
+				case 3:
+					{
+						double initialValue = m_pCVar->GetDouble();
+						double value = static_cast<double>(rand()) / static_cast<double>(rand()+1);
+						m_pCVar->SetDouble(value);
+						pThis->Test("Setting const string cvar with double value", pThis->IsEqual(m_pCVar->GetDouble(), initialValue), "Value has changed");
+					}
+					break;
+
+				case 4:
+					{
+						const char* initialValue = m_pCVar->GetString();
+						const char* value = "3.1415926535897931";
+						m_pCVar->SetString(value);
+						pThis->Test("Setting const string cvar with string value", strcmp(m_pCVar->GetString(), initialValue) == 0, "Value has changed");
+						UNREGISTER_VARIABLE(testDoubleVariable);
+						m_pCVar.reset();
+					}
+					break;
+
 				default:
 					status |= eSS_COMPLETE;
 					break;
