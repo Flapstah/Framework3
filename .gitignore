@@ -2,6 +2,7 @@ build/
 *~
 *.orig
 *.swp
+*.bak
 .vimrc
 .open_all_file_list
 make
