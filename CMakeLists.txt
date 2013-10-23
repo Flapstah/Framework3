@@ -34,8 +34,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 # Monotonically incrementing build number
 file(STRINGS engine/independent/common/build_number BUILD_NUMBER)
-MATH(EXPR BUILD_NUMBER "${BUILD_NUMBER}+1")
-file(WRITE engine/independent/common/build_number ${BUILD_NUMBER})
+MATH(EXPR NEXT_BUILD_NUMBER "${BUILD_NUMBER}+1")
+file(WRITE engine/independent/common/build_number "${NEXT_BUILD_NUMBER}\n")
 
 # Compiler flags
 #set(LINK_FLAGS "-g")
