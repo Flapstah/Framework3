@@ -37,8 +37,8 @@ namespace test
 		AddStage("Integer constant console variable operations", IntegerConstantVariableOperations, eTV_TERSE);
 		AddStage("Floating point console variable operations", FloatVariableOperations, eTV_TERSE);
 		AddStage("Floating point constant console variable operations", FloatConstantVariableOperations, eTV_TERSE);
-		AddStage("String console variable operations", StringVariableOperations, eTV_VERBOSE);
-		AddStage("String constant console variable operations", StringConstantVariableOperations, eTV_VERBOSE);
+		AddStage("String console variable operations", StringVariableOperations, eTV_TERSE);
+		AddStage("String constant console variable operations", StringConstantVariableOperations, eTV_TERSE);
 
 		return CUnitTest::Initialise();
 	}
