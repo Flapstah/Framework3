@@ -73,17 +73,6 @@
 //------------------------------------------------------------------------------
 #define FATAL_ERROR(_description_) { fprintf(stderr, "%s(%d): FATAL ERROR : %s\n", __FILE__, __LINE__, _description_); fflush(stderr); uint8* pFatal = NULL; *pFatal = 0; }
 
-//------------------------------------------------------------------------------
-// Build signature (should always be the last macro in this file, and should
-// expand to a string)
-//------------------------------------------------------------------------------
-#if defined(NDEBUG)
-#define __CONFIGURATION__ "Release"
-#else
-#define __CONFIGURATION__ "Debug"
-#endif // defined(RELEASE)
-#define __BUILD_SIGNATURE__ "[" __CONFIGURATION__ ", " __ENVIRONMENT__ "] built on (" __TIMESTAMP__ ")"
-
 //==============================================================================
 
 #endif // End [!defined(__MACROS_H__)]

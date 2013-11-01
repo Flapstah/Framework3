@@ -255,7 +255,7 @@ namespace engine
 	CCommandArgs::EParseState CCommandArgs::ProcessVersion(uint32& skipCount)
 	{
 		IGNORE_PARAMETER(skipCount);
-		printf(__BUILD_SIGNATURE__ "\n");
+		//printf(__BUILD_SIGNATURE__ "\n");
 		return ePS_REQUEST_EXIT;
 	}
 

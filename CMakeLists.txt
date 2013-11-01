@@ -32,11 +32,6 @@ project (test)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 
-# Monotonically incrementing build number
-file(STRINGS engine/independent/common/build_number BUILD_NUMBER)
-MATH(EXPR NEXT_BUILD_NUMBER "${BUILD_NUMBER}+1")
-file(WRITE engine/independent/common/build_number "${NEXT_BUILD_NUMBER}\n")
-
 # Compiler flags
 #set(LINK_FLAGS "-g")
 #set(CMAKE_CXX_FLAGS "-g")
@@ -186,7 +181,25 @@ set(PLATFORM_SPECIFIC_SOURCES
 	)
 endif (UNIX)
 
+# Monotonically incrementing build number
+#add_custom_command(
+#	OUTPUT "engine/independent/common/build_number"
+#	COMMAND file(STRINGS "engine/independent/common/build_number" BUILD_NUMBER)
+#	COMMAND math(EXPR NEXT_BUILD_NUMBER "${BUILD_NUMBER}+1")
+#	COMMAND file(WRITE "engine/independent/common/build_number" "${NEXT_BUILD_NUMBER}")
+#	DEPENDS ${PLATFORM_INDEPENDENT_SOURCES} ${PLATFORM_SPECIFIC_SOURCES}
+#)
+
+# Engine version header
+#add_custom_command(
+#	OUTPUT "engine/independent/common/version.cpp"
+#	COMMAND configure_file("engine/independent/common/version.cpp.in" "${test_SOURCE_DIR}/engine/independent/common/version.cpp")
+#	DEPENDS "engine/independent/common/build_number"
+#)
+
 # Build rules for the executable
+#add_executable (test main.cpp engine/independent/common/version.cpp ${PLATFORM_INDEPENDENT_SOURCES} ${PLATFORM_SPECIFIC_SOURCES} ${OPENGL_SUPERBIBLE_50_SOURCES})
+add_executable (generate_version tools/build/generate_version/main.cpp ${PLATFORM_INDEPENDENT_SOURCES} ${PLATFORM_SPECIFIC_SOURCES} ${OPENGL_SUPERBIBLE_50_SOURCES})
 add_executable (test main.cpp ${PLATFORM_INDEPENDENT_SOURCES} ${PLATFORM_SPECIFIC_SOURCES} ${OPENGL_SUPERBIBLE_50_SOURCES})
 target_link_libraries (test ${LIBS})
 
