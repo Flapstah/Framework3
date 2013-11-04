@@ -6,13 +6,14 @@
 namespace engine
 {
 	//============================================================================
-	// CVersion
+	// GetVersion
 	//============================================================================
-	class CVersion
-	{
-		const uint32 GetVersion(void);
-		const char*	 GetBuildSignature(void);
-	}; // End [class CVersion]
+	uint32			GetVersion(void);
+
+	//============================================================================
+	// GetBuildSignature
+	//============================================================================
+	const char*	GetBuildSignature(void);
 
 	//============================================================================
 } // End [namespace engine]

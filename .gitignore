@@ -5,6 +5,7 @@ build/
 *.bak
 .vimrc
 .open_all_file_list
+engine/independent/common/version.cpp
 make
 run
 tags

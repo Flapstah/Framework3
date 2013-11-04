@@ -140,18 +140,17 @@ set(LIBS ${LIBS} ${Boost_LIBRARIES} ${OPENGL_LIBRARY} ${ZLIB_LIBRARIES} ${GLUT_L
 
 # Platform sources
 set(PLATFORM_INDEPENDENT_SOURCES
-	#engine/independent/common/console.cpp
 	#engine/independent/common/filesystem.cpp
 	#engine/independent/common/glfw.cpp
 	#engine/independent/common/log.cpp
 	#engine/independent/common/profiling.cpp
-	engine/independent/common/stdafx.cpp
 	#engine/independent/common/system.cpp
 	#engine/independent/graphics/debugfont.cpp
 	#engine/independent/graphics/renderer.cpp
 	#engine/independent/input/keyboard.cpp
 	engine/independent/common/commandargs.cpp
 	engine/independent/common/console.cpp
+	engine/independent/common/stdafx.cpp
 	engine/independent/time/time.cpp
 	engine/independent/time/timer.cpp
 	engine/independent/time/timevalue.cpp
@@ -181,6 +180,12 @@ set(PLATFORM_SPECIFIC_SOURCES
 	)
 endif (UNIX)
 
+add_custom_command(
+	OUTPUT "${test_SOURCE_DIR}/engine/independent/common/version.cpp"
+	COMMAND "${test_BINARY_DIR}/generate_version" "${test_SOURCE_DIR}/engine/independent/common/build_number" "${test_SOURCE_DIR}/engine/independent/common/version.cpp.in" "${test_SOURCE_DIR}/engine/independent/common/version.cpp"
+	DEPENDS ${test_SOURCE_DIR}/engine/independent/common/version.cpp.in ${PLATFORM_INDEPENDENT_SOURCES} ${PLATFORM_SPECIFIC_SOURCES}
+	)
+
 # Monotonically incrementing build number
 #add_custom_command(
 #	OUTPUT "engine/independent/common/build_number"
@@ -199,7 +204,7 @@ endif (UNIX)
 
 # Build rules for the executable
 #add_executable (test main.cpp engine/independent/common/version.cpp ${PLATFORM_INDEPENDENT_SOURCES} ${PLATFORM_SPECIFIC_SOURCES} ${OPENGL_SUPERBIBLE_50_SOURCES})
-add_executable (generate_version tools/build/generate_version/main.cpp ${PLATFORM_INDEPENDENT_SOURCES} ${PLATFORM_SPECIFIC_SOURCES} ${OPENGL_SUPERBIBLE_50_SOURCES})
-add_executable (test main.cpp ${PLATFORM_INDEPENDENT_SOURCES} ${PLATFORM_SPECIFIC_SOURCES} ${OPENGL_SUPERBIBLE_50_SOURCES})
+add_executable (generate_version tools/build/generate_version/main.cpp engine/independent/common/stdafx.cpp)
+add_executable (test main.cpp ${test_SOURCE_DIR}/engine/independent/common/version.cpp ${PLATFORM_INDEPENDENT_SOURCES} ${PLATFORM_SPECIFIC_SOURCES} ${OPENGL_SUPERBIBLE_50_SOURCES})
 target_link_libraries (test ${LIBS})
 
