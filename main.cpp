@@ -8,6 +8,7 @@
 #include "unit_tests/typetest.h"
 #include "unit_tests/timetest.h"
 #include "common/console.h"
+#include "common/version.h"
 
 #include <cmath>
 
@@ -17,6 +18,8 @@ int main(int argc, char* argv[])
 {
 	//	IGNORE_PARAMETER(argc);
 	//	IGNORE_PARAMETER(argv);
+
+	printf("%s\n", engine::GetBuildSignature());
 
 	if (engine::CCommandArgs::Parse(argc, argv) == engine::CCommandArgs::ePS_SUCCESS)
 	{

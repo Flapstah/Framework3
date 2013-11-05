@@ -12,6 +12,7 @@
 #define VERSION_MAJOR (@VERSION_MAJOR@)
 #define VERSION_MINOR (@VERSION_MINOR@)
 #define BUILD_NUMBER (@BUILD_NUMBER@)
+#define VERSION_STRING "@VERSION_MAJOR@.@VERSION_MINOR@.@BUILD_NUMBER@"
 
 //------------------------------------------------------------------------------
 // Build signature
@@ -21,7 +22,7 @@
 #else
 #define __CONFIGURATION__ "Debug"
 #endif // defined(RELEASE)
-#define __BUILD_SIGNATURE__(_version_major_, _version_minor_, _build_number_) "[" __CONFIGURATION__ ", " __ENVIRONMENT__ "] built on (" __TIMESTAMP__ "), version " #_version_major_ "." #_version_minor_ "." #_build_number_
+#define __BUILD_SIGNATURE__ "Version [" VERSION_STRING "], configuration [" __CONFIGURATION__ ", " __ENVIRONMENT__ "], built [" __TIMESTAMP__ "]"
 
 //==============================================================================
 
@@ -38,7 +39,7 @@ namespace engine
 
 	const char* GetBuildSignature(void)
 	{
-		return __BUILD_SIGNATURE__(VERSION_MAJOR, VERSION_MINOR, BUILD_NUMBER);
+		return __BUILD_SIGNATURE__;
 	}
 
 	//============================================================================

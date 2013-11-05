@@ -183,7 +183,7 @@ endif (UNIX)
 add_custom_command(
 	OUTPUT "${test_SOURCE_DIR}/engine/independent/common/version.cpp"
 	COMMAND "${test_BINARY_DIR}/generate_version" "${test_SOURCE_DIR}/engine/independent/common/build_number" "${test_SOURCE_DIR}/engine/independent/common/version.cpp.in" "${test_SOURCE_DIR}/engine/independent/common/version.cpp"
-	DEPENDS ${test_SOURCE_DIR}/engine/independent/common/version.cpp.in ${PLATFORM_INDEPENDENT_SOURCES} ${PLATFORM_SPECIFIC_SOURCES}
+	DEPENDS "${test_SOURCE_DIR}/engine/independent/common/build_number" "${test_SOURCE_DIR}/engine/independent/common/version.cpp.in" ${PLATFORM_INDEPENDENT_SOURCES} ${PLATFORM_SPECIFIC_SOURCES}
 	)
 
 # Monotonically incrementing build number
