@@ -1,11 +1,17 @@
-# Macro to print some message to stdout, useful for debugging purpose.
+###############################################################################
+#
+# Macro to print some message to stdout, useful for debugging purposes.
+#
 MACRO(DBG_MSG _MSG)
 FOREACH(_MSG_STRING ${_MSG})
   MESSAGE(STATUS "${CMAKE_CURRENT_LIST_FILE}(${CMAKE_CURRENT_LIST_LINE}): ${_MSG_STRING}")
 ENDFOREACH()
 ENDMACRO(DBG_MSG)
+#
+###############################################################################
 
 
+###############################################################################
 #
 # Build type
 #
@@ -19,20 +25,28 @@ IF(DEFINED CMAKE_BUILD_TYPE)
 ELSE()
    SET(CMAKE_BUILD_TYPE Debug CACHE STRING ${CMAKE_BUILD_TYPE_DOCUMENTATION})
 ENDIF()
+#
+###############################################################################
 
 
+###############################################################################
+#
 # The name of our project is "test". CMakeLists files in this project can
 # refer to the root source directory of the project as ${test_SOURCE_DIR} and
 # to the root binary directory of the project as ${test_BINARY_DIR}.
+#
 cmake_minimum_required (VERSION 2.6)
 project (test)
-
-
 # Additional cmake modules path
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+#
+###############################################################################
 
 
+###############################################################################
+#
 # Compiler flags
+#
 #set(LINK_FLAGS "-g")
 #set(CMAKE_CXX_FLAGS "-g")
 set (CMAKE_CXX_FLAGS "")
@@ -72,9 +86,14 @@ if (CMAKE_COMPILER_IS_GNUCXX)
 		add_definitions(-DUSE_OPENGL_SUPERBIBLE=0)
 	endif (OPENGL_SUPERBIBLE_50)
 endif (CMAKE_COMPILER_IS_GNUCXX)
+#
+###############################################################################
 
 
+###############################################################################
+#
 # Packages
+#
 set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
@@ -108,16 +127,27 @@ if (UNIX)
 	#find_package(OpenAL REQUIRED)
 	#find_package(Freetype REQUIRED)
 endif (UNIX)
+#
+###############################################################################
 
 
+###############################################################################
+#
 # Start OpenGL SuperBible 5.0 stuff
+#
 if (OPENGL_SUPERBIBLE_50)
 	set(OPENGL_SUPERBIBLE_50_INCLUDES "${test_SOURCE_DIR}/GLTools/include" "${test_SOURCE_DIR}/GLTools/include/GL")
 endif (OPENGL_SUPERBIBLE_50)
+#
 # End OpenGL SuperBible 5.0 stuff
+#
+###############################################################################
 
 
+###############################################################################
+#
 # Platform include paths
+#
 set(PLATFORM_INCLUDES "${test_SOURCE_DIR}/engine/independent" "${test_SOURCE_DIR}/unit_tests")
 if (WIN32)
 	set(PLATFORM_INCLUDES ${PLATFORM_INCLUDES} "${test_SOURCE_DIR}/engine/windows")
@@ -125,20 +155,60 @@ endif (WIN32)
 if (UNIX)
 	set(PLATFORM_INCLUDES ${PLATFORM_INCLUDES} "${test_SOURCE_DIR}/engine/linux")
 endif (UNIX)
-
-
+#
 # Set up include and library paths
+#
 include_directories(${PLATFORM_INCLUDES} ${Boost_INCLUDE_DIRS} ${OPENGL_INCLUDE_DIR} ${ZLIB_INCLUDE_DIRS} ${GLUT_INCLUDE_DIR} ${GLFW_INCLUDE_DIR} ${OPENAL_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS} ${OPENGL_SUPERBIBLE_50_INCLUDES})
 set(LIBS ${LIBS} ${Boost_LIBRARIES} ${OPENGL_LIBRARY} ${ZLIB_LIBRARIES} ${GLUT_LIBRARY} ${GLFW_LIBRARY} ${OPENAL_LIBRARY} ${FREETYPE_LIBRARIES})
+#
+###############################################################################
 
 
+###############################################################################
+#
+# Debug messages to print out the current include/source/libs paths
+#
 #get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
 #DBG_MSG("INCLUDE_DIRECTORIES = [${dirs}]")
 #DBG_MSG("LIBS = [${LIBS}]")
 #DBG_MSG("PLATFORM_INCLUDES = [${PLATFORM_INCLUDES}]")
+#
+###############################################################################
 
 
+###############################################################################
+#
+# Build the 'generate_version' executable
+#
+add_executable (
+	generate_version
+ 	tools/build/generate_version/main.cpp
+ 	engine/independent/common/stdafx.cpp
+	)
+#
+# generate_version creates engine/independent/common/version.cpp as an output
+# The command format is:
+#		generate_version build_number version.cpp.in version.cpp
+#		which takes the version numbers in build_number and the template file
+#		version.cpp.in and generates the C++ file version.cpp
+# The command is dependent on the generate_version executable, the build_number
+# file, the template file and any engine sources, so if any of those change,
+# a new version.cpp will be generated
+#
+get_target_property(GENERATE_VERSION_EXE generate_version LOCATION)
+add_custom_command(
+	OUTPUT "${test_SOURCE_DIR}/engine/independent/common/version.cpp"
+	COMMAND "${GENERATE_VERSION_EXE}" "${test_SOURCE_DIR}/engine/independent/common/build_number" "${test_SOURCE_DIR}/engine/independent/common/version.cpp.in" "${test_SOURCE_DIR}/engine/independent/common/version.cpp"
+	DEPENDS "${GENERATE_VERSION_EXE}" "${test_SOURCE_DIR}/engine/independent/common/build_number" "${test_SOURCE_DIR}/engine/independent/common/version.cpp.in" ${PLATFORM_INDEPENDENT_SOURCES} ${PLATFORM_SPECIFIC_SOURCES}
+	)
+#
+###############################################################################
+
+
+###############################################################################
+#
 # Platform sources
+#
 set(PLATFORM_INDEPENDENT_SOURCES
 	#engine/independent/common/filesystem.cpp
 	#engine/independent/common/glfw.cpp
@@ -151,6 +221,7 @@ set(PLATFORM_INDEPENDENT_SOURCES
 	engine/independent/common/commandargs.cpp
 	engine/independent/common/console.cpp
 	engine/independent/common/stdafx.cpp
+	engine/independent/common/version.cpp
 	engine/independent/time/time.cpp
 	engine/independent/time/timer.cpp
 	engine/independent/time/timevalue.cpp
@@ -159,6 +230,21 @@ set(PLATFORM_INDEPENDENT_SOURCES
 	unit_tests/timetest.cpp
 	unit_tests/typetest.cpp
 	)
+#
+if (WIN32)
+set(PLATFORM_SPECIFIC_SOURCES
+	#engine/windows/common/platform_system.cpp
+	engine/windows/time/platform_time.cpp
+	)
+endif (WIN32)
+#
+if (UNIX)
+set(PLATFORM_SPECIFIC_SOURCES
+	#engine/linux/common/platform_system.cpp
+	engine/linux/time/platform_time.cpp
+	)
+endif (UNIX)
+#
 if (OPENGL_SUPERBIBLE_50)
 	set(OPENGL_SUPERBIBLE_50_SOURCES
 	# Start OpenGL SuperBible 5.0 stuff
@@ -167,44 +253,23 @@ if (OPENGL_SUPERBIBLE_50)
 	# End OpenGL SuperBible 5.0 stuff
 	)
 endif (OPENGL_SUPERBIBLE_50)
-if (WIN32)
-set(PLATFORM_SPECIFIC_SOURCES
-	#engine/windows/common/platform_system.cpp
-	engine/windows/time/platform_time.cpp
-	)
-endif (WIN32)
-if (UNIX)
-set(PLATFORM_SPECIFIC_SOURCES
-	#engine/linux/common/platform_system.cpp
-	engine/linux/time/platform_time.cpp
-	)
-endif (UNIX)
+#
+###############################################################################
 
-add_custom_command(
-	OUTPUT "${test_SOURCE_DIR}/engine/independent/common/version.cpp"
-	COMMAND "${test_BINARY_DIR}/generate_version" "${test_SOURCE_DIR}/engine/independent/common/build_number" "${test_SOURCE_DIR}/engine/independent/common/version.cpp.in" "${test_SOURCE_DIR}/engine/independent/common/version.cpp"
-	DEPENDS "${test_SOURCE_DIR}/engine/independent/common/build_number" "${test_SOURCE_DIR}/engine/independent/common/version.cpp.in" ${PLATFORM_INDEPENDENT_SOURCES} ${PLATFORM_SPECIFIC_SOURCES}
-	)
 
-# Monotonically incrementing build number
-#add_custom_command(
-#	OUTPUT "engine/independent/common/build_number"
-#	COMMAND file(STRINGS "engine/independent/common/build_number" BUILD_NUMBER)
-#	COMMAND math(EXPR NEXT_BUILD_NUMBER "${BUILD_NUMBER}+1")
-#	COMMAND file(WRITE "engine/independent/common/build_number" "${NEXT_BUILD_NUMBER}")
-#	DEPENDS ${PLATFORM_INDEPENDENT_SOURCES} ${PLATFORM_SPECIFIC_SOURCES}
-#)
-
-# Engine version header
-#add_custom_command(
-#	OUTPUT "engine/independent/common/version.cpp"
-#	COMMAND configure_file("engine/independent/common/version.cpp.in" "${test_SOURCE_DIR}/engine/independent/common/version.cpp")
-#	DEPENDS "engine/independent/common/build_number"
-#)
-
+###############################################################################
+#
 # Build rules for the executable
-#add_executable (test main.cpp engine/independent/common/version.cpp ${PLATFORM_INDEPENDENT_SOURCES} ${PLATFORM_SPECIFIC_SOURCES} ${OPENGL_SUPERBIBLE_50_SOURCES})
-add_executable (generate_version tools/build/generate_version/main.cpp engine/independent/common/stdafx.cpp)
-add_executable (test main.cpp ${test_SOURCE_DIR}/engine/independent/common/version.cpp ${PLATFORM_INDEPENDENT_SOURCES} ${PLATFORM_SPECIFIC_SOURCES} ${OPENGL_SUPERBIBLE_50_SOURCES})
+#
+add_executable (
+	test
+ 	main.cpp
+ 	${PLATFORM_INDEPENDENT_SOURCES}
+ 	${PLATFORM_SPECIFIC_SOURCES}
+ 	${OPENGL_SUPERBIBLE_50_SOURCES}
+	)
+#
 target_link_libraries (test ${LIBS})
+#
+###############################################################################
 

@@ -158,7 +158,14 @@ int main(int argc, char* argv[])
 	{
 		uint32 preamble = pTag-templateFile;
 		memcpy(outputFile, templateFile, preamble);
-		sprintf(outputFile+preamble, "%05u%s", build, pTag+sizeof("@BUILD_NUMBER@")-1); 
+		sprintf(outputFile+preamble, "%u%s", build, pTag+sizeof("@BUILD_NUMBER@")-1); 
+		memcpy(templateFile, outputFile, sizeof(templateFile));
+	}
+	while ((pTag = strstr(templateFile, "@BUILD_NUMBER_PADDED@")) != NULL)
+	{
+		uint32 preamble = pTag-templateFile;
+		memcpy(outputFile, templateFile, preamble);
+		sprintf(outputFile+preamble, "%05u%s", build, pTag+sizeof("@BUILD_NUMBER_PADDED@")-1); 
 		memcpy(templateFile, outputFile, sizeof(templateFile));
 	}
 

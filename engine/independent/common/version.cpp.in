@@ -12,7 +12,7 @@
 #define VERSION_MAJOR (@VERSION_MAJOR@)
 #define VERSION_MINOR (@VERSION_MINOR@)
 #define BUILD_NUMBER (@BUILD_NUMBER@)
-#define VERSION_STRING "@VERSION_MAJOR@.@VERSION_MINOR@.@BUILD_NUMBER@"
+#define VERSION_STRING "@VERSION_MAJOR@.@VERSION_MINOR@.@BUILD_NUMBER_PADDED@"
 
 //------------------------------------------------------------------------------
 // Build signature
