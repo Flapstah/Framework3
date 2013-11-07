@@ -178,35 +178,6 @@ set(LIBS ${LIBS} ${Boost_LIBRARIES} ${OPENGL_LIBRARY} ${ZLIB_LIBRARIES} ${GLUT_L
 
 ###############################################################################
 #
-# Build the 'generate_version' executable
-#
-add_executable (
-	generate_version
- 	tools/build/generate_version/main.cpp
- 	engine/independent/common/stdafx.cpp
-	)
-#
-# generate_version creates engine/independent/common/version.cpp as an output
-# The command format is:
-#		generate_version build_number version.cpp.in version.cpp
-#		which takes the version numbers in build_number and the template file
-#		version.cpp.in and generates the C++ file version.cpp
-# The command is dependent on the generate_version executable, the build_number
-# file, the template file and any engine sources, so if any of those change,
-# a new version.cpp will be generated
-#
-get_target_property(GENERATE_VERSION_EXE generate_version LOCATION)
-add_custom_command(
-	OUTPUT "${test_SOURCE_DIR}/engine/independent/common/version.cpp"
-	COMMAND "${GENERATE_VERSION_EXE}" "${test_SOURCE_DIR}/engine/independent/common/build_number" "${test_SOURCE_DIR}/engine/independent/common/version.cpp.in" "${test_SOURCE_DIR}/engine/independent/common/version.cpp"
-	DEPENDS "${GENERATE_VERSION_EXE}" "${test_SOURCE_DIR}/engine/independent/common/build_number" "${test_SOURCE_DIR}/engine/independent/common/version.cpp.in" ${PLATFORM_INDEPENDENT_SOURCES} ${PLATFORM_SPECIFIC_SOURCES}
-	)
-#
-###############################################################################
-
-
-###############################################################################
-#
 # Platform sources
 #
 set(PLATFORM_INDEPENDENT_SOURCES
@@ -221,7 +192,6 @@ set(PLATFORM_INDEPENDENT_SOURCES
 	engine/independent/common/commandargs.cpp
 	engine/independent/common/console.cpp
 	engine/independent/common/stdafx.cpp
-	engine/independent/common/version.cpp
 	engine/independent/time/time.cpp
 	engine/independent/time/timer.cpp
 	engine/independent/time/timevalue.cpp
@@ -259,11 +229,41 @@ endif (OPENGL_SUPERBIBLE_50)
 
 ###############################################################################
 #
+# Build the 'generate_version' executable
+#
+add_executable (
+	generate_version
+ 	tools/build/generate_version/main.cpp
+ 	engine/independent/common/stdafx.cpp
+	)
+#
+# generate_version creates engine/independent/common/version.cpp as an output
+# The command format is:
+#		generate_version build_number version.cpp.in version.cpp
+#		which takes the version numbers in build_number and the template file
+#		version.cpp.in and generates the C++ file version.cpp
+# The command is dependent on the generate_version executable, the build_number
+# file, the template file and any engine sources, so if any of those change,
+# a new version.cpp will be generated
+#
+get_target_property(GENERATE_VERSION_EXE generate_version LOCATION)
+add_custom_command(
+	OUTPUT "${test_SOURCE_DIR}/engine/independent/common/version.cpp"
+	COMMAND "${GENERATE_VERSION_EXE}" "${test_SOURCE_DIR}/engine/independent/common/build_number" "${test_SOURCE_DIR}/engine/independent/common/version.cpp.in" "${test_SOURCE_DIR}/engine/independent/common/version.cpp"
+	DEPENDS "${GENERATE_VERSION_EXE}" "${test_SOURCE_DIR}/engine/independent/common/build_number" "${test_SOURCE_DIR}/engine/independent/common/version.cpp.in" ${PLATFORM_INDEPENDENT_SOURCES} ${PLATFORM_SPECIFIC_SOURCES}
+	)
+#
+###############################################################################
+
+
+###############################################################################
+#
 # Build rules for the executable
 #
 add_executable (
 	test
  	main.cpp
+	engine/independent/common/version.cpp
  	${PLATFORM_INDEPENDENT_SOURCES}
  	${PLATFORM_SPECIFIC_SOURCES}
  	${OPENGL_SUPERBIBLE_50_SOURCES}
