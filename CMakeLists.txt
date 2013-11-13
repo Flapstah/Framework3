@@ -97,7 +97,7 @@ endif (CMAKE_COMPILER_IS_GNUCXX)
 set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
-find_package(Boost 1.53.0 REQUIRED COMPONENTS filesystem)
+find_package(Boost 1.53.0 REQUIRED COMPONENTS filesystem system)
 if (Boost_FOUND)
 	if (NOT SUPPORT_EXCEPTIONS)
 		set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DBOOST_NO_EXCEPTIONS")
@@ -236,6 +236,7 @@ add_executable (
  	tools/build/generate_version/main.cpp
  	engine/independent/common/stdafx.cpp
 	)
+target_link_libraries (generate_version ${Boost_LIBRARIES})
 #
 # generate_version creates engine/independent/common/version.cpp as an output
 # The command format is:
