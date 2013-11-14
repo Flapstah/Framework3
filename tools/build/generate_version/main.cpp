@@ -1,75 +1,11 @@
 #include "common/stdafx.h"
-
-//==============================================================================
-//
-// Simple tool to generate the code for version numbers
-//
-// Usage:
-//		generate_version <build_numbers> <template> <output>
-//
-// Where:
-//		<build_numbers>	is a text file in the format:
-//											a.b.c.d
-//										where:
-//											a		- major version (manually generated)
-//											b		- minor version (manually generated)
-//											c		- major build number } automatically generated
-//											d		- minor build number } but manually overidden
-//											in the range 0-255 (out of range values truncated
-//		<template>			is a code template file that contains:
-//											@VERSION_MAJOR@		- replaced with 'a'
-//											@VERSION_MINOR@		- replaced with 'b'
-//											@BUILD_MAJOR@			- replaced with 'c'
-//											@BUILD_MINOR@			- replaced with 'd'
-//		<output>				is the code file to output
-//
-//		e.g. generate_version versions.txt version.cpp.in version.cpp
-//
-//==============================================================================
-
-enum eErrorCode
-{
-	eEC_OK = 0,
-	eEC_UNABLE_TO_OPEN_BUILD_NUMBERS_FOR_WRITING = -1,
-	eEC_UNABLE_TO_OPEN_TEMPLATE_FILE_FOR_READING = -2,
-	eEC_UNABLE_TO_OPEN_OUTPUT_FILE_FOR_WRITING = -3,
-	eEC_TEMPLATE_FILE_EMPTY = -4,
-	eEC_TEMPLATE_FILE_TOO_BIG = -5
-}; // End [enum eErrorCode]
+#include <boost/filesystem.hpp>
+#include <iostream>
 
 //==============================================================================
 
 int main(int argc, char* argv[])
 {
-
-	//============================================================================
-
-	if (argc != 4)
-	{
-		printf("\nSimple tool to generate the code for version numbers\n");
-		printf("\n");
-		printf("Usage:\n");
-		printf("  generate_version <build_numbers> <template> <output>\n");
-		printf("Where:\n");
-		printf("  <build_numbers>  is a text file in the format:\n");
-		printf("                     a.b.c.d\n");
-		printf("                   where:\n");
-		printf("                     a - major version (manually generated)\n");
-		printf("                     b - minor version (manually generated)\n");
-		printf("                     c - major build number } automatically generated\n");
-		printf("                     d - minor build number } but manually overidden\n");
-		printf("                     in the range 0-255 (out of range values truncated\n)");
-		printf("  <template>       is a code template file that contains:\n");
-		printf("                     @VERSION_MAJOR@ - replaced with 'a'\n");
-		printf("                     @VERSION_MINOR@ - replaced with 'b'\n");
-		printf("                     @BUILD_MAJOR@   - replaced with 'c'\n");
-		printf("                     @BUILD_MINOR@   - replaced with 'd'\n");
-		printf("  <output>         is the code file to output\n");
-		printf("\n");
-		printf("  e.g. generate_version versions.txt version.cpp.in version.cpp\n");
-		return 0;
-	}
-
 	//============================================================================
 
 	uint32 versionMajor = 0;
@@ -77,6 +13,36 @@ int main(int argc, char* argv[])
 	uint32 buildMajor = 0;
 	uint32 buildMinor = 0;
 
+	if (argc != 2)
+	{
+		std::cout << std::endl << "usage:  update_version <version_header>" << std::endl;
+		return 0;
+	}
+
+	boost::filesystem::path full_path(boost::filesystem::initial_path<boost::filesystem::path>());
+
+	try
+	{
+		full_path = boost::filesystem::system_complete(boost::filesystem::path(argv[1]));
+		if (boost::filesystem::exists(full_path))
+		{
+			std::cout << std::endl << "[" << full_path.native().c_str() << "] exists" << std::endl;
+		}
+		if (boost::filesystem::is_regular_file(full_path))
+		{
+			std::cout << std::endl << "[" << full_path.native().c_str() << "] is a regular file" << std::endl;
+		}
+	}
+
+	catch (const boost::filesystem::filesystem_error& exception)
+	{
+		std::cout << std::endl << "[" << exception.code() << "]" << std::endl;
+		std::cout << std::endl << "[" << full_path.native().c_str() << "] not a file" << std::endl;
+		std::cout << std::endl << "[" << full_path.native().c_str() << "] not found" << std::endl;
+		return -1;
+	}
+
+/*
 	FILE* pNumbers = fopen(argv[1], "r");
 	if (pNumbers != NULL)
 	{
@@ -172,8 +138,8 @@ int main(int argc, char* argv[])
 	fwrite(templateFile, strlen(templateFile), 1, pOutput);
 	fclose(pTemplate);
 	fclose(pOutput);
-
-	return eEC_OK;
+*/
+	return 0;
 }
 
 //==============================================================================
