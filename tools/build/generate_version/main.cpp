@@ -1,5 +1,8 @@
 #include "common/stdafx.h"
+
+#define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
+
 #include <iostream>
 
 //==============================================================================
@@ -19,28 +22,53 @@ int main(int argc, char* argv[])
 		return 0;
 	}
 
+	/*
+	// Current working directory
 	boost::filesystem::path full_path(boost::filesystem::initial_path<boost::filesystem::path>());
+	*/
 
+	//============================================================================
+	// Fist check the file exists and is actually a file
+	//============================================================================
+	boost::filesystem::path full_path = boost::filesystem::system_complete(boost::filesystem::path(argv[1]));
+	boost::filesystem::file_status status = boost::filesystem::status(full_path);
+	if (boost::filesystem::exists(status) == false)
+	{
+		std::cout << std::endl << "[" << full_path.string() << "] does not exist" << std::endl;
+		return -1;
+	}
+	if (boost::filesystem::is_directory(status) == true)
+	{
+		std::cout << std::endl << "[" << full_path.string() << "] is not a file" << std::endl;
+		return -2;
+	}
+	//============================================================================
+
+	//============================================================================
+	// Next get the size
+	//============================================================================
+	boost::uintmax_t fileSize = 0;
 	try
 	{
-		full_path = boost::filesystem::system_complete(boost::filesystem::path(argv[1]));
-		if (boost::filesystem::exists(full_path))
-		{
-			std::cout << std::endl << "[" << full_path.native().c_str() << "] exists" << std::endl;
-		}
-		if (boost::filesystem::is_regular_file(full_path))
-		{
-			std::cout << std::endl << "[" << full_path.native().c_str() << "] is a regular file" << std::endl;
-		}
+		fileSize = boost::filesystem::file_size(full_path);
+		std::cout << std::endl << "[" << full_path.string() << "] is " << fileSize << " bytes" << std::endl;
 	}
 
 	catch (const boost::filesystem::filesystem_error& exception)
 	{
 		std::cout << std::endl << "[" << exception.code() << "]" << std::endl;
-		std::cout << std::endl << "[" << full_path.native().c_str() << "] not a file" << std::endl;
-		std::cout << std::endl << "[" << full_path.native().c_str() << "] not found" << std::endl;
-		return -1;
+		std::cout << std::endl << "[" << exception.what() << "]" << std::endl;
 	}
+	//============================================================================
+
+	/*
+
+	catch (const boost::filesystem::filesystem_error& exception)
+	{
+		std::cout << std::endl << "[" << exception.code() << "]" << std::endl;
+		std::cout << std::endl << "[" << exception.what() << "]" << std::endl;
+	}
+	*/
 
 /*
 	FILE* pNumbers = fopen(argv[1], "r");
