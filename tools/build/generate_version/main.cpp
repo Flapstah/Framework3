@@ -1,9 +1,31 @@
 #include "common/stdafx.h"
 
-#define BOOST_FILESYSTEM_NO_DEPRECATED
-#include <boost/filesystem.hpp>
+#define BOOST_FILESYSTEM_VERSION 3
 
+#if defined(BOOST_FILESYSTEM_NO_DEPRECATED)
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#endif // defined(BOOST_FILESYSTEM_NO_DEPRECATED)
+#if defined(BOOST_SYSTEM_NO_DEPRECATED)
+#define BOOST_SYSTEM_NO_DEPRECATED
+#endif // defined(BOOST_SYSTEM_NO_DEPRECATED)
+
+#include <boost/filesystem.hpp>
+#include <boost/filesystem/fstream.hpp>
 #include <iostream>
+#include <sstream>
+#include <string>
+
+//==============================================================================
+
+enum eFlags
+{
+	eF_HELP = 1 << 0,
+	eF_RESET_BUILD_NUMBER = 1 << 1,
+	eF_HAVE_VERSION_MAJOR = 1 << 2,
+	eF_VERSION_MAJOR_BUMP = 1 << 3,
+	eF_HAVE_VERSION_MINOR = 1 << 4,
+	eF_VERSION_MINOR_BUMP = 1 << 5
+};
 
 //==============================================================================
 
@@ -11,47 +33,91 @@ int main(int argc, char* argv[])
 {
 	//============================================================================
 
+	boost::filesystem::path full_path(boost::filesystem::initial_path<boost::filesystem::path>());
+	boost::uintmax_t fileSize = 0;
 	uint32 versionMajor = 0;
 	uint32 versionMinor = 0;
-	uint32 buildMajor = 0;
-	uint32 buildMinor = 0;
+	uint32 buildNumber = 0;
+	uint32 flags = 0;
 
-	if (argc != 2)
+	//============================================================================
+	// Parse the arguments
+	//============================================================================
+	int arg = 0;
+	while (++arg < argc)
 	{
-		std::cout << std::endl << "usage:  update_version <version_header>" << std::endl;
+		std::cout << "arg " << arg << ") [" << argv[arg] << "]" << std::endl;
+		if ((strcmp(argv[arg], "--help") == 0) || (strcmp(argv[arg], "-h") == 0) || (strcmp(argv[arg], "?") == 0))
+		{
+			flags |= eF_HELP;
+		}
+
+		if (strcmp(argv[arg], "--file") == 0)
+		{
+			full_path = boost::filesystem::system_complete(boost::filesystem::path(argv[++arg]));
+		}
+
+		if ((strcmp(argv[arg], "--version-major") == 0) || (strcmp(argv[arg], "-vM") == 0))
+		{
+			versionMajor = atoi(argv[++argc]);
+			flags |= eF_RESET_BUILD_NUMBER | eF_HAVE_VERSION_MAJOR;
+		}
+
+		if ((strcmp(argv[arg], "--version-minor") == 0) || (strcmp(argv[arg], "-vm") == 0))
+		{
+			versionMinor = atoi(argv[++argc]);
+			flags |= eF_RESET_BUILD_NUMBER | eF_HAVE_VERSION_MINOR;
+		}
+
+		if ((strcmp(argv[arg], "--version-major-bump") == 0) || (strcmp(argv[arg], "-vM+") == 0))
+		{
+			flags |= eF_VERSION_MAJOR_BUMP;
+		}
+
+		if ((strcmp(argv[arg], "--version-minor-bump") == 0) || (strcmp(argv[arg], "-vm+") == 0))
+		{
+			flags |= eF_VERSION_MINOR_BUMP;
+		}
+	}
+	//============================================================================
+
+	if (flags & eF_HELP)
+	{
+		// TODO: help
+		std::cout << std::endl << "TODO: help" << std::endl;
 		return 0;
 	}
 
-	/*
-	// Current working directory
-	boost::filesystem::path full_path(boost::filesystem::initial_path<boost::filesystem::path>());
-	*/
-
 	//============================================================================
-	// Fist check the file exists and is actually a file
+	// Verify any arguments
 	//============================================================================
-	boost::filesystem::path full_path = boost::filesystem::system_complete(boost::filesystem::path(argv[1]));
-	boost::filesystem::file_status status = boost::filesystem::status(full_path);
-	if (boost::filesystem::exists(status) == false)
-	{
-		std::cout << std::endl << "[" << full_path.string() << "] does not exist" << std::endl;
-		return -1;
-	}
-	if (boost::filesystem::is_directory(status) == true)
-	{
-		std::cout << std::endl << "[" << full_path.string() << "] is not a file" << std::endl;
-		return -2;
-	}
-	//============================================================================
-
-	//============================================================================
-	// Next get the size
-	//============================================================================
-	boost::uintmax_t fileSize = 0;
 	try
 	{
+		//==========================================================================
+		// Fist check the file exists and is actually a file
+		//==========================================================================
+		if (strcmp(full_path.string().c_str(), boost::filesystem::initial_path<boost::filesystem::path>().string().c_str()) == 0)
+		{
+			// TODO: throw an exception here
+			throw(false);
+		}
+
+		boost::filesystem::file_status status = boost::filesystem::status(full_path);
+		if (boost::filesystem::exists(status) == false)
+		{
+			std::cout << std::endl << "[" << full_path.string() << "] does not exist" << std::endl;
+			return -1;
+		}
+		if (boost::filesystem::is_directory(status) == true)
+		{
+			std::cout << std::endl << "[" << full_path.string() << "] is not a file" << std::endl;
+			return -2;
+		}
+
+		//==========================================================================
+		// Next get the size
+		//==========================================================================
 		fileSize = boost::filesystem::file_size(full_path);
-		std::cout << std::endl << "[" << full_path.string() << "] is " << fileSize << " bytes" << std::endl;
 	}
 
 	catch (const boost::filesystem::filesystem_error& exception)
@@ -61,14 +127,67 @@ int main(int argc, char* argv[])
 	}
 	//============================================================================
 
-	/*
+	std::ifstream input_file(full_path.native().c_str());
+	std::string version_file((std::istreambuf_iterator<char>(input_file)), std::istreambuf_iterator<char>());
 
-	catch (const boost::filesystem::filesystem_error& exception)
+	std::size_t pos = version_file.find('\"');
+	if (pos != std::string::npos)
 	{
-		std::cout << std::endl << "[" << exception.code() << "]" << std::endl;
-		std::cout << std::endl << "[" << exception.what() << "]" << std::endl;
+		++pos;
+
+		if ((flags & eF_HAVE_VERSION_MAJOR) == 0)
+		{
+			versionMajor = atoi(version_file.substr(pos).c_str());
+		}
+		else if (flags & eF_VERSION_MAJOR_BUMP)
+		{
+			++versionMajor;
+		}
+
+		std::cout << "[" << version_file.substr(pos) <<  "]" << std::endl;
+		pos = version_file.substr(pos).find('.');
+		if (pos == std::string::npos)
+		{
+			// TODO: proper exception handling here
+			throw(false);
+		}
+		++pos;
+
+		if ((flags & eF_HAVE_VERSION_MINOR) == 0)
+		{
+			versionMinor = atoi(version_file.substr(pos).c_str());
+		}
+		else if (flags & eF_VERSION_MINOR_BUMP)
+		{
+			++versionMinor;
+		}
+
+		pos = version_file.substr(pos).find('.');
+		if (pos == std::string::npos)
+		{
+			// TODO: proper exception handling here
+			throw(false);
+		}
+		++pos;
+
+		if (flags & eF_RESET_BUILD_NUMBER)
+		{
+			buildNumber = 0;
+		}
+		else
+		{
+			buildNumber = atoi(version_file.substr(pos).c_str());
+		}
 	}
-	*/
+	else
+	{
+		std::cout << "not found \"" << std::endl;
+	}
+
+	std::cout << std::endl << versionMajor << "." << versionMinor << "." << buildNumber << std::endl;
+//	std::cout << version_file.c_str() << std::endl;
+//	std::cout << version_file.length() << std::endl;
+
 
 /*
 	FILE* pNumbers = fopen(argv[1], "r");
