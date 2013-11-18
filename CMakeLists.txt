@@ -238,20 +238,11 @@ add_executable (
 	)
 target_link_libraries (generate_version ${Boost_LIBRARIES})
 #
-# generate_version creates engine/independent/common/version.cpp as an output
-# The command format is:
-#		generate_version build_number version.cpp.in version.cpp
-#		which takes the version numbers in build_number and the template file
-#		version.cpp.in and generates the C++ file version.cpp
-# The command is dependent on the generate_version executable, the build_number
-# file, the template file and any engine sources, so if any of those change,
-# a new version.cpp will be generated
-#
 get_target_property(GENERATE_VERSION_EXE generate_version LOCATION)
 add_custom_command(
 	OUTPUT "${test_SOURCE_DIR}/engine/independent/common/version.cpp"
-	COMMAND "${GENERATE_VERSION_EXE}" "${test_SOURCE_DIR}/engine/independent/common/build_number" "${test_SOURCE_DIR}/engine/independent/common/version.cpp.in" "${test_SOURCE_DIR}/engine/independent/common/version.cpp"
-	DEPENDS "${GENERATE_VERSION_EXE}" "${test_SOURCE_DIR}/engine/independent/common/build_number" "${test_SOURCE_DIR}/engine/independent/common/version.cpp.in" ${PLATFORM_INDEPENDENT_SOURCES} ${PLATFORM_SPECIFIC_SOURCES}
+	COMMAND "${GENERATE_VERSION_EXE}" --template-file "${test_SOURCE_DIR}/engine/independent/common/version.cpp.in" --build-number-file "${test_SOURCE_DIR}/engine/independent/common/build_number" --output-file "${test_SOURCE_DIR}/engine/independent/common/version.cpp"
+	DEPENDS "${GENERATE_VERSION_EXE}" "${test_SOURCE_DIR}/engine/independent/common/version.cpp.in" ${PLATFORM_INDEPENDENT_SOURCES} ${PLATFORM_SPECIFIC_SOURCES}
 	)
 #
 ###############################################################################

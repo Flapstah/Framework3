@@ -10,14 +10,13 @@
 #endif // defined(BOOST_SYSTEM_NO_DEPRECATED)
 
 #include <boost/filesystem.hpp>
-#include <boost/filesystem/fstream.hpp>
 #include <iostream>
+#include <iomanip>
 #include <sstream>
-#include <string>
 
 //==============================================================================
 
-enum eFlags
+enum eg_flags
 {
 	eF_HELP = 1 << 0,
 	eF_RESET_BUILD_NUMBER = 1 << 1,
@@ -27,18 +26,176 @@ enum eFlags
 	eF_VERSION_MINOR_BUMP = 1 << 5
 };
 
+enum eFileID
+{
+	eFID_TEMPLATE = 0,
+	eFID_BUILD_NUMBER,
+	eFID_OUTPUT,
+
+	eFID_NUM_FILES
+};
+
+enum eReturnCode
+{
+	eRC_OK = 0,
+	eRC_PATH_DOES_NOT_EXIST = -1,
+	eRC_NOT_A_FILE = -2,
+	eRC_VERSION_STRING_NOT_FOUND = -3
+};
+
+//==============================================================================
+
+uint32 g_versionMajor = 0;
+uint32 g_versionMinor = 0;
+uint32 g_buildNumber = 0;
+uint32 g_flags = 0;
+
+//==============================================================================
+
+eReturnCode CheckFile(boost::filesystem::path& path)
+{
+	boost::filesystem::file_status status = boost::filesystem::status(path);
+	if (boost::filesystem::exists(status) == false)
+	{
+		std::cout << std::endl << "[" << path.string() << "] does not exist" << std::endl;
+		return eRC_PATH_DOES_NOT_EXIST;
+	}
+
+	if (boost::filesystem::is_directory(status) == true)
+	{
+		std::cout << std::endl << "[" << path.string() << "] is not a file" << std::endl;
+		return eRC_NOT_A_FILE;
+	}
+
+	return eRC_OK;
+}
+
+//==============================================================================
+
+eReturnCode ParseVersionNumbers(boost::filesystem::path& path)
+{
+	std::ifstream inputFile(path.string().c_str());
+	std::string versionFile((std::istreambuf_iterator<char>(inputFile)), std::istreambuf_iterator<char>());
+	inputFile.close();
+
+	uint32 tempVersionMajor = 0;
+	uint32 tempVersionMinor = 0;
+	uint32 tempBuildNumber = 0;
+
+	sscanf(versionFile.c_str(), "%u.%u.%u", &tempVersionMajor, &tempVersionMinor, &tempBuildNumber);
+
+	if ((g_flags & eF_HAVE_VERSION_MAJOR) == 0)
+	{
+		g_versionMajor = tempVersionMajor;
+		if (g_flags & eF_VERSION_MAJOR_BUMP)
+		{
+			++g_versionMajor;
+		}
+	}
+
+	if ((g_flags & eF_HAVE_VERSION_MINOR) == 0)
+	{
+		g_versionMinor = tempVersionMinor;
+		if (g_flags & eF_VERSION_MINOR_BUMP)
+		{
+			++g_versionMinor;
+		}
+	}
+
+	if (g_flags & eF_RESET_BUILD_NUMBER)
+	{
+		g_buildNumber = 0;
+	}
+	else
+	{
+		g_buildNumber = tempBuildNumber+1;
+	}
+
+	//============================================================================
+	// Version number fettling
+	//============================================================================
+	if (g_buildNumber > 0xffff)
+	{
+		g_buildNumber = 0;
+		++g_versionMinor;
+	}
+
+	if (g_versionMinor > 255)
+	{
+		g_versionMinor = 0;
+		++g_versionMajor;
+	}
+
+	if (g_versionMajor > 255)
+	{
+		g_buildNumber = 0;
+		g_versionMinor = 0;
+		g_versionMajor = 0;
+	}
+	//============================================================================
+
+	std::ofstream outputFile(path.string().c_str(), std::ios_base::out | std::ios_base::binary);
+	outputFile << g_versionMajor << "." << g_versionMinor << "." << g_buildNumber;
+	outputFile.close();
+
+	return eRC_OK;
+}
+
+bool ReplaceString(std::string& source, const std::string& target, const std::string& replace)
+{
+	bool rc = false;
+	std::string temp;
+
+	std::size_t pos = source.find(target);
+	if (pos != std::string::npos)
+	{
+		temp = source.substr(0, pos) + replace + source.substr(pos+target.length());
+		std::swap(temp, source);
+		rc = true;
+	}
+
+	return rc;
+}
+
+//==============================================================================
+
+void CreateFile(boost::filesystem::path& templatePath, boost::filesystem::path& outputPath)
+{
+	//============================================================================
+	// Read in the template file
+	//============================================================================
+	std::ifstream inputFile(templatePath.string().c_str());
+	std::string templateFile((std::istreambuf_iterator<char>(inputFile)), std::istreambuf_iterator<char>());
+	inputFile.close();
+
+	std::stringstream number;
+	number << g_versionMajor;
+	while (ReplaceString(templateFile, std::string("@VERSION_MAJOR@"), number.str()));
+	number.str(std::string());
+	number << g_versionMinor;
+	while (ReplaceString(templateFile, std::string("@VERSION_MINOR@"), number.str()));
+	number.str(std::string());
+	number << g_buildNumber;
+	while (ReplaceString(templateFile, std::string("@BUILD_NUMBER@"), number.str()));
+	number.str(std::string());
+	number << std::setfill('0') << std::setw(5) << g_buildNumber;
+	while (ReplaceString(templateFile, std::string("@BUILD_NUMBER_PADDED@"), number.str()));
+
+	//============================================================================
+	// Write the output file
+	//============================================================================
+	std::ofstream outputFile(outputPath.string().c_str(), std::ios_base::out | std::ios_base::binary);
+	outputFile << templateFile;
+	outputFile.close();
+}
+
 //==============================================================================
 
 int main(int argc, char* argv[])
 {
 	//============================================================================
 
-	boost::filesystem::path full_path(boost::filesystem::initial_path<boost::filesystem::path>());
-	boost::uintmax_t fileSize = 0;
-	uint32 versionMajor = 0;
-	uint32 versionMinor = 0;
-	uint32 buildNumber = 0;
-	uint32 flags = 0;
+	boost::filesystem::path path[eFID_NUM_FILES];
 
 	//============================================================================
 	// Parse the arguments
@@ -46,250 +203,110 @@ int main(int argc, char* argv[])
 	int arg = 0;
 	while (++arg < argc)
 	{
-		std::cout << "arg " << arg << ") [" << argv[arg] << "]" << std::endl;
 		if ((strcmp(argv[arg], "--help") == 0) || (strcmp(argv[arg], "-h") == 0) || (strcmp(argv[arg], "?") == 0))
 		{
-			flags |= eF_HELP;
+			g_flags |= eF_HELP;
+			continue;
 		}
 
-		if (strcmp(argv[arg], "--file") == 0)
+		if (strcmp(argv[arg], "--template-file") == 0)
 		{
-			full_path = boost::filesystem::system_complete(boost::filesystem::path(argv[++arg]));
+			if (++arg < argc)
+			{
+				path[eFID_TEMPLATE] = boost::filesystem::system_complete(boost::filesystem::path(argv[arg]));
+				continue;
+			}
+		}
+
+		if (strcmp(argv[arg], "--output-file") == 0)
+		{
+			if (++arg < argc)
+			{
+				path[eFID_OUTPUT] = boost::filesystem::system_complete(boost::filesystem::path(argv[arg]));
+				continue;
+			}
+		}
+
+		if (strcmp(argv[arg], "--build-number-file") == 0)
+		{
+			if (++arg < argc)
+			{
+				path[eFID_BUILD_NUMBER] = boost::filesystem::system_complete(boost::filesystem::path(argv[arg]));
+				continue;
+			}
 		}
 
 		if ((strcmp(argv[arg], "--version-major") == 0) || (strcmp(argv[arg], "-vM") == 0))
 		{
-			versionMajor = atoi(argv[++argc]);
-			flags |= eF_RESET_BUILD_NUMBER | eF_HAVE_VERSION_MAJOR;
+			if (++arg < argc)
+			{
+				g_versionMajor = atoi(argv[arg]);
+				g_flags |= eF_RESET_BUILD_NUMBER | eF_HAVE_VERSION_MAJOR;
+				continue;
+			}
 		}
 
 		if ((strcmp(argv[arg], "--version-minor") == 0) || (strcmp(argv[arg], "-vm") == 0))
 		{
-			versionMinor = atoi(argv[++argc]);
-			flags |= eF_RESET_BUILD_NUMBER | eF_HAVE_VERSION_MINOR;
+			if (++arg < argc)
+			{
+				g_versionMinor = atoi(argv[arg]);
+				g_flags |= eF_RESET_BUILD_NUMBER | eF_HAVE_VERSION_MINOR;
+				continue;
+			}
 		}
 
 		if ((strcmp(argv[arg], "--version-major-bump") == 0) || (strcmp(argv[arg], "-vM+") == 0))
 		{
-			flags |= eF_VERSION_MAJOR_BUMP;
+			g_flags |= eF_VERSION_MAJOR_BUMP | eF_RESET_BUILD_NUMBER;
+			continue;
 		}
 
 		if ((strcmp(argv[arg], "--version-minor-bump") == 0) || (strcmp(argv[arg], "-vm+") == 0))
 		{
-			flags |= eF_VERSION_MINOR_BUMP;
+			g_flags |= eF_VERSION_MINOR_BUMP | eF_RESET_BUILD_NUMBER;
+			continue;
+		}
+
+		if ((strcmp(argv[arg], "--reset-build-number") == 0) || (strcmp(argv[arg], "-rb") == 0))
+		{
+			g_flags |= eF_RESET_BUILD_NUMBER;
+			continue;
 		}
 	}
 	//============================================================================
 
-	if (flags & eF_HELP)
+	if (g_flags & eF_HELP)
 	{
 		// TODO: help
 		std::cout << std::endl << "TODO: help" << std::endl;
-		return 0;
+		return eRC_OK;
 	}
 
 	//============================================================================
-	// Verify any arguments
+	// Verify the files exist and are file
 	//============================================================================
-	try
+	eReturnCode rc = eRC_OK;
+	if (((rc = CheckFile(path[eFID_TEMPLATE])) != eRC_OK) || ((rc = CheckFile(path[eFID_BUILD_NUMBER])) != eRC_OK))
 	{
-		//==========================================================================
-		// Fist check the file exists and is actually a file
-		//==========================================================================
-		if (strcmp(full_path.string().c_str(), boost::filesystem::initial_path<boost::filesystem::path>().string().c_str()) == 0)
-		{
-			// TODO: throw an exception here
-			throw(false);
-		}
-
-		boost::filesystem::file_status status = boost::filesystem::status(full_path);
-		if (boost::filesystem::exists(status) == false)
-		{
-			std::cout << std::endl << "[" << full_path.string() << "] does not exist" << std::endl;
-			return -1;
-		}
-		if (boost::filesystem::is_directory(status) == true)
-		{
-			std::cout << std::endl << "[" << full_path.string() << "] is not a file" << std::endl;
-			return -2;
-		}
-
-		//==========================================================================
-		// Next get the size
-		//==========================================================================
-		fileSize = boost::filesystem::file_size(full_path);
-	}
-
-	catch (const boost::filesystem::filesystem_error& exception)
-	{
-		std::cout << std::endl << "[" << exception.code() << "]" << std::endl;
-		std::cout << std::endl << "[" << exception.what() << "]" << std::endl;
+		return rc;
 	}
 	//============================================================================
-
-	std::ifstream input_file(full_path.native().c_str());
-	std::string version_file((std::istreambuf_iterator<char>(input_file)), std::istreambuf_iterator<char>());
-
-	std::size_t pos = version_file.find('\"');
-	if (pos != std::string::npos)
+	
+	if ((rc = ParseVersionNumbers(path[eFID_BUILD_NUMBER])) != eRC_OK)
 	{
-		++pos;
-
-		if ((flags & eF_HAVE_VERSION_MAJOR) == 0)
-		{
-			versionMajor = atoi(version_file.substr(pos).c_str());
-		}
-		else if (flags & eF_VERSION_MAJOR_BUMP)
-		{
-			++versionMajor;
-		}
-
-		std::cout << "[" << version_file.substr(pos) <<  "]" << std::endl;
-		pos = version_file.substr(pos).find('.');
-		if (pos == std::string::npos)
-		{
-			// TODO: proper exception handling here
-			throw(false);
-		}
-		++pos;
-
-		if ((flags & eF_HAVE_VERSION_MINOR) == 0)
-		{
-			versionMinor = atoi(version_file.substr(pos).c_str());
-		}
-		else if (flags & eF_VERSION_MINOR_BUMP)
-		{
-			++versionMinor;
-		}
-
-		pos = version_file.substr(pos).find('.');
-		if (pos == std::string::npos)
-		{
-			// TODO: proper exception handling here
-			throw(false);
-		}
-		++pos;
-
-		if (flags & eF_RESET_BUILD_NUMBER)
-		{
-			buildNumber = 0;
-		}
-		else
-		{
-			buildNumber = atoi(version_file.substr(pos).c_str());
-		}
-	}
-	else
-	{
-		std::cout << "not found \"" << std::endl;
-	}
-
-	std::cout << std::endl << versionMajor << "." << versionMinor << "." << buildNumber << std::endl;
-//	std::cout << version_file.c_str() << std::endl;
-//	std::cout << version_file.length() << std::endl;
-
-
-/*
-	FILE* pNumbers = fopen(argv[1], "r");
-	if (pNumbers != NULL)
-	{
-		fscanf(pNumbers, "%u.%u.%u.%u", &versionMajor, &versionMinor, &buildMajor, &buildMinor);
-		fclose(pNumbers);
-	}
-
-	versionMajor &= 0xff;
-	versionMinor &= 0xff;
-	uint32 build = ((((buildMajor&0xff)<<8) | (buildMinor&0xff))+1)&0xffff;
-	buildMajor = (build>>8)&0xff;
-	buildMinor = build&0xff;
-
-	pNumbers = fopen(argv[1], "w");
-	if (pNumbers != NULL)
-	{
-		fprintf(pNumbers, "%u.%u.%u.%u", versionMajor, versionMinor, buildMajor, buildMinor);
-		fclose(pNumbers);
-		printf("Updated [%s]\n", argv[1]);
-	}
-	else
-	{
-		printf("Unable to open [%s] for writing...\n", argv[1]);
-		return eEC_UNABLE_TO_OPEN_BUILD_NUMBERS_FOR_WRITING;
+		return rc;
 	}
 
 	//============================================================================
+	// Read in the file and parse the version string
+	//============================================================================
+	CreateFile(path[eFID_TEMPLATE], path[eFID_OUTPUT]);
+	//============================================================================
 
-	FILE* pTemplate = fopen(argv[2], "rb");
-	if (pTemplate == NULL)
-	{
-		printf("Unable to open template [%s] for reading...\n", argv[2]);
-		return eEC_UNABLE_TO_OPEN_TEMPLATE_FILE_FOR_READING;
-	}
-
-	FILE* pOutput = fopen(argv[3], "wb");
-	if (pOutput == NULL)
-	{
-		printf("Unable to open output [%s] for writing...\n", argv[3]);
-		return eEC_UNABLE_TO_OPEN_OUTPUT_FILE_FOR_WRITING;
-	}
-
-	char templateFile[SIZE_IN_KB(64)];
-	memset(templateFile, 0, sizeof(templateFile));
-	size_t bytesRead = fread(templateFile, sizeof(char), sizeof(templateFile), pTemplate);
-	switch (bytesRead)
-	{
-		case 0:
-			printf("Template [%s] is empty...\n", argv[2]);
-			return eEC_TEMPLATE_FILE_EMPTY;
-
-		case sizeof(templateFile):
-			printf("Template [%s] is too big...\n", argv[2]);
-			return eEC_TEMPLATE_FILE_TOO_BIG;
-
-		default:
-			break;
-	}
-
-	char outputFile[SIZE_IN_KB(64)];
-	memset(outputFile, 0, sizeof(outputFile));
-	char* pTag = NULL;
-
-	while ((pTag = strstr(templateFile, "@VERSION_MAJOR@")) != NULL)
-	{
-		uint32 preamble = pTag-templateFile;
-		memcpy(outputFile, templateFile, preamble);
-		sprintf(outputFile+preamble, "%u%s", versionMajor, pTag+sizeof("@VERSION_MAJOR@")-1); 
-		memcpy(templateFile, outputFile, sizeof(templateFile));
-	}
-	while ((pTag = strstr(templateFile, "@VERSION_MINOR@")) != NULL)
-	{
-		uint32 preamble = pTag-templateFile;
-		memcpy(outputFile, templateFile, preamble);
-		sprintf(outputFile+preamble, "%u%s", versionMinor, pTag+sizeof("@VERSION_MINOR@")-1); 
-		memcpy(templateFile, outputFile, sizeof(templateFile));
-	}
-	while ((pTag = strstr(templateFile, "@BUILD_NUMBER@")) != NULL)
-	{
-		uint32 preamble = pTag-templateFile;
-		memcpy(outputFile, templateFile, preamble);
-		sprintf(outputFile+preamble, "%u%s", build, pTag+sizeof("@BUILD_NUMBER@")-1); 
-		memcpy(templateFile, outputFile, sizeof(templateFile));
-	}
-	while ((pTag = strstr(templateFile, "@BUILD_NUMBER_PADDED@")) != NULL)
-	{
-		uint32 preamble = pTag-templateFile;
-		memcpy(outputFile, templateFile, preamble);
-		sprintf(outputFile+preamble, "%05u%s", build, pTag+sizeof("@BUILD_NUMBER_PADDED@")-1); 
-		memcpy(templateFile, outputFile, sizeof(templateFile));
-	}
-
-	fwrite(templateFile, strlen(templateFile), 1, pOutput);
-	fclose(pTemplate);
-	fclose(pOutput);
-*/
-	return 0;
+	return eRC_OK;
 }
 
 //==============================================================================
 // EOF
-
 
