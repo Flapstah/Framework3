@@ -26,7 +26,7 @@
 #else
 #define __CONFIGURATION__ "Debug"
 #endif // defined(RELEASE)
-#define __BUILD_SIGNATURE__ "Version [" VERSION_STRING "], configuration [" __CONFIGURATION__ ", " __ENVIRONMENT__ "], built [" __TIMESTAMP__ "]"
+#define __BUILD_SIGNATURE__ "Version [" VERSION_STRING "]\nConfiguration [" __CONFIGURATION__ ", " __ENVIRONMENT__ "]\nBuilt [" __TIMESTAMP__ "]"
 
 //==============================================================================
 
