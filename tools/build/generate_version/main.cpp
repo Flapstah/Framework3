@@ -12,6 +12,7 @@
 #include <boost/filesystem.hpp>
 #include <iostream>
 #include <iomanip>
+#include <fstream>
 #include <sstream>
 
 //==============================================================================
@@ -150,7 +151,7 @@ bool ReplaceString(std::string& source, const std::string& target, const std::st
 	if (pos != std::string::npos)
 	{
 		temp = source.substr(0, pos) + replace + source.substr(pos+target.length());
-		std::swap(temp, source);
+		source.swap(temp);
 		rc = true;
 	}
 
