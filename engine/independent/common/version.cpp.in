@@ -19,14 +19,17 @@
 //==============================================================================
 
 //------------------------------------------------------------------------------
-// Build signature
+// Build signatures
 //------------------------------------------------------------------------------
 #if defined(NDEBUG)
 #define __CONFIGURATION__ "Release"
 #else
 #define __CONFIGURATION__ "Debug"
 #endif // defined(RELEASE)
-#define __BUILD_SIGNATURE__ "Version [" VERSION_STRING "]\nConfiguration [" __CONFIGURATION__ ", " __ENVIRONMENT__ "]\nBuilt [" __TIMESTAMP__ "]"
+
+#define __VERSION_SIGNATURE__ "Version [" VERSION_STRING "]"
+#define __CONFITURATION_SIGNATURE__ "Configuration [" __CONFIGURATION__ ", " __ENVIRONMENT__ "]"
+#define __BUILD_DATE_SIGNATURE__ "Built [" __TIMESTAMP__ "]"
 
 //==============================================================================
 
@@ -41,9 +44,23 @@ namespace engine
 
 	//============================================================================
 
-	const char* GetBuildSignature(void)
+	const char* GetVersionString(void)
 	{
-		return __BUILD_SIGNATURE__;
+		return __VERSION_SIGNATURE__;
+	}
+
+	//============================================================================
+
+	const char* GetConfigurationString(void)
+	{
+		return __CONFITURATION_SIGNATURE__;
+	}
+
+	//============================================================================
+
+	const char* GetBuildDateString(void)
+	{
+		return __BUILD_DATE_SIGNATURE__;
 	}
 
 	//============================================================================
