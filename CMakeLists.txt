@@ -189,7 +189,7 @@ set(PLATFORM_INDEPENDENT_SOURCES
 	#engine/independent/graphics/debugfont.cpp
 	#engine/independent/graphics/renderer.cpp
 	#engine/independent/input/keyboard.cpp
-	engine/independent/common/commandargs.cpp
+	engine/independent/common/commandline.cpp
 	engine/independent/common/console.cpp
 	engine/independent/common/stdafx.cpp
 	engine/independent/time/time.cpp
