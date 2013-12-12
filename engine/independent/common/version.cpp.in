@@ -28,7 +28,7 @@
 #endif // defined(RELEASE)
 
 #define __VERSION_SIGNATURE__ "Version [" VERSION_STRING "]"
-#define __CONFITURATION_SIGNATURE__ "Configuration [" __CONFIGURATION__ ", " __ENVIRONMENT__ "]"
+#define __CONFIGURATION_SIGNATURE__ "Configuration [" __CONFIGURATION__ ", " __ENVIRONMENT__ "]"
 #define __BUILD_DATE_SIGNATURE__ "Built [" __TIMESTAMP__ "]"
 
 //==============================================================================
@@ -53,7 +53,7 @@ namespace engine
 
 	const char* GetConfigurationString(void)
 	{
-		return __CONFITURATION_SIGNATURE__;
+		return __CONFIGURATION_SIGNATURE__;
 	}
 
 	//============================================================================
