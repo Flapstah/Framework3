@@ -53,7 +53,6 @@ namespace engine
 			SINGLETON(CConsole);
 			~CConsole(void);
 
-			// TODO: storing the variable map
 			// Store the variable map as a map of name hash and pointer to variable
 			// Store a second map of name hash and pointer to name and description string
 			// This will ensure we only store strings for those variables that have names
@@ -61,10 +60,13 @@ namespace engine
 			// linked with the variable in the first place.
 			struct SVariableDetails
 			{
-				std::string m_name;
-				std::string m_description;
+				std::string						m_name;
+				std::string						m_description;
 			}; // End [struct SVariableDetails]
 
+			//========================================================================
+			// IVariable is the console variable interface
+			//========================================================================
 			struct IVariable
 			{
 				//----------------------------------------------------------------------
@@ -78,15 +80,16 @@ namespace engine
 																// be passed to Set (and any OnChange callback)
 				}; // End [enum eFlags]
 
-				virtual int64 GetInteger(void) const = 0;
-				virtual int64 SetInteger(const int64 value) = 0;
-				virtual double GetDouble(void) const = 0;
-				virtual double SetDouble(const double value) = 0;
-				virtual const char* GetString(void) const = 0;
-				virtual const char* SetString(const char* value) = 0;
+				virtual int64					GetInteger(void) const = 0;
+				virtual int64					SetInteger(const int64 value) = 0;
+				virtual double				GetDouble(void) const = 0;
+				virtual double				SetDouble(const double value) = 0;
+				virtual const char*		GetString(void) const = 0;
+				virtual const char*		SetString(const char* value) = 0;
 
-				virtual uint32 ModifyFlags(uint32 set, uint32 clear) = 0;
+				virtual uint32				ModifyFlags(uint32 set, uint32 clear) = 0;
 			}; // End [struct IVariable]
+			//========================================================================
 
 			//========================================================================
 			// TVariable (maps a real variable to the console)
@@ -100,46 +103,89 @@ namespace engine
 				~TVariable(void);
 
 				// IVariable
-				virtual int64 GetInteger(void) const;
-				virtual int64 SetInteger(const int64 value);
-				virtual double GetDouble(void) const;
-				virtual double SetDouble(const double value);
-				virtual const char* GetString(void) const;
-				virtual const char* SetString(const char* value);
+				virtual	int64					GetInteger(void) const;
+				virtual	int64					SetInteger(const int64 value);
+				virtual	double				GetDouble(void) const;
+				virtual	double				SetDouble(const double value);
+				virtual	const char*		GetString(void) const;
+				virtual	const char*		SetString(const char* value);
 
-				virtual uint32 ModifyFlags(uint32 set, uint32 clear);
+				virtual	uint32				ModifyFlags(uint32 set, uint32 clear);
 				// ~IVariable
 
 			protected:
-				static const _type_& DefaultOnChange(const _type_& value);
+				static	const _type_&	DefaultOnChange(const _type_& value);
 
 			protected:
-				_type_& m_variable;
-				OnChangeCallback m_pCallback;
-				uint32 m_flags;
+				_type_&								m_variable;
+				OnChangeCallback			m_pCallback;
+				uint32								m_flags;
 			}; // End [template <typename _type_> class TVariable]
 			//========================================================================
 
+			//========================================================================
+			// ICommand is the console command interface
+			//========================================================================
+			struct ICommand
+			{
+				//----------------------------------------------------------------------
+				// Flags
+				//----------------------------------------------------------------------
+				enum eFlags
+				{
+				}; // End [eFlags]
+
+			}; // End [stuct ICommand]
+			//========================================================================
+
+			//------------------------------------------------------------------------
+			// Exposed types to make code more readable
+			//------------------------------------------------------------------------
 			typedef boost::shared_ptr<IVariable> TIVariablePtr;
 			typedef TVariable<int64> TInteger;
 			typedef TVariable<double> TDouble;
 			typedef TVariable<std::string> TString;
 
-			TIVariablePtr RegisterVariable(uint32 nameHash, int64& variable, int64 value, uint32 flags, TInteger::OnChangeCallback pOnChangeCallback = NULL, const char* name = NULL, const char* description = NULL);
-			TIVariablePtr RegisterVariable(uint32 nameHash, double& variable, double value, uint32 flags, TDouble::OnChangeCallback pOnChangeCallback = NULL, const char* name = NULL, const char* description = NULL);
-			TIVariablePtr RegisterVariable(uint32 nameHash, std::string& variable, const char* value, uint32 flags, TString::OnChangeCallback pOnChangeCallback = NULL, const char* name = NULL, const char* description = NULL);
-			void UnregisterVariable(uint32 nameHash);
-			void UnregisterVariable(TIVariablePtr& pVariable);
+			//------------------------------------------------------------------------
+			// Registration methods for the variable types
+			//------------------------------------------------------------------------
+			TIVariablePtr						RegisterVariable(uint32 nameHash, int64& variable, int64 value, uint32 flags, TInteger::OnChangeCallback pOnChangeCallback = NULL, const char* name = NULL, const char* description = NULL);
+			TIVariablePtr						RegisterVariable(uint32 nameHash, double& variable, double value, uint32 flags, TDouble::OnChangeCallback pOnChangeCallback = NULL, const char* name = NULL, const char* description = NULL);
+			TIVariablePtr						RegisterVariable(uint32 nameHash, std::string& variable, const char* value, uint32 flags, TString::OnChangeCallback pOnChangeCallback = NULL, const char* name = NULL, const char* description = NULL);
 
-			TIVariablePtr FindVariable(uint32 nameHash);
-			TIVariablePtr FindVariable(const char* name);
+			//------------------------------------------------------------------------
+			// Unregister is type agnostic
+			//------------------------------------------------------------------------
+			void										UnregisterVariable(uint32 nameHash);
+			void										UnregisterVariable(TIVariablePtr& pVariable);
 
-			const SVariableDetails* FindDetails(uint32 nameHash);
-			const SVariableDetails* FindDetails(const char* name);
+			//------------------------------------------------------------------------
+			// Find a variable by name or hash
+			//------------------------------------------------------------------------
+			TIVariablePtr						FindVariable(uint32 nameHash);
+			TIVariablePtr						FindVariable(const char* name);
+
+			//------------------------------------------------------------------------
+			// Find variable details by name or hash
+			//------------------------------------------------------------------------
+			const SVariableDetails*	FindDetails(uint32 nameHash);
+			const SVariableDetails*	FindDetails(const char* name);
+
+			//------------------------------------------------------------------------
+			// Immediate execution of command (on calling thread)
+			//------------------------------------------------------------------------
+			bool										Execute(const char* command);
+
+			//------------------------------------------------------------------------
+			// Adds commands to the command buffer (processed FIFO, on console thread)
+			//------------------------------------------------------------------------
+			bool										ExecuteDeferred(const char* command, uint32 frames);
+			bool										ExecuteDeferred(const char* command, float seconds);
 
 		protected:
-			// Variables without a description cannot be searched for or tab completed.
-			void AddDescription(uint32 nameHash, const char* name, const char* description);
+			// Variables without a description cannot be searched for in the console,
+			// or tab completed.
+			void										AddDescription(uint32 nameHash, const char* name, const char* description);
 
 		private:
 			typedef std::map<uint32, TIVariablePtr> TVariableMap;
