@@ -10,7 +10,7 @@ namespace engine
 {
 	//============================================================================
 
-	CCommandLine::CCommandLine(int argc, char* argv[], CConsole& console)
+	CCommandLine::CCommandLine(uint32 argc, const char* const* argv, CConsole& console)
 	{
 		std::vector<const char*> preArgs;
 		std::vector<const char*> args;
@@ -21,7 +21,7 @@ namespace engine
 		postArgs.reserve(argc);
 
 		// Skip the executable name
-		for (int32 index = 1; index < argc; ++index)
+		for (uint32 index = 1; index < argc; ++index)
 		{
 			switch (argv[index][0])
 			{

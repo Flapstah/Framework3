@@ -16,7 +16,7 @@ namespace engine
 		//--------------------------------------------------------------------------
 
 		public:
-		CCommandLine(int argc, char* argv[], CConsole& console);
+		CCommandLine(uint32 argc, const char* const* argv, CConsole& console);
 		~CCommandLine(void);
 
 		//--------------------------------------------------------------------------
