@@ -269,7 +269,7 @@ namespace engine
 	{
 		for (TVariableMap::const_iterator it = m_variables.begin(), end = m_variables.end(); it != end; ++it)
 		{
-			const SVariableDetails* pDetails = FindDetails(it->first);
+			const SDetails* pDetails = FindDetails(it->first);
 			if (pDetails != NULL)
 			{
 				printf("[CONSOLE]: still have variable [%s] @ %p registered\n", pDetails->m_name.c_str(), it->second.get());
@@ -433,9 +433,9 @@ namespace engine
 
 	//============================================================================
 
-	const CConsole::SVariableDetails* CConsole::FindDetails(uint32 nameHash)
+	const CConsole::SDetails* CConsole::FindDetails(uint32 nameHash)
 	{
-		SVariableDetails* pDetails = NULL;
+		SDetails* pDetails = NULL;
 		TVariableDetailsMap::iterator it = m_variableDetails.find(nameHash);
 
 		if (it != m_variableDetails.end())
@@ -448,7 +448,7 @@ namespace engine
 
 	//============================================================================
 
-	const CConsole::SVariableDetails* CConsole::FindDetails(const char* name)
+	const CConsole::SDetails* CConsole::FindDetails(const char* name)
 	{
 		return FindDetails(engine::CRunTimeStringHash::Calculate(name));
 	}
@@ -457,7 +457,7 @@ namespace engine
 
 	void CConsole::AddDescription(uint32 nameHash, const char* name, const char* description)
 	{
-		SVariableDetails* pDetails = new SVariableDetails();
+		SDetails* pDetails = new SDetails();
 		if (pDetails != NULL)
 		{
 			pDetails->m_name = name;

@@ -53,16 +53,14 @@ namespace engine
 			SINGLETON(CConsole);
 			~CConsole(void);
 
-			// Store the variable map as a map of name hash and pointer to variable
-			// Store a second map of name hash and pointer to name and description string
-			// This will ensure we only store strings for those variables that have names
-			// and descriptions (instead of spurious NULL pointers), and they're not easily
-			// linked with the variable in the first place.
-			struct SVariableDetails
+			//========================================================================
+			// SDetails holds the name/description of a variable/command
+			//========================================================================
+			struct SDetails
 			{
 				std::string						m_name;
 				std::string						m_description;
-			}; // End [struct SVariableDetails]
+			}; // End [struct SDetails]
 
 			//========================================================================
 			// IVariable is the console variable interface
@@ -135,6 +133,7 @@ namespace engine
 				{
 				}; // End [eFlags]
 
+				typedef bool (*ExecuteCommandCallback)(uint32 argc, const char* const* argv);
 			}; // End [stuct ICommand]
 			//========================================================================
 
@@ -146,52 +145,64 @@ namespace engine
 			typedef TVariable<double> TDouble;
 			typedef TVariable<std::string> TString;
 
+			typedef ICommand* TICommandPtr;
+
 			//------------------------------------------------------------------------
 			// Registration methods for the variable types
 			//------------------------------------------------------------------------
-			TIVariablePtr						RegisterVariable(uint32 nameHash, int64& variable, int64 value, uint32 flags, TInteger::OnChangeCallback pOnChangeCallback = NULL, const char* name = NULL, const char* description = NULL);
-			TIVariablePtr						RegisterVariable(uint32 nameHash, double& variable, double value, uint32 flags, TDouble::OnChangeCallback pOnChangeCallback = NULL, const char* name = NULL, const char* description = NULL);
-			TIVariablePtr						RegisterVariable(uint32 nameHash, std::string& variable, const char* value, uint32 flags, TString::OnChangeCallback pOnChangeCallback = NULL, const char* name = NULL, const char* description = NULL);
+			TIVariablePtr		RegisterVariable(uint32 nameHash, int64& variable, int64 value, uint32 flags, TInteger::OnChangeCallback pOnChangeCallback = NULL, const char* name = NULL, const char* description = NULL);
+			TIVariablePtr		RegisterVariable(uint32 nameHash, double& variable, double value, uint32 flags, TDouble::OnChangeCallback pOnChangeCallback = NULL, const char* name = NULL, const char* description = NULL);
+			TIVariablePtr		RegisterVariable(uint32 nameHash, std::string& variable, const char* value, uint32 flags, TString::OnChangeCallback pOnChangeCallback = NULL, const char* name = NULL, const char* description = NULL);
 
 			//------------------------------------------------------------------------
 			// Unregister is type agnostic
 			//------------------------------------------------------------------------
-			void										UnregisterVariable(uint32 nameHash);
-			void										UnregisterVariable(TIVariablePtr& pVariable);
+			void						UnregisterVariable(uint32 nameHash);
+			void						UnregisterVariable(TIVariablePtr& pVariable);
 
 			//------------------------------------------------------------------------
 			// Find a variable by name or hash
 			//------------------------------------------------------------------------
-			TIVariablePtr						FindVariable(uint32 nameHash);
-			TIVariablePtr						FindVariable(const char* name);
+			TIVariablePtr		FindVariable(uint32 nameHash);
+			TIVariablePtr		FindVariable(const char* name);
 
 			//------------------------------------------------------------------------
 			// Find variable details by name or hash
 			//------------------------------------------------------------------------
-			const SVariableDetails*	FindDetails(uint32 nameHash);
-			const SVariableDetails*	FindDetails(const char* name);
+			const SDetails*	FindDetails(uint32 nameHash);
+			const SDetails*	FindDetails(const char* name);
 
 			//------------------------------------------------------------------------
 			// Immediate execution of command (on calling thread)
 			//------------------------------------------------------------------------
-			bool										Execute(const char* command);
+			bool						Execute(const char* command);
 
 			//------------------------------------------------------------------------
 			// Adds commands to the command buffer (processed FIFO, on console thread)
 			//------------------------------------------------------------------------
-			bool										ExecuteDeferred(const char* command, uint32 frames);
-			bool										ExecuteDeferred(const char* command, float seconds);
+			bool						ExecuteDeferred(const char* command, uint32 frames);
+			bool						ExecuteDeferred(const char* command, float seconds);
 
 		protected:
 			// Variables without a description cannot be searched for in the console,
 			// or tab completed.
-			void										AddDescription(uint32 nameHash, const char* name, const char* description);
+			void						AddDescription(uint32 nameHash, const char* name, const char* description);
 
 		private:
+			// Store the variable map as a map of name hash and pointer to variable
 			typedef std::map<uint32, TIVariablePtr> TVariableMap;
-			typedef std::map<uint32, SVariableDetails*> TVariableDetailsMap;
 			TVariableMap m_variables;
+			// Store a second map of name hash and pointer to name and description string
+			typedef std::map<uint32, SDetails*> TVariableDetailsMap;
 			TVariableDetailsMap m_variableDetails;
+			// This will ensure we only store strings for those variables that have names
+			// and descriptions (instead of spurious NULL pointers), and they're not easily
+			// linked with the variable in the first place.
+
+			typedef std::map<uint32, TICommandPtr> TCommandMap;
+			TCommandMap m_commands;
+			typedef std::map<uint32, SDetails*> TCommandDetailsMap;
+			TCommandDetailsMap m_commandDetails;
 	}; // End [class CConsole]
 
 } // End [namespace engine]
