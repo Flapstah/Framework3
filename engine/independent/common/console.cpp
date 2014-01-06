@@ -256,6 +256,27 @@ namespace engine
 	}
 
 	//============================================================================
+
+	CConsole::CCommand::CCommand(uint32 flags, ExecuteCommandCallback pCallback)
+		: m_pCallback(pCallback)
+		, m_flags(flags)
+	{
+	}
+
+	//============================================================================
+
+	CConsole::CCommand::~CCommand(void)
+	{
+	}
+
+	//============================================================================
+	
+	bool CConsole::CCommand::Execute(uint32 argc, const char* const* argv)
+	{
+		return m_pCallback(argc, argv);
+	}
+
+	//============================================================================
 	// CConsole
 	//============================================================================
 
@@ -287,7 +308,7 @@ namespace engine
 	{
 		boost::shared_ptr<TInteger> pVariable;
 
-		if (FindVariable(nameHash) == NULL)
+		if ((FindVariable(nameHash) == NULL) && (FindCommand(nameHash) == NULL))
 		{
 			// Make sure the variable is non-const before setting it's initial value...
 			uint32 adjustedFlags = flags&~IVariable::eF_CONST;
@@ -308,7 +329,7 @@ namespace engine
 		}
 		else
 		{
-			printf("[CONSOLE]: Trying to register an integer variable named [%s] (hash [%d]), with description [%s], but it already exists!\n", name, nameHash, description);
+			printf("[CONSOLE]: Trying to register an integer variable named [%s] (hash [%d]), with description [%s], but that name already exists!\n", name, nameHash, description);
 		}
 
 		return pVariable;
@@ -320,7 +341,7 @@ namespace engine
 	{
 		boost::shared_ptr<TDouble> pVariable;
 
-		if (FindVariable(nameHash) == NULL)
+		if ((FindVariable(nameHash) == NULL) && (FindCommand(nameHash) == NULL))
 		{
 			// Make sure the variable is non-const before setting it's initial value...
 			uint32 adjustedFlags = flags&~IVariable::eF_CONST;
@@ -341,7 +362,7 @@ namespace engine
 		}
 		else
 		{
-			printf("[CONSOLE]: Trying to register a double variable named [%s] (hash [%d]), with description [%s], but it already exists!\n", name, nameHash, description);
+			printf("[CONSOLE]: Trying to register a double variable named [%s] (hash [%d]), with description [%s], but that name already exists!\n", name, nameHash, description);
 		}
 
 		return pVariable;
@@ -353,7 +374,7 @@ namespace engine
 	{
 		boost::shared_ptr<TString> pVariable;
 
-		if (FindVariable(nameHash) == NULL)
+		if ((FindVariable(nameHash) == NULL) && (FindCommand(nameHash) == NULL))
 		{
 			// Make sure the variable is non-const before setting it's initial value...
 			uint32 adjustedFlags = flags&~IVariable::eF_CONST;
@@ -374,7 +395,7 @@ namespace engine
 		}
 		else
 		{
-			printf("[CONSOLE]: Trying to register an string variable named [%s] (hash [%d]), with description [%s], but it already exists!\n", name, nameHash, description);
+			printf("[CONSOLE]: Trying to register an string variable named [%s] (hash [%d]), with description [%s], but that name already exists!\n", name, nameHash, description);
 		}
 
 		return pVariable;
@@ -384,24 +405,19 @@ namespace engine
 
 	void CConsole::UnregisterVariable(uint32 nameHash)
 	{
-		TIVariablePtr pVariable = FindVariable(nameHash);
-
-		if (pVariable != NULL)
-		{
-			m_variables.erase(nameHash);
-			m_variableDetails.erase(nameHash);
-		}
+		m_variables.erase(nameHash);
+		m_details.erase(nameHash);
 	}
 
 	//============================================================================
 
-	void CConsole::UnregisterVariable(TIVariablePtr&	pVariable)
+	void CConsole::UnregisterVariable(TIVariablePtr& pVariable)
 	{
 		for (TVariableMap::iterator it = m_variables.begin(), end = m_variables.end(); it != end; ++it)
 		{
 			if (it->second == pVariable)
 			{
-				m_variableDetails.erase(it->first);
+				m_details.erase(it->first);
 				m_variables.erase(it);
 				pVariable.reset();
 				break;
@@ -414,14 +430,14 @@ namespace engine
 	CConsole::TIVariablePtr CConsole::FindVariable(uint32 nameHash)
 	{
 		TVariableMap::iterator it = m_variables.find(nameHash);
-		TIVariablePtr pVar;
+		TIVariablePtr pVariable;
 
 		if (it != m_variables.end())
 		{
-			pVar = it->second;
+			pVariable = it->second;
 		}
 
-		return pVar;
+		return pVariable;
 	}
 
 	//============================================================================
@@ -436,9 +452,9 @@ namespace engine
 	const CConsole::SDetails* CConsole::FindDetails(uint32 nameHash)
 	{
 		SDetails* pDetails = NULL;
-		TVariableDetailsMap::iterator it = m_variableDetails.find(nameHash);
+		TDetailsMap::iterator it = m_details.find(nameHash);
 
-		if (it != m_variableDetails.end())
+		if (it != m_details.end())
 		{
 			pDetails = it->second;
 		}
@@ -454,6 +470,85 @@ namespace engine
 	}
 
 	//============================================================================
+	
+	CConsole::TICommandPtr CConsole::RegisterCommand(uint32 nameHash, uint32 flags, ICommand::ExecuteCommandCallback pExecuteCommandCallback, const char* name /* = NULL */, const char* description /* = NULL */)
+	{
+		TICommandPtr pCommand = NULL;
+
+		if (pExecuteCommandCallback != NULL)
+		{
+			if ((FindVariable(nameHash) == NULL) && (FindCommand(nameHash) == NULL))
+			{
+				pCommand = new CCommand(flags, pExecuteCommandCallback);
+				if (pCommand != NULL)
+				{
+					m_commands[nameHash] = pCommand;
+				}
+
+				if (name != NULL)
+				{
+					AddDescription(nameHash, name, description);
+				}
+			}
+			else
+			{
+				printf("[CONSOLE]: Trying to register command named [%s] (hash [%d]), with description [%s], but that name already exists!\n", name, nameHash, description);
+			}
+		}
+		else
+		{
+			printf("[CONSOLE]: Trying to register command named [%s] (hash [%d]), with description [%s], with NULL execute callback!\n", name, nameHash, description);
+		}
+
+		return pCommand;
+	}
+
+	//============================================================================
+
+	void CConsole::UnRegisterCommand(uint32 nameHash)
+	{
+		m_commands.erase(nameHash);
+		m_details.erase(nameHash);
+	}
+
+	//============================================================================
+
+	void CConsole::UnRegisterCommand(CConsole::TICommandPtr& pCommand)
+	{
+		for (TCommandMap::iterator it = m_commands.begin(), end = m_commands.end(); it != end; ++it)
+		{
+			if (it->second == pCommand)
+			{
+				m_details.erase(it->first);
+				m_commands.erase(it);
+				break;
+			}
+		}
+	}
+		
+	//============================================================================
+
+	CConsole::TICommandPtr CConsole::FindCommand(uint32 nameHash)
+	{
+		TCommandMap::iterator it = m_commands.find(nameHash);
+		TICommandPtr pCommand = NULL;
+
+		if (it != m_commands.end())
+		{
+			pCommand = it->second;
+		}
+
+		return pCommand;
+	}
+
+	//============================================================================
+
+	CConsole::TICommandPtr CConsole::FindCommand(const char* name)
+	{
+		return FindCommand(engine::CRunTimeStringHash::Calculate(name));
+	}
+
+	//============================================================================
 
 	void CConsole::AddDescription(uint32 nameHash, const char* name, const char* description)
 	{
@@ -462,7 +557,7 @@ namespace engine
 		{
 			pDetails->m_name = name;
 			pDetails->m_description = description;
-			m_variableDetails[nameHash] = pDetails;
+			m_details[nameHash] = pDetails;
 		}
 	}
 

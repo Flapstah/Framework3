@@ -98,7 +98,7 @@ namespace engine
 				typedef const _type_& (*OnChangeCallback)(const _type_& value);
 
 				TVariable(_type_& variable, uint32 flags, OnChangeCallback pCallback = NULL);
-				~TVariable(void);
+				virtual ~TVariable(void);
 
 				// IVariable
 				virtual	int64					GetInteger(void) const;
@@ -135,6 +135,24 @@ namespace engine
 
 				typedef bool (*ExecuteCommandCallback)(uint32 argc, const char* const* argv);
 			}; // End [stuct ICommand]
+
+			//========================================================================
+			// CCommand is the console command class
+			//========================================================================
+			class CCommand : public ICommand
+			{
+			public:
+
+				CCommand(uint32 flags, ExecuteCommandCallback pCallback);
+				virtual ~CCommand(void);
+
+				bool Execute(uint32 argc, const char* const* argv);
+
+			protected:
+				ExecuteCommandCallback	m_pCallback;
+				uint32									m_flags;
+			}; // End [class CCommand : public ICommand]
+
 			//========================================================================
 
 			//------------------------------------------------------------------------
@@ -173,36 +191,49 @@ namespace engine
 			const SDetails*	FindDetails(const char* name);
 
 			//------------------------------------------------------------------------
+			// Registration/unregistration of commands
+			//------------------------------------------------------------------------
+			TICommandPtr		RegisterCommand(uint32 nameHash, uint32 flags, ICommand::ExecuteCommandCallback pExecuteCommandCallback, const char* name = NULL, const char* description = NULL);
+			void						UnRegisterCommand(uint32 nameHash);
+			void						UnRegisterCommand(TICommandPtr& pCommand);
+
+			//------------------------------------------------------------------------
+			// Find a variable by name or hash
+			//------------------------------------------------------------------------
+			TICommandPtr		FindCommand(uint32 nameHash);
+			TICommandPtr		FindCommand(const char* name);
+
+			//------------------------------------------------------------------------
 			// Immediate execution of command (on calling thread)
 			//------------------------------------------------------------------------
-			bool						Execute(const char* command);
+			bool						Execute(const char* commandLine);
 
 			//------------------------------------------------------------------------
 			// Adds commands to the command buffer (processed FIFO, on console thread)
 			//------------------------------------------------------------------------
-			bool						ExecuteDeferred(const char* command, uint32 frames);
-			bool						ExecuteDeferred(const char* command, float seconds);
+			bool						ExecuteDeferred(const char* commandLine, uint32 frames);
+			bool						ExecuteDeferred(const char* commandLine, float seconds);
 
 		protected:
-			// Variables without a description cannot be searched for in the console,
-			// or tab completed.
+			// Variables and commands without a description cannot be searched for in
+			// the console, or tab completed.
 			void						AddDescription(uint32 nameHash, const char* name, const char* description);
 
 		private:
 			// Store the variable map as a map of name hash and pointer to variable
 			typedef std::map<uint32, TIVariablePtr> TVariableMap;
 			TVariableMap m_variables;
-			// Store a second map of name hash and pointer to name and description string
-			typedef std::map<uint32, SDetails*> TVariableDetailsMap;
-			TVariableDetailsMap m_variableDetails;
-			// This will ensure we only store strings for those variables that have names
-			// and descriptions (instead of spurious NULL pointers), and they're not easily
-			// linked with the variable in the first place.
-
+			// Store the command map as a map of name hash and pointer to command
 			typedef std::map<uint32, TICommandPtr> TCommandMap;
 			TCommandMap m_commands;
-			typedef std::map<uint32, SDetails*> TCommandDetailsMap;
-			TCommandDetailsMap m_commandDetails;
+			// Store a second map of name hash and pointer to name and description
+			// string
+			typedef std::map<uint32, SDetails*> TDetailsMap;
+			TDetailsMap m_details;
+			// This will ensure we only store strings for those variables/commands
+			// that have names and descriptions (instead of spurious NULL pointers),
+			// and they're not easily linked with the source in the first place.
+
 	}; // End [class CConsole]
 
 } // End [namespace engine]
