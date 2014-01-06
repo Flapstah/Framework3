@@ -12,6 +12,20 @@
 
 #include <cmath>
 
+bool TestCommand(uint32 argc, const char* const* argv)
+{
+	printf("*** TestCommand\n");
+
+	for (uint32 i = 0; i < argc; ++i)
+	{
+		printf("argv[%d]=\"%s\"\n", i, argv[i]);
+	}
+
+	printf("*** ~TestCommand\n");
+	return true;
+}
+
+
 //==============================================================================
 
 int main(int argc, char* argv[])
@@ -19,7 +33,9 @@ int main(int argc, char* argv[])
 	//	IGNORE_PARAMETER(argc);
 	//	IGNORE_PARAMETER(argv);
 
-	engine::CCommandLine cl(argc, argv, engine::CConsole::Get());
+	engine::CConsole& console = engine::CConsole::Get();
+	engine::CCommandLine cl(argc, argv, console);
+
 	return 0;
 
 		{

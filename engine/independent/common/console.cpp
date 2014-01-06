@@ -550,6 +550,30 @@ namespace engine
 
 	//============================================================================
 
+	bool CConsole::Execute(const char* commandLine)
+	{
+		printf("[TODO]: CConsole::Execute()");
+		return true;
+	}
+
+	//============================================================================
+
+	bool CConsole::ExecuteDeferred(const char* commandLine, uint32 frames)
+	{
+		printf("[TODO]: CConsole::ExecuteDeferred(frames)");
+		return true;
+	}
+
+	//============================================================================
+
+	bool CConsole::ExecuteDeferred(const char* commandLine, float seconds)
+	{
+		printf("[TODO]: CConsole::ExecuteDeferred(seconds)");
+		return true;
+	}
+
+	//============================================================================
+
 	void CConsole::AddDescription(uint32 nameHash, const char* name, const char* description)
 	{
 		SDetails* pDetails = new SDetails();

@@ -14,24 +14,30 @@
 
 #define REGISTER_VARIABLE(_variable_, _value_, _flags_, _on_change_callback_, _description_) \
 	engine::CConsole::Get().RegisterVariable(engine::CompileTimeStringHash(#_variable_), _variable_, _value_, _flags_, _on_change_callback_, #_variable_, _description_)
+#define REGISTER_COMMAND(_command_, _flags_, _execute_callback_, _description_) \
+	engine::CConsole::Get().RegisterConsole(engine::CompileTimeStringHash(#_command_), _flags_, _execute_callback_, #_command_, _description_)
 
 //------------------------------------------------------------------------------
-// A "hidden" variable will have no plain text details stored when
+// A "hidden" variable/command will have no plain text details stored when
 // CONSOLE_HIDDEN_VARIABLES_ENABLED
 //------------------------------------------------------------------------------
 #if CONSOLE_HIDDEN_VARIABLES_ENABLED
 #define REGISTER_HIDDEN_VARIABLE(_variable_, _value_, _flags_, _on_change_callback_, _description_) \
 	engine::CConsole::Get().RegisterVariable(engine::CompileTimeStringHash(#_variable_), _variable_, _value_, _flags_, _on_change_callback_, NULL, NULL)
+#define REGISTER_HIDDEN_COMMAND(_command_, _flags_, _execute_callback_, _description_) \
+	engine::CConsole::Get().RegisterConsole(engine::CompileTimeStringHash(#_command_), _flags_, _execute_callback_, NULL, NULL)
 #else
 #define REGISTER_HIDDEN_VARIABLE(_variable_, _value_, _flags_, _on_change_callback_, _description_) REGISTER_VARIABLE(_variable_, _value_, _flags_, _on_change_callback_, _description_)
+#define REGISTER_HIDDEN_COMMAND(_command_, _flags_, _execute_callback_, _description_) REGISTER_COMMAND(engine::CompileTimeStringHash(#_command_), _flags_, _execute_callback_, _execute_callback_, _description_)
 #endif // CONSOLE_HIDDEN_VARIABLES_ENABLED
 
 //------------------------------------------------------------------------------
-// A "development" variable will only exist as a console variable when
+// A "development" variable/command will only exist in the console variable when
 // CONSOLE_DEVELOPMENT_VARIABLES_ENABLED
 //------------------------------------------------------------------------------
 #if CONSOLE_DEVELOPMENT_VARIABLES_ENABLED
 #define REGISTER_DEBUG_VARIABLE(_variable_, _value_, _flags_, _on_change_callback_, _description_) REGISTER_VARIABLE(_variable_, _value_, _flags_, _on_change_callback_, _description_)
+#define REGISTER_DEBUG_COMMAND(_command_, _flags_, _execute_callback_, _description_) REGISTER_COMMAND(engine::CompileTimeStringHash(#_command_), _flags_, _execute_callback_, _execute_callback_, _description_)
 #else
 #define REGISTER_DEBUG_VARIABLE(_variable_, _value_, _flags_, _on_change_callback_, _description_) _variable_ = (_value_);
 #endif // DEVELOPMENT_CONSOLE_VARIABLES_ENABLED
