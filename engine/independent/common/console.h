@@ -15,7 +15,7 @@
 #define REGISTER_VARIABLE(_variable_, _value_, _flags_, _on_change_callback_, _description_) \
 	engine::CConsole::Get().RegisterVariable(engine::CompileTimeStringHash(#_variable_), _variable_, _value_, _flags_, _on_change_callback_, #_variable_, _description_)
 #define REGISTER_COMMAND(_command_, _flags_, _execute_callback_, _description_) \
-	engine::CConsole::Get().RegisterConsole(engine::CompileTimeStringHash(#_command_), _flags_, _execute_callback_, #_command_, _description_)
+	engine::CConsole::Get().RegisterCommand(engine::CompileTimeStringHash(#_command_), _flags_, _execute_callback_, #_command_, _description_)
 
 //------------------------------------------------------------------------------
 // A "hidden" variable/command will have no plain text details stored when
@@ -25,7 +25,7 @@
 #define REGISTER_HIDDEN_VARIABLE(_variable_, _value_, _flags_, _on_change_callback_, _description_) \
 	engine::CConsole::Get().RegisterVariable(engine::CompileTimeStringHash(#_variable_), _variable_, _value_, _flags_, _on_change_callback_, NULL, NULL)
 #define REGISTER_HIDDEN_COMMAND(_command_, _flags_, _execute_callback_, _description_) \
-	engine::CConsole::Get().RegisterConsole(engine::CompileTimeStringHash(#_command_), _flags_, _execute_callback_, NULL, NULL)
+	engine::CConsole::Get().RegisterCommand(engine::CompileTimeStringHash(#_command_), _flags_, _execute_callback_, NULL, NULL)
 #else
 #define REGISTER_HIDDEN_VARIABLE(_variable_, _value_, _flags_, _on_change_callback_, _description_) REGISTER_VARIABLE(_variable_, _value_, _flags_, _on_change_callback_, _description_)
 #define REGISTER_HIDDEN_COMMAND(_command_, _flags_, _execute_callback_, _description_) REGISTER_COMMAND(engine::CompileTimeStringHash(#_command_), _flags_, _execute_callback_, _execute_callback_, _description_)
@@ -44,6 +44,9 @@
 
 #define UNREGISTER_VARIABLE_BY_NAME(_variable_) engine::CConsole::Get().UnregisterVariable(engine::CompileTimeStringHash(#_variable_))
 #define UNREGISTER_VARIABLE_BY_POINTER(_tivariableptr_) engine::CConsole::Get().UnregisterVariable(_tivariableptr_)
+
+#define UNREGISTER_COMMAND_BY_NAME(_command_) engine::CConsole::Get().UnregisterCommand(engine::CompileTimeStringHash(#_command_))
+#define UNREGISTER_COMMAND_BY_POINTER(_ticommandptr_) engine::CConsole::Get().UnregisterCommand(_ticommandptr_)
 
 //==============================================================================
 
@@ -200,8 +203,8 @@ namespace engine
 			// Registration/unregistration of commands
 			//------------------------------------------------------------------------
 			TICommandPtr		RegisterCommand(uint32 nameHash, uint32 flags, ICommand::ExecuteCommandCallback pExecuteCommandCallback, const char* name = NULL, const char* description = NULL);
-			void						UnRegisterCommand(uint32 nameHash);
-			void						UnRegisterCommand(TICommandPtr& pCommand);
+			void						UnregisterCommand(uint32 nameHash);
+			void						UnregisterCommand(TICommandPtr& pCommand);
 
 			//------------------------------------------------------------------------
 			// Find a variable by name or hash

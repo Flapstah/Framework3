@@ -505,7 +505,7 @@ namespace engine
 
 	//============================================================================
 
-	void CConsole::UnRegisterCommand(uint32 nameHash)
+	void CConsole::UnregisterCommand(uint32 nameHash)
 	{
 		m_commands.erase(nameHash);
 		m_details.erase(nameHash);
@@ -513,7 +513,7 @@ namespace engine
 
 	//============================================================================
 
-	void CConsole::UnRegisterCommand(CConsole::TICommandPtr& pCommand)
+	void CConsole::UnregisterCommand(CConsole::TICommandPtr& pCommand)
 	{
 		for (TCommandMap::iterator it = m_commands.begin(), end = m_commands.end(); it != end; ++it)
 		{

@@ -36,6 +36,9 @@ int main(int argc, char* argv[])
 	engine::CConsole& console = engine::CConsole::Get();
 	engine::CCommandLine cl(argc, argv, console);
 
+	REGISTER_COMMAND("Test", 0, TestCommand, "A test command");
+	UNREGISTER_COMMAND_BY_NAME("Test");
+
 	return 0;
 
 		{
