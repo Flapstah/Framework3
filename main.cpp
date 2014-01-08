@@ -37,6 +37,7 @@ int main(int argc, char* argv[])
 	engine::CCommandLine cl(argc, argv, console);
 
 	REGISTER_COMMAND("Test", 0, TestCommand, "A test command");
+	console.Execute("Test 1 2 3");
 	UNREGISTER_COMMAND_BY_NAME("Test");
 
 	return 0;

@@ -550,26 +550,102 @@ namespace engine
 
 	//============================================================================
 
-	bool CConsole::Execute(const char* commandLine)
+	CConsole::eConsoleState CConsole::Execute(const char* commandLine)
 	{
-		printf("[TODO]: CConsole::Execute()");
-		return true;
+		eConsoleState state = eCS_OK;
+
+		// First, build argc and argv from the passed command line
+		uint32 length = strlen(commandLine);
+		char* commandLineCopy = new char[length+1];
+		if (commandLineCopy != NULL)
+		{
+			memcpy(commandLineCopy, commandLine, length+1);
+
+			const char* argv[32];
+			uint32 argc = 0;
+			argv[argc++] = commandLineCopy;
+
+			uint32 index = 0;
+			char match = 0;
+			while (++index < length)
+			{
+				switch (commandLineCopy[index])
+				{
+					case '\'':
+					case '\"':
+					case '`':
+						// Treat quoted constructs as atomic
+						match = commandLineCopy[index];
+						while ((++index < length) && (commandLineCopy[index] != match));
+						break;
+					case ' ':
+						while (commandLineCopy[index] == ' ')
+						{
+							commandLineCopy[index++] = 0;
+						}
+						if (argc < 32)
+						{
+							argv[argc++] = &commandLineCopy[index];
+						}
+						else
+						{
+							printf("CConsole::Execute() too many arguments\n");
+							state = eCS_TOO_MANY_ARGS;
+						}
+						break;
+					default:
+						break;
+				}
+			}
+
+			if (state == eCS_OK)
+			{
+				// Find command
+				TICommandPtr command = FindCommand(engine::CRunTimeStringHash::Calculate(argv[0]));
+				if (command != NULL)
+				{
+					state = (command->Execute(argc, argv) == true) ? eCS_OK : eCS_COMMAND_FAILED;
+				}
+				else
+				{
+					// TODO: handle '=' if present, error handling
+					TIVariablePtr variable = FindVariable(engine::CRunTimeStringHash::Calculate(argv[0]));
+					if (variable != NULL)
+					{
+						variable->SetString(argv[1]);
+					}
+					else
+					{
+						printf("CConsole::Execute() [%s] not found\n", argv[0]);
+						state = eCS_NOT_FOUND;
+					}
+				}
+			}
+		}
+		else
+		{
+			printf("CConsole::Execute() out of memory\n");
+			state = eCS_OUT_OF_MEMORY;
+		}
+
+		delete[] commandLineCopy;
+		return state;
 	}
 
 	//============================================================================
 
-	bool CConsole::ExecuteDeferred(const char* commandLine, uint32 frames)
+	CConsole::eConsoleState CConsole::ExecuteDeferred(const char* commandLine, uint32 frames)
 	{
 		printf("[TODO]: CConsole::ExecuteDeferred(frames)");
-		return true;
+		return eCS_OK;
 	}
 
 	//============================================================================
 
-	bool CConsole::ExecuteDeferred(const char* commandLine, float seconds)
+	CConsole::eConsoleState CConsole::ExecuteDeferred(const char* commandLine, float seconds)
 	{
 		printf("[TODO]: CConsole::ExecuteDeferred(seconds)");
-		return true;
+		return eCS_OK;
 	}
 
 	//============================================================================
