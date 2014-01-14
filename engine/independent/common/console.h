@@ -8,6 +8,7 @@
 #include <sstream>
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
+#include <boost/tokenizer.hpp>
 #include "common/runtimestringhash.h"
 
 //==============================================================================
@@ -155,9 +156,9 @@ namespace engine
 				{
 				}; // End [eFlags]
 
-				typedef bool (*ExecuteCommandCallback)(uint32 argc, const char* const* argv);
+				typedef bool (*ExecuteCommandCallback)(std::vector<std::string>& argv);
 
-				virtual bool Execute(uint32 argc, const char* const* argv) = 0;
+				virtual bool Execute(std::vector<std::string>& argv) = 0;
 			}; // End [stuct ICommand]
 
 			//========================================================================
@@ -171,7 +172,7 @@ namespace engine
 				virtual ~CCommand(void);
 
 				// ICommand
-				virtual bool Execute(uint32 argc, const char* const* argv);
+				virtual bool Execute(std::vector<std::string>& argv);
 				// ~ICommand
 
 			protected:
@@ -233,6 +234,7 @@ namespace engine
 			// Immediate execution of command (on calling thread)
 			//------------------------------------------------------------------------
 			eConsoleState		Execute(const char* commandLine);
+			eConsoleState		Execute(std::string commandLine);
 
 			//------------------------------------------------------------------------
 			// Adds commands to the command buffer (processed FIFO, on console thread)

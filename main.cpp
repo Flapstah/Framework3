@@ -12,13 +12,14 @@
 
 #include <cmath>
 
-bool TestCommand(uint32 argc, const char* const* argv)
+bool TestCommand(std::vector<std::string>& argv)
 {
 	printf("*** TestCommand\n");
 
-	for (uint32 i = 0; i < argc; ++i)
+	int argc = 0;
+	for (std::vector<std::string>::iterator it = argv.begin(), end = argv.end(); it != end; ++it)
 	{
-		printf("argv[%d]=\"%s\"\n", i, argv[i]);
+		printf("argv[%d]=\"%s\"\n", argc++, (*it).c_str());
 	}
 
 	printf("*** ~TestCommand\n");
@@ -37,7 +38,9 @@ int main(int argc, char* argv[])
 	engine::CCommandLine cl(argc, argv, console);
 
 	REGISTER_COMMAND("Test", 0, TestCommand, "A test command");
-	console.Execute("Test 1 2 3");
+	std::string cmd = "Test \"1 2\" 3";
+	printf("%s\n", cmd.c_str());
+	console.Execute(cmd);
 	UNREGISTER_COMMAND_BY_NAME("Test");
 
 	return 0;
