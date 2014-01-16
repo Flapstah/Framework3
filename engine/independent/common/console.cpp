@@ -23,7 +23,7 @@ namespace engine
 
 		if ((m_flags & eF_CONST) == 0)
 		{
-			m_variable = m_pCallback(atol(value));
+			m_variable = m_pCallback(strtoll(value, NULL, 0));
 		}
 #if !defined(_RELEASE)
 		else
@@ -51,7 +51,7 @@ namespace engine
 
 		if ((m_flags & eF_CONST) == 0)
 		{
-			m_variable = m_pCallback(atof(value));
+			m_variable = m_pCallback(strtold(value, NULL));
 		}
 #if !defined(_RELEASE)
 		else
@@ -577,11 +577,20 @@ namespace engine
 		}
 		else
 		{
-			// TODO: handle '=' if present, error handling
+			// Not a command; maybe it's a variable?
 			TIVariablePtr variable = FindVariable(engine::CRunTimeStringHash::Calculate(argv[0].c_str()));
 			if (variable != NULL)
 			{
-				variable->SetString(argv[1].c_str());
+				if (strcmp(argv[1].c_str(), "=") == 0)
+				{
+					// Skip the '='
+					variable->SetString(argv[2].c_str());
+				}
+				else
+				{
+					// No '='; so assume it's a value
+					variable->SetString(argv[1].c_str());
+				}
 			}
 			else
 			{

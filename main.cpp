@@ -43,6 +43,14 @@ int main(int argc, char* argv[])
 	console.Execute(cmd);
 	UNREGISTER_COMMAND_BY_NAME("Test");
 
+	double x = 0;
+	engine::CConsole::TIVariablePtr pIVar = REGISTER_VARIABLE(x, 0, 0, NULL, "Test");
+	printf("x is %f\n", pIVar->GetDouble());
+	cmd = "x 0x12.3";
+	printf("%s\n", cmd.c_str());
+	console.Execute(cmd);
+	printf("x is %f\n", pIVar->GetDouble());
+	UNREGISTER_VARIABLE_BY_POINTER(pIVar);
 	return 0;
 
 		{
