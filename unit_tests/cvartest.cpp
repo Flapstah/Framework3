@@ -74,6 +74,7 @@ namespace test
 					UNREGISTER_VARIABLE_BY_POINTER(m_pCVar);
 					pThis->Test("Unregistering console variable by pointer", m_pCVar.get() == NULL, "CVar pointer is not NULL");
 					break;
+
 				default:
 					status |= eSS_COMPLETE;
 					break;
@@ -123,11 +124,32 @@ namespace test
 						const char* value = "3.1415926535897931";
 						m_pCVar->SetString(value);
 						pThis->Test("Setting integer cvar with string value", strcmp(m_pCVar->GetString(), "3") == 0, "Value is not set correctly");
-						UNREGISTER_VARIABLE_BY_POINTER(m_pCVar);
+					}
+					break;
+
+				case 5:
+					{
+						m_pCVar->SetString("0x123");
+						pThis->Test("Setting integer cvar with string value (hex)", m_pCVar->GetInteger() == 291, "Value is not set correctly");
+					}
+					break;
+
+				case 6:
+					{
+						engine::CConsole::Get().Execute("testIntegerVariable = 123");
+						pThis->Test("Setting integer cvar through console command (with '=')", m_pCVar->GetInteger() == 123, "Value is not set correctly");
+					}
+					break;
+
+				case 7:
+					{
+						engine::CConsole::Get().Execute("testIntegerVariable 0x123");
+						pThis->Test("Setting integer cvar through console command (without '=')", m_pCVar->GetInteger() == 291, "Value is not set correctly");
 					}
 					break;
 
 				default:
+					UNREGISTER_VARIABLE_BY_POINTER(m_pCVar);
 					status |= eSS_COMPLETE;
 					break;
 			}
@@ -179,12 +201,19 @@ namespace test
 						const char* value = "3.1415926535897931";
 						m_pCVar->SetString(value);
 						pThis->Test("Setting integer cvar with string value", strcmp(m_pCVar->GetString(), initialValue) == 0, "Value has changed");
-						UNREGISTER_VARIABLE_BY_POINTER(m_pCVar);
-						m_pCVar.reset();
+					}
+					break;
+
+				case 5:
+					{
+						int64 initialValue = m_pCVar->GetInteger();
+						engine::CConsole::Get().Execute("testIntegerVariable = 123");
+						pThis->Test("Setting integer cvar through console command", m_pCVar->GetInteger() == initialValue, "Value has changed");
 					}
 					break;
 
 				default:
+					UNREGISTER_VARIABLE_BY_POINTER(m_pCVar);
 					status |= eSS_COMPLETE;
 					break;
 			}
@@ -233,12 +262,32 @@ namespace test
 						const char* value = "3.1415926535897931";
 						m_pCVar->SetString(value);
 						pThis->Test("Setting double cvar with string value", strcmp(m_pCVar->GetString(), value) == 0, "Value is not set correctly");
-						UNREGISTER_VARIABLE_BY_POINTER(m_pCVar);
-						m_pCVar.reset();
+					}
+					break;
+
+				case 5:
+					{
+						m_pCVar->SetString("0x12.3");
+						pThis->Test("Setting double cvar with string value", pThis->IsEqual(m_pCVar->GetDouble(), 18.1875), "Value is not set correctly");
+					}
+					break;
+
+				case 6:
+					{
+						engine::CConsole::Get().Execute("testDoubleVariable = 87.123");
+						pThis->Test("Setting double cvar through console command (with '=')", pThis->IsEqual(m_pCVar->GetDouble(), 87.123), "Value is not set correctly");
+					}
+					break;
+
+				case 7:
+					{
+						engine::CConsole::Get().Execute("testDoubleVariable 0x12.3");
+						pThis->Test("Setting double cvar through console command (without '=')", pThis->IsEqual(m_pCVar->GetDouble(), 18.1875), "Value is not set correctly");
 					}
 					break;
 
 				default:
+					UNREGISTER_VARIABLE_BY_POINTER(m_pCVar);
 					status |= eSS_COMPLETE;
 					break;
 			}
@@ -290,12 +339,19 @@ namespace test
 						const char* value = "3.1415926535897931";
 						m_pCVar->SetString(value);
 						pThis->Test("Setting const double cvar with string value", strcmp(m_pCVar->GetString(), initialValue) == 0, "Value has changed");
-						UNREGISTER_VARIABLE_BY_POINTER(m_pCVar);
-						m_pCVar.reset();
+					}
+					break;
+
+				case 5:
+					{
+						double initialValue = m_pCVar->GetDouble();
+						engine::CConsole::Get().Execute("testIntegerVariable = 0x12.3");
+						pThis->Test("Setting double cvar through console command", pThis->IsEqual(m_pCVar->GetDouble(), initialValue), "Value has changed");
 					}
 					break;
 
 				default:
+					UNREGISTER_VARIABLE_BY_POINTER(m_pCVar);
 					status |= eSS_COMPLETE;
 					break;
 			}
@@ -344,12 +400,11 @@ namespace test
 						const char* value = "3.1415926535897931";
 						m_pCVar->SetString(value);
 						pThis->Test("Setting string cvar with string value", strcmp(m_pCVar->GetString(), value) == 0, "Value is not set correctly");
-						UNREGISTER_VARIABLE_BY_POINTER(m_pCVar);
-						m_pCVar.reset();
 					}
 					break;
 
 				default:
+					UNREGISTER_VARIABLE_BY_POINTER(m_pCVar);
 					status |= eSS_COMPLETE;
 					break;
 			}
@@ -401,12 +456,11 @@ namespace test
 						const char* value = "3.1415926535897931";
 						m_pCVar->SetString(value);
 						pThis->Test("Setting const string cvar with string value", strcmp(m_pCVar->GetString(), initialValue) == 0, "Value has changed");
-						UNREGISTER_VARIABLE_BY_POINTER(m_pCVar);
-						m_pCVar.reset();
 					}
 					break;
 
 				default:
+					UNREGISTER_VARIABLE_BY_POINTER(m_pCVar);
 					status |= eSS_COMPLETE;
 					break;
 			}
