@@ -195,10 +195,6 @@ set(PLATFORM_INDEPENDENT_SOURCES
 	engine/independent/time/time.cpp
 	engine/independent/time/timer.cpp
 	engine/independent/time/timevalue.cpp
-	unit_tests/unittest.cpp
-	unit_tests/cvartest.cpp
-	unit_tests/timetest.cpp
-	unit_tests/typetest.cpp
 	)
 #
 if (WIN32)
@@ -214,6 +210,13 @@ set(PLATFORM_SPECIFIC_SOURCES
 	engine/linux/time/platform_time.cpp
 	)
 endif (UNIX)
+#
+set(UNIT_TEST_SOURCES
+	unit_tests/unittest.cpp
+	unit_tests/cvartest.cpp
+	unit_tests/timetest.cpp
+	unit_tests/typetest.cpp
+	)
 #
 if (OPENGL_SUPERBIBLE_50)
 	set(OPENGL_SUPERBIBLE_50_SOURCES
@@ -258,6 +261,7 @@ add_executable (
 	engine/independent/common/version.cpp
  	${PLATFORM_INDEPENDENT_SOURCES}
  	${PLATFORM_SPECIFIC_SOURCES}
+	${UNIT_TEST_SOURCES}
  	${OPENGL_SUPERBIBLE_50_SOURCES}
 	)
 #
