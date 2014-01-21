@@ -7,7 +7,9 @@
 #include <windows.h>
 
 //==============================================================================
-
+// Microsoft elected to use macros instead of functions for these... so you
+// can't use them in your own code...
+//==============================================================================
 #if defined(GetCurrentTime)
 #undef GetCurrentTime
 #endif // defined(GetCurrentTime)
@@ -21,6 +23,13 @@
 #endif // defined(min)
 
 //==============================================================================
+// Microsoft are missing 4 functions from stdlib.h, required by C++11 and C11
+// standards: strtof, strtold, strtoll, strtoull
+// Using #defines as a workaround for strtoll and stroull.  There isn't a
+// suitable workaround for strtold or strtof.
+//==============================================================================
+#define strtoll _strtoi64
+#define strtoull _strtoui64
 
 #define DEBUG_BREAK DebugBreak()
 
