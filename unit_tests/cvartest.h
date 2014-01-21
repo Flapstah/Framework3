@@ -37,6 +37,7 @@ namespace test
 			static	uint32						FloatConstantVariableOperations(CUnitTest* pParent);
 			static	uint32						StringVariableOperations(CUnitTest* pParent);
 			static	uint32						StringConstantVariableOperations(CUnitTest* pParent);
+			static	uint32						ConsoleCommandTest(CUnitTest* pParent);
 
 		private:
 			static	engine::CConsole::TIVariablePtr m_pCVar;

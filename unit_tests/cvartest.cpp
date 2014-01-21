@@ -5,13 +5,32 @@
 
 namespace test
 {
+	//============================================================================
+
 	static int64 testIntegerVariable = 0;
 	static double testDoubleVariable = 0.0;
 	static std::string testStringVariable = "";
 
+	static bool testCommandEntered = false;;
+	static uint32 testCommandNumArgs = 0;
+
 	//============================================================================
 
 	engine::CConsole::TIVariablePtr CCVarTest::m_pCVar;
+
+	//============================================================================
+
+	bool TestCommand(std::vector<std::string>& argv)
+	{
+		testCommandEntered = true;
+
+		for (std::vector<std::string>::iterator it = argv.begin(), end = argv.end(); it != end; ++it)
+		{
+			++testCommandNumArgs;
+		}
+
+		return true;
+	}
 
 	//============================================================================
 
@@ -39,6 +58,7 @@ namespace test
 		AddStage("Floating point constant console variable operations", FloatConstantVariableOperations, eTV_TERSE);
 		AddStage("String console variable operations", StringVariableOperations, eTV_TERSE);
 		AddStage("String constant console variable operations", StringConstantVariableOperations, eTV_TERSE);
+		AddStage("Console command test", ConsoleCommandTest, eTV_TERSE);
 
 		return CUnitTest::Initialise();
 	}
@@ -461,6 +481,42 @@ namespace test
 
 				default:
 					UNREGISTER_VARIABLE_BY_POINTER(m_pCVar);
+					status |= eSS_COMPLETE;
+					break;
+			}
+		}
+
+		return status;
+	}
+
+	//============================================================================
+
+	uint32 CCVarTest::ConsoleCommandTest(CUnitTest* pParent)
+	{
+		CCVarTest* pThis = static_cast<CCVarTest*>(pParent);
+		uint32 status = eSS_PASS;
+
+		if (pThis->m_testStatus == eTS_RUNNING)
+		{
+			switch (pThis->GetStage())
+			{
+				case 1:
+					{
+						REGISTER_COMMAND("Test", 0, TestCommand, "A test command");
+						std::string cmd = "Test \"1 2\" 3";
+						engine::CConsole::Get().Execute(cmd);
+						pThis->Test("Testing console command was executed", testCommandEntered, "Test command not executed");
+					}
+					break;
+
+				case 2:
+					{
+						pThis->Test("Console command was passed the correct number of parameters", testCommandNumArgs == 3, "Incorrect number of parameters passed");
+					}
+					break;
+
+				default:
+					UNREGISTER_COMMAND_BY_NAME("Test");
 					status |= eSS_COMPLETE;
 					break;
 			}

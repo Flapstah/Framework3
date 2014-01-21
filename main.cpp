@@ -37,11 +37,13 @@ int main(int argc, char* argv[])
 	engine::CConsole& console = engine::CConsole::Get();
 	engine::CCommandLine cl(argc, argv, console);
 
+	/*
 	REGISTER_COMMAND("Test", 0, TestCommand, "A test command");
 	std::string cmd = "Test \"1 2\" 3";
 	printf("%s\n", cmd.c_str());
 	console.Execute(cmd);
 	UNREGISTER_COMMAND_BY_NAME("Test");
+	*/
 
 		{
 			test::CTypeTest test;
