@@ -503,13 +503,25 @@ namespace test
 				case 1:
 					{
 						REGISTER_COMMAND("Test", 0, TestCommand, "A test command");
+						pThis->Test("Testing console command has not been executed", testCommandEntered == false, "Test command already executed");
+					}
+					break;
+
+				case 2:
+					{
+					pThis->Test("Testing console command parameter count is zeroed", testCommandNumArgs == 0, "Parameter count not initialised to zero");
+					}
+					break;
+
+				case 3:
+					{
 						std::string cmd = "Test \"1 2\" 3";
 						engine::CConsole::Get().Execute(cmd);
 						pThis->Test("Testing console command was executed", testCommandEntered, "Test command not executed");
 					}
 					break;
 
-				case 2:
+				case 4:
 					{
 						pThis->Test("Console command was passed the correct number of parameters", testCommandNumArgs == 3, "Incorrect number of parameters passed");
 					}
