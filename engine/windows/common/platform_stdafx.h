@@ -22,15 +22,19 @@
 #undef max
 #endif // defined(min)
 
+#if defined (_MSC_VER)
 //==============================================================================
 // Microsoft are missing 4 functions from stdlib.h, required by C++11 and C11
 // standards: strtof, strtold, strtoll, strtoull
 // Using #defines as a workaround for strtoll, stroull and strtold
 //==============================================================================
-#if defined (_MSC_VER)
 #define strtoll _strtoi64
 #define strtoull _strtoui64
 #define strtold std::stold
+//==============================================================================
+// Microsoft don't have snprintf (C99 and C++11), but do have a workaround
+//==============================================================================
+#define snprintf _snprintf
 #endif // defined (_MSC_VER)
 
 #define DEBUG_BREAK DebugBreak()
