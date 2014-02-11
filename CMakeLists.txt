@@ -47,28 +47,28 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 #
 # Compiler flags
 #
+set(SUPPORT_EXCEPTIONS 1)
+set(OPENGL_SUPERBIBLE_50 0)
+
+# Generic settings
 #set(LINK_FLAGS "-g")
 #set(CMAKE_CXX_FLAGS "-g")
 set (CMAKE_CXX_FLAGS "")
 set (CMAKE_CXX_WARNING_LEVEL 4)
+if (OPENGL_SUPERBIBLE_50)
+	add_definitions(-DUSE_OPENGL_SUPERBIBLE=1)
+else()
+	add_definitions(-DUSE_OPENGL_SUPERBIBLE=0)
+endif (OPENGL_SUPERBIBLE_50)
 
-set (SUPPORT_EXCEPTIONS 1)
-set(OPENGL_SUPERBIBLE_50 0)
-
+# MSVC specific
 if (MSVC)
 	if (SUPPORT_EXCEPTIONS)
 		set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc")
-		add_definitions(-D_HAS_EXCEPTIONS=1)
-	else()
-		add_definitions(-D_HAS_EXCEPTIONS=0)
 	endif (SUPPORT_EXCEPTIONS)
-	if (OPENGL_SUPERBIBLE_50)
-		add_definitions(-DUSE_OPENGL_SUPERBIBLE=1)
-	else()
-		add_definitions(-DUSE_OPENGL_SUPERBIBLE=0)
-	endif (OPENGL_SUPERBIBLE_50)
 endif (MSVC)
 
+# GNU specific
 if (CMAKE_COMPILER_IS_GNUCXX)
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
 	if (NOT SUPPORT_EXCEPTIONS)
@@ -80,11 +80,6 @@ if (CMAKE_COMPILER_IS_GNUCXX)
 		set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wshadow")
 	endif (UNIX)
 	#	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -pedantic-errors")
-	if (OPENGL_SUPERBIBLE_50)
-		add_definitions(-DUSE_OPENGL_SUPERBIBLE=1)
-	else()
-		add_definitions(-DUSE_OPENGL_SUPERBIBLE=0)
-	endif (OPENGL_SUPERBIBLE_50)
 endif (CMAKE_COMPILER_IS_GNUCXX)
 #
 ###############################################################################
@@ -195,6 +190,7 @@ set(PLATFORM_INDEPENDENT_SOURCES
 	#engine/independent/input/keyboard.cpp
 	engine/independent/common/commandline.cpp
 	engine/independent/common/console.cpp
+	engine/independent/common/log.cpp
 	engine/independent/common/stdafx.cpp
 	engine/independent/time/time.cpp
 	engine/independent/time/timer.cpp
