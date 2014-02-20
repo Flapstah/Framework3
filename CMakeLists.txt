@@ -214,6 +214,7 @@ endif (UNIX)
 set(UNIT_TEST_SOURCES
 	unit_tests/unittest.cpp
 	unit_tests/cvartest.cpp
+	unit_tests/logtest.cpp
 	unit_tests/timetest.cpp
 	unit_tests/typetest.cpp
 	)
