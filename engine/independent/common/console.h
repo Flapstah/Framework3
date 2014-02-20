@@ -15,6 +15,8 @@
 
 #define REGISTER_VARIABLE(_variable_, _value_, _flags_, _on_change_callback_, _description_) \
 	engine::CConsole::Get().RegisterVariable(engine::CompileTimeStringHash(#_variable_), _variable_, _value_, _flags_, _on_change_callback_, #_variable_, _description_)
+#define REGISTER_NAMED_VARIABLE(_name_, _variable_, _value_, _flags_, _on_change_callback_, _description_) \
+	engine::CConsole::Get().RegisterVariable(engine::CompileTimeStringHash(_name_), _variable_, _value_, _flags_, _on_change_callback_, _name_, _description_)
 #define REGISTER_COMMAND(_command_, _flags_, _execute_callback_, _description_) \
 	engine::CConsole::Get().RegisterCommand(engine::CompileTimeStringHash(_command_), _flags_, _execute_callback_, #_command_, _description_)
 
@@ -25,10 +27,13 @@
 #if CONSOLE_HIDDEN_VARIABLES_ENABLED
 #define REGISTER_HIDDEN_VARIABLE(_variable_, _value_, _flags_, _on_change_callback_, _description_) \
 	engine::CConsole::Get().RegisterVariable(engine::CompileTimeStringHash(#_variable_), _variable_, _value_, _flags_, _on_change_callback_, NULL, NULL)
+#define REGISTER_HIDDEN_NAMED_VARIABLE(_name_, _variable_, _value_, _flags_, _on_change_callback_, _description_) \
+	engine::CConsole::Get().RegisterVariable(engine::CompileTimeStringHash(_name_), _variable_, _value_, _flags_, _on_change_callback_, NULL, NULL)
 #define REGISTER_HIDDEN_COMMAND(_command_, _flags_, _execute_callback_, _description_) \
 	engine::CConsole::Get().RegisterCommand(engine::CompileTimeStringHash(_command_), _flags_, _execute_callback_, NULL, NULL)
 #else
 #define REGISTER_HIDDEN_VARIABLE(_variable_, _value_, _flags_, _on_change_callback_, _description_) REGISTER_VARIABLE(_variable_, _value_, _flags_, _on_change_callback_, _description_)
+#define REGISTER_HIDDEN_NAMED_VARIABLE(_name_, _variable_, _value_, _flags_, _on_change_callback_, _description_) REGISTER_NAMED_VARIABLE(_name_, _variable_, _value_, _flags_, _on_change_callback_, _description_)
 #define REGISTER_HIDDEN_COMMAND(_command_, _flags_, _execute_callback_, _description_) REGISTER_COMMAND(engine::CompileTimeStringHash(_command_), _flags_, _execute_callback_, _execute_callback_, _description_)
 #endif // CONSOLE_HIDDEN_VARIABLES_ENABLED
 
@@ -38,9 +43,11 @@
 //------------------------------------------------------------------------------
 #if CONSOLE_DEVELOPMENT_VARIABLES_ENABLED
 #define REGISTER_DEBUG_VARIABLE(_variable_, _value_, _flags_, _on_change_callback_, _description_) REGISTER_VARIABLE(_variable_, _value_, _flags_, _on_change_callback_, _description_)
+#define REGISTER_DEBUG_NAMED_VARIABLE(_name_, _variable_, _value_, _flags_, _on_change_callback_, _description_) REGISTER_NAMED_VARIABLE(_name_, _variable_, _value_, _flags_, _on_change_callback_, _description_)
 #define REGISTER_DEBUG_COMMAND(_command_, _flags_, _execute_callback_, _description_) REGISTER_COMMAND(engine::CompileTimeStringHash(_command_), _flags_, _execute_callback_, _execute_callback_, _description_)
 #else
 #define REGISTER_DEBUG_VARIABLE(_variable_, _value_, _flags_, _on_change_callback_, _description_) _variable_ = (_value_);
+#define REGISTER_DEBUG_NAMED_VARIABLE(_name_, _variable_, _value_, _flags_, _on_change_callback_, _description_) _variable_ = (_value_);
 #endif // DEVELOPMENT_CONSOLE_VARIABLES_ENABLED
 
 #define UNREGISTER_VARIABLE_BY_NAME(_variable_) engine::CConsole::Get().UnregisterVariable(engine::CompileTimeStringHash(#_variable_))

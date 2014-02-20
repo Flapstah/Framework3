@@ -2,6 +2,7 @@
 
 #include <boost/thread/thread.hpp>
 #include "common/itime.h"
+#include "common/console.h"
 #include "common/log.h"
 
 //==============================================================================
@@ -14,7 +15,7 @@ namespace engine
 #if defined(NDEBUG)
 	const CLog::eLogLevel CLog::s_logLevel = CLog::eLL_ERROR;
 #else
-	CLog::eLogLevel CLog::s_logLevel = CLog::eLL_INFO;
+	int64 CLog::s_logLevel = CLog::eLL_INFO;
 #endif // defined(NDEBUG)
 
 	//==============================================================================
@@ -25,7 +26,12 @@ namespace engine
 			 , m_flags(parent.m_flags)
 			 , m_active(true)
 	{
+#if !defined(NDEBUG)
+		REGISTER_NAMED_VARIABLE("log_level", CLog::s_logLevel, static_cast<int64>(CLog::eLL_INFO), 0, NULL, "Set the debug logging level (0=NONE, 1=ALWAYS, 2=FATAL, 3=ERROR, 4=WARNING, 5=INFO, 6=DEBUG)");
+#endif // !defined(NDEBUG)
 	}
+
+	//==============================================================================
 
 	CLog::CLog(CLog& parent, const char* name, uint32 flags)
 		: m_pParent(&parent)
@@ -34,6 +40,8 @@ namespace engine
 			 , m_active(true)
 	{
 	}
+
+	//==============================================================================
 
 	bool CLog::Log(const char* file, uint32 line, const char* format, ...)
 	{
@@ -83,6 +91,8 @@ namespace engine
 		printf(buffer);
 		return done;
 	}
+
+	//==============================================================================
 
 	CLog::CLog(void)
 		: m_pParent(NULL)

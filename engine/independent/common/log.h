@@ -69,7 +69,7 @@ namespace engine
 #if defined(NDEBUG)
 			static const eLogLevel s_logLevel;
 #else
-			static eLogLevel s_logLevel;
+			static int64 s_logLevel;
 #endif // defined(NDEBUG)
 
 		//--------------------------------------------------------------------------
