@@ -20,18 +20,6 @@ int main(int argc, char* argv[])
 	//	IGNORE_PARAMETER(argc);
 	//	IGNORE_PARAMETER(argv);
 
-	engine::CLog test(engine::CLog::s_logRoot, "test");
-
-	printf("log level = %d\n", engine::CLog::s_logLevel);
-
-	if (LOG_DEBUG(test, "Debug log test\n"))
-	{
-		printf("Logged\n");
-	}
-	else
-	{
-		printf("Not logged\n");
-	}
 	/*
 	if (!LOG_DEBUG(test, "Debug log test\n")) printf("eLL_DEBUG elided\n");
 	if (!LOG_INFO(test, "Info log test\n")) printf("eLL_INFO elided\n");

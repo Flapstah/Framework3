@@ -11,12 +11,13 @@ namespace engine
 {
 
 	CLog CLog::s_logRoot;
+	uint32 CLog::m_refActiveLogs = 0;
 
-#if defined(NDEBUG)
+#if defined(RELEASE)
 	const CLog::eLogLevel CLog::s_logLevel = CLog::eLL_ERROR;
 #else
 	int64 CLog::s_logLevel = CLog::eLL_INFO;
-#endif // defined(NDEBUG)
+#endif // defined(RELEASE)
 
 	//==============================================================================
 
@@ -26,9 +27,7 @@ namespace engine
 			 , m_flags(parent.m_flags)
 			 , m_active(true)
 	{
-#if !defined(NDEBUG)
-		REGISTER_NAMED_VARIABLE("log_level", CLog::s_logLevel, static_cast<int64>(CLog::eLL_INFO), 0, NULL, "Set the debug logging level (0=NONE, 1=ALWAYS, 2=FATAL, 3=ERROR, 4=WARNING, 5=INFO, 6=DEBUG)");
-#endif // !defined(NDEBUG)
+		++m_refActiveLogs;
 	}
 
 	//==============================================================================
@@ -39,6 +38,7 @@ namespace engine
 			 , m_flags(flags)
 			 , m_active(true)
 	{
+		++m_refActiveLogs;
 	}
 
 	//==============================================================================
@@ -88,7 +88,7 @@ namespace engine
 		}
 
 		bool done = (written >= 0) && (written < LOG_BUFFER_SIZE);
-		printf(buffer);
+		fputs(buffer, stdout);
 		return done;
 	}
 
@@ -100,6 +100,20 @@ namespace engine
 			 , m_flags(eBAI_LOCATION | eBAI_NAME | eBAI_TIMESTAMP | eBAI_THREADID | eBT_FILE | eBT_CONSOLE | eBT_STANDARD)
 			 , m_active(true)
 	{
+		++m_refActiveLogs;
+#if defined(DEBUG)
+		REGISTER_NAMED_VARIABLE("log_level", CLog::s_logLevel, static_cast<int64>(CLog::eLL_INFO), 0, NULL, "Set the debug logging level (0=NONE, 1=ALWAYS, 2=FATAL, 3=ERROR, 4=WARNING, 5=INFO, 6=DEBUG)");
+#endif // defined(DEBUG)
+	}
+
+	CLog::~CLog(void)
+	{
+		if (--m_refActiveLogs == 0)
+		{
+#if defined(DEBUG)
+			UNREGISTER_VARIABLE_BY_NAME("log_level");
+#endif // defined(DEBUG)
+		}
 	}
 
 	//============================================================================

@@ -45,13 +45,16 @@ namespace engine
 		public:
 			CLog(CLog& parent, const char* name);
 			CLog(CLog& parent, const char* name, uint32 flags);
+			virtual ~CLog(void);
 
 			bool IsActive(void) const;
 			bool SetActive(bool set);
 			uint32 GetFlags(void) const;
 			uint32 SetFlags(uint32 flags);
 
-			bool Log(const char* file, uint32 line, const char* format, ...);
+			// N.B remember hidden 'this' pointer is parameter 1, so 'const char* format' is
+			// parameter 4 in __attribute__ specifier in Log() declaration below
+			bool Log(const char* file, uint32 line, const char* format, ...) __attribute__((format(printf, 4, 5)));
 
 		private:
 			CLog(void);
@@ -63,14 +66,15 @@ namespace engine
 			const char* m_name;
 			uint32 m_flags;
 			bool m_active;
+			static uint32 m_refActiveLogs;
 
 		public:
 			static CLog s_logRoot;
-#if defined(NDEBUG)
+#if defined(RELEASE)
 			static const eLogLevel s_logLevel;
 #else
 			static int64 s_logLevel;
-#endif // defined(NDEBUG)
+#endif // defined(RELEASE)
 
 		//--------------------------------------------------------------------------
 	}; // End [class CLog]
