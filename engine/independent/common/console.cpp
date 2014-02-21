@@ -294,11 +294,11 @@ namespace engine
 			const SDetails* pDetails = FindDetails(it->first);
 			if (pDetails != NULL)
 			{
-				printf("[CONSOLE]: still have variable [%s] @ %p registered\n", pDetails->m_name.c_str(), it->second.get());
+				printf("[CONSOLE]: still have variable [%s] @ 0x%p registered\n", pDetails->m_name.c_str(), it->second.get());
 			}
 			else
 			{
-				printf("[CONSOLE]: still have variable [%#x] @ %p registered\n", it->first, it->second.get());
+				printf("[CONSOLE]: still have variable [%#x] @ 0x%p registered\n", it->first, it->second.get());
 			}
 		}
 	}

@@ -80,7 +80,7 @@ namespace test
 					break;
 
 				case 2:
-					UNREGISTER_VARIABLE_BY_NAME(testIntegerVariable);
+					UNREGISTER_VARIABLE(testIntegerVariable);
 					m_pCVar.reset();
 					pThis->Test("Unregistering console variable by name", m_pCVar.get() == NULL, "CVar pointer is not NULL");
 					break;
@@ -502,7 +502,7 @@ namespace test
 			{
 				case 1:
 					{
-						REGISTER_COMMAND("Test", 0, TestCommand, "A test command");
+						REGISTER_NAMED_COMMAND("Test", 0, TestCommand, "A test command");
 						pThis->Test("Testing console command has not been executed", testCommandEntered == false, "Test command already executed");
 					}
 					break;
