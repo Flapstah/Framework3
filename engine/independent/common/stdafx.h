@@ -9,6 +9,12 @@
 
 #include "common/platform_stdafx.h"
 
+#if defined(NDEBUG)
+#define RELEASE
+#else
+#define DEBUG
+#endif // defined(RELEASE)
+
 //==============================================================================
 
 #include <cstdio>

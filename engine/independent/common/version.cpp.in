@@ -2,9 +2,15 @@
 
 #include "common/version.h"
 
+
 //==============================================================================
-// ** GENERATED CODE BEGIN **
+// **
+// ** This file is generated from the template "version.cpp.in".  If this file
+// ** requires amending, make the changes to the template as any changes made
+// ** directly to this file will be lost!
+// **
 //==============================================================================
+
 
 //------------------------------------------------------------------------------
 // Version numbers
@@ -14,14 +20,10 @@
 #define BUILD_NUMBER (@BUILD_NUMBER@)
 #define VERSION_STRING "@VERSION_MAJOR@.@VERSION_MINOR@.@BUILD_NUMBER_PADDED@"
 
-//==============================================================================
-// ** GENERATED CODE END **
-//==============================================================================
-
 //------------------------------------------------------------------------------
 // Build signatures
 //------------------------------------------------------------------------------
-#if defined(NDEBUG)
+#if defined(RELEASE)
 #define __CONFIGURATION__ "Release"
 #else
 #define __CONFIGURATION__ "Debug"
