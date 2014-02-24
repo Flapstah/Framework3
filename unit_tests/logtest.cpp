@@ -3,7 +3,7 @@
 #include "logtest.h"
 #include "common/log.h"
 
-#define TEST(_level_) pThis->Test(#_level_ " log test", LOG_ ## _level_(engine::CLog::s_logRoot, #_level_ " log test\n") == (engine::CLog::s_logLevel >= engine::CLog::eLL_ ## _level_), "Should not have logged at " #_level_ " log level")
+#define LOG_TEST(_level_) pThis->Test(#_level_ " log test", LOG_ ## _level_(engine::CLog::s_logRoot, #_level_ " log test\n") == (engine::CLog::s_logLevel >= engine::CLog::eLL_ ## _level_), "Should not have logged at " #_level_ " log level")
 
 namespace test
 {
@@ -38,33 +38,34 @@ namespace test
 	{
 		CLogTest* pThis = static_cast<CLogTest*>(pParent);
 		uint32 status = eSS_PASS;
+		engine::CLog::s_logRoot.SetFlags(engine::CLog::s_logRoot.GetFlags() & ~(engine::CLog::eBT_CONSOLE | engine::CLog::eBT_FILE | engine::CLog::eBT_STANDARD));
 
 		if (pThis->m_testStatus == eTS_RUNNING)
 		{
 			switch (pThis->GetStage())
 			{
 				case 1:
-					TEST(DEBUG);
+					LOG_TEST(DEBUG);
 					break;
 
 				case 2:
-					TEST(INFO);
+					LOG_TEST(INFO);
 					break;
 
 				case 3:
-					TEST(WARNING);
+					LOG_TEST(WARNING);
 					break;
 
 				case 4:
-					TEST(ERROR);
+					LOG_TEST(ERROR);
 					break;
 
 				case 5:
-					TEST(FATAL);
+					LOG_TEST(FATAL);
 					break;
 
 				case 6:
-					TEST(ALWAYS);
+					LOG_TEST(ALWAYS);
 					break;
 
 				default:
@@ -73,6 +74,7 @@ namespace test
 			}
 		}
 
+		engine::CLog::s_logRoot.SetFlags(engine::CLog::s_logRoot.GetFlags() | (engine::CLog::eBT_CONSOLE | engine::CLog::eBT_FILE | engine::CLog::eBT_STANDARD));
 		return status;
 	}
 

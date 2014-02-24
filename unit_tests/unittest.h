@@ -25,8 +25,9 @@ using namespace engine::time;
 #define COLOUR_RESET ANSI_1SEQUENCE(ANSI_RESET_ALL)
 
 //==============================================================================
-// Helper macros (for usage case, see timetest.cpp)
+// Helper macros
 //==============================================================================
+#define UNIT_TEST(_test_) _test_.Start(); while (_test_.Update() == test::CUnitTest::eTS_RUNNING); _test_.End();
 
 namespace test
 {

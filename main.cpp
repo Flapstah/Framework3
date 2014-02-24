@@ -5,8 +5,9 @@
 #include "common/itime.h"
 #include "common/commandline.h"
 #include "unit_tests/cvartest.h"
-#include "unit_tests/typetest.h"
+#include "unit_tests/logtest.h"
 #include "unit_tests/timetest.h"
+#include "unit_tests/typetest.h"
 #include "common/console.h"
 #include "common/log.h"
 #include "common/version.h"
@@ -19,15 +20,6 @@ int main(int argc, char* argv[])
 {
 	//	IGNORE_PARAMETER(argc);
 	//	IGNORE_PARAMETER(argv);
-
-	/*
-	if (!LOG_DEBUG(test, "Debug log test\n")) printf("eLL_DEBUG elided\n");
-	if (!LOG_INFO(test, "Info log test\n")) printf("eLL_INFO elided\n");
-	if (!LOG_WARNING(test, "Warning log test\n")) printf("eLL_WARNING elided\n");
-	if (!LOG_ERROR(test, "Error log test\n")) printf("eLL_ERROR elided\n");
-	if (!LOG_FATAL(test, "Fatal log test\n")) printf("eLL_FATAL elided\n");
-	if (!LOG_ALWAYS(test, "Always log test\n")) printf("eLL_ALWAYS elided\n");
-	*/
 
 	/*
 		{
@@ -51,6 +43,11 @@ int main(int argc, char* argv[])
 			test.End();
 		}
 		*/
+
+	{
+		test::CLogTest test;
+		UNIT_TEST(test);
+	}
 
 		/*
 			 uint32 x = engine::CompileTimeStringHash("a nice long string to hash");
