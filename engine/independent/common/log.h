@@ -15,7 +15,6 @@ namespace engine
 		public:
 			enum eLogLevel
 			{
-				eLL_NONE,
 				eLL_ALWAYS,
 				eLL_FATAL,
 				eLL_ERROR,

@@ -87,9 +87,26 @@ namespace engine
 			va_end(argList);
 		}
 
-		bool done = (written >= 0) && (written < LOG_BUFFER_SIZE);
-		fputs(buffer, stdout);
-		return done;
+		bool haveOutput = (written >= 0) && (written < LOG_BUFFER_SIZE);
+		if (haveOutput)
+		{
+			if (m_flags & eBT_FILE)
+			{
+// TODO: file output here
+			}
+
+			if (m_flags & eBT_CONSOLE)
+			{
+// TODO: console output here
+			}
+
+			if (m_flags & eBT_STANDARD)
+			{
+				fputs(buffer, ((s_logLevel == eLL_FATAL) || (s_logLevel == eLL_ERROR) || (s_logLevel == eLL_WARNING)) ? stderr : stdout);
+			}
+		}
+
+		return haveOutput;
 	}
 
 	//==============================================================================
