@@ -16,7 +16,7 @@ namespace engine
 #if defined(RELEASE)
 	const CLog::eLogLevel CLog::s_logLevel = CLog::eLL_ERROR;
 #else
-	int64 CLog::s_logLevel = CLog::eLL_INFO;
+	int64 CLog::s_logLevel = CLog::eLL_DEBUG;
 #endif // defined(RELEASE)
 
 	//==============================================================================
@@ -104,6 +104,13 @@ namespace engine
 			{
 				fputs(buffer, ((s_logLevel == eLL_FATAL) || (s_logLevel == eLL_ERROR) || (s_logLevel == eLL_WARNING)) ? stderr : stdout);
 			}
+
+#if defined(WIN32)
+			if (m_flags & eBT_DEBUGGER)
+			{
+				OutputDebugString(buffer);
+			}
+#endif // defined(WIN32)
 		}
 
 		return haveOutput;
@@ -114,13 +121,16 @@ namespace engine
 	CLog::CLog(void)
 		: m_pParent(NULL)
 			, m_name(LOG_ROOT_NAME)
-			 , m_flags(eBAI_LOCATION | eBAI_NAME | eBAI_TIMESTAMP | eBAI_THREADID | eBT_FILE | eBT_CONSOLE | eBT_STANDARD)
+			 , m_flags(eBAI_LOCATION | eBAI_NAME | eBAI_TIMESTAMP | eBAI_THREADID | eBT_FILE | eBT_CONSOLE | eBT_STANDARD | eBT_DEBUGGER)
 			 , m_active(true)
 	{
-		++m_refActiveLogs;
 #if defined(DEBUG)
-		REGISTER_NAMED_VARIABLE("log_level", CLog::s_logLevel, static_cast<int64>(CLog::eLL_INFO), 0, NULL, "Set the debug logging level (0=NONE, 1=ALWAYS, 2=FATAL, 3=ERROR, 4=WARNING, 5=INFO, 6=DEBUG)");
+		if (m_refActiveLogs == 0)
+		{
+			REGISTER_NAMED_VARIABLE("log_level", CLog::s_logLevel, static_cast<int64>(CLog::eLL_INFO), 0, NULL, "Set the debug logging level (0=NONE, 1=ALWAYS, 2=FATAL, 3=ERROR, 4=WARNING, 5=INFO, 6=DEBUG)");
+		}
 #endif // defined(DEBUG)
+		++m_refActiveLogs;
 	}
 
 	CLog::~CLog(void)

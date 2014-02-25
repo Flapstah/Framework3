@@ -37,6 +37,7 @@ namespace engine
 				eBT_FILE				= 1 << 4,
 				eBT_CONSOLE			= 1 << 5,
 				eBT_STANDARD		= 1 << 6,
+				eBT_DEBUGGER		= 1 << 7, // N.B. Only on Windows
 			};
 
 		//--------------------------------------------------------------------------
