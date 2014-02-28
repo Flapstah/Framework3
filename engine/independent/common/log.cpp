@@ -9,14 +9,13 @@
 
 namespace engine
 {
-
 	CLog CLog::s_logRoot;
 	uint32 CLog::m_refActiveLogs = 0;
 
 #if defined(RELEASE)
-	const CLog::eLogLevel CLog::s_logLevel = CLog::eLL_ERROR;
+	const CLog::eLogLevel CLog::s_logLevel = LOG_DEFAULT_RELEASE_LOG_LEVEL;
 #else
-	int64 CLog::s_logLevel = CLog::eLL_DEBUG;
+	int64 CLog::s_logLevel = LOG_DEFAULT_DEBUG_LOG_LEVEL;
 #endif // defined(RELEASE)
 
 	//==============================================================================
@@ -127,7 +126,7 @@ namespace engine
 #if defined(DEBUG)
 		if (m_refActiveLogs == 0)
 		{
-			REGISTER_NAMED_VARIABLE("log_level", CLog::s_logLevel, static_cast<int64>(CLog::eLL_INFO), 0, NULL, "Set the debug logging level (0=NONE, 1=ALWAYS, 2=FATAL, 3=ERROR, 4=WARNING, 5=INFO, 6=DEBUG)");
+			REGISTER_NAMED_VARIABLE("log_level", CLog::s_logLevel, static_cast<int64>(LOG_DEFAULT_DEBUG_LOG_LEVEL), 0, NULL, "Set the debug logging level (0=NONE, 1=ALWAYS, 2=FATAL, 3=ERROR, 4=WARNING, 5=INFO, 6=DEBUG)");
 		}
 #endif // defined(DEBUG)
 		++m_refActiveLogs;

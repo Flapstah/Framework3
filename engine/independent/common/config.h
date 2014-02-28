@@ -49,6 +49,8 @@
 //------------------------------------------------------------------------------
 #define LOG_ROOT_NAME "Main"
 #define LOG_BUFFER_SIZE (1024)
+#define LOG_DEFAULT_DEBUG_LOG_LEVEL engine::CLog::eLL_DEBUG
+#define LOG_DEFAULT_RELEASE_LOG_LEVEL engine::CLog::eLL_ERROR
 //------------------------------------------------------------------------------
 
 #define ENABLE_PROFILING 1
