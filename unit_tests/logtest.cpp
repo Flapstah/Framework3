@@ -3,7 +3,7 @@
 #include "logtest.h"
 #include "common/log.h"
 
-#define LOG_TEST(_level_) pThis->Test(#_level_ " log test", LOG_ ## _level_(engine::CLog::s_logRoot, #_level_ " log test\n") == (engine::CLog::s_logLevel >= engine::CLog::eLL_ ## _level_), "Should not have logged at " #_level_ " log level")
+#define LOG_TEST(_log_, _level_, _stage_type_) pThis->Test(#_level_ " log test", (LOG_ ## _level_(_log_, #_level_ " log test\n") == (_log_.IsActive() && (engine::CLog::s_logLevel >= engine::CLog::eLL_ ## _level_))), "Should not have logged at " #_level_ " log level", _stage_type_)
 
 namespace test
 {
@@ -39,34 +39,103 @@ namespace test
 		CLogTest* pThis = static_cast<CLogTest*>(pParent);
 		uint32 status = eSS_PASS;
 		engine::CLog::s_logRoot.SetFlags(engine::CLog::s_logRoot.GetFlags() & ~(engine::CLog::eBT_CONSOLE | engine::CLog::eBT_FILE | engine::CLog::eBT_STANDARD));
+#if defined(DEBUG)
+		int64 oldLogLevel = engine::CLog::s_logLevel;
+#endif // defined(DEBUG)
 
 		if (pThis->m_testStatus == eTS_RUNNING)
 		{
 			switch (pThis->GetStage())
 			{
 				case 1:
-					LOG_TEST(DEBUG);
+					LOG_TEST(engine::CLog::s_logRoot, DEBUG, eTT_SubStage);
+					LOG_TEST(engine::CLog::s_logRoot, INFO, eTT_SubStage);
+					LOG_TEST(engine::CLog::s_logRoot, WARNING, eTT_SubStage);
+					LOG_TEST(engine::CLog::s_logRoot, ERROR, eTT_SubStage);
+					LOG_TEST(engine::CLog::s_logRoot, FATAL, eTT_SubStage);
+					LOG_TEST(engine::CLog::s_logRoot, ALWAYS, eTT_Stage);
 					break;
 
 				case 2:
-					LOG_TEST(INFO);
+					engine::CLog::s_logRoot.SetActive(false);
+					LOG_TEST(engine::CLog::s_logRoot, DEBUG, eTT_SubStage);
+					LOG_TEST(engine::CLog::s_logRoot, INFO, eTT_SubStage);
+					LOG_TEST(engine::CLog::s_logRoot, WARNING, eTT_SubStage);
+					LOG_TEST(engine::CLog::s_logRoot, ERROR, eTT_SubStage);
+					LOG_TEST(engine::CLog::s_logRoot, FATAL, eTT_SubStage);
+					LOG_TEST(engine::CLog::s_logRoot, ALWAYS, eTT_Stage);
+					engine::CLog::s_logRoot.SetActive(true);
 					break;
 
+#if defined(DEBUG)
+				// If we're in debug, we can alter the log level and retest to make sure
+				// all log levels are correctly elided
 				case 3:
-					LOG_TEST(WARNING);
+					engine::CLog::s_logLevel = engine::CLog::eLL_DEBUG;
+					LOG_TEST(engine::CLog::s_logRoot, DEBUG, eTT_SubStage);
+					LOG_TEST(engine::CLog::s_logRoot, INFO, eTT_SubStage);
+					LOG_TEST(engine::CLog::s_logRoot, WARNING, eTT_SubStage);
+					LOG_TEST(engine::CLog::s_logRoot, ERROR, eTT_SubStage);
+					LOG_TEST(engine::CLog::s_logRoot, FATAL, eTT_SubStage);
+					LOG_TEST(engine::CLog::s_logRoot, ALWAYS, eTT_Stage);
+					engine::CLog::s_logLevel = oldLogLevel;
 					break;
 
 				case 4:
-					LOG_TEST(ERROR);
+					engine::CLog::s_logLevel = engine::CLog::eLL_INFO;
+					LOG_TEST(engine::CLog::s_logRoot, DEBUG, eTT_SubStage);
+					LOG_TEST(engine::CLog::s_logRoot, INFO, eTT_SubStage);
+					LOG_TEST(engine::CLog::s_logRoot, WARNING, eTT_SubStage);
+					LOG_TEST(engine::CLog::s_logRoot, ERROR, eTT_SubStage);
+					LOG_TEST(engine::CLog::s_logRoot, FATAL, eTT_SubStage);
+					LOG_TEST(engine::CLog::s_logRoot, ALWAYS, eTT_Stage);
+					engine::CLog::s_logLevel = oldLogLevel;
 					break;
 
 				case 5:
-					LOG_TEST(FATAL);
+					engine::CLog::s_logLevel = engine::CLog::eLL_WARNING;
+					LOG_TEST(engine::CLog::s_logRoot, DEBUG, eTT_SubStage);
+					LOG_TEST(engine::CLog::s_logRoot, INFO, eTT_SubStage);
+					LOG_TEST(engine::CLog::s_logRoot, WARNING, eTT_SubStage);
+					LOG_TEST(engine::CLog::s_logRoot, ERROR, eTT_SubStage);
+					LOG_TEST(engine::CLog::s_logRoot, FATAL, eTT_SubStage);
+					LOG_TEST(engine::CLog::s_logRoot, ALWAYS, eTT_Stage);
+					engine::CLog::s_logLevel = oldLogLevel;
 					break;
 
 				case 6:
-					LOG_TEST(ALWAYS);
+					engine::CLog::s_logLevel = engine::CLog::eLL_ERROR;
+					LOG_TEST(engine::CLog::s_logRoot, DEBUG, eTT_SubStage);
+					LOG_TEST(engine::CLog::s_logRoot, INFO, eTT_SubStage);
+					LOG_TEST(engine::CLog::s_logRoot, WARNING, eTT_SubStage);
+					LOG_TEST(engine::CLog::s_logRoot, ERROR, eTT_SubStage);
+					LOG_TEST(engine::CLog::s_logRoot, FATAL, eTT_SubStage);
+					LOG_TEST(engine::CLog::s_logRoot, ALWAYS, eTT_Stage);
+					engine::CLog::s_logLevel = oldLogLevel;
 					break;
+
+				case 7:
+					engine::CLog::s_logLevel = engine::CLog::eLL_FATAL;
+					LOG_TEST(engine::CLog::s_logRoot, DEBUG, eTT_SubStage);
+					LOG_TEST(engine::CLog::s_logRoot, INFO, eTT_SubStage);
+					LOG_TEST(engine::CLog::s_logRoot, WARNING, eTT_SubStage);
+					LOG_TEST(engine::CLog::s_logRoot, ERROR, eTT_SubStage);
+					LOG_TEST(engine::CLog::s_logRoot, FATAL, eTT_SubStage);
+					LOG_TEST(engine::CLog::s_logRoot, ALWAYS, eTT_Stage);
+					engine::CLog::s_logLevel = oldLogLevel;
+					break;
+
+				case 8:
+					engine::CLog::s_logLevel = engine::CLog::eLL_ALWAYS;
+					LOG_TEST(engine::CLog::s_logRoot, DEBUG, eTT_SubStage);
+					LOG_TEST(engine::CLog::s_logRoot, INFO, eTT_SubStage);
+					LOG_TEST(engine::CLog::s_logRoot, WARNING, eTT_SubStage);
+					LOG_TEST(engine::CLog::s_logRoot, ERROR, eTT_SubStage);
+					LOG_TEST(engine::CLog::s_logRoot, FATAL, eTT_SubStage);
+					LOG_TEST(engine::CLog::s_logRoot, ALWAYS, eTT_Stage);
+					engine::CLog::s_logLevel = oldLogLevel;
+					break;
+#endif // defined(DEBUG)
 
 				default:
 					status |= eSS_COMPLETE;
