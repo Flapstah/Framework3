@@ -3,7 +3,7 @@
 #include "logtest.h"
 #include "common/log.h"
 
-#define LOG_TEST(_log_, _level_, _stage_type_) pThis->Test(#_level_ " log test", (LOG_ ## _level_(_log_, #_level_ " log test\n") == (_log_.IsActive() && (engine::CLog::s_logLevel >= engine::CLog::eLL_ ## _level_))), "Should not have logged at " #_level_ " log level", _stage_type_)
+#define LOG_TEST(_log_, _level_, _stage_type_) pThis->Test(#_level_ " log test", (LOG_ ## _level_(_log_, #_level_ " log test") == (_log_.IsActive() && (engine::CLog::s_logLevel >= engine::CLog::eLL_ ## _level_))), "Should not have logged at " #_level_ " log level", _stage_type_)
 
 namespace test
 {

@@ -212,6 +212,7 @@ set(PLATFORM_SPECIFIC_SOURCES
 endif (UNIX)
 #
 set(UNIT_TEST_SOURCES
+	unit_tests/main.cpp
 	unit_tests/unittest.cpp
 	unit_tests/cvartest.cpp
 	unit_tests/logtest.cpp
@@ -254,19 +255,43 @@ add_custom_command(
 
 ###############################################################################
 #
+# Build the 'unit_test' executable
+#
+add_executable (
+	unit_test
+ 	unit_tests/main.cpp
+	engine/independent/common/version.cpp
+ 	${PLATFORM_INDEPENDENT_SOURCES}
+ 	${PLATFORM_SPECIFIC_SOURCES}
+	${UNIT_TEST_SOURCES}
+	)
+target_link_libraries (unit_test ${LIBS})
+
+get_target_property(UNIT_TEST_EXE unit_test LOCATION)
+add_custom_command(
+	OUTPUT "${test_SOURCE_DIR}/unit_test_results.txt"
+	COMMAND "${UNIT_TEST_EXE}" > "${test_SOURCE_DIR}/unit_test_results.txt"
+	DEPENDS "${UNIT_TEST_EXE}" ${PLATFORM_INDEPENDENT_SOURCES} ${PLATFORM_SPECIFIC_SOURCES} ${UNIT_TEST_SOURCES}
+	)
+#
+###############################################################################
+
+
+###############################################################################
+#
 # Build rules for the executable
 #
 add_executable (
 	test
  	main.cpp
 	engine/independent/common/version.cpp
+	unit_test_results.txt
  	${PLATFORM_INDEPENDENT_SOURCES}
  	${PLATFORM_SPECIFIC_SOURCES}
-	${UNIT_TEST_SOURCES}
  	${OPENGL_SUPERBIBLE_50_SOURCES}
 	)
-#
 target_link_libraries (test ${LIBS})
+add_dependencies(test unit_test)
 #
 ###############################################################################
 
