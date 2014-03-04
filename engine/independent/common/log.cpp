@@ -82,7 +82,16 @@ namespace engine
 		{
 			va_start(argList, format);
 			written = vsnprintf(buffer+position, LOG_BUFFER_SIZE-position-1, format, argList);
-			buffer[sizeof(buffer)-1] = 0;
+			position += (written >= 0) ? written : 0;
+
+			// Force a newline and null termination of the buffer
+			if (position >= LOG_BUFFER_SIZE-2)
+			{
+				position = LOG_BUFFER_SIZE-2;
+			}
+			buffer[position++] = '\n';
+			buffer[position++] = 0;
+
 			va_end(argList);
 		}
 

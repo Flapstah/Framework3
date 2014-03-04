@@ -95,6 +95,8 @@ namespace engine
 #define LOG_FATAL(_log_, _format_, ...) LOG(_log_, engine::CLog::eLL_FATAL, _format_, ## __VA_ARGS__)
 #define LOG_ALWAYS(_log_, _format_, ...) LOG(_log_, engine::CLog::eLL_ALWAYS, _format_, ## __VA_ARGS__)
 
+#define DEFAULT_LOGGER engine::CLog::s_logRoot
+
 //==============================================================================
 
 #endif // !defined(__LOG_H__)
