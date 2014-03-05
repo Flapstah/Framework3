@@ -217,10 +217,10 @@ namespace test
 
 				case 4:
 					{
-						const char* initialValue = m_pCVar->GetString();
+						const std::string initialValue(m_pCVar->GetString());
 						const char* value = "3.1415926535897931";
 						m_pCVar->SetString(value);
-						pThis->Test("Setting integer cvar with string value", strcmp(m_pCVar->GetString(), initialValue) == 0, "Value has changed");
+						pThis->Test("Setting integer cvar with string value", strcmp(m_pCVar->GetString(), initialValue.c_str()) == 0, "Value has changed");
 					}
 					break;
 
@@ -355,10 +355,10 @@ namespace test
 
 				case 4:
 					{
-						const char* initialValue = m_pCVar->GetString();
+						const std::string initialValue(m_pCVar->GetString());
 						const char* value = "3.1415926535897931";
 						m_pCVar->SetString(value);
-						pThis->Test("Setting const double cvar with string value", strcmp(m_pCVar->GetString(), initialValue) == 0, "Value has changed");
+						pThis->Test("Setting const double cvar with string value", strcmp(m_pCVar->GetString(), initialValue.c_str()) == 0, "Value has changed");
 					}
 					break;
 
@@ -472,10 +472,10 @@ namespace test
 
 				case 4:
 					{
-						const char* initialValue = m_pCVar->GetString();
+						const std::string initialValue(m_pCVar->GetString());
 						const char* value = "3.1415926535897931";
 						m_pCVar->SetString(value);
-						pThis->Test("Setting const string cvar with string value", strcmp(m_pCVar->GetString(), initialValue) == 0, "Value has changed");
+						pThis->Test("Setting const string cvar with string value", strcmp(m_pCVar->GetString(), initialValue.c_str()) == 0, "Value has changed");
 					}
 					break;
 
