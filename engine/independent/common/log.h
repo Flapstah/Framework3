@@ -66,7 +66,6 @@ namespace engine
 			const char* m_name;
 			uint32 m_flags;
 			bool m_active;
-			static uint32 m_refActiveLogs;
 
 		public:
 			static CLog s_logRoot;
@@ -74,6 +73,9 @@ namespace engine
 			static const eLogLevel s_logLevel;
 #else
 			static int64 s_logLevel;
+	private:
+			// used to register/unregister log level cvar
+			static uint32 m_refActiveLogs;
 #endif // defined(RELEASE)
 
 		//--------------------------------------------------------------------------
