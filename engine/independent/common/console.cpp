@@ -1,6 +1,7 @@
 #include "common/stdafx.h"
 
 #include "common/console.h"
+#include "common/log.h"
 #include <iomanip>
 #include <ostream>
 
@@ -8,6 +9,11 @@
 
 namespace engine
 {
+	//============================================================================
+	// Create custom log for the console
+	//============================================================================
+	static CLog g_log(DEFAULT_LOGGER, "Console");
+
 	//============================================================================
 	// TVariable specialisation for int64
 	//============================================================================
@@ -28,7 +34,7 @@ namespace engine
 #if !defined(_RELEASE)
 		else
 		{
-			printf("[CONSOLE]: failed to set const integer variable with %s", value);
+			LOG_WARNING(g_log, "Failed to set const integer variable with %s", value);
 		}
 #endif // !defined(_RELEASE)
 
@@ -56,7 +62,7 @@ namespace engine
 #if !defined(_RELEASE)
 		else
 		{
-			printf("[CONSOLE]: failed to set const double variable with %s", value);
+			LOG_WARNING(g_log, "Failed to set const double variable with %s", value);
 		}
 #endif // !defined(_RELEASE)
 
@@ -92,7 +98,7 @@ namespace engine
 #if !defined(_RELEASE)
 		else
 		{
-			printf("[CONSOLE]: failed to set const string variable with %s", buffer.str().c_str());
+			LOG_WARNING(g_log, "Failed to set const string variable with %s", buffer.str().c_str());
 		}
 #endif // !defined(_RELEASE)
 
@@ -122,7 +128,7 @@ namespace engine
 #if !defined(_RELEASE)
 		else
 		{
-			printf("[CONSOLE]: failed to set const string variable with %s", buffer.str().c_str());
+			LOG_WARNING(g_log, "Failed to set const string variable with %s", buffer.str().c_str());
 		}
 #endif // !defined(_RELEASE)
 
@@ -149,7 +155,7 @@ namespace engine
 #if !defined(_RELEASE)
 		else
 		{
-			printf("[CONSOLE]: failed to set const string variable with %s", value);
+			LOG_WARNING(g_log, "Failed to set const string variable with %s", value);
 		}
 #endif // !defined(_RELEASE)
 
@@ -197,7 +203,7 @@ namespace engine
 #if !defined(_RELEASE)
 		else
 		{
-			printf("[CONSOLE]: failed to set const variable with %" PRId64, value);
+			LOG_WARNING(g_log, "Failed to set const variable with %" PRId64, value);
 		}
 #endif // !defined(_RELEASE)
 
@@ -224,7 +230,7 @@ namespace engine
 #if !defined(_RELEASE)
 		else
 		{
-			printf("[CONSOLE]: failed to set const variable with %g", value);
+			LOG_WARNING(g_log, "Failed to set const variable with %g", value);
 		}
 #endif // !defined(_RELEASE)
 
@@ -294,11 +300,11 @@ namespace engine
 			const SDetails* pDetails = FindDetails(it->first);
 			if (pDetails != NULL)
 			{
-				printf("[CONSOLE]: still have variable [%s] @ 0x%p registered\n", pDetails->m_name.c_str(), it->second.get());
+				LOG_ERROR(g_log, "Still have variable [%s] @ 0x%p registered", pDetails->m_name.c_str(), it->second.get());
 			}
 			else
 			{
-				printf("[CONSOLE]: still have variable [%#x] @ 0x%p registered\n", it->first, it->second.get());
+				LOG_ERROR(g_log, "Still have variable [%#x] @ 0x%p registered", it->first, it->second.get());
 			}
 		}
 	}
@@ -330,7 +336,7 @@ namespace engine
 		}
 		else
 		{
-			printf("[CONSOLE]: Trying to register an integer variable named [%s] (hash [%d]), with description [%s], but that name already exists!\n", name, nameHash, description);
+			LOG_FATAL(g_log, "Trying to register an integer variable named [%s] (hash [%d]), with description [%s], but that name already exists!", name, nameHash, description);
 		}
 
 		return pVariable;
@@ -363,7 +369,7 @@ namespace engine
 		}
 		else
 		{
-			printf("[CONSOLE]: Trying to register a double variable named [%s] (hash [%d]), with description [%s], but that name already exists!\n", name, nameHash, description);
+			LOG_FATAL(g_log, "Trying to register a double variable named [%s] (hash [%d]), with description [%s], but that name already exists!", name, nameHash, description);
 		}
 
 		return pVariable;
@@ -396,7 +402,7 @@ namespace engine
 		}
 		else
 		{
-			printf("[CONSOLE]: Trying to register an string variable named [%s] (hash [%d]), with description [%s], but that name already exists!\n", name, nameHash, description);
+			LOG_FATAL(g_log, "Trying to register an string variable named [%s] (hash [%d]), with description [%s], but that name already exists!", name, nameHash, description);
 		}
 
 		return pVariable;
@@ -493,12 +499,12 @@ namespace engine
 			}
 			else
 			{
-				printf("[CONSOLE]: Trying to register command named [%s] (hash [%d]), with description [%s], but that name already exists!\n", name, nameHash, description);
+				LOG_FATAL(g_log, "Trying to register command named [%s] (hash [%d]), with description [%s], but that name already exists!", name, nameHash, description);
 			}
 		}
 		else
 		{
-			printf("[CONSOLE]: Trying to register command named [%s] (hash [%d]), with description [%s], with NULL execute callback!\n", name, nameHash, description);
+			LOG_FATAL(g_log, "Trying to register command named [%s] (hash [%d]), with description [%s], with NULL execute callback!", name, nameHash, description);
 		}
 
 		return pCommand;
@@ -594,7 +600,7 @@ namespace engine
 			}
 			else
 			{
-				printf("CConsole::Execute() [%s] not found\n", argv[0].c_str());
+				LOG_ERROR(g_log, "[%s] not found", argv[0].c_str());
 				state = eCS_NOT_FOUND;
 			}
 		}
@@ -606,7 +612,7 @@ namespace engine
 
 	CConsole::eConsoleState CConsole::ExecuteDeferred(const char* commandLine, uint32 frames)
 	{
-		printf("[TODO]: CConsole::ExecuteDeferred(frames)");
+		LOG_FATAL(g_log, "[TODO]: CConsole::ExecuteDeferred(frames)");
 		return eCS_OK;
 	}
 
@@ -614,7 +620,7 @@ namespace engine
 
 	CConsole::eConsoleState CConsole::ExecuteDeferred(const char* commandLine, float seconds)
 	{
-		printf("[TODO]: CConsole::ExecuteDeferred(seconds)");
+		LOG_FATAL(g_log, "[TODO]: CConsole::ExecuteDeferred(seconds)");
 		return eCS_OK;
 	}
 
