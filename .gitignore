@@ -9,4 +9,5 @@ engine/independent/common/version.cpp
 make
 run
 tags
+unit_test
 unit_test_results.txt
