@@ -9,7 +9,9 @@
 
 namespace engine
 {
-	CLog CLog::s_logRoot;
+	CLog CLog::s_logMaster;
+	CLog CLog::s_logEngine(CLog::s_logMaster, LOG_ENGINE_NAME);
+	CLog CLog::s_logGame(CLog::s_logMaster, LOG_GAME_NAME);
 
 #if defined(RELEASE)
 	const CLog::eLogLevel CLog::s_logLevel = LOG_DEFAULT_RELEASE_LOG_LEVEL;
@@ -132,7 +134,7 @@ namespace engine
 
 	CLog::CLog(void)
 		: m_pParent(NULL)
-			, m_name(LOG_ROOT_NAME)
+			, m_name(LOG_MASTER_NAME)
 			 , m_flags(eBAI_LOCATION | eBAI_NAME | eBAI_TIMESTAMP | eBAI_THREADID | eBT_FILE | eBT_CONSOLE | eBT_STANDARD | eBT_DEBUGGER)
 			 , m_active(true)
 	{

@@ -47,7 +47,9 @@
 //------------------------------------------------------------------------------
 // Log system config
 //------------------------------------------------------------------------------
-#define LOG_ROOT_NAME "Main"
+#define LOG_MASTER_NAME "Master"
+#define LOG_ENGINE_NAME "Engine"
+#define LOG_GAME_NAME "Game"
 #define LOG_BUFFER_SIZE (1024)
 #define LOG_DEFAULT_DEBUG_LOG_LEVEL engine::CLog::eLL_DEBUG
 #define LOG_DEFAULT_RELEASE_LOG_LEVEL engine::CLog::eLL_ERROR

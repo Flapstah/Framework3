@@ -68,7 +68,19 @@ namespace engine
 			bool m_active;
 
 		public:
-			static CLog s_logRoot;
+			// The master log is the root from which all other logs depend and should
+			// not be used directly, other than to SetActive() to enable/disable
+			// logging globally.
+			static CLog s_logMaster;
+
+			// The engine log is used for engine side logging; subsytem logs should
+			// depend from this
+			static CLog s_logEngine;
+
+			// The game log is used for game side logging; subsytem logs should depend
+			// from this
+			static CLog s_logGame;
+
 #if defined(RELEASE)
 			static const eLogLevel s_logLevel;
 #else
@@ -97,11 +109,20 @@ namespace engine
 #define LOG_FATAL(_log_, _format_, ...) LOG(_log_, engine::CLog::eLL_FATAL, _format_, ## __VA_ARGS__)
 #define LOG_ALWAYS(_log_, _format_, ...) LOG(_log_, engine::CLog::eLL_ALWAYS, _format_, ## __VA_ARGS__)
 
-#define DEFAULT_LOGGER engine::CLog::s_logRoot
+/*
+#define LOG_DEBUG(_log_, _format_, ...)
+#define LOG_INFO(_log_, _format_, ...)
+#define LOG_WARNING(_log_, _format_, ...)
+#define LOG_ERROR(_log_, _format_, ...)
+#define LOG_FATAL(_log_, _format_, ...)
+#define LOG_ALWAYS(_log_, _format_, ...)
+*/
+
+#define ENGINE_LOGGER engine::CLog::s_logEngine
+#define GAME_LOGGER engine::CLog::s_logGame
 
 //==============================================================================
 
 #endif // !defined(__LOG_H__)
 // EOF
-
 
