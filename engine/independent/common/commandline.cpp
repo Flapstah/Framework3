@@ -12,7 +12,7 @@ namespace engine
 	//============================================================================
 	// Create custom log for the command line
 	//============================================================================
-	static CLog g_log(DEFAULT_LOGGER, "CommandLine");
+	static CLog g_log(ENGINE_LOGGER, "CommandLine");
 
 	//============================================================================
 

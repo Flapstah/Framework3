@@ -12,7 +12,7 @@ namespace engine
 	//============================================================================
 	// Create custom log for the console
 	//============================================================================
-	static CLog g_log(DEFAULT_LOGGER, "Console");
+	static CLog g_log(ENGINE_LOGGER, "Console");
 
 	//============================================================================
 	// TVariable specialisation for int64
