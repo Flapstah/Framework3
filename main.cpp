@@ -17,7 +17,7 @@ int main(int argc, char* argv[])
 	IGNORE_PARAMETER(argc);
 	IGNORE_PARAMETER(argv);
 
-	LOG_ALWAYS(DEFAULT_LOGGER, "All done.");
+	LOG_ALWAYS(GAME_LOGGER, "All done.");
 
 	return 0;
 }
