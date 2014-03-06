@@ -51,14 +51,14 @@ namespace test
 
 	bool CCVarTest::Initialise(void)
 	{
-		AddStage("Lifecycle", ConsoleVariableLifecycle, eTV_TERSE);
-		AddStage("Integer console variable operations", IntegerVariableOperations, eTV_TERSE);
-		AddStage("Integer constant console variable operations", IntegerConstantVariableOperations, eTV_TERSE);
-		AddStage("Floating point console variable operations", FloatVariableOperations, eTV_TERSE);
-		AddStage("Floating point constant console variable operations", FloatConstantVariableOperations, eTV_TERSE);
-		AddStage("String console variable operations", StringVariableOperations, eTV_TERSE);
-		AddStage("String constant console variable operations", StringConstantVariableOperations, eTV_TERSE);
-		AddStage("Console command test", ConsoleCommandTest, eTV_TERSE);
+		AddStage("Lifecycle", ConsoleVariableLifecycle);
+		AddStage("Integer console variable operations", IntegerVariableOperations);
+		AddStage("Integer constant console variable operations", IntegerConstantVariableOperations);
+		AddStage("Floating point console variable operations", FloatVariableOperations);
+		AddStage("Floating point constant console variable operations", FloatConstantVariableOperations);
+		AddStage("String console variable operations", StringVariableOperations);
+		AddStage("String constant console variable operations", StringConstantVariableOperations);
+		AddStage("Console command test", ConsoleCommandTest);
 
 		return CUnitTest::Initialise();
 	}

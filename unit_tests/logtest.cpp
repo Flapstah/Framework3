@@ -26,8 +26,8 @@ namespace test
 
 	bool CLogTest::Initialise(void)
 	{
-		AddStage("Default log", DefaultLog, eTV_TERSE);
-		AddStage("Custom log", CustomLog, eTV_TERSE);
+		AddStage("Default log", DefaultLog);
+		AddStage("Custom log", CustomLog);
 
 		return CUnitTest::Initialise();
 	}

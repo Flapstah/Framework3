@@ -7,8 +7,10 @@
 #include <vector>
 
 #include "common/itime.h"
+#include "common/log.h"
 
 using namespace std;
+using namespace engine;
 using namespace engine::time;
 
 //==============================================================================
@@ -18,10 +20,10 @@ using namespace engine::time;
 #define COLOUR_SUCCESS ANSI_2SEQUENCE(ANSI_BRIGHT, ANSI_FOREGROUND(ANSI_GREEN))
 #define COLOUR_WARNING ANSI_2SEQUENCE(ANSI_BRIGHT, ANSI_FOREGROUND(ANSI_YELLOW))
 #define COLOUR_ERROR ANSI_2SEQUENCE(ANSI_BRIGHT, ANSI_FOREGROUND(ANSI_RED))
-#define COLOUR_INFO ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_DEFAULT_COLOUR))
+#define COLOUR_INFO ANSI_2SEQUENCE(ANSI_BRIGHT, ANSI_FOREGROUND(ANSI_DEFAULT_COLOUR))
 #define COLOUR_PROGRESS ANSI_2SEQUENCE(ANSI_BRIGHT, ANSI_FOREGROUND(ANSI_CYAN))
 #define COLOUR_TEST_INFO ANSI_2SEQUENCE(ANSI_BRIGHT, ANSI_FOREGROUND(ANSI_MAGENTA))
-#define COLOUR_DEFAULT ANSI_1SEQUENCE(ANSI_FOREGROUND(ANSI_DEFAULT_COLOUR))
+#define COLOUR_DEFAULT ANSI_2SEQUENCE(ANSI_BRIGHT, ANSI_FOREGROUND(ANSI_DEFAULT_COLOUR))
 #define COLOUR_RESET ANSI_1SEQUENCE(ANSI_RESET_ALL)
 
 //==============================================================================
@@ -60,17 +62,6 @@ namespace test
 			}; // End [enum eStageStatus]
 
 			//========================================================================
-			// enum eTestVerbosity
-			//========================================================================
-			enum eTestVerbosity
-			{
-				eTV_NONE			= 0,
-				eTV_ERROR,
-				eTV_TERSE,
-				eTV_VERBOSE
-			}; // End [enum eTestVerbosity]
-
-			//========================================================================
 			// enum eTestType
 			//========================================================================
 			enum eTestType
@@ -95,7 +86,7 @@ namespace test
 			virtual	const	CTimeValue&	End(void);
 			virtual				void				Uninitialise(void);
 
-										void				AddStage(const char* name, TestFn function, eTestVerbosity verbosity = eTV_TERSE);
+										void				AddStage(const char* name, TestFn function);
 										void				Test(const char* description, bool test, const char* failureMessage, int32 testType = eTT_Stage);
 										
 			//========================================================================
@@ -109,12 +100,6 @@ namespace test
 			//========================================================================
 
 		private:
-																// N.B. A member function has a hidden 1st parameter (the
-																// hidden 'this') pointer, so 'format' is actually the 3rd
-																// parameter, and the variadic part is the 4th parameter
-										void				Log(eTestVerbosity targetLevel, const char* format, ...) __attribute__((format(printf, 3, 4)));
-										
-							const	char*				TimeStamp(char* const buffer, uint32 size);
 										void				ResetStage(void);
 										void				ResetSubstage(void);
 
@@ -122,9 +107,9 @@ namespace test
 
 		protected:
 			ITime*										m_pTime;
+			CLog											m_log;
 			eTestStatus								m_testStatus;
 			eStageStatus							m_stageStatus;
-			eTestVerbosity						m_verbosity;
 
 			//========================================================================
 
@@ -134,11 +119,10 @@ namespace test
 			//========================================================================
 			struct STest
 			{
-				STest(const char* name, TestFn function, eTestVerbosity verbosity) : m_name(name), m_function(function), m_verbosity(verbosity) {}
+				STest(const char* name, TestFn function) : m_name(name), m_function(function) {}
 
 				string									m_name;
 				TestFn									m_function;
-				eTestVerbosity					m_verbosity;
 			};
 
 			//========================================================================
