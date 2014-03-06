@@ -51,8 +51,9 @@
 #define LOG_ENGINE_NAME "Engine"
 #define LOG_GAME_NAME "Game"
 #define LOG_BUFFER_SIZE (1024)
+#define LOG_ELIDE_ALL_LOGS (0)
 #define LOG_DEFAULT_DEBUG_LOG_LEVEL engine::CLog::eLL_DEBUG
-#define LOG_DEFAULT_RELEASE_LOG_LEVEL engine::CLog::eLL_ERROR
+#define LOG_DEFAULT_RELEASE_LOG_LEVEL engine::CLog::eLL_WARNING
 //------------------------------------------------------------------------------
 
 #define ENABLE_PROFILING 1

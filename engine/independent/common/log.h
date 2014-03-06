@@ -19,7 +19,9 @@ namespace engine
 				eLL_FATAL,
 				eLL_ERROR,
 				eLL_WARNING,
+				eLL_TERSE,
 				eLL_INFO,
+				eLL_VERBOSE,
 				eLL_DEBUG
 			};
 
@@ -100,23 +102,20 @@ namespace engine
 
 //==============================================================================
 
+#if LOG_ELIDE_ALL_LOGS
+#define LOG(_log_, _level_, _format_, ...)
+#else // LOG_ELIDE_ALL_LOGS
 #define LOG(_log_, _level_, _format_, ...) (((engine::CLog::s_logLevel >= _level_) && (_log_.IsActive())) ? _log_.Log(__FILE__, __LINE__, _format_, ## __VA_ARGS__) : false)
+#endif // LOG_ELIDE_ALL_LOGS
 
 #define LOG_DEBUG(_log_, _format_, ...) LOG(_log_, engine::CLog::eLL_DEBUG, _format_, ## __VA_ARGS__)
+#define LOG_VERBOSE(_log_, _format_, ...) LOG(_log_, engine::CLog::eLL_VERBOSE, _format_, ## __VA_ARGS__)
 #define LOG_INFO(_log_, _format_, ...) LOG(_log_, engine::CLog::eLL_INFO, _format_, ## __VA_ARGS__)
+#define LOG_TERSE(_log_, _format_, ...) LOG(_log_, engine::CLog::eLL_TERSE, _format_, ## __VA_ARGS__)
 #define LOG_WARNING(_log_, _format_, ...) LOG(_log_, engine::CLog::eLL_WARNING, _format_, ## __VA_ARGS__)
 #define LOG_ERROR(_log_, _format_, ...) LOG(_log_, engine::CLog::eLL_ERROR, _format_, ## __VA_ARGS__)
 #define LOG_FATAL(_log_, _format_, ...) LOG(_log_, engine::CLog::eLL_FATAL, _format_, ## __VA_ARGS__)
 #define LOG_ALWAYS(_log_, _format_, ...) LOG(_log_, engine::CLog::eLL_ALWAYS, _format_, ## __VA_ARGS__)
-
-/*
-#define LOG_DEBUG(_log_, _format_, ...)
-#define LOG_INFO(_log_, _format_, ...)
-#define LOG_WARNING(_log_, _format_, ...)
-#define LOG_ERROR(_log_, _format_, ...)
-#define LOG_FATAL(_log_, _format_, ...)
-#define LOG_ALWAYS(_log_, _format_, ...)
-*/
 
 #define ENGINE_LOGGER engine::CLog::s_logEngine
 #define GAME_LOGGER engine::CLog::s_logGame
