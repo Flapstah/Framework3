@@ -60,6 +60,10 @@ namespace engine
 
 		private:
 			CLog(void);
+#if defined(DEBUG)
+			static void RegisterCVar(void);
+			static void UnregisterCVar(void);
+#endif // defined(DEBUG)
 
 		//--------------------------------------------------------------------------
 

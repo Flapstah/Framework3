@@ -29,7 +29,7 @@ namespace engine
 			 , m_active(true)
 	{
 #if defined(DEBUG)
-		++m_refActiveLogs;
+		RegisterCVar();
 #endif // defined(DEBUG)
 	}
 
@@ -42,9 +42,40 @@ namespace engine
 			 , m_active(true)
 	{
 #if defined(DEBUG)
-		++m_refActiveLogs;
+		RegisterCVar();
 #endif // defined(DEBUG)
 	}
+
+	//==============================================================================
+
+	CLog::~CLog(void)
+	{
+#if defined(DEBUG)
+		UnregisterCVar();
+#endif // defined(DEBUG)
+	}
+
+	//==============================================================================
+
+#if defined(DEBUG)
+	void CLog::RegisterCVar(void)
+	{
+		if (m_refActiveLogs++ == 0)
+		{
+			REGISTER_NAMED_VARIABLE("log_level", CLog::s_logLevel, static_cast<int64>(LOG_DEFAULT_DEBUG_LOG_LEVEL), 0, NULL, "Set the debug logging level (0=NONE, 1=ALWAYS, 2=FATAL, 3=ERROR, 4=WARNING, 5=INFO, 6=DEBUG)");
+		}
+	}
+
+	//==============================================================================
+
+	void CLog::UnregisterCVar(void)
+	{
+		if (--m_refActiveLogs == 0)
+		{
+			UNREGISTER_VARIABLE_BY_NAME("log_level");
+		}
+	}
+#endif // defined(DEBUG)
 
 	//==============================================================================
 
@@ -139,21 +170,7 @@ namespace engine
 			 , m_active(true)
 	{
 #if defined(DEBUG)
-		if (m_refActiveLogs == 0)
-		{
-			REGISTER_NAMED_VARIABLE("log_level", CLog::s_logLevel, static_cast<int64>(LOG_DEFAULT_DEBUG_LOG_LEVEL), 0, NULL, "Set the debug logging level (0=NONE, 1=ALWAYS, 2=FATAL, 3=ERROR, 4=WARNING, 5=INFO, 6=DEBUG)");
-		}
-		++m_refActiveLogs;
-#endif // defined(DEBUG)
-	}
-
-	CLog::~CLog(void)
-	{
-#if defined(DEBUG)
-		if (--m_refActiveLogs == 0)
-		{
-			UNREGISTER_VARIABLE_BY_NAME("log_level");
-		}
+		RegisterCVar();
 #endif // defined(DEBUG)
 	}
 
