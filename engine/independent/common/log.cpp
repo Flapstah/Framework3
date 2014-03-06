@@ -24,9 +24,9 @@ namespace engine
 
 	CLog::CLog(CLog& parent, const char* name)
 		: m_pParent(&parent)
-			, m_name(name)
-			 , m_flags(parent.m_flags)
-			 , m_active(true)
+		, m_name(name)
+		, m_flags(parent.m_flags)
+		, m_active(true)
 	{
 #if defined(DEBUG)
 		RegisterCVar();
@@ -37,9 +37,9 @@ namespace engine
 
 	CLog::CLog(CLog& parent, const char* name, uint32 flags)
 		: m_pParent(&parent)
-			, m_name(name)
-			 , m_flags(flags)
-			 , m_active(true)
+		, m_name(name)
+		, m_flags(flags)
+		, m_active(true)
 	{
 #if defined(DEBUG)
 		RegisterCVar();
@@ -96,9 +96,9 @@ namespace engine
 		{
 			int32 days, hours, minutes;
 			float seconds;
-			engine::time::CTimeValue now = engine::time::GetITime()->GetCurrentTime();
+			time::CTimeValue now = time::GetITime()->GetCurrentTime();
 			now.GetTime(days, hours, minutes, seconds);
-			written = snprintf(buffer+position, LOG_BUFFER_SIZE-position-1, "[%02u:%02u:%02.3f]: ", hours, minutes, seconds);
+			written = snprintf(buffer+position, LOG_BUFFER_SIZE-position-1, "[%02u:%02u:%06.3f]: ", hours, minutes, seconds);
 			position += (written >= 0) ? written : 0;
 		}
 
@@ -120,7 +120,11 @@ namespace engine
 			va_start(argList, format);
 			written = vsnprintf(buffer+position, LOG_BUFFER_SIZE-position-1, format, argList);
 			position += (written >= 0) ? written : 0;
+			va_end(argList);
+		}
 
+		if ((m_flags & eBAI_NEWLINE) && (written >= 0))
+		{
 			// Force a newline and null termination of the buffer
 			if (position >= LOG_BUFFER_SIZE-2)
 			{
@@ -128,8 +132,6 @@ namespace engine
 			}
 			buffer[position++] = '\n';
 			buffer[position++] = 0;
-
-			va_end(argList);
 		}
 
 		bool haveOutput = (written >= 0) && (written < LOG_BUFFER_SIZE);
@@ -165,9 +167,9 @@ namespace engine
 
 	CLog::CLog(void)
 		: m_pParent(NULL)
-			, m_name(LOG_MASTER_NAME)
-			 , m_flags(eBAI_LOCATION | eBAI_NAME | eBAI_TIMESTAMP | eBAI_THREADID | eBT_FILE | eBT_CONSOLE | eBT_STANDARD | eBT_DEBUGGER)
-			 , m_active(true)
+		, m_name(LOG_MASTER_NAME)
+		, m_flags(eBAI_NEWLINE | eBAI_LOCATION | eBAI_NAME | eBAI_TIMESTAMP | eBAI_THREADID | eBT_FILE | eBT_CONSOLE | eBT_STANDARD | eBT_DEBUGGER)
+		, m_active(true)
 	{
 #if defined(DEBUG)
 		RegisterCVar();

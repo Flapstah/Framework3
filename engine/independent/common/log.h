@@ -30,16 +30,17 @@ namespace engine
 			enum eBehaviour
 			{
 				// Additional info
-				eBAI_LOCATION		= 1 << 0,
-				eBAI_NAME				= 1 << 1,
-				eBAI_TIMESTAMP	= 1 << 2,
-				eBAI_THREADID		= 1 << 3,
+				eBAI_NEWLINE		= 1 << 0,
+				eBAI_LOCATION		= 1 << 1,
+				eBAI_NAME				= 1 << 2,
+				eBAI_TIMESTAMP	= 1 << 3,
+				eBAI_THREADID		= 1 << 4,
 
 				// Targets
-				eBT_FILE				= 1 << 4,
-				eBT_CONSOLE			= 1 << 5,
-				eBT_STANDARD		= 1 << 6,
-				eBT_DEBUGGER		= 1 << 7, // N.B. Only on Windows
+				eBT_FILE				= 1 << 5,
+				eBT_CONSOLE			= 1 << 6,
+				eBT_STANDARD		= 1 << 7,
+				eBT_DEBUGGER		= 1 << 8, // N.B. Only on Windows
 			};
 
 		//--------------------------------------------------------------------------
@@ -80,11 +81,15 @@ namespace engine
 			static CLog s_logMaster;
 
 			// The engine log is used for engine side logging; subsytem logs should
-			// depend from this
+			// depend from this; never try this at global scope though due to the fact
+			// that the order of globally constructed objects cannot be guaranteed
+			// between compilation units
 			static CLog s_logEngine;
 
 			// The game log is used for game side logging; subsytem logs should depend
-			// from this
+			// from this; never try this at global scope though due to the fact that
+			// the order of globally constructed objects cannot be guaranteed between
+			// compilation units
 			static CLog s_logGame;
 
 #if defined(RELEASE)
