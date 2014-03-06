@@ -1,9 +1,6 @@
-Project
-	Seperate VS filters for files
-
 Unit tests
 	Need to add custom log unit test
 	Make unit test exe delete/create results file so that the main executable will fail to build if the unit tests fail
 
 Logs
-	Unit tests can use a unit test log that hangs off the master log, and turn off the engine log whilst running the tests
+	Log to file still needs implementing
