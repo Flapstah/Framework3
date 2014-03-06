@@ -148,11 +148,14 @@ endif (OPENGL_SUPERBIBLE_50)
 # Platform include paths
 #
 set(PLATFORM_INCLUDES "${test_SOURCE_DIR}/engine/independent" "${test_SOURCE_DIR}/unit_tests")
+file(GLOB_RECURSE PLATFORM_INDEPENDENT_HEADERS "${test_SOURCE_DIR}/engine/independent/*.h" "${test_SOURCE_DIR}/engine/independent/*.inl")
 if (WIN32)
 	set(PLATFORM_INCLUDES ${PLATFORM_INCLUDES} "${test_SOURCE_DIR}/engine/windows")
+	file(GLOB_RECURSE PLATFORM_SPECIFIC_HEADERS "${test_SOURCE_DIR}/engine/windows/*.h" "${test_SOURCE_DIR}/engine/windows/*.inl")
 endif (WIN32)
 if (UNIX)
 	set(PLATFORM_INCLUDES ${PLATFORM_INCLUDES} "${test_SOURCE_DIR}/engine/linux")
+	file(GLOB_RECURSE PLATFORM_SPECIFIC_HEADERS "${test_SOURCE_DIR}/engine/linux/*.h" "${test_SOURCE_DIR}/engine/linux/*.inl")
 endif (UNIX)
 #
 # Set up include and library paths
@@ -196,37 +199,41 @@ set(PLATFORM_INDEPENDENT_SOURCES
 	engine/independent/time/timer.cpp
 	engine/independent/time/timevalue.cpp
 	)
+source_group(Independent FILES ${PLATFORM_INDEPENDENT_SOURCES} ${PLATFORM_INDEPENDENT_HEADERS})
 #
 if (WIN32)
-set(PLATFORM_SPECIFIC_SOURCES
-	#engine/windows/common/platform_system.cpp
-	engine/windows/time/platform_time.cpp
-	)
+	set(PLATFORM_SPECIFIC_SOURCES
+		#engine/windows/common/platform_system.cpp
+		engine/windows/time/platform_time.cpp
+		)
+	source_group(Win32 FILES ${PLATFORM_SPECIFIC_SOURCES} ${PLATFORM_SPECIFIC_HEADERS})
 endif (WIN32)
 #
 if (UNIX)
-set(PLATFORM_SPECIFIC_SOURCES
-	#engine/linux/common/platform_system.cpp
-	engine/linux/time/platform_time.cpp
-	)
+	set(PLATFORM_SPECIFIC_SOURCES
+		#engine/linux/common/platform_system.cpp
+		engine/linux/time/platform_time.cpp
+		)
+	source_group(Linux FILES ${PLATFORM_SPECIFIC_SOURCES} ${PLATFORM_SPECIFIC_HEADERS})
 endif (UNIX)
 #
 set(UNIT_TEST_SOURCES
-	unit_tests/main.cpp
 	unit_tests/unittest.cpp
 	unit_tests/cvartest.cpp
 	unit_tests/logtest.cpp
 	unit_tests/timetest.cpp
 	unit_tests/typetest.cpp
 	)
+file(GLOB_RECURSE UNIT_TEST_HEADERS "${test_SOURCE_DIR}/unit_tests/*.h" "${test_SOURCE_DIR}/unit_tests/*.inl")
+source_group(UnitTests FILES ${UNIT_TEST_SOURCES} ${UNIT_TEST_HEADERS})
 #
 if (OPENGL_SUPERBIBLE_50)
 	set(OPENGL_SUPERBIBLE_50_SOURCES
-	# Start OpenGL SuperBible 5.0 stuff
-	#GLTools/src/openglsuperbible_uber.cpp
-	GLSB/examples.cpp
-	# End OpenGL SuperBible 5.0 stuff
-	)
+		# Start OpenGL SuperBible 5.0 stuff
+		#GLTools/src/openglsuperbible_uber.cpp
+		GLSB/examples.cpp
+		# End OpenGL SuperBible 5.0 stuff
+		)
 endif (OPENGL_SUPERBIBLE_50)
 #
 ###############################################################################
@@ -262,8 +269,11 @@ add_executable (
  	unit_tests/main.cpp
 	engine/independent/common/version.cpp
  	${PLATFORM_INDEPENDENT_SOURCES}
+	${PLATFORM_INDEPENDENT_HEADERS}
  	${PLATFORM_SPECIFIC_SOURCES}
+	${PLATFORM_SPECIFIC_HEADERS}
 	${UNIT_TEST_SOURCES}
+	${UNIT_TEST_HEADERS}
 	)
 target_link_libraries (unit_test ${LIBS})
 
@@ -287,7 +297,9 @@ add_executable (
 	engine/independent/common/version.cpp
 	unit_test_results.txt
  	${PLATFORM_INDEPENDENT_SOURCES}
+	${PLATFORM_INDEPENDENT_HEADERS}
  	${PLATFORM_SPECIFIC_SOURCES}
+	${PLATFORM_SPECIFIC_HEADERS}
  	${OPENGL_SUPERBIBLE_50_SOURCES}
 	)
 target_link_libraries (test ${LIBS})
