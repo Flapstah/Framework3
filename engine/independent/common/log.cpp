@@ -28,6 +28,10 @@ namespace engine
 		, m_flags(parent.m_flags)
 		, m_active(true)
 	{
+		if (m_pParent->m_name == NULL)
+		{
+			printf("FUCK\n");
+		}
 #if defined(DEBUG)
 		RegisterCVar();
 #endif // defined(DEBUG)
