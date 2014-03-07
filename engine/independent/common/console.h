@@ -118,14 +118,14 @@ namespace engine
 																// be passed to Set (and any OnChange callback)
 				}; // End [enum eFlags]
 
-				virtual int64					GetInteger(void) const = 0;
-				virtual int64					SetInteger(const int64 value) = 0;
-				virtual double				GetDouble(void) const = 0;
-				virtual double				SetDouble(const double value) = 0;
-				virtual const char*		GetString(void) const = 0;
-				virtual const char*		SetString(const char* value) = 0;
+				virtual int64							GetInteger(void) const = 0;
+				virtual int64							SetInteger(const int64 value) = 0;
+				virtual double						GetDouble(void) const = 0;
+				virtual double						SetDouble(const double value) = 0;
+				virtual const std::string	GetString(void) const = 0;
+				virtual const std::string	SetString(const std::string& value) = 0;
 
-				virtual uint32				ModifyFlags(uint32 set, uint32 clear) = 0;
+				virtual uint32						ModifyFlags(uint32 set, uint32 clear) = 0;
 			}; // End [struct IVariable]
 			//========================================================================
 
@@ -141,23 +141,23 @@ namespace engine
 				virtual ~TVariable(void);
 
 				// IVariable
-				virtual	int64					GetInteger(void) const;
-				virtual	int64					SetInteger(const int64 value);
-				virtual	double				GetDouble(void) const;
-				virtual	double				SetDouble(const double value);
-				virtual	const char*		GetString(void) const;
-				virtual	const char*		SetString(const char* value);
+				virtual	int64							GetInteger(void) const;
+				virtual	int64							SetInteger(const int64 value);
+				virtual	double						GetDouble(void) const;
+				virtual	double						SetDouble(const double value);
+				virtual	const std::string	GetString(void) const;
+				virtual	const std::string	SetString(const std::string& value);
 
-				virtual	uint32				ModifyFlags(uint32 set, uint32 clear);
+				virtual	uint32						ModifyFlags(uint32 set, uint32 clear);
 				// ~IVariable
 
 			protected:
-				static	const _type_&	DefaultOnChange(const _type_& value);
+				static	const _type_&			DefaultOnChange(const _type_& value);
 
 			protected:
-				_type_&								m_variable;
-				OnChangeCallback			m_pCallback;
-				uint32								m_flags;
+				_type_&										m_variable;
+				OnChangeCallback					m_pCallback;
+				uint32										m_flags;
 			}; // End [template <typename _type_> class TVariable]
 			//========================================================================
 

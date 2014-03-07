@@ -22,24 +22,23 @@ namespace engine
 
 	//============================================================================
 
-	template<> const char* CConsole::TVariable<int64>::SetString(const char* value)
+	template<> const std::string CConsole::TVariable<int64>::SetString(const std::string& value)
 	{
 		std::ostringstream temp;
 		temp << m_variable;
 
 		if ((m_flags & eF_CONST) == 0)
 		{
-			m_variable = m_pCallback(strtoll(value, NULL, 0));
+			m_variable = m_pCallback(strtoll(value.c_str(), NULL, 0));
 		}
 #if !defined(_RELEASE)
 		else
 		{
-			LOG_WARNING(g_log, "Failed to set const integer variable with %s", value);
+			LOG_WARNING(g_log, "Failed to set const integer variable with %s", value.c_str());
 		}
 #endif // !defined(_RELEASE)
 
-		const std::string& buffer = temp.str();
-		return buffer.c_str();
+		return temp.str();
 	}
 
 	//============================================================================
@@ -50,24 +49,23 @@ namespace engine
 
 	//============================================================================
 
-	template<> const char* CConsole::TVariable<double>::SetString(const char* value)
+	template<> const std::string CConsole::TVariable<double>::SetString(const std::string& value)
 	{
 		std::ostringstream temp;
 		temp << std::setprecision(std::numeric_limits<double>::digits10+2) << m_variable;
 
 		if ((m_flags & eF_CONST) == 0)
 		{
-			m_variable = m_pCallback(strtold(value, NULL));
+			m_variable = m_pCallback(strtold(value.c_str(), NULL));
 		}
 #if !defined(_RELEASE)
 		else
 		{
-			LOG_WARNING(g_log, "Failed to set const double variable with %s", value);
+			LOG_WARNING(g_log, "Failed to set const double variable with %s", value.c_str());
 		}
 #endif // !defined(_RELEASE)
 
-		static const std::string& buffer = temp.str();
-		return buffer.c_str();
+		return temp.str();
 	}
 
 	//============================================================================
@@ -138,16 +136,16 @@ namespace engine
 
 	//============================================================================
 
-	template<> const char* CConsole::TVariable<std::string>::GetString(void) const
+	template<> const std::string CConsole::TVariable<std::string>::GetString(void) const
 	{
-		return m_variable.c_str();
+		return m_variable;
 	}
 
 	//============================================================================
 
-	template<> const char* CConsole::TVariable<std::string>::SetString(const char* value)
+	template<> const std::string CConsole::TVariable<std::string>::SetString(const std::string& value)
 	{
-		static const std::string& old = m_variable;
+		const std::string& old = m_variable;
 
 		if ((m_flags & eF_CONST) == 0)
 		{
@@ -156,11 +154,11 @@ namespace engine
 #if !defined(_RELEASE)
 		else
 		{
-			LOG_WARNING(g_log, "Failed to set const string variable with %s", value);
+			LOG_WARNING(g_log, "Failed to set const string variable with %s", value.c_str());
 		}
 #endif // !defined(_RELEASE)
 
-		return old.c_str();
+		return old;
 	}
 
 	//============================================================================
@@ -240,12 +238,11 @@ namespace engine
 
 	//============================================================================
 
-	template<typename _type_> const char* CConsole::TVariable<_type_>::GetString(void) const
+	template<typename _type_> const std::string CConsole::TVariable<_type_>::GetString(void) const
 	{
 		std::ostringstream temp;
 		temp << std::setprecision(std::numeric_limits<double>::digits10+2) << m_variable;
-		static const std::string& buffer = temp.str();
-		return buffer.c_str();
+		return temp.str();
 	}
 
 	//============================================================================
