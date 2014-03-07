@@ -288,9 +288,10 @@ namespace test
 
 				case 5:
 					{
-
+// FIXME: Win32 uses std::stold instead of strtold, and that doesn't like floating point hex notation.  Need a better way of fixing this...?  Is there an _strtold I can use?
 						const std::string value("0x12.3");
 						m_pCVar->SetString(value);
+//LOG_ALWAYS(pThis->m_log, "\nvar [%g], GetString() [%s]\n", testDoubleVariable, m_pCVar->GetString().c_str());
 						pThis->Test("Setting double cvar with string value", pThis->IsEqual(m_pCVar->GetDouble(), 18.1875), "Value is not set correctly");
 					}
 					break;
