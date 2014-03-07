@@ -243,7 +243,12 @@ namespace engine
 	{
 		std::ostringstream buffer;
 		buffer << std::setprecision(std::numeric_limits<double>::digits10+2) << m_variable;
-		return buffer.str().c_str();
+		// The const reference here is *vital* to the lifetime of the const char*
+		// which is passed back to the caller - returning a c_str() directly from
+		// 'buffer' will result in a dangling pointer because buffer is destroyed on
+		// exiting this function
+		const std::string& temp = buffer.str();
+		return temp.c_str();
 	}
 
 	//============================================================================
