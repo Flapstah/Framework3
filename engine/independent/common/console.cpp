@@ -24,8 +24,8 @@ namespace engine
 
 	template<> const char* CConsole::TVariable<int64>::SetString(const char* value)
 	{
-		std::ostringstream buffer;
-		buffer << m_variable;
+		std::ostringstream temp;
+		temp << m_variable;
 
 		if ((m_flags & eF_CONST) == 0)
 		{
@@ -38,8 +38,8 @@ namespace engine
 		}
 #endif // !defined(_RELEASE)
 
-
-		return buffer.str().c_str();
+		const std::string& buffer = temp.str();
+		return buffer.c_str();
 	}
 
 	//============================================================================
@@ -52,8 +52,8 @@ namespace engine
 
 	template<> const char* CConsole::TVariable<double>::SetString(const char* value)
 	{
-		std::ostringstream buffer;
-		buffer << std::setprecision(std::numeric_limits<double>::digits10+2) << m_variable;
+		std::ostringstream temp;
+		temp << std::setprecision(std::numeric_limits<double>::digits10+2) << m_variable;
 
 		if ((m_flags & eF_CONST) == 0)
 		{
@@ -66,7 +66,8 @@ namespace engine
 		}
 #endif // !defined(_RELEASE)
 
-		return buffer.str().c_str();
+		static const std::string& buffer = temp.str();
+		return buffer.c_str();
 	}
 
 	//============================================================================
@@ -146,7 +147,7 @@ namespace engine
 
 	template<> const char* CConsole::TVariable<std::string>::SetString(const char* value)
 	{
-		std::string old(m_variable);
+		static const std::string& old = m_variable;
 
 		if ((m_flags & eF_CONST) == 0)
 		{
@@ -241,14 +242,10 @@ namespace engine
 
 	template<typename _type_> const char* CConsole::TVariable<_type_>::GetString(void) const
 	{
-		std::ostringstream buffer;
-		buffer << std::setprecision(std::numeric_limits<double>::digits10+2) << m_variable;
-		// The const reference here is *vital* to the lifetime of the const char*
-		// which is passed back to the caller - returning a c_str() directly from
-		// 'buffer' will result in a dangling pointer because buffer is destroyed on
-		// exiting this function
-		const std::string& temp = buffer.str();
-		return temp.c_str();
+		std::ostringstream temp;
+		temp << std::setprecision(std::numeric_limits<double>::digits10+2) << m_variable;
+		static const std::string& buffer = temp.str();
+		return buffer.c_str();
 	}
 
 	//============================================================================
