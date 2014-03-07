@@ -1,4 +1,5 @@
 Unit tests
+	cvar unit test works fine under mingw32, but not for VS built exe - investigate (need to test on linux too)
 	Need to add custom log unit test
 	Make unit test exe delete/create results file so that the main executable will fail to build if the unit tests fail
 
