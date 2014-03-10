@@ -2,7 +2,6 @@
 
 #include "common/commandline.h"
 //#include "common/console.h"
-#include "common/log.h"
 #include <vector>
 
 //==============================================================================
@@ -10,13 +9,9 @@
 namespace engine
 {
 	//============================================================================
-	// Create custom log for the command line
-	//============================================================================
-	static CLog g_log(ENGINE_LOGGER, "CommandLine");
-
-	//============================================================================
 
 	CCommandLine::CCommandLine(uint32 argc, const char* const* argv, CConsole& console)
+		: m_log(ENGINE_LOGGER, "CommandLine")
 	{
 		std::vector<const char*> preArgs;
 		std::vector<const char*> args;
@@ -53,7 +48,7 @@ namespace engine
 
 		for (std::vector<const char*>::iterator it = preArgs.begin(); it != preArgs.end(); ++ it)
 		{
-			LOG_ALWAYS(g_log, "%s", *it);
+			LOG_ALWAYS(m_log, "%s", *it);
 		}
 	}
 
