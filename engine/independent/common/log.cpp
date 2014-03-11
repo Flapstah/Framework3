@@ -9,10 +9,6 @@
 
 namespace engine
 {
-	CLog CLog::s_logMaster;
-	CLog CLog::s_logEngine(CLog::s_logMaster, LOG_ENGINE_NAME);
-	CLog CLog::s_logGame(CLog::s_logMaster, LOG_GAME_NAME);
-
 #if defined(RELEASE)
 	const CLog::eLogLevel CLog::s_logLevel = LOG_DEFAULT_RELEASE_LOG_LEVEL;
 #else
@@ -182,6 +178,29 @@ namespace engine
 
 	//============================================================================
 
+	CLog& CLog::GetMasterLog(void)
+	{
+		static CLog logMaster;
+		return logMaster;
+	}
+
+	//============================================================================
+
+	CLog& CLog::GetEngineLog(void)
+	{
+		static CLog logEngine(GetMasterLog(), LOG_ENGINE_NAME);
+		return logEngine;
+	}
+
+	//============================================================================
+
+	CLog& CLog::GetGameLog(void)
+	{
+		static CLog logGame(GetMasterLog(), LOG_GAME_NAME);
+		return logGame;
+	}
+
+	//============================================================================
 } // End [namespace engine]
 
 //==============================================================================

@@ -59,6 +59,23 @@ namespace engine
 			// parameter 4 in __attribute__ specifier in Log() declaration below
 			bool Log(const char* file, uint32 line, const char* format, ...) __attribute__((format(printf, 4, 5)));
 
+			// The master log is the root from which all other logs depend and should
+			// not be used directly, other than to SetActive() to enable/disable
+			// logging globally.
+			static CLog& GetMasterLog(void);
+
+			// The engine log is used for engine side logging; subsytem logs should
+			// depend from this; never try this at global scope though due to the fact
+			// that the order of globally constructed objects cannot be guaranteed
+			// between compilation units
+			static CLog& GetEngineLog(void);
+
+			// The game log is used for game side logging; subsytem logs should depend
+			// from this; never try this at global scope though due to the fact that
+			// the order of globally constructed objects cannot be guaranteed between
+			// compilation units
+			static CLog& GetGameLog(void);
+
 		private:
 			CLog(void);
 #if defined(DEBUG)
@@ -74,24 +91,7 @@ namespace engine
 			uint32 m_flags;
 			bool m_active;
 
-		public:
-			// The master log is the root from which all other logs depend and should
-			// not be used directly, other than to SetActive() to enable/disable
-			// logging globally.
-			static CLog s_logMaster;
-
-			// The engine log is used for engine side logging; subsytem logs should
-			// depend from this; never try this at global scope though due to the fact
-			// that the order of globally constructed objects cannot be guaranteed
-			// between compilation units
-			static CLog s_logEngine;
-
-			// The game log is used for game side logging; subsytem logs should depend
-			// from this; never try this at global scope though due to the fact that
-			// the order of globally constructed objects cannot be guaranteed between
-			// compilation units
-			static CLog s_logGame;
-
+	public:
 #if defined(RELEASE)
 			static const eLogLevel s_logLevel;
 #else
@@ -126,8 +126,8 @@ namespace engine
 #define LOG_FATAL(_log_, _format_, ...) LOG(_log_, engine::CLog::eLL_FATAL, _format_, ## __VA_ARGS__)
 #define LOG_ALWAYS(_log_, _format_, ...) LOG(_log_, engine::CLog::eLL_ALWAYS, _format_, ## __VA_ARGS__)
 
-#define ENGINE_LOGGER engine::CLog::s_logEngine
-#define GAME_LOGGER engine::CLog::s_logGame
+#define ENGINE_LOGGER engine::CLog::GetEngineLog()
+#define GAME_LOGGER engine::CLog::GetGameLog()
 
 //==============================================================================
 
