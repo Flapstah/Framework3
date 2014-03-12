@@ -290,7 +290,7 @@ namespace engine
 	CConsole::CConsole(void)
 	{
 #if defined(DEBUG)
-		REGISTER_NAMED_VARIABLE("log_level", CLog::s_logLevel, static_cast<int64>(LOG_DEFAULT_DEBUG_LOG_LEVEL), 0, NULL, "Set the debug logging level (0=NONE, 1=ALWAYS, 2=FATAL, 3=ERROR, 4=WARNING, 5=INFO, 6=DEBUG)");
+		REGISTER_NAMED_VARIABLE("log_level", g_logLevel, static_cast<int64>(LOG_DEFAULT_DEBUG_LOG_LEVEL), 0, NULL, "Set the debug logging level (0=NONE, 1=ALWAYS, 2=FATAL, 3=ERROR, 4=WARNING, 5=INFO, 6=DEBUG)");
 #endif // defined(DEBUG)
 	}
 
@@ -313,7 +313,7 @@ namespace engine
 
 #if defined(DEBUG)
 		UNREGISTER_VARIABLE_BY_NAME("log_level");
-#endif defined(DEBUG)
+#endif // defined(DEBUG)
 	}
 
 	//============================================================================

@@ -9,12 +9,9 @@
 
 namespace engine
 {
-#if defined(RELEASE)
-	const CLog::eLogLevel CLog::s_logLevel = LOG_DEFAULT_RELEASE_LOG_LEVEL;
-#else
-	int64 CLog::s_logLevel = LOG_DEFAULT_DEBUG_LOG_LEVEL;
-	uint32 CLog::m_refActiveLogs = 0;
-#endif // defined(RELEASE)
+#if defined(DEBUG)
+	int64 g_logLevel = LOG_DEFAULT_DEBUG_LOG_LEVEL;
+#endif // defined(DEBUG)
 
 	//==============================================================================
 
@@ -118,7 +115,7 @@ namespace engine
 
 			if (m_flags & eBT_STANDARD)
 			{
-				fputs(buffer, ((s_logLevel == eLL_FATAL) || (s_logLevel == eLL_ERROR) || (s_logLevel == eLL_WARNING)) ? stderr : stdout);
+				fputs(buffer, ((g_logLevel == eLL_FATAL) || (g_logLevel == eLL_ERROR) || (g_logLevel == eLL_WARNING)) ? stderr : stdout);
 			}
 
 #if defined(WIN32)
@@ -140,9 +137,6 @@ namespace engine
 		, m_flags(eBAI_NEWLINE | eBAI_LOCATION | eBAI_NAME | eBAI_TIMESTAMP | eBAI_THREADID | eBT_FILE | eBT_CONSOLE | eBT_STANDARD | eBT_DEBUGGER)
 		, m_active(true)
 	{
-#if defined(DEBUG)
-		RegisterCVar();
-#endif // defined(DEBUG)
 	}
 
 	//============================================================================

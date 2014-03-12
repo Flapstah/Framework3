@@ -87,18 +87,14 @@ namespace engine
 			uint32 m_flags;
 			bool m_active;
 
-	public:
-#if defined(RELEASE)
-			static const eLogLevel s_logLevel;
-#else
-			static int64 s_logLevel;
-	private:
-			// used to register/unregister log level cvar
-			static uint32 m_refActiveLogs;
-#endif // defined(RELEASE)
-
 		//--------------------------------------------------------------------------
 	}; // End [class CLog]
+
+#if defined(RELEASE)
+	const int64 g_logLevel = LOG_DEFAULT_RELEASE_LOG_LEVEL;
+#else
+	extern int64 g_logLevel;
+#endif // defined(RELEASE)
 
 	//============================================================================
 } // End [namespace engine]
@@ -110,7 +106,7 @@ namespace engine
 #if LOG_ELIDE_ALL_LOGS
 #define LOG(_log_, _level_, _format_, ...)
 #else // LOG_ELIDE_ALL_LOGS
-#define LOG(_log_, _level_, _format_, ...) (((engine::CLog::s_logLevel >= _level_) && (_log_.IsActive())) ? _log_.Log(__FILE__, __LINE__, _format_, ## __VA_ARGS__) : false)
+#define LOG(_log_, _level_, _format_, ...) (((engine::g_logLevel >= _level_) && (_log_.IsActive())) ? _log_.Log(__FILE__, __LINE__, _format_, ## __VA_ARGS__) : false)
 #endif // LOG_ELIDE_ALL_LOGS
 
 #define LOG_DEBUG(_log_, _format_, ...) LOG(_log_, engine::CLog::eLL_DEBUG, _format_, ## __VA_ARGS__)

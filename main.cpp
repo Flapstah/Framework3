@@ -2,13 +2,7 @@
 
 #if !USE_OPENGL_SUPERBIBLE
 
-#include "common/itime.h"
-#include "common/commandline.h"
-#include "common/console.h"
 #include "common/log.h"
-#include "common/version.h"
-
-#include <cmath>
 
 //==============================================================================
 
