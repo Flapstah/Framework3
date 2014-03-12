@@ -5,4 +5,5 @@ Unit tests
 	Make unit test exe delete/create results file so that the main executable will fail to build if the unit tests fail
 
 Logs
+	Logs no longer being elided from code when in release builds - why?
 	Log to file still needs implementing
