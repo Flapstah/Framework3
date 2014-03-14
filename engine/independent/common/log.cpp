@@ -19,7 +19,6 @@ namespace engine
 		: m_pParent(&parent)
 		, m_name(name)
 		, m_flags(parent.m_flags)
-		, m_active(true)
 	{
 		if (m_pParent->m_name == NULL)
 		{
@@ -33,7 +32,6 @@ namespace engine
 		: m_pParent(&parent)
 		, m_name(name)
 		, m_flags(flags)
-		, m_active(true)
 	{
 	}
 
@@ -134,8 +132,7 @@ namespace engine
 	CLog::CLog(void)
 		: m_pParent(NULL)
 		, m_name(LOG_MASTER_NAME)
-		, m_flags(eBAI_NEWLINE | eBAI_LOCATION | eBAI_NAME | eBAI_TIMESTAMP | eBAI_THREADID | eBT_FILE | eBT_CONSOLE | eBT_STANDARD | eBT_DEBUGGER)
-		, m_active(true)
+		, m_flags(eB_ACTIVE | eBAI_NEWLINE | eBAI_LOCATION | eBAI_NAME | eBAI_TIMESTAMP | eBAI_THREADID | eBT_FILE | eBT_CONSOLE | eBT_STANDARD | eBT_DEBUGGER)
 	{
 	}
 

@@ -29,18 +29,20 @@ namespace engine
 
 			enum eBehaviour
 			{
+				eB_ACTIVE				= 1 << 0,
+
 				// Additional info
-				eBAI_NEWLINE		= 1 << 0,
-				eBAI_LOCATION		= 1 << 1,
-				eBAI_NAME				= 1 << 2,
-				eBAI_TIMESTAMP	= 1 << 3,
-				eBAI_THREADID		= 1 << 4,
+				eBAI_NEWLINE		= 1 << 1,
+				eBAI_LOCATION		= 1 << 2,
+				eBAI_NAME				= 1 << 3,
+				eBAI_TIMESTAMP	= 1 << 4,
+				eBAI_THREADID		= 1 << 5,
 
 				// Targets
-				eBT_FILE				= 1 << 5,
-				eBT_CONSOLE			= 1 << 6,
-				eBT_STANDARD		= 1 << 7,
-				eBT_DEBUGGER		= 1 << 8, // N.B. Only on Windows
+				eBT_FILE				= 1 << 6,
+				eBT_CONSOLE			= 1 << 7,
+				eBT_STANDARD		= 1 << 8,
+				eBT_DEBUGGER		= 1 << 9, // N.B. Only on Windows
 			};
 
 		//--------------------------------------------------------------------------
@@ -85,7 +87,6 @@ namespace engine
 			CLog* m_pParent;
 			const char* m_name;
 			uint32 m_flags;
-			bool m_active;
 
 		//--------------------------------------------------------------------------
 	}; // End [class CLog]

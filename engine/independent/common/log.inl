@@ -9,15 +9,16 @@ namespace engine
 
 	inline bool CLog::IsActive(void) const
 	{
-		return (m_active && ((m_pParent != NULL) ? m_pParent->IsActive() : m_active));
+		bool active = m_flags & eB_ACTIVE;
+		return (active && ((m_pParent != NULL) ? m_pParent->IsActive() : active));
 	}
 
 	//============================================================================
 
 	inline bool CLog::SetActive(bool set)
 	{
-		bool old = m_active;
-		m_active = set;
+		bool old = m_flags & eB_ACTIVE;
+		(set) ? m_flags |= eB_ACTIVE : m_flags &= ~eB_ACTIVE;
 		return old;
 	}
 
