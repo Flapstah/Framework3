@@ -4,7 +4,6 @@
 #include <ostream>
 
 #include "common/console.h"
-#include "common/log.h"
 
 //==============================================================================
 
@@ -25,6 +24,8 @@ namespace engine
 
 	template<> const std::string CConsole::TVariable<int64>::SetString(const std::string& value)
 	{
+		TRACE;
+
 		std::ostringstream temp;
 		temp << m_variable;
 
@@ -52,6 +53,8 @@ namespace engine
 
 	template<> const std::string CConsole::TVariable<double>::SetString(const std::string& value)
 	{
+		TRACE;
+
 		std::ostringstream temp;
 		temp << std::setprecision(std::numeric_limits<double>::digits10+2) << m_variable;
 
@@ -79,6 +82,8 @@ namespace engine
 
 	template<> int64 CConsole::TVariable<std::string>::GetInteger(void) const
 	{
+		TRACE;
+
 		return atol(m_variable.c_str());
 	}
 
@@ -86,6 +91,8 @@ namespace engine
 
 	template<> int64 CConsole::TVariable<std::string>::SetInteger(const int64 value)
 	{
+		TRACE;
+
 		int64 old = GetInteger();
 
 		std::ostringstream buffer;
@@ -109,6 +116,8 @@ namespace engine
 
 	template<> double CConsole::TVariable<std::string>::GetDouble(void) const
 	{
+		TRACE;
+
 		return atof(m_variable.c_str());
 	}
 
@@ -116,6 +125,8 @@ namespace engine
 
 	template<> double CConsole::TVariable<std::string>::SetDouble(const double value)
 	{
+		TRACE;
+
 		double old = GetInteger();
 
 		std::ostringstream buffer;
@@ -139,6 +150,8 @@ namespace engine
 
 	template<> const std::string CConsole::TVariable<std::string>::GetString(void) const
 	{
+		TRACE;
+
 		return m_variable;
 	}
 
@@ -146,6 +159,8 @@ namespace engine
 
 	template<> const std::string CConsole::TVariable<std::string>::SetString(const std::string& value)
 	{
+		TRACE;
+
 		const std::string& old = m_variable;
 
 		if ((m_flags & eF_CONST) == 0)
@@ -171,6 +186,8 @@ namespace engine
 		, m_pCallback(pCallback)
 		, m_flags(flags)
 	{
+		TRACE;
+
 		if (m_pCallback == NULL)
 		{
 			m_pCallback = &CConsole::TVariable<_type_>::DefaultOnChange;
@@ -181,12 +198,15 @@ namespace engine
 
 	template<typename _type_> CConsole::TVariable<_type_>::~TVariable(void)
 	{
+		TRACE;
 	}
 
 	//============================================================================
 
 	template<typename _type_> int64 CConsole::TVariable<_type_>::GetInteger(void) const
 	{
+		TRACE;
+
 		return static_cast<int64>(m_variable);
 	}
 
@@ -194,6 +214,8 @@ namespace engine
 
 	template<typename _type_> int64 CConsole::TVariable<_type_>::SetInteger(const int64 value)
 	{
+		TRACE;
+
 		int64 old = GetInteger();
 
 		if ((m_flags & eF_CONST) == 0)
@@ -214,6 +236,8 @@ namespace engine
 
 	template<typename _type_> double CConsole::TVariable<_type_>::GetDouble(void) const
 	{
+		TRACE;
+
 		return static_cast<double>(m_variable);
 	}
 
@@ -221,6 +245,8 @@ namespace engine
 
 	template<typename _type_> double CConsole::TVariable<_type_>::SetDouble(const double value)
 	{
+		TRACE;
+
 		double old = GetDouble();
 
 		if ((m_flags & eF_CONST) == 0)
@@ -241,6 +267,8 @@ namespace engine
 
 	template<typename _type_> const std::string CConsole::TVariable<_type_>::GetString(void) const
 	{
+		TRACE;
+
 		std::ostringstream temp;
 		temp << std::setprecision(std::numeric_limits<double>::digits10+2) << m_variable;
 		return temp.str();
@@ -250,6 +278,8 @@ namespace engine
 
 	template<typename _type_> uint32 CConsole::TVariable<_type_>::ModifyFlags(uint32 set, uint32 clear)
 	{
+		TRACE;
+
 		uint32 old = m_flags;
 		m_flags = ((m_flags | set) & ~clear);
 		return old;
@@ -259,6 +289,8 @@ namespace engine
 
 	template<typename _type_> const _type_& CConsole::TVariable<_type_>::DefaultOnChange(const _type_& value)
 	{
+		TRACE;
+
 		return value;
 	}
 
@@ -268,18 +300,22 @@ namespace engine
 		: m_pCallback(pCallback)
 		, m_flags(flags)
 	{
+		TRACE;
 	}
 
 	//============================================================================
 
 	CConsole::CCommand::~CCommand(void)
 	{
+		TRACE;
 	}
 
 	//============================================================================
 	
 	bool CConsole::CCommand::Execute(std::vector<std::string>& argv)
 	{
+		TRACE;
+
 		return m_pCallback(argv);
 	}
 
@@ -289,6 +325,8 @@ namespace engine
 
 	CConsole::CConsole(void)
 	{
+		TRACE;
+
 #if defined(DEBUG)
 		REGISTER_NAMED_VARIABLE("log_level", g_logLevel, static_cast<int64>(LOG_DEFAULT_DEBUG_LOG_LEVEL), 0, NULL, "Set the debug logging level (0=NONE, 1=ALWAYS, 2=FATAL, 3=ERROR, 4=WARNING, 5=INFO, 6=DEBUG)");
 #endif // defined(DEBUG)
@@ -298,6 +336,8 @@ namespace engine
 
 	CConsole::~CConsole(void)
 	{
+		TRACE;
+
 		for (TVariableMap::const_iterator it = m_variables.begin(), end = m_variables.end(); it != end; ++it)
 		{
 			const SDetails* pDetails = FindDetails(it->first);
@@ -320,6 +360,8 @@ namespace engine
 
 	CConsole::TIVariablePtr CConsole::RegisterVariable(uint32 nameHash, int64& variable, int64 value, uint32 flags, TInteger::OnChangeCallback pOnChangeCallback /* = NULL */, const char* name /* = NULL */, const char* description /* = NULL */)
 	{
+		TRACE;
+
 		boost::shared_ptr<TInteger> pVariable;
 
 		if ((FindVariable(nameHash) == NULL) && (FindCommand(nameHash) == NULL))
@@ -353,6 +395,8 @@ namespace engine
 
 	CConsole::TIVariablePtr CConsole::RegisterVariable(uint32 nameHash, double& variable, double value, uint32 flags, TDouble::OnChangeCallback pOnChangeCallback /* = NULL */, const char* name /* = NULL */, const char* description /* = NULL */)
 	{
+		TRACE;
+
 		boost::shared_ptr<TDouble> pVariable;
 
 		if ((FindVariable(nameHash) == NULL) && (FindCommand(nameHash) == NULL))
@@ -386,6 +430,8 @@ namespace engine
 
 	CConsole::TIVariablePtr CConsole::RegisterVariable(uint32 nameHash, std::string& variable, const char* value, uint32 flags, TString::OnChangeCallback pOnChangeCallback /* = NULL */, const char* name /* = NULL */, const char* description /* = NULL */)
 	{
+		TRACE;
+
 		boost::shared_ptr<TString> pVariable;
 
 		if ((FindVariable(nameHash) == NULL) && (FindCommand(nameHash) == NULL))
@@ -419,6 +465,8 @@ namespace engine
 
 	void CConsole::UnregisterVariable(uint32 nameHash)
 	{
+		TRACE;
+
 		m_variables.erase(nameHash);
 		m_details.erase(nameHash);
 	}
@@ -427,6 +475,8 @@ namespace engine
 
 	void CConsole::UnregisterVariable(TIVariablePtr& pVariable)
 	{
+		TRACE;
+
 		for (TVariableMap::iterator it = m_variables.begin(), end = m_variables.end(); it != end; ++it)
 		{
 			if (it->second == pVariable)
@@ -443,6 +493,8 @@ namespace engine
 
 	CConsole::TIVariablePtr CConsole::FindVariable(uint32 nameHash)
 	{
+		TRACE;
+
 		TVariableMap::iterator it = m_variables.find(nameHash);
 		TIVariablePtr pVariable;
 
@@ -458,6 +510,8 @@ namespace engine
 
 	CConsole::TIVariablePtr CConsole::FindVariable(const char* name)
 	{
+		TRACE;
+
 		return FindVariable(engine::CRunTimeStringHash::Calculate(name));
 	}
 
@@ -465,6 +519,8 @@ namespace engine
 
 	const CConsole::SDetails* CConsole::FindDetails(uint32 nameHash)
 	{
+		TRACE;
+
 		SDetails* pDetails = NULL;
 		TDetailsMap::iterator it = m_details.find(nameHash);
 
@@ -480,6 +536,8 @@ namespace engine
 
 	const CConsole::SDetails* CConsole::FindDetails(const char* name)
 	{
+		TRACE;
+
 		return FindDetails(engine::CRunTimeStringHash::Calculate(name));
 	}
 
@@ -487,6 +545,8 @@ namespace engine
 	
 	CConsole::TICommandPtr CConsole::RegisterCommand(uint32 nameHash, uint32 flags, ICommand::ExecuteCommandCallback pExecuteCommandCallback, const char* name /* = NULL */, const char* description /* = NULL */)
 	{
+		TRACE;
+
 		TICommandPtr pCommand = NULL;
 
 		if (pExecuteCommandCallback != NULL)
@@ -521,6 +581,8 @@ namespace engine
 
 	void CConsole::UnregisterCommand(uint32 nameHash)
 	{
+		TRACE;
+
 		m_commands.erase(nameHash);
 		m_details.erase(nameHash);
 	}
@@ -529,6 +591,8 @@ namespace engine
 
 	void CConsole::UnregisterCommand(CConsole::TICommandPtr& pCommand)
 	{
+		TRACE;
+
 		for (TCommandMap::iterator it = m_commands.begin(), end = m_commands.end(); it != end; ++it)
 		{
 			if (it->second == pCommand)
@@ -544,6 +608,8 @@ namespace engine
 
 	CConsole::TICommandPtr CConsole::FindCommand(uint32 nameHash)
 	{
+		TRACE;
+
 		TCommandMap::iterator it = m_commands.find(nameHash);
 		TICommandPtr pCommand = NULL;
 
@@ -559,6 +625,8 @@ namespace engine
 
 	CConsole::TICommandPtr CConsole::FindCommand(const char* name)
 	{
+		TRACE;
+
 		return FindCommand(engine::CRunTimeStringHash::Calculate(name));
 	}
 
@@ -566,6 +634,8 @@ namespace engine
 
 	CConsole::eConsoleState CConsole::Execute(const char* commandLine)
 	{
+		TRACE;
+
 		return Execute(std::string(commandLine));
 	}
 
@@ -573,6 +643,8 @@ namespace engine
 
 	CConsole::eConsoleState CConsole::Execute(std::string commandLine)
 	{
+		TRACE;
+
 		eConsoleState state = eCS_OK;
 
 		// Use custom escaped_list_separator to delimit the tokens
@@ -619,6 +691,8 @@ namespace engine
 
 	CConsole::eConsoleState CConsole::ExecuteDeferred(const char* commandLine, uint32 frames)
 	{
+		TRACE;
+
 		LOG_FATAL(g_log, "[TODO]: CConsole::ExecuteDeferred(frames)");
 		return eCS_OK;
 	}
@@ -627,6 +701,8 @@ namespace engine
 
 	CConsole::eConsoleState CConsole::ExecuteDeferred(const char* commandLine, float seconds)
 	{
+		TRACE;
+
 		LOG_FATAL(g_log, "[TODO]: CConsole::ExecuteDeferred(seconds)");
 		return eCS_OK;
 	}
@@ -635,6 +711,8 @@ namespace engine
 
 	void CConsole::AddDescription(uint32 nameHash, const char* name, const char* description)
 	{
+		TRACE;
+
 		SDetails* pDetails = new SDetails();
 		if (pDetails != NULL)
 		{

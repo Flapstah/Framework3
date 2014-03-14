@@ -59,8 +59,11 @@
 //------------------------------------------------------------------------------
 // Debugging config
 //------------------------------------------------------------------------------
-#define DEBUG_TRACE_USE_LOGGER (1)
-#define DEBUG_TRACE_START_ENABLED (1)
+#if defined(DEBUG)
+#define ENABLE_TRACE (1)
+#endif // defined(DEBUG)
+#define DEBUG_TRACE_USE_LOGGER (1)			// Use CLog for trace (0 = printf)
+#define DEBUG_TRACE_START_ENABLED (1)		// Trace starts enabled (=> global constructors)
 //------------------------------------------------------------------------------
 
 //==============================================================================

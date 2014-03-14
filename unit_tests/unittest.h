@@ -7,7 +7,6 @@
 #include <vector>
 
 #include "common/itime.h"
-#include "common/log.h"
 
 using namespace std;
 using namespace engine;

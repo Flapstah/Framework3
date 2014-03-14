@@ -1,10 +1,13 @@
-#include "common/stdafx.h"
+#include "common/stdafx.h" // log.h included here
 
 #include <boost/thread/thread.hpp>
 #include "common/itime.h"
 #include "common/console.h"
-#include "common/log.h"
 
+//==============================================================================
+// N.B. It's not advisable to use TRACE in CLog function, since potentially
+// that would cause infinite recursion.  If you really must add them, you'll
+// need to #define DEBUG_TRACE_USE_LOGGER (0) - see config.h
 //==============================================================================
 
 namespace engine

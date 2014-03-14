@@ -30,9 +30,11 @@
 #include "common/config.h"
 #include "common/types.h"
 #include "common/macros.h"
+#include "common/log.h"
 #include "common/ansi.h"
 #include "common/compiletimestringhash.h"
 #include "common/runtimestringhash.h"
+#include "common/debug.h"
 
 //==============================================================================
 // [EOF]

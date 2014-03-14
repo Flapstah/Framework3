@@ -1,7 +1,5 @@
 #include "common/stdafx.h"
 
-#include "common/log.h"
-
 #include "cvartest.h"
 #include "logtest.h"
 #include "timetest.h"
@@ -11,6 +9,8 @@
 
 int main(int argc, char* argv[])
 {
+	TRACE;
+
 	IGNORE_PARAMETER(argc);
 	IGNORE_PARAMETER(argv);
 

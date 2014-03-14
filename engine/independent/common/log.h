@@ -107,7 +107,7 @@ namespace engine
 #if LOG_ELIDE_ALL_LOGS
 #define LOG(_log_, _level_, _format_, ...)
 #else // LOG_ELIDE_ALL_LOGS
-#define LOG(_log_, _level_, _format_, ...) (((engine::g_logLevel >= _level_) && (_log_.IsActive())) ? _log_.Log(__FILE__, __LINE__, _format_, ## __VA_ARGS__) : false)
+#define LOG(_log_, _level_, _format_, ...) (((engine::CLog::s_logLevel >= _level_) && ((_log_).IsActive())) ? (_log_).Log(__FILE__, __LINE__, _format_, ## __VA_ARGS__) : false)
 #endif // LOG_ELIDE_ALL_LOGS
 
 #define LOG_DEBUG(_log_, _format_, ...) LOG(_log_, engine::CLog::eLL_DEBUG, _format_, ## __VA_ARGS__)

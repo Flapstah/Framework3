@@ -4,6 +4,8 @@
 
 //==============================================================================
 
+#if (ENABLE_TRACE)
+
 namespace engine
 {
 #if DEBUG_TRACE_START_ENABLED
@@ -13,7 +15,7 @@ namespace engine
 #endif // DEBUG_TRACE_START_ENABLED
 
 #if DEBUG_TRACE_USE_LOGGER
-	CLog& CTrace::m_log = CLog::GetMasterLog();
+	CLog* CTrace::m_pLog = NULL;
 #endif // DEBUG_TRACE_USE_LOGGER
 
 	//============================================================================
@@ -22,14 +24,14 @@ namespace engine
 		: m_entryPoint(entryPoint)
 	{
 #if DEBUG_TRACE_USE_LOGGER
-		static CLog lazyLogConstruction(CLog::GetMasterLog(), "Trace");
-		m_log = lazyLogConstruction;
+		static CLog lazyLogConstruction(CLog::GetMasterLog(), "Trace", CLog::eB_ACTIVE | CLog::eBAI_NEWLINE | CLog::eBAI_NAME | CLog::eBAI_TIMESTAMP | CLog::eBT_CONSOLE | CLog::eBT_DEBUGGER | CLog::eBT_FILE | CLog::eBT_STANDARD);
+		m_pLog = &lazyLogConstruction;
 #endif // DEBUG_TRACE_USE_LOGGER
 
 		if (s_active)
 		{
 #if DEBUG_TRACE_USE_LOGGER
-			LOG_DEBUG(m_log, "[ENTER]: %s\n", m_entryPoint);
+			LOG_DEBUG(*m_pLog, "[ENTER]: %s\n", m_entryPoint);
 #else
 			printf("[ENTER]: %s\n", m_entryPoint);
 #endif // DEBUG_TRACE_USE_LOGGER
@@ -43,11 +45,25 @@ namespace engine
 		if (s_active)
 		{
 #if DEBUG_TRACE_USE_LOGGER
-			LOG_DEBUG(m_log, "[EXIT]: %s\n", m_entryPoint);
+			LOG_DEBUG(*m_pLog, "[EXIT]: %s\n", m_entryPoint);
 #else
 			printf("[EXIT]: %s\n", m_entryPoint);
 #endif // DEBUG_TRACE_USE_LOGGER
 		}
+	}
+
+	//============================================================================
+
+	const char* CTrace::CreateString(const char* format, ...)
+	{
+		va_list argList;
+		static char buffer[LOG_BUFFER_SIZE];
+
+		va_start(argList, format);
+		vsnprintf(buffer, LOG_BUFFER_SIZE-1, format, argList);
+		va_end(argList);
+
+		return buffer;
 	}
 
 	//============================================================================
@@ -66,6 +82,8 @@ namespace engine
 
 	//============================================================================
 } // End [namespace engine]
+
+#endif // (ENABLE_TRACE)
 
 //==============================================================================
 // EOF

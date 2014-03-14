@@ -22,6 +22,8 @@ namespace test
 
 	bool TestCommand(std::vector<std::string>& argv)
 	{
+		TRACE;
+
 		testCommandEntered = true;
 
 		for (std::vector<std::string>::iterator it = argv.begin(), end = argv.end(); it != end; ++it)
@@ -37,6 +39,8 @@ namespace test
 	CCVarTest::CCVarTest(void)
 		: CUnitTest("Console Variable")
 	{
+		TRACE;
+
 		Initialise();
 	}
 
@@ -44,6 +48,8 @@ namespace test
 
 	CCVarTest::~CCVarTest(void)
 	{
+		TRACE;
+
 		Uninitialise();
 	}
 
@@ -51,6 +57,8 @@ namespace test
 
 	bool CCVarTest::Initialise(void)
 	{
+		TRACE;
+
 		AddStage("Lifecycle", ConsoleVariableLifecycle);
 		AddStage("Integer console variable operations", IntegerVariableOperations);
 		AddStage("Integer constant console variable operations", IntegerConstantVariableOperations);
@@ -67,6 +75,8 @@ namespace test
 
 	uint32 CCVarTest::ConsoleVariableLifecycle(CUnitTest* pParent)
 	{
+		TRACE;
+
 		CCVarTest* pThis = static_cast<CCVarTest*>(pParent);
 		uint32 status = eSS_PASS;
 
@@ -108,6 +118,8 @@ namespace test
 
 	uint32 CCVarTest::IntegerVariableOperations(CUnitTest* pParent)
 	{
+		TRACE;
+
 		CCVarTest* pThis = static_cast<CCVarTest*>(pParent);
 		uint32 status = eSS_PASS;
 
@@ -183,6 +195,8 @@ namespace test
 
 	uint32 CCVarTest::IntegerConstantVariableOperations(CUnitTest* pParent)
 	{
+		TRACE;
+
 		CCVarTest* pThis = static_cast<CCVarTest*>(pParent);
 		uint32 status = eSS_PASS;
 
@@ -247,6 +261,8 @@ namespace test
 
 	uint32 CCVarTest::FloatVariableOperations(CUnitTest* pParent)
 	{
+		TRACE;
+
 		CCVarTest* pThis = static_cast<CCVarTest*>(pParent);
 		uint32 status = eSS_PASS;
 
@@ -324,6 +340,8 @@ namespace test
 
 	uint32 CCVarTest::FloatConstantVariableOperations(CUnitTest* pParent)
 	{
+		TRACE;
+
 		CCVarTest* pThis = static_cast<CCVarTest*>(pParent);
 		uint32 status = eSS_PASS;
 
@@ -388,6 +406,8 @@ namespace test
 
 	uint32 CCVarTest::StringVariableOperations(CUnitTest* pParent)
 	{
+		TRACE;
+
 		CCVarTest* pThis = static_cast<CCVarTest*>(pParent);
 		uint32 status = eSS_PASS;
 
@@ -441,6 +461,8 @@ namespace test
 
 	uint32 CCVarTest::StringConstantVariableOperations(CUnitTest* pParent)
 	{
+		TRACE;
+
 		CCVarTest* pThis = static_cast<CCVarTest*>(pParent);
 		uint32 status = eSS_PASS;
 
@@ -497,6 +519,8 @@ namespace test
 
 	uint32 CCVarTest::ConsoleCommandTest(CUnitTest* pParent)
 	{
+		TRACE;
+
 		CCVarTest* pThis = static_cast<CCVarTest*>(pParent);
 		uint32 status = eSS_PASS;
 

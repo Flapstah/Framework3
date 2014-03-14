@@ -11,6 +11,8 @@ namespace test
 	CTypeTest::CTypeTest(void)
 		: CUnitTest("Type")
 	{
+		TRACE;
+
 		Initialise();
 	}
 
@@ -18,6 +20,8 @@ namespace test
 
 	CTypeTest::~CTypeTest(void)
 	{
+		TRACE;
+
 		Uninitialise();
 	}
 
@@ -25,6 +29,8 @@ namespace test
 
 	bool CTypeTest::Initialise(void)
 	{
+		TRACE;
+
 		AddStage("Sizes", SizeTest);
 
 		return CUnitTest::Initialise();
@@ -34,6 +40,8 @@ namespace test
 
 	uint32 CTypeTest::SizeTest(CUnitTest* pParent)
 	{
+		TRACE;
+
 		char buffer[64];
 		CTypeTest* pThis = static_cast<CTypeTest*>(pParent);
 		uint32 status = eSS_PASS;

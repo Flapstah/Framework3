@@ -7,6 +7,31 @@
 #include <windows.h>
 
 //==============================================================================
+
+//==============================================================================
+// Check for 32 or 64 bit environment
+//==============================================================================
+#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN64)
+#define ENVIRONMENT64
+#define __ENVIRONMENT__ "64 bit"
+#else
+#define ENVIRONMENT32
+#define __ENVIRONMENT__ "32 bit"
+#endif // [defined(_WIN64)]
+#endif // [defined(_WIN32) || defined(_WIN64)]
+
+//==============================================================================
+// Debug break
+//==============================================================================
+#define DEBUG_BREAK DebugBreak()
+
+//==============================================================================
+// Function signature
+//==============================================================================
+#define __FUNCTION_SIGNATURE__ __FUNCSIG__
+
+//==============================================================================
 // Microsoft elected to use macros instead of functions for these... so you
 // can't use them in your own code...
 //==============================================================================
@@ -36,19 +61,6 @@
 //==============================================================================
 #define snprintf _snprintf
 #endif // defined (_MSC_VER)
-
-#define DEBUG_BREAK DebugBreak()
-
-// Check for 32 or 64 bit environment
-#if defined(_WIN32) || defined(_WIN64)
-#if defined(_WIN64)
-#define ENVIRONMENT64
-#define __ENVIRONMENT__ "64 bit"
-#else
-#define ENVIRONMENT32
-#define __ENVIRONMENT__ "32 bit"
-#endif // [defined(_WIN64)]
-#endif // [defined(_WIN32) || defined(_WIN64)]
 
 /* If we're not using GNU C, elide __attribute__ */
 #if !defined(__GNUC__)
