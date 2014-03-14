@@ -193,6 +193,7 @@ set(PLATFORM_INDEPENDENT_SOURCES
 	#engine/independent/input/keyboard.cpp
 	engine/independent/common/commandline.cpp
 	engine/independent/common/console.cpp
+	engine/independent/common/debug.cpp
 	engine/independent/common/log.cpp
 	engine/independent/common/stdafx.cpp
 	engine/independent/time/time.cpp
