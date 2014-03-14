@@ -29,7 +29,11 @@
 //==============================================================================
 // Function signature
 //==============================================================================
+#if defined(__GNUC__)
+#define __FUNCTION_SIGNATURE__ __PRETTY_FUNCTION__
+#else
 #define __FUNCTION_SIGNATURE__ __FUNCSIG__
+#endif
 
 //==============================================================================
 // Microsoft elected to use macros instead of functions for these... so you

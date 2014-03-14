@@ -16,7 +16,7 @@ namespace engine
 		CTrace(const char* entryPoint);
 		~CTrace(void);
 
-		static const char* CreateString(const char* formatk, ...) __attribute__((format(printf, 2, 3)));
+		static const char* CreateString(const char* format, ...) __attribute__((format(printf, 1, 2)));
 
 		static void On(void);
 		static void Off(void);
