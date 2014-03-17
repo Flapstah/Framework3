@@ -88,14 +88,18 @@ namespace engine
 			const char* m_name;
 			uint32 m_flags;
 
+		public:
+#if defined(RELEASE)
+			static const eLogLevel s_logLevel;
+#else
+			static int64 s_logLevel;
+		private:
+			// used to register/unregister log level cvar
+			static uint32 m_refActiveLogs;
+#endif // defined(RELEASE)
+
 		//--------------------------------------------------------------------------
 	}; // End [class CLog]
-
-#if defined(RELEASE)
-	const int64 g_logLevel = LOG_DEFAULT_RELEASE_LOG_LEVEL;
-#else
-	extern int64 g_logLevel;
-#endif // defined(RELEASE)
 
 	//============================================================================
 } // End [namespace engine]

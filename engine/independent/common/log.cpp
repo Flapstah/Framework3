@@ -12,9 +12,12 @@
 
 namespace engine
 {
-#if defined(DEBUG)
-	int64 g_logLevel = LOG_DEFAULT_DEBUG_LOG_LEVEL;
-#endif // defined(DEBUG)
+#if defined(RELEASE)
+	const CLog::eLogLevel CLog::s_logLevel = LOG_DEFAULT_RELEASE_LOG_LEVEL;
+#else
+	int64 CLog::s_logLevel = LOG_DEFAULT_DEBUG_LOG_LEVEL;
+	uint32 CLog::m_refActiveLogs = 0;
+#endif // defined(RELEASE)
 
 	//==============================================================================
 
@@ -116,7 +119,7 @@ namespace engine
 
 			if (m_flags & eBT_STANDARD)
 			{
-				fputs(buffer, ((g_logLevel == eLL_FATAL) || (g_logLevel == eLL_ERROR) || (g_logLevel == eLL_WARNING)) ? stderr : stdout);
+				fputs(buffer, ((s_logLevel == eLL_FATAL) || (s_logLevel == eLL_ERROR) || (s_logLevel == eLL_WARNING)) ? stderr : stdout);
 			}
 
 #if defined(WIN32)
