@@ -4,6 +4,10 @@
 
 //==============================================================================
 
+#define TRACE_ENABLE false
+
+//==============================================================================
+
 namespace test
 {
 	//============================================================================
@@ -11,7 +15,7 @@ namespace test
 	CTypeTest::CTypeTest(void)
 		: CUnitTest("Type")
 	{
-		TRACE;
+		TRACE(TRACE_ENABLE);
 
 		Initialise();
 	}
@@ -20,7 +24,7 @@ namespace test
 
 	CTypeTest::~CTypeTest(void)
 	{
-		TRACE;
+		TRACE(TRACE_ENABLE);
 
 		Uninitialise();
 	}
@@ -29,7 +33,7 @@ namespace test
 
 	bool CTypeTest::Initialise(void)
 	{
-		TRACE;
+		TRACE(TRACE_ENABLE);
 
 		AddStage("Sizes", SizeTest);
 
@@ -40,7 +44,7 @@ namespace test
 
 	uint32 CTypeTest::SizeTest(CUnitTest* pParent)
 	{
-		TRACE;
+		TRACE(TRACE_ENABLE);
 
 		char buffer[64];
 		CTypeTest* pThis = static_cast<CTypeTest*>(pParent);

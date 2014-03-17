@@ -4,6 +4,10 @@
 
 //==============================================================================
 
+#define TRACE_ENABLE false
+
+//==============================================================================
+
 namespace test
 {
 	//============================================================================
@@ -20,7 +24,7 @@ namespace test
 		, m_stage(0)
 		, m_subStage(0)
 	{
-		TRACE;
+		TRACE(TRACE_ENABLE);
 
 		LOG_ALWAYS(m_log, COLOUR_DEFAULT); 
 		m_log.SetFlags(m_log.GetFlags() | CLog::eBAI_NAME | CLog::eBAI_TIMESTAMP);
@@ -30,7 +34,7 @@ namespace test
 
 	CUnitTest::~CUnitTest(void)
 	{
-		TRACE;
+		TRACE(TRACE_ENABLE);
 
 		CTimeValue elapsed = m_timeEnded-m_timeStarted;
 		
@@ -46,7 +50,7 @@ namespace test
 
 	bool CUnitTest::Initialise(void)
 	{
-		TRACE;
+		TRACE(TRACE_ENABLE);
 
 		ResetStage();
 		ResetSubstage();
@@ -61,7 +65,7 @@ namespace test
 
 	const CTimeValue& CUnitTest::Start(void)
 	{
-		TRACE;
+		TRACE(TRACE_ENABLE);
 
 		m_timeStarted = GetITime()->GetCurrentTime();
 		m_testStatus = eTS_RUNNING;
@@ -73,7 +77,7 @@ namespace test
 
 	CUnitTest::eTestStatus CUnitTest::Update(void)
 	{
-		TRACE;
+		TRACE(TRACE_ENABLE);
 
 		if (m_testStatus == eTS_RUNNING)
 		{
@@ -113,7 +117,7 @@ namespace test
 
 	const CTimeValue& CUnitTest::End(void)
 	{
-		TRACE;
+		TRACE(TRACE_ENABLE);
 
 		m_timeEnded = GetITime()->GetCurrentTime();
 		return m_timeEnded;
@@ -123,14 +127,14 @@ namespace test
 
 	void CUnitTest::Uninitialise(void)
 	{
-		TRACE;
+		TRACE(TRACE_ENABLE);
 	}
 
 	//============================================================================
 
 	void CUnitTest::AddStage(const char* name, TestFn function)
 	{
-		TRACE;
+		TRACE(TRACE_ENABLE);
 
 		if (m_testStatus == eTS_UNINITIALISED)
 		{
@@ -142,7 +146,7 @@ namespace test
 
 	void CUnitTest::Test(const char* description, bool test, const char* failureMessage, int32 testType /* = eTT_Stage */)
 	{	
-		TRACE;
+		TRACE(TRACE_ENABLE);
 
 		const char* none = "None";
 		uint32 logFlags = m_log.GetFlags();
@@ -176,7 +180,7 @@ namespace test
 
 	uint32 CUnitTest::GetStage(void)
 	{
-		TRACE;
+		TRACE(TRACE_ENABLE);
 
 		return m_stage+1;
 	}
@@ -185,7 +189,7 @@ namespace test
 
 	uint32 CUnitTest::GetSubstage(void)
 	{
-		TRACE;
+		TRACE(TRACE_ENABLE);
 
 		return m_subStage+1;
 	}
@@ -194,7 +198,7 @@ namespace test
 
 	bool CUnitTest::IsEqual(double param1, double param2, double epsilon /* = 0.0 */)
 	{
-		TRACE;
+		TRACE(TRACE_ENABLE);
 
 		return ((param1 >= (param2-epsilon)) && (param1 <= (param2+epsilon)));
 	}
@@ -203,7 +207,7 @@ namespace test
 
 	void CUnitTest::ResetStage(void)
 	{
-		TRACE;
+		TRACE(TRACE_ENABLE);
 
 		m_errors = m_stage = 0;
 	}
@@ -212,7 +216,7 @@ namespace test
 
 	void CUnitTest::ResetSubstage(void)
 	{
-		TRACE;
+		TRACE(TRACE_ENABLE);
 
 		m_subStage = 0;
 	}

@@ -7,9 +7,13 @@
 
 //==============================================================================
 
+#define TRACE_ENABLE false
+
+//==============================================================================
+
 int main(int argc, char* argv[])
 {
-	TRACE;
+	TRACE(TRACE_ENABLE);
 
 	IGNORE_PARAMETER(argc);
 	IGNORE_PARAMETER(argv);

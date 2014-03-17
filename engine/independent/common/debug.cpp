@@ -20,29 +20,33 @@ namespace engine
 
 	//============================================================================
 
-	CTrace::CTrace(const char* entryPoint)
+	CTrace::CTrace(bool enable, const char* entryPoint)
 		: m_entryPoint(entryPoint)
+		, m_enable(enable)
 	{
-#if DEBUG_TRACE_USE_LOGGER
-		static CLog lazyLogConstruction(CLog::GetMasterLog(), "Trace", CLog::eB_ACTIVE | CLog::eBAI_NEWLINE | CLog::eBAI_NAME | CLog::eBAI_TIMESTAMP | CLog::eBT_CONSOLE | CLog::eBT_DEBUGGER | CLog::eBT_FILE | CLog::eBT_STANDARD);
-		m_pLog = &lazyLogConstruction;
-#endif // DEBUG_TRACE_USE_LOGGER
-
-		if (s_active)
+		if (m_enable)
 		{
 #if DEBUG_TRACE_USE_LOGGER
-			LOG_DEBUG(*m_pLog, "[ENTER]: %s\n", m_entryPoint);
-#else
-			printf("[ENTER]: %s\n", m_entryPoint);
+			static CLog lazyLogConstruction(CLog::GetMasterLog(), "Trace", CLog::eB_ACTIVE | /*CLog::eBAI_NEWLINE | */CLog::eBAI_NAME | /*CLog::eBAI_TIMESTAMP |*/ CLog::eBT_CONSOLE | CLog::eBT_DEBUGGER | CLog::eBT_FILE | CLog::eBT_STANDARD);
+			m_pLog = &lazyLogConstruction;
 #endif // DEBUG_TRACE_USE_LOGGER
-		}
+
+			if (s_active)
+			{
+#if DEBUG_TRACE_USE_LOGGER
+				LOG_DEBUG(*m_pLog, "[ENTER]: %s\n", m_entryPoint);
+#else
+				printf("[ENTER]: %s\n", m_entryPoint);
+#endif // DEBUG_TRACE_USE_LOGGER
+			}
+		}	
 	}
 
 	//============================================================================
 
 	CTrace::~CTrace(void)
 	{
-		if (s_active)
+		if (m_enable && s_active)
 		{
 #if DEBUG_TRACE_USE_LOGGER
 			LOG_DEBUG(*m_pLog, "[EXIT]: %s\n", m_entryPoint);

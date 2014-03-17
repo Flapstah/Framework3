@@ -13,7 +13,7 @@ namespace engine
 	class CTrace
 	{
 	public:
-		CTrace(const char* entryPoint);
+		CTrace(bool enable, const char* entryPoint);
 		~CTrace(void);
 
 		static const char* CreateString(const char* format, ...) __attribute__((format(printf, 1, 2)));
@@ -26,6 +26,7 @@ namespace engine
 		static CLog* m_pLog;
 #endif // DEBUG_TRACE_USE_LOGGER
 		const char* m_entryPoint;
+		const bool	m_enable;
 		static bool	s_active;
 	}; // End [class CTrace]
 
@@ -33,13 +34,13 @@ namespace engine
 } // End [namespace engine]
 
 #define TRACE_STRING(_format_, ...) engine::CTrace::CreateString(_format_, ## __VA_ARGS__)
-#define TRACE engine::CTrace _functionTracer(TRACE_STRING("%s(%d): %s", __FILE__, __LINE__, __FUNCTION_SIGNATURE__))
+#define TRACE(_enable_) engine::CTrace _functionTracer(_enable_, TRACE_STRING("%s(%d): %s", __FILE__, __LINE__, __FUNCTION_SIGNATURE__));
 #define TRON engine::CTrace::On()
 #define TROFF engine::CTrace::Off()
 
 #else
 
-#define TRACE
+#define TRACE(_enable_)
 #define TRON
 #define TROFF
 
