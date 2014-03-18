@@ -32,17 +32,22 @@ namespace engine
 				eB_ACTIVE				= 1 << 0,
 
 				// Additional info
-				eBAI_NEWLINE		= 1 << 1,
-				eBAI_LOCATION		= 1 << 2,
+				eBAI_LOCATION		= 1 << 1,
+				eBAI_LOG_LEVEL	= 1 << 2,
 				eBAI_NAME				= 1 << 3,
-				eBAI_TIMESTAMP	= 1 << 4,
+				eBAI_NEWLINE		= 1 << 4,
 				eBAI_THREADID		= 1 << 5,
+				eBAI_TIMESTAMP	= 1 << 6,
+
+				eBAI_ALL				= (eBAI_LOCATION | eBAI_LOG_LEVEL | eBAI_NAME | eBAI_NEWLINE | eBAI_THREADID | eBAI_TIMESTAMP),
 
 				// Targets
-				eBT_FILE				= 1 << 6,
 				eBT_CONSOLE			= 1 << 7,
-				eBT_STANDARD		= 1 << 8,
-				eBT_DEBUGGER		= 1 << 9, // N.B. Only on Windows
+				eBT_DEBUGGER		= 1 << 8, // N.B. Only on Windows
+				eBT_FILE				= 1 << 9,
+				eBT_STANDARD		= 1 << 10,
+
+				eBT_ALL					= (eBT_CONSOLE | eBT_DEBUGGER | eBT_FILE | eBT_STANDARD),
 			};
 
 		//--------------------------------------------------------------------------
@@ -58,8 +63,8 @@ namespace engine
 			uint32 SetFlags(uint32 flags);
 
 			// N.B remember hidden 'this' pointer is parameter 1, so 'const char* format' is
-			// parameter 4 in __attribute__ specifier in Log() declaration below
-			bool Log(const char* file, uint32 line, const char* format, ...) __attribute__((format(printf, 4, 5)));
+			// parameter 5 in __attribute__ specifier in Log() declaration below
+			bool Log(const char* file, uint32 line, uint32 level, const char* format, ...) __attribute__((format(printf, 5, 6)));
 
 			// The master log is the root from which all other logs depend and should
 			// not be used directly, other than to SetActive() to enable/disable
@@ -111,7 +116,7 @@ namespace engine
 #if LOG_ELIDE_ALL_LOGS
 #define LOG(_log_, _level_, _format_, ...)
 #else // LOG_ELIDE_ALL_LOGS
-#define LOG(_log_, _level_, _format_, ...) (((engine::CLog::s_logLevel >= _level_) && ((_log_).IsActive())) ? (_log_).Log(__FILE__, __LINE__, _format_, ## __VA_ARGS__) : false)
+#define LOG(_log_, _level_, _format_, ...) (((engine::CLog::s_logLevel >= _level_) && ((_log_).IsActive())) ? (_log_).Log(__FILE__, __LINE__, _level_, _format_, ## __VA_ARGS__) : false)
 #endif // LOG_ELIDE_ALL_LOGS
 
 #define LOG_DEBUG(_log_, _format_, ...) LOG(_log_, engine::CLog::eLL_DEBUG, _format_, ## __VA_ARGS__)

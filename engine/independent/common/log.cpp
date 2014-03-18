@@ -19,7 +19,7 @@ namespace engine
 	uint32 CLog::m_refActiveLogs = 0;
 #endif // defined(RELEASE)
 
-	//==============================================================================
+	//============================================================================
 
 	CLog::CLog(CLog& parent, const char* name)
 		: m_pParent(&parent)
@@ -32,7 +32,7 @@ namespace engine
 		}
 	}
 
-	//==============================================================================
+	//============================================================================
 
 	CLog::CLog(CLog& parent, const char* name, uint32 flags)
 		: m_pParent(&parent)
@@ -41,27 +41,33 @@ namespace engine
 	{
 	}
 
-	//==============================================================================
+	//============================================================================
 
 	CLog::~CLog(void)
 	{
 	}
 
-	//==============================================================================
+	//============================================================================
 
-	bool CLog::Log(const char* file, uint32 line, const char* format, ...)
+	bool CLog::Log(const char* file, uint32 line, uint32 level, const char* format, ...)
 	{
 		va_list argList;
 		char buffer[LOG_BUFFER_SIZE];
 		int32 position = 0;
 		int32 written = 0;
 
+		//--------------------------------------------------------------------------
+		// File/line location
+		//--------------------------------------------------------------------------
 		if ((m_flags & eBAI_LOCATION) && (written >= 0))
 		{
 			written = snprintf(buffer+position, LOG_BUFFER_SIZE-position-1, "%s(%u): ", file, line);
 			position += (written >= 0) ? written : 0;
 		}
 
+		//--------------------------------------------------------------------------
+		// Timestamp
+		//--------------------------------------------------------------------------
 		if ((m_flags & eBAI_TIMESTAMP) && (written >= 0))
 		{
 			int32 days, hours, minutes;
@@ -72,12 +78,44 @@ namespace engine
 			position += (written >= 0) ? written : 0;
 		}
 
+		//--------------------------------------------------------------------------
+		// Log name
+		//--------------------------------------------------------------------------
 		if ((m_flags & eBAI_NAME) && (written >= 0))
 		{
 			written = snprintf(buffer+position, LOG_BUFFER_SIZE-position-1, "[%s]: ", m_name);
 			position += (written >= 0) ? written : 0;
 		}
 
+		//--------------------------------------------------------------------------
+		// Log level
+		//--------------------------------------------------------------------------
+		if ((m_flags & eBAI_LOG_LEVEL) && (written >= 0))
+		{
+			written = 0;
+
+			switch (level)
+			{
+			case eLL_FATAL:
+				written = snprintf(buffer+position, LOG_BUFFER_SIZE-position-1, "[FATAL]: ");
+				break;
+			case eLL_ERROR:
+				written = snprintf(buffer+position, LOG_BUFFER_SIZE-position-1, "[ERROR]: ");
+				break;
+			case eLL_WARNING:
+				written = snprintf(buffer+position, LOG_BUFFER_SIZE-position-1, "[WARNING]: ");
+				break;
+			case eLL_DEBUG:
+				written = snprintf(buffer+position, LOG_BUFFER_SIZE-position-1, "[DEBUG]: ");
+				break;
+			}
+
+			position += (written >= 0) ? written : 0;
+		}
+
+		//--------------------------------------------------------------------------
+		// Thread ID
+		//--------------------------------------------------------------------------
 		if ((m_flags & eBAI_THREADID) && (written >= 0))
 		{
 			uint64 threadID = boost::hash<boost::thread::id>()(boost::this_thread::get_id());
@@ -85,6 +123,9 @@ namespace engine
 			position += (written >= 0) ? written : 0;
 		}
 
+		//--------------------------------------------------------------------------
+		// Message body
+		//--------------------------------------------------------------------------
 		if (written >= 0)
 		{
 			va_start(argList, format);
@@ -93,6 +134,9 @@ namespace engine
 			va_end(argList);
 		}
 
+		//--------------------------------------------------------------------------
+		// Forced newline
+		//--------------------------------------------------------------------------
 		if ((m_flags & eBAI_NEWLINE) && (written >= 0))
 		{
 			// Force a newline and null termination of the buffer
@@ -104,6 +148,9 @@ namespace engine
 			buffer[position++] = 0;
 		}
 
+		//--------------------------------------------------------------------------
+		// Output to targets
+		//--------------------------------------------------------------------------
 		bool haveOutput = (written >= 0) && (written < LOG_BUFFER_SIZE);
 		if (haveOutput)
 		{
@@ -133,12 +180,12 @@ namespace engine
 		return haveOutput;
 	}
 
-	//==============================================================================
+	//============================================================================
 
 	CLog::CLog(void)
 		: m_pParent(NULL)
 		, m_name(LOG_MASTER_NAME)
-		, m_flags(eB_ACTIVE | eBAI_NEWLINE | eBAI_LOCATION | eBAI_NAME | eBAI_TIMESTAMP | eBAI_THREADID | eBT_FILE | eBT_CONSOLE | eBT_STANDARD | eBT_DEBUGGER)
+		, m_flags(eB_ACTIVE | eBAI_ALL | eBT_ALL)
 	{
 	}
 
