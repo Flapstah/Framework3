@@ -16,7 +16,6 @@ namespace engine
 	const CLog::eLogLevel CLog::s_logLevel = LOG_DEFAULT_RELEASE_LOG_LEVEL;
 #else
 	int64 CLog::s_logLevel = LOG_DEFAULT_DEBUG_LOG_LEVEL;
-	uint32 CLog::m_refActiveLogs = 0;
 #endif // defined(RELEASE)
 
 	//============================================================================
