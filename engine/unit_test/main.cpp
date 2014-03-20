@@ -1,9 +1,9 @@
 #include "common/stdafx.h"
 
-#include "cvartest.h"
-#include "logtest.h"
-#include "timetest.h"
-#include "typetest.h"
+#include "tests/cvartest.h"
+#include "tests/logtest.h"
+#include "tests/timetest.h"
+#include "tests/typetest.h"
 
 //==============================================================================
 

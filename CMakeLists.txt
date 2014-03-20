@@ -145,26 +145,188 @@ endif (OPENGL_SUPERBIBLE_50)
 
 ###############################################################################
 #
+# Macros to create file lists for building executables
+#
+# Both versions will generate XXX_SOURCES and XXX_HEADERS lists from the given
+# location.  The RECURSE variant will recurse any subdirectories; the
+# NO_RECURSE variant will only search the specified directory
+#
+MACRO(FILE_LIST_RECURSE _NAME _LOCATION)
+	file(GLOB_RECURSE ${_NAME}_SOURCES
+		"${test_SOURCE_DIR}/${_LOCATION}/*.cpp"
+		)
+	file(GLOB_RECURSE ${_NAME}_HEADERS
+		"${test_SOURCE_DIR}/${_LOCATION}/*.h"
+		"${test_SOURCE_DIR}/${_LOCATION}/*.inl"
+		)
+ENDMACRO(FILE_LIST_RECURSE)
+#
+MACRO(FILE_LIST_NO_RECURSE _NAME _LOCATION)
+	file(GLOB ${_NAME}_SOURCES
+		"${test_SOURCE_DIR}/${_LOCATION}/*.cpp"
+		)
+	file(GLOB ${_NAME}_HEADERS
+		"${test_SOURCE_DIR}/${_LOCATION}/*.h"
+		"${test_SOURCE_DIR}/${_LOCATION}/*.inl"
+		)
+ENDMACRO(FILE_LIST_NO_RECURSE)
+#
+###############################################################################
+
+
+###############################################################################
+#
+# Engine independent:
+#
+FILE_LIST_RECURSE(ENGINE_INDEPENDENT_COMMON "engine/independent/common")
+list(REMOVE_ITEM ENGINE_INDEPENDENT_COMMON_SOURCES "engine/independent/common/version.cpp")
+FILE_LIST_RECURSE(ENGINE_INDEPENDENT_SYSTEM "engine/independent/system")
+FILE_LIST_RECURSE(ENGINE_INDEPENDENT_TIME "engine/independent/time")
+FILE_LIST_RECURSE(ENGINE_INDEPENDENT_UTILITY "engine/independent/utility")
+#
+# Engine Windows specific:
+#
+FILE_LIST_RECURSE(ENGINE_WINDOWS_COMMON "engine/windows/common")
+FILE_LIST_RECURSE(ENGINE_WINDOWS_TIME "engine/windows/time")
+#
+# Engine Linux specific:
+#
+FILE_LIST_RECURSE(ENGINE_LINUX_COMMON "engine/linux/common")
+FILE_LIST_RECURSE(ENGINE_LINUX_TIME "engine/linux/time")
+#
+###############################################################################
+
+
+###############################################################################
+#
+# Collect all the sources and headers into groups
+#
+# Engine independent:
+#
+set(PROJECT_INDEPENDENT_SOURCES
+	${ENGINE_INDEPENDENT_COMMON_SOURCES}
+	${ENGINE_INDEPENDENT_SYSTEM_SOURCES}
+	${ENGINE_INDEPENDENT_TIME_SOURCES}
+	${ENGINE_INDEPENDENT_UTILITY_SOURCES}
+	)
+set(PROJECT_INDEPENDENT_HEADERS
+	${ENGINE_INDEPENDENT_COMMON_HEADERS}
+	${ENGINE_INDEPENDENT_SYSTEM_HEADERS}
+	${ENGINE_INDEPENDENT_TIME_HEADERS}
+	${ENGINE_INDEPENDENT_UTILITY_HEADERS}
+	)
+#
+# Engine Windows specific:
+#
+if (WIN32)
+set(PROJECT_DEPENDENT_SOURCES
+	${ENGINE_WINDOWS_COMMON_SOURCES}
+	${ENGINE_WINDOWS_TIME_SOURCES}
+	)
+set(PROJECT_DEPENDENT_HEADERS
+	${ENGINE_WINDOWS_COMMON_HEADERS}
+	${ENGINE_WINDOWS_TIME_HEADERS}
+	)
+endif (WIN32)
+#
+# Engine Linux specific:
+#
+if (UNIX)
+set(PROJECT_DEPENDENT_SOURCES
+	${ENGINE_LINUX_COMMON_SOURCES}
+	${ENGINE_LINUX_TIME_SOURCES}
+	)
+set(PROJECT_DEPENDENT_HEADERS
+	${ENGINE_LINUX_COMMON_HEADERS}
+	${ENGINE_LINUX_TIME_HEADERS}
+	)
+endif (UNIX)
+#
+# Project source groups
+#
+set(PROJECT_HEADERS
+	${PROJECT_INDEPENDENT_HEADERS}
+	${PROJECT_DEPENDENT_HEADERS}
+	)
+set(PROJECT_SOURCES
+	${PROJECT_INDEPENDENT_SOURCES}
+	${PROJECT_DEPENDENT_SOURCES}
+	)
+#
+###############################################################################
+
+
+###############################################################################
+#
+# Unit test (all files)
+#
+FILE_LIST_RECURSE(UNIT_TEST "engine/unit_test")
+#
+# Unit test (just the control files)
+#
+FILE_LIST_NO_RECURSE(UNIT_TEST_CONTROL "engine/unit_test")
+#
+# Unit test (just the test files)
+#
+FILE_LIST_RECURSE(UNIT_TEST_TESTS "engine/unit_test/tests")
+###############################################################################
+
+###############################################################################
+#
 # Platform include paths
 #
-set(PLATFORM_INCLUDES "${test_SOURCE_DIR}/engine/independent" "${test_SOURCE_DIR}/unit_tests")
-file(GLOB_RECURSE PLATFORM_INDEPENDENT_HEADERS
- 	"${test_SOURCE_DIR}/engine/independent/*.h"
- 	"${test_SOURCE_DIR}/engine/independent/*.inl"
+set(PROJECT_INDEPENDENT_INCLUDE_DIRS
+	"${test_SOURCE_DIR}/engine/independent"
+	"${test_SOURCE_DIR}/engine/tools"
+	"${test_SOURCE_DIR}/engine/unit_test"
 	)
 if (WIN32)
-	set(PLATFORM_INCLUDES ${PLATFORM_INCLUDES} "${test_SOURCE_DIR}/engine/windows")
-	file(GLOB_RECURSE PLATFORM_SPECIFIC_HEADERS "${test_SOURCE_DIR}/engine/windows/*.h" "${test_SOURCE_DIR}/engine/windows/*.inl")
+	set(PROJECT_DEPENDENT_INCLUDE_DIRS
+	"${test_SOURCE_DIR}/engine/windows")
 endif (WIN32)
 if (UNIX)
-	set(PLATFORM_INCLUDES ${PLATFORM_INCLUDES} "${test_SOURCE_DIR}/engine/linux")
-	file(GLOB_RECURSE PLATFORM_SPECIFIC_HEADERS "${test_SOURCE_DIR}/engine/linux/*.h" "${test_SOURCE_DIR}/engine/linux/*.inl")
+	set(PROJECT_DEPENDENT_INCLUDE_DIRS
+	"${test_SOURCE_DIR}/engine/linux")
 endif (UNIX)
 #
 # Set up include and library paths
 #
-include_directories(${PLATFORM_INCLUDES} ${Boost_INCLUDE_DIRS} ${OPENGL_INCLUDE_DIR} ${ZLIB_INCLUDE_DIRS} ${GLUT_INCLUDE_DIR} ${GLFW_INCLUDE_DIR} ${OPENAL_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS} ${OPENGL_SUPERBIBLE_50_INCLUDES})
+include_directories(${PROJECT_INDEPENDENT_INCLUDE_DIRS} ${PROJECT_DEPENDENT_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS} ${OPENGL_INCLUDE_DIR} ${ZLIB_INCLUDE_DIRS} ${GLUT_INCLUDE_DIR} ${GLFW_INCLUDE_DIR} ${OPENAL_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS} ${OPENGL_SUPERBIBLE_50_INCLUDES})
 set(LIBS ${LIBS} ${Boost_LIBRARIES} ${OPENGL_LIBRARY} ${ZLIB_LIBRARIES} ${GLUT_LIBRARY} ${GLFW_LIBRARY} ${OPENAL_LIBRARY} ${FREETYPE_LIBRARIES})
+#
+###############################################################################
+
+
+###############################################################################
+#
+# Platform sources
+#
+if (OPENGL_SUPERBIBLE_50)
+	set(OPENGL_SUPERBIBLE_50_SOURCES
+		# Start OpenGL SuperBible 5.0 stuff
+		#GLTools/src/openglsuperbible_uber.cpp
+		GLSB/examples.cpp
+		# End OpenGL SuperBible 5.0 stuff
+		)
+endif (OPENGL_SUPERBIBLE_50)
+#
+###############################################################################
+
+
+###############################################################################
+#
+# Source groups for IDE projects
+#
+source_group(Engine\\Independent\\Common FILES ${ENGINE_INDEPENDENT_COMMON_HEADERS} ${ENGINE_INDEPENDENT_COMMON_SOURCES})
+source_group(Engine\\Independent\\System FILES ${ENGINE_INDEPENDENT_SYSTEM_HEADERS} ${ENGINE_INDEPENDENT_SYSTEM_SOURCES})
+source_group(Engine\\Independent\\Time FILES ${ENGINE_INDEPENDENT_TIME_HEADERS} ${ENGINE_INDEPENDENT_TIME_SOURCES})
+source_group(Engine\\Independent\\Utility FILES ${ENGINE_INDEPENDENT_UTILITY_HEADERS} ${ENGINE_INDEPENDENT_UTILITY_SOURCES})
+source_group(Engine\\Windows\\Common FILES ${ENGINE_WINDOWS_COMMON_HEADERS} ${ENGINE_WINDOWS_COMMON_SOURCES})
+source_group(Engine\\Windows\\Time FILES ${ENGINE_WINDOWS_TIME_HEADERS} ${ENGINE_WINDOWS_TIME_SOURCES})
+source_group(Engine\\Linux\\Common FILES ${ENGINE_LINUX_COMMON_HEADERS} ${ENGINE_LINUX_COMMON_SOURCES})
+source_group(Engine\\Linux\\Time FILES ${ENGINE_LINUX_TIME_HEADERS} ${ENGINE_LINUX_TIME_SOURCES})
+source_group(UnitTests FILES ${UNIT_TEST_CONTROL_SOURCES} ${UNIT_TEST_CONTROL_HEADERS})
+source_group(UnitTests\\Tests FILES ${UNIT_TEST_TESTS_SOURCES} ${UNIT_TEST_TESTS_HEADERS})
 #
 ###############################################################################
 
@@ -183,73 +345,11 @@ set(LIBS ${LIBS} ${Boost_LIBRARIES} ${OPENGL_LIBRARY} ${ZLIB_LIBRARIES} ${GLUT_L
 
 ###############################################################################
 #
-# Platform sources
-#
-set(PLATFORM_INDEPENDENT_SOURCES
-	#engine/independent/common/filesystem.cpp
-	#engine/independent/common/glfw.cpp
-	#engine/independent/common/log.cpp
-	#engine/independent/common/profiling.cpp
-	#engine/independent/common/system.cpp
-	#engine/independent/graphics/debugfont.cpp
-	#engine/independent/graphics/renderer.cpp
-	#engine/independent/input/keyboard.cpp
-	engine/independent/common/stdafx.cpp
-	engine/independent/system/commandline.cpp
-	engine/independent/system/console.cpp
-	engine/independent/system/log.cpp
-	engine/independent/time/time.cpp
-	engine/independent/time/timer.cpp
-	engine/independent/time/timevalue.cpp
-	engine/independent/utility/debug.cpp
-	)
-source_group(Independent FILES ${PLATFORM_INDEPENDENT_SOURCES} ${PLATFORM_INDEPENDENT_HEADERS})
-#
-if (WIN32)
-	set(PLATFORM_SPECIFIC_SOURCES
-		#engine/windows/common/platform_system.cpp
-		engine/windows/time/platform_time.cpp
-		)
-	source_group(Win32 FILES ${PLATFORM_SPECIFIC_SOURCES} ${PLATFORM_SPECIFIC_HEADERS})
-endif (WIN32)
-#
-if (UNIX)
-	set(PLATFORM_SPECIFIC_SOURCES
-		#engine/linux/common/platform_system.cpp
-		engine/linux/time/platform_time.cpp
-		)
-	source_group(Linux FILES ${PLATFORM_SPECIFIC_SOURCES} ${PLATFORM_SPECIFIC_HEADERS})
-endif (UNIX)
-#
-set(UNIT_TEST_SOURCES
-	unit_tests/unittest.cpp
-	unit_tests/cvartest.cpp
-	unit_tests/logtest.cpp
-	unit_tests/timetest.cpp
-	unit_tests/typetest.cpp
-	)
-file(GLOB_RECURSE UNIT_TEST_HEADERS "${test_SOURCE_DIR}/unit_tests/*.h" "${test_SOURCE_DIR}/unit_tests/*.inl")
-source_group(UnitTests FILES ${UNIT_TEST_SOURCES} ${UNIT_TEST_HEADERS})
-#
-if (OPENGL_SUPERBIBLE_50)
-	set(OPENGL_SUPERBIBLE_50_SOURCES
-		# Start OpenGL SuperBible 5.0 stuff
-		#GLTools/src/openglsuperbible_uber.cpp
-		GLSB/examples.cpp
-		# End OpenGL SuperBible 5.0 stuff
-		)
-endif (OPENGL_SUPERBIBLE_50)
-#
-###############################################################################
-
-
-###############################################################################
-#
 # Build the 'generate_version' executable
 #
 add_executable (
 	generate_version
- 	tools/build/generate_version/main.cpp
+ 	engine/tools/generate_version/main.cpp
  	engine/independent/common/stdafx.cpp
 	)
 target_link_libraries (generate_version ${Boost_LIBRARIES})
@@ -258,7 +358,7 @@ get_target_property(GENERATE_VERSION_EXE generate_version LOCATION)
 add_custom_command(
 	OUTPUT "${test_SOURCE_DIR}/engine/independent/common/version.cpp"
 	COMMAND "${GENERATE_VERSION_EXE}" --template-file "${test_SOURCE_DIR}/engine/independent/common/version.cpp.in" --build-number-file "${test_SOURCE_DIR}/engine/independent/common/build_number" --output-file "${test_SOURCE_DIR}/engine/independent/common/version.cpp"
-	DEPENDS "${GENERATE_VERSION_EXE}" "${test_SOURCE_DIR}/engine/independent/common/version.cpp.in" ${PLATFORM_INDEPENDENT_SOURCES} ${PLATFORM_SPECIFIC_SOURCES}
+	DEPENDS "${GENERATE_VERSION_EXE}" "${test_SOURCE_DIR}/engine/independent/common/version.cpp.in" ${PROJECT_INDEPENDENT_SOURCES} ${PROJECT_DEPENDENT_SOURCES}
 	)
 #
 ###############################################################################
@@ -266,26 +366,24 @@ add_custom_command(
 
 ###############################################################################
 #
-# Build the 'unit_test' executable
+# Build the 'unit-test' executable
 #
 add_executable (
-	unit_test
- 	unit_tests/main.cpp
+	unit-test
+ 	engine/unit_test/main.cpp
 	engine/independent/common/version.cpp
- 	${PLATFORM_INDEPENDENT_SOURCES}
-	${PLATFORM_INDEPENDENT_HEADERS}
- 	${PLATFORM_SPECIFIC_SOURCES}
-	${PLATFORM_SPECIFIC_HEADERS}
-	${UNIT_TEST_SOURCES}
+	${PROJECT_HEADERS}
+	${PROJECT_SOURCES}
 	${UNIT_TEST_HEADERS}
+	${UNIT_TEST_SOURCES}
 	)
-target_link_libraries (unit_test ${LIBS})
+target_link_libraries (unit-test ${LIBS})
 
-get_target_property(UNIT_TEST_EXE unit_test LOCATION)
+get_target_property(UNIT_TEST_EXE unit-test LOCATION)
 add_custom_command(
-	OUTPUT "${test_SOURCE_DIR}/unit_test_results.txt"
-	COMMAND "${UNIT_TEST_EXE}" > "${test_SOURCE_DIR}/unit_test_results.txt"
-	DEPENDS "${UNIT_TEST_EXE}" ${PLATFORM_INDEPENDENT_SOURCES} ${PLATFORM_SPECIFIC_SOURCES} ${UNIT_TEST_SOURCES}
+	OUTPUT "${test_SOURCE_DIR}/results.txt"
+	COMMAND "${UNIT_TEST_EXE}" > "${test_SOURCE_DIR}/results.txt"
+	DEPENDS "${UNIT_TEST_EXE}" ${PROJECT_INDEPENDENT_SOURCES} ${PROJECT_DEPENDENT_SOURCES} ${UNIT_TEST_SOURCES} ${UNIT_TEST_HEADERS}
 	)
 #
 ###############################################################################
@@ -299,15 +397,13 @@ add_executable (
 	test
  	main.cpp
 	engine/independent/common/version.cpp
-	unit_test_results.txt
- 	${PLATFORM_INDEPENDENT_SOURCES}
-	${PLATFORM_INDEPENDENT_HEADERS}
- 	${PLATFORM_SPECIFIC_SOURCES}
-	${PLATFORM_SPECIFIC_HEADERS}
+	results.txt
+	${PROJECT_HEADERS}
+	${PROJECT_SOURCES}
  	${OPENGL_SUPERBIBLE_50_SOURCES}
 	)
 target_link_libraries (test ${LIBS})
-add_dependencies(test unit_test)
+add_dependencies(test unit-test)
 #
 ###############################################################################
 

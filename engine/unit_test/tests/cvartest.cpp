@@ -1,6 +1,6 @@
 #include "common/stdafx.h"
 
-#include "cvartest.h"
+#include "tests/cvartest.h"
 
 //==============================================================================
 

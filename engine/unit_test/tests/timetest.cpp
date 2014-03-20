@@ -1,6 +1,6 @@
 #include "common/stdafx.h"
 
-#include "timetest.h"
+#include "tests/timetest.h"
 
 namespace test
 {

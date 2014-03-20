@@ -1,13 +1,13 @@
-build/
 *~
 *.orig
 *.swp
 *.bak
 .vimrc
 .open_all_file_list
-engine/independent/common/version.cpp
 make
 run
+unit-test
+results.txt
+engine/independent/common/version.cpp
 tags
-unit_test
-unit_test_results.txt
+build/

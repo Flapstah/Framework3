@@ -1,6 +1,6 @@
 #include "common/stdafx.h"
 
-#include "typetest.h"
+#include "tests/typetest.h"
 
 //==============================================================================
 
