@@ -28,13 +28,15 @@
 #include <math.h>
 
 #include "common/config.h"
-#include "common/types.h"
 #include "common/macros.h"
-#include "common/log.h"
-#include "common/ansi.h"
-#include "common/compiletimestringhash.h"
-#include "common/runtimestringhash.h"
-#include "common/debug.h"
+#include "common/types.h"
+
+#include "system/log.h"
+
+#include "utility/ansi.h"
+#include "utility/compiletimestringhash.h"
+#include "utility/debug.h"
+#include "utility/runtimestringhash.h"
 
 //==============================================================================
 // [EOF]

@@ -148,7 +148,10 @@ endif (OPENGL_SUPERBIBLE_50)
 # Platform include paths
 #
 set(PLATFORM_INCLUDES "${test_SOURCE_DIR}/engine/independent" "${test_SOURCE_DIR}/unit_tests")
-file(GLOB_RECURSE PLATFORM_INDEPENDENT_HEADERS "${test_SOURCE_DIR}/engine/independent/*.h" "${test_SOURCE_DIR}/engine/independent/*.inl")
+file(GLOB_RECURSE PLATFORM_INDEPENDENT_HEADERS
+ 	"${test_SOURCE_DIR}/engine/independent/*.h"
+ 	"${test_SOURCE_DIR}/engine/independent/*.inl"
+	)
 if (WIN32)
 	set(PLATFORM_INCLUDES ${PLATFORM_INCLUDES} "${test_SOURCE_DIR}/engine/windows")
 	file(GLOB_RECURSE PLATFORM_SPECIFIC_HEADERS "${test_SOURCE_DIR}/engine/windows/*.h" "${test_SOURCE_DIR}/engine/windows/*.inl")
@@ -191,14 +194,14 @@ set(PLATFORM_INDEPENDENT_SOURCES
 	#engine/independent/graphics/debugfont.cpp
 	#engine/independent/graphics/renderer.cpp
 	#engine/independent/input/keyboard.cpp
-	engine/independent/common/commandline.cpp
-	engine/independent/common/console.cpp
-	engine/independent/common/debug.cpp
-	engine/independent/common/log.cpp
 	engine/independent/common/stdafx.cpp
+	engine/independent/system/commandline.cpp
+	engine/independent/system/console.cpp
+	engine/independent/system/log.cpp
 	engine/independent/time/time.cpp
 	engine/independent/time/timer.cpp
 	engine/independent/time/timevalue.cpp
+	engine/independent/utility/debug.cpp
 	)
 source_group(Independent FILES ${PLATFORM_INDEPENDENT_SOURCES} ${PLATFORM_INDEPENDENT_HEADERS})
 #

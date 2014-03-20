@@ -1,6 +1,4 @@
-#include "common/stdafx.h"
-
-#include "common/debug.h"
+#include "common/stdafx.h" // debug.h included here
 
 //==============================================================================
 

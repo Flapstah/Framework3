@@ -2,7 +2,7 @@
 
 #include <boost/thread/thread.hpp>
 #include "common/itime.h"
-#include "common/console.h"
+#include "system/console.h"
 
 //==============================================================================
 // N.B. It's not advisable to use TRACE in CLog function, since potentially

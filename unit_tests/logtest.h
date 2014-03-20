@@ -5,7 +5,7 @@
 
 #include "unittest.h"
 
-#include "common/console.h"
+#include "system/console.h"
 
 //==============================================================================
 

@@ -3,7 +3,7 @@
 #include <iomanip>
 #include <ostream>
 
-#include "common/console.h"
+#include "system/console.h"
 
 //==============================================================================
 

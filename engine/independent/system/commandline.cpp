@@ -1,7 +1,6 @@
 #include "common/stdafx.h"
 
-#include "common/commandline.h"
-//#include "common/console.h"
+#include "system/commandline.h"
 #include <vector>
 
 //==============================================================================
