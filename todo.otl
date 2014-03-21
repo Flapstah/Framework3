@@ -1,3 +1,7 @@
+Build process
+	Seem to have a circular dependency for engine/independent/common/version.cpp
+	Also have some smart pointer issues in release builds
+
 Tracing
 	Could store callstack address of function in the trace macro?  Might help with debugging..?
 		Requires being able to grab the callstack
@@ -16,34 +20,6 @@ Engine
 
 File system
 	Need file system abstraction to control the number of open files (use boost::filesystem under the hood)
-
-File organisation
-	Need to move files around and namespace them so they're better organised
-		Common
-			itime.h
-			itime.inl
-		Engine
-			everything not listed below
-		System
-			commandline.h
-			commandline.cpp
-			console.h
-			console.cpp
-			log.h
-			log.inl
-			log.cpp
-		Time
-			time.h
-			time.cpp
-			timer.h
-			timer.cpp
-			timevalue.cpp
-		Utility
-			debug.h
-			debug.cpp
-			compiletimestringhash.h
-			runtimestringhash.h
-	This should lend itself to a common interface structure such that the various components can be made into libs or dlls more easily
 
 Solved:
 	Logs no longer being elided from code when in release builds - why?

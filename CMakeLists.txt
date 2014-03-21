@@ -149,26 +149,29 @@ endif(OPENGL_SUPERBIBLE_50)
 #
 # Both versions will generate XXX_SOURCES and XXX_HEADERS lists from the given
 # location.  The RECURSE variant will recurse any subdirectories; the
-# NO_RECURSE variant will only search the specified directory
+# NO_RECURSE variant will only search the specified directory.  The macro will
+# also generate a _NAME list with is a combination of source and header lists.
 #
 MACRO(FILE_LIST_RECURSE _NAME _LOCATION)
-	file(GLOB_RECURSE ${_NAME}_SOURCES
-		"${test_SOURCE_DIR}/${_LOCATION}/*.cpp"
-		)
 	file(GLOB_RECURSE ${_NAME}_HEADERS
 		"${test_SOURCE_DIR}/${_LOCATION}/*.h"
 		"${test_SOURCE_DIR}/${_LOCATION}/*.inl"
 		)
+	file(GLOB_RECURSE ${_NAME}_SOURCES
+		"${test_SOURCE_DIR}/${_LOCATION}/*.cpp"
+		)
+	set(${_NAME} ${${_NAME}_HEADERS} ${${_NAME}_SOURCES})
 ENDMACRO(FILE_LIST_RECURSE)
 #
 MACRO(FILE_LIST_NO_RECURSE _NAME _LOCATION)
-	file(GLOB ${_NAME}_SOURCES
-		"${test_SOURCE_DIR}/${_LOCATION}/*.cpp"
-		)
 	file(GLOB ${_NAME}_HEADERS
 		"${test_SOURCE_DIR}/${_LOCATION}/*.h"
 		"${test_SOURCE_DIR}/${_LOCATION}/*.inl"
 		)
+	file(GLOB ${_NAME}_SOURCES
+		"${test_SOURCE_DIR}/${_LOCATION}/*.cpp"
+		)
+	set(${_NAME} ${${_NAME}_HEADERS} ${${_NAME}_SOURCES})
 ENDMACRO(FILE_LIST_NO_RECURSE)
 #
 ###############################################################################
@@ -176,13 +179,13 @@ ENDMACRO(FILE_LIST_NO_RECURSE)
 
 ###############################################################################
 #
-# Engine independent:
+# Engine platform independent:
 #
-FILE_LIST_RECURSE(ENGINE_INDEPENDENT_COMMON "engine/independent/common")
-list(REMOVE_ITEM ENGINE_INDEPENDENT_COMMON_SOURCES "engine/independent/common/version.cpp")
-FILE_LIST_RECURSE(ENGINE_INDEPENDENT_SYSTEM "engine/independent/system")
-FILE_LIST_RECURSE(ENGINE_INDEPENDENT_TIME "engine/independent/time")
-FILE_LIST_RECURSE(ENGINE_INDEPENDENT_UTILITY "engine/independent/utility")
+FILE_LIST_RECURSE(ENGINE_PLATFORM_INDEPENDENT_COMMON "engine/independent/common")
+list(REMOVE_ITEM ENGINE_PLATFORM_INDEPENDENT_COMMON_SOURCES "engine/independent/common/version.cpp")
+FILE_LIST_RECURSE(ENGINE_PLATFORM_INDEPENDENT_SYSTEM "engine/independent/system")
+FILE_LIST_RECURSE(ENGINE_PLATFORM_INDEPENDENT_TIME "engine/independent/time")
+FILE_LIST_RECURSE(ENGINE_PLATFORM_INDEPENDENT_UTILITY "engine/independent/utility")
 #
 # Engine Windows specific:
 #
@@ -193,65 +196,6 @@ FILE_LIST_RECURSE(ENGINE_WINDOWS_TIME "engine/windows/time")
 #
 FILE_LIST_RECURSE(ENGINE_LINUX_COMMON "engine/linux/common")
 FILE_LIST_RECURSE(ENGINE_LINUX_TIME "engine/linux/time")
-#
-###############################################################################
-
-
-###############################################################################
-#
-# Collect all the sources and headers into groups
-#
-# Engine independent:
-#
-set(PROJECT_INDEPENDENT_SOURCES
-	${ENGINE_INDEPENDENT_COMMON_SOURCES}
-	${ENGINE_INDEPENDENT_SYSTEM_SOURCES}
-	${ENGINE_INDEPENDENT_TIME_SOURCES}
-	${ENGINE_INDEPENDENT_UTILITY_SOURCES}
-	)
-set(PROJECT_INDEPENDENT_HEADERS
-	${ENGINE_INDEPENDENT_COMMON_HEADERS}
-	${ENGINE_INDEPENDENT_SYSTEM_HEADERS}
-	${ENGINE_INDEPENDENT_TIME_HEADERS}
-	${ENGINE_INDEPENDENT_UTILITY_HEADERS}
-	)
-#
-# Engine Windows specific:
-#
-if (WIN32)
-set(PROJECT_DEPENDENT_SOURCES
-	${ENGINE_WINDOWS_COMMON_SOURCES}
-	${ENGINE_WINDOWS_TIME_SOURCES}
-	)
-set(PROJECT_DEPENDENT_HEADERS
-	${ENGINE_WINDOWS_COMMON_HEADERS}
-	${ENGINE_WINDOWS_TIME_HEADERS}
-	)
-endif (WIN32)
-#
-# Engine Linux specific:
-#
-if (UNIX)
-set(PROJECT_DEPENDENT_SOURCES
-	${ENGINE_LINUX_COMMON_SOURCES}
-	${ENGINE_LINUX_TIME_SOURCES}
-	)
-set(PROJECT_DEPENDENT_HEADERS
-	${ENGINE_LINUX_COMMON_HEADERS}
-	${ENGINE_LINUX_TIME_HEADERS}
-	)
-endif (UNIX)
-#
-# Project source groups
-#
-set(PROJECT_HEADERS
-	${PROJECT_INDEPENDENT_HEADERS}
-	${PROJECT_DEPENDENT_HEADERS}
-	)
-set(PROJECT_SOURCES
-	${PROJECT_INDEPENDENT_SOURCES}
-	${PROJECT_DEPENDENT_SOURCES}
-	)
 #
 ###############################################################################
 
@@ -269,6 +213,125 @@ FILE_LIST_NO_RECURSE(UNIT_TEST_CONTROL "engine/unit_test")
 # Unit test (just the test files)
 #
 FILE_LIST_RECURSE(UNIT_TEST_TESTS "engine/unit_test/tests")
+###############################################################################
+
+
+###############################################################################
+#
+# Create a cross-platform group for the platform specific files
+#
+set(ENGINE_PLATFORM_INDEPENDENT_HEADERS
+	${ENGINE_PLATFORM_INDEPENDENT_COMMON_HEADERS}
+	${ENGINE_PLATFORM_INDEPENDENT_SYSTEM_HEADERS}
+	${ENGINE_PLATFORM_INDEPENDENT_TIME_HEADERS}
+	${ENGINE_PLATFORM_INDEPENDENT_UTILITY_HEADERS}
+	)
+set(ENGINE_PLATFORM_INDEPENDENT_SOURCES
+	${ENGINE_PLATFORM_INDEPENDENT_COMMON_SOURCES}
+	${ENGINE_PLATFORM_INDEPENDENT_SYSTEM_SOURCES}
+	${ENGINE_PLATFORM_INDEPENDENT_TIME_SOURCES}
+	${ENGINE_PLATFORM_INDEPENDENT_UTILITY_SOURCES}
+	)
+if(WIN32)
+	set(ENGINE_PLATFORM_DEPENDENT_HEADERS
+		${ENGINE_WINDOWS_COMMON_HEADERS}
+		${ENGINE_WINDOWS_TIME_HEADERS}
+		)
+	set(ENGINE_PLATFORM_DEPENDENT_SOURCES
+		${ENGINE_WINDOWS_COMMON_SOURCES}
+		${ENGINE_WINDOWS_TIME_SOURCES}
+		)
+	set(ENGINE_PLATFORM_DEPENDENT_COMMON ${ENGINE_WINDOWS_COMMON_HEADERS} ${ENGINE_WINDOWS_COMMON_SOURCES})
+	set(ENGINE_PLATFORM_DEPENDENT_TIME ${ENGINE_WINDOWS_TIME_HEADERS} ${ENGINE_WINDOWS_TIME_SOURCES})
+endif(WIN32)
+if(LINUX)
+	set(ENGINE_PLATFORM_DEPENDENT_SOURCES
+		${ENGINE_LINUX_COMMON_HEADERS}
+		${ENGINE_LINUX_TIME_HEADERS}
+		)
+	set(ENGINE_PLATFORM_DEPENDENT_SOURCES
+		${ENGINE_LINUX_COMMON_SOURCES}
+		${ENGINE_LINUX_TIME_SOURCES}
+		)
+	set(ENGINE_PLATFORM_DEPENDENT_COMMON ${ENGINE_LINUX_COMMON_HEADERS} ${ENGINE_LINUX_COMMON_SOURCES})
+	set(ENGINE_PLATFORM_DEPENDENT_TIME ${ENGINE_LINUX_TIME_HEADERS} ${ENGINE_LINUX_TIME_SOURCES})
+endif(LINUX)
+#
+###############################################################################
+
+
+###############################################################################
+#
+# Collect all the sources and headers into groups
+#
+# Common
+#
+set(ENGINE_COMMON_SOURCES
+	${ENGINE_PLATFORM_INDEPENDENT_COMMON}
+	${ENGINE_PLATFORM_DEPENDENT_COMMON}
+	)
+set(ENGINE_SYSTEM_SOURCES
+	${ENGINE_PLATFORM_INDEPENDENT_SYSTEM}
+	${ENGINE_PLATFORM_DEPENDENT_SYSTEM}
+	)
+set(ENGINE_TIME_SOURCES
+	${ENGINE_PLATFORM_INDEPENDENT_TIME}
+	${ENGINE_PLATFORM_DEPENDENT_TIME}
+	)
+set(ENGINE_UTILITY_SOURCES
+	${ENGINE_PLATFORM_INDEPENDENT_UTILITY}
+	${ENGINE_PLATFORM_DEPENDENT_UTILITY}
+	)
+#
+
+#
+# Debug builds will build static libraries for all engine components to improve
+# iteration speed.
+# Release builds will build a monolithic executable from all the individual
+# source files to get the best compiler optimisations across the executable
+#
+
+if(CMAKE_BUILD_TYPE MATCHES "Debug")
+	add_library(EngineCommon STATIC ${ENGINE_COMMON_SOURCES})
+	add_library(EngineSystem STATIC ${ENGINE_SYSTEM_SOURCES})
+	add_library(EngineTime STATIC ${ENGINE_TIME_SOURCES})
+	add_library(EngineUtility STATIC ${ENGINE_UTILITY_SOURCES})
+	set(LIBS ${LIBS} 
+		EngineCommon
+		EngineSystem
+		EngineTime
+		EngineUtility
+		)
+	set(PROJECT_HEADERS ${ENGINE_INDEPENDENT_COMMON_HEADERS})
+else()
+	set(ENGINE_HEADERS
+		${ENGINE_PLATFORM_INDEPENDENT_HEADERS}
+		${ENGINE_PLATFORM_DEPENDENT_HEADERS}
+		)
+	set(ENGINE_SOURCES
+		${ENGINE_PLATFORM_INDEPENDENT_SOURCES}
+		${ENGINE_PLATFORM_DEPENDENT_SOURCES}
+		)
+endif(CMAKE_BUILD_TYPE MATCHES "Debug")
+#
+###############################################################################
+
+
+###############################################################################
+#
+# Source groups for IDE projects
+#
+source_group(Engine\\Independent\\Common FILES ${ENGINE_INDEPENDENT_COMMON_HEADERS} ${ENGINE_INDEPENDENT_COMMON_SOURCES})
+source_group(Engine\\Independent\\System FILES ${ENGINE_INDEPENDENT_SYSTEM_HEADERS} ${ENGINE_INDEPENDENT_SYSTEM_SOURCES})
+source_group(Engine\\Independent\\Time FILES ${ENGINE_INDEPENDENT_TIME_HEADERS} ${ENGINE_INDEPENDENT_TIME_SOURCES})
+source_group(Engine\\Independent\\Utility FILES ${ENGINE_INDEPENDENT_UTILITY_HEADERS} ${ENGINE_INDEPENDENT_UTILITY_SOURCES})
+source_group(Engine\\Windows\\Common FILES ${ENGINE_WINDOWS_COMMON_HEADERS} ${ENGINE_WINDOWS_COMMON_SOURCES})
+source_group(Engine\\Windows\\Time FILES ${ENGINE_WINDOWS_TIME_HEADERS} ${ENGINE_WINDOWS_TIME_SOURCES})
+source_group(Engine\\Linux\\Common FILES ${ENGINE_LINUX_COMMON_HEADERS} ${ENGINE_LINUX_COMMON_SOURCES})
+source_group(Engine\\Linux\\Time FILES ${ENGINE_LINUX_TIME_HEADERS} ${ENGINE_LINUX_TIME_SOURCES})
+source_group(UnitTests FILES ${UNIT_TEST_CONTROL_SOURCES} ${UNIT_TEST_CONTROL_HEADERS})
+source_group(UnitTests\\Tests FILES ${UNIT_TEST_TESTS_SOURCES} ${UNIT_TEST_TESTS_HEADERS})
+#
 ###############################################################################
 
 
@@ -316,24 +379,6 @@ endif(OPENGL_SUPERBIBLE_50)
 
 ###############################################################################
 #
-# Source groups for IDE projects
-#
-source_group(Engine\\Independent\\Common FILES ${ENGINE_INDEPENDENT_COMMON_HEADERS} ${ENGINE_INDEPENDENT_COMMON_SOURCES})
-source_group(Engine\\Independent\\System FILES ${ENGINE_INDEPENDENT_SYSTEM_HEADERS} ${ENGINE_INDEPENDENT_SYSTEM_SOURCES})
-source_group(Engine\\Independent\\Time FILES ${ENGINE_INDEPENDENT_TIME_HEADERS} ${ENGINE_INDEPENDENT_TIME_SOURCES})
-source_group(Engine\\Independent\\Utility FILES ${ENGINE_INDEPENDENT_UTILITY_HEADERS} ${ENGINE_INDEPENDENT_UTILITY_SOURCES})
-source_group(Engine\\Windows\\Common FILES ${ENGINE_WINDOWS_COMMON_HEADERS} ${ENGINE_WINDOWS_COMMON_SOURCES})
-source_group(Engine\\Windows\\Time FILES ${ENGINE_WINDOWS_TIME_HEADERS} ${ENGINE_WINDOWS_TIME_SOURCES})
-source_group(Engine\\Linux\\Common FILES ${ENGINE_LINUX_COMMON_HEADERS} ${ENGINE_LINUX_COMMON_SOURCES})
-source_group(Engine\\Linux\\Time FILES ${ENGINE_LINUX_TIME_HEADERS} ${ENGINE_LINUX_TIME_SOURCES})
-source_group(UnitTests FILES ${UNIT_TEST_CONTROL_SOURCES} ${UNIT_TEST_CONTROL_HEADERS})
-source_group(UnitTests\\Tests FILES ${UNIT_TEST_TESTS_SOURCES} ${UNIT_TEST_TESTS_HEADERS})
-#
-###############################################################################
-
-
-###############################################################################
-#
 # Debug messages to print out the current include/source/libs paths
 #
 #get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
@@ -359,7 +404,7 @@ get_target_property(GENERATE_VERSION_EXE generate_version LOCATION)
 add_custom_command(
 	OUTPUT "${test_SOURCE_DIR}/engine/independent/common/version.cpp"
 	COMMAND "${GENERATE_VERSION_EXE}" --template-file "${test_SOURCE_DIR}/engine/independent/common/version.cpp.in" --build-number-file "${test_SOURCE_DIR}/engine/independent/common/build_number" --output-file "${test_SOURCE_DIR}/engine/independent/common/version.cpp"
-	DEPENDS "${GENERATE_VERSION_EXE}" "${test_SOURCE_DIR}/engine/independent/common/version.cpp.in" ${PROJECT_INDEPENDENT_SOURCES} ${PROJECT_DEPENDENT_SOURCES}
+	DEPENDS "${GENERATE_VERSION_EXE}" "${test_SOURCE_DIR}/engine/independent/common/version.cpp.in" ${ENGINE_HEADERS} ${ENGINE_SOURCES}
 	)
 #
 ###############################################################################
@@ -373,8 +418,8 @@ add_executable(
 	unit-test
  	engine/unit_test/main.cpp
 	engine/independent/common/version.cpp
-	${PROJECT_HEADERS}
-	${PROJECT_SOURCES}
+	${ENGINE_HEADERS}
+	${ENGINE_SOURCES}
 	${UNIT_TEST_HEADERS}
 	${UNIT_TEST_SOURCES}
 	)
@@ -399,8 +444,8 @@ add_executable(
  	main.cpp
 	engine/independent/common/version.cpp
 	results.txt
-	${PROJECT_HEADERS}
-	${PROJECT_SOURCES}
+	${ENGINE_HEADERS}
+	${ENGINE_SOURCES}
  	${OPENGL_SUPERBIBLE_50_SOURCES}
 	)
 target_link_libraries(test ${LIBS})
