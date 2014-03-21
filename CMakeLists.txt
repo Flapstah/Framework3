@@ -35,8 +35,8 @@ ENDIF()
 # refer to the root source directory of the project as ${test_SOURCE_DIR} and
 # to the root binary directory of the project as ${test_BINARY_DIR}.
 #
-cmake_minimum_required (VERSION 2.6)
-project (test)
+cmake_minimum_required(VERSION 2.6)
+project(test)
 # Additional cmake modules path
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 #
@@ -53,34 +53,34 @@ set(OPENGL_SUPERBIBLE_50 0)
 # Generic settings
 #set(LINK_FLAGS "-g")
 #set(CMAKE_CXX_FLAGS "-g")
-set (CMAKE_CXX_FLAGS "")
-set (CMAKE_CXX_WARNING_LEVEL 4)
-if (OPENGL_SUPERBIBLE_50)
+set(CMAKE_CXX_FLAGS "")
+set(CMAKE_CXX_WARNING_LEVEL 4)
+if(OPENGL_SUPERBIBLE_50)
 	add_definitions(-DUSE_OPENGL_SUPERBIBLE=1)
 else()
 	add_definitions(-DUSE_OPENGL_SUPERBIBLE=0)
-endif (OPENGL_SUPERBIBLE_50)
+endif(OPENGL_SUPERBIBLE_50)
 
 # MSVC specific
-if (MSVC)
-	if (SUPPORT_EXCEPTIONS)
-		set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc")
-	endif (SUPPORT_EXCEPTIONS)
-endif (MSVC)
+if(MSVC)
+	if(SUPPORT_EXCEPTIONS)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc")
+	endif(SUPPORT_EXCEPTIONS)
+endif(MSVC)
 
 # GNU specific
-if (CMAKE_COMPILER_IS_GNUCXX)
-	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
-	if (NOT SUPPORT_EXCEPTIONS)
-		set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions")
-	endif (NOT SUPPORT_EXCEPTIONS)
-	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wunused -Wfloat-equal -Wpointer-arith -Wwrite-strings -Wformat-security -Wmissing-format-attribute")
-	if (UNIX)
+if(CMAKE_COMPILER_IS_GNUCXX)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
+	if(NOT SUPPORT_EXCEPTIONS)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions")
+	endif(NOT SUPPORT_EXCEPTIONS)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wunused -Wfloat-equal -Wpointer-arith -Wwrite-strings -Wformat-security -Wmissing-format-attribute")
+	if(UNIX)
 		# Boost libraries under Windows throw a lot of shadow errors, but not under Linux
-		set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wshadow")
-	endif (UNIX)
-	#	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -pedantic-errors")
-endif (CMAKE_COMPILER_IS_GNUCXX)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wshadow")
+	endif(UNIX)
+	#	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -pedantic-errors")
+endif(CMAKE_COMPILER_IS_GNUCXX)
 #
 ###############################################################################
 
@@ -92,19 +92,19 @@ endif (CMAKE_COMPILER_IS_GNUCXX)
 set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
-if (CMAKE_COMPILER_IS_GNUCXX)
+if(CMAKE_COMPILER_IS_GNUCXX)
 find_package(Boost 1.55.0 REQUIRED COMPONENTS filesystem system thread)
 else()
 find_package(Boost 1.55.0 REQUIRED COMPONENTS chrono date_time filesystem system thread)
-endif (CMAKE_COMPILER_IS_GNUCXX)
-if (Boost_FOUND)
-	if (NOT SUPPORT_EXCEPTIONS)
-		set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DBOOST_NO_EXCEPTIONS")
-	endif (NOT SUPPORT_EXCEPTIONS)
-endif (Boost_FOUND)
+endif(CMAKE_COMPILER_IS_GNUCXX)
+if(Boost_FOUND)
+	if(NOT SUPPORT_EXCEPTIONS)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DBOOST_NO_EXCEPTIONS")
+	endif(NOT SUPPORT_EXCEPTIONS)
+endif(Boost_FOUND)
 find_package(OpenGL REQUIRED)
 find_package(ZLIB REQUIRED)
-if (WIN32)
+if(WIN32)
 	set(GLUT_INCLUDE_DIR "D:/MyCode/SDKs/glut/include")
 	set(GLUT_LIBRARY "D:/MyCode/SDKs/glut/lib/glut32.lib")
 	# Can't seem to use find_package for GLFW or OpenAL on my Windows 7 box...
@@ -113,19 +113,19 @@ if (WIN32)
 	#set(FREETYPE_INCLUDE_DIRS "D:/msysgit/local/include;D:/msysgit/local/include/freetype2")
 	#set(FREETYPE_LIBRARIES "D:/msysgit/local/lib/libfreetype.a")
 	#set(GLFW_INCLUDE_DIR "D:/msysgit/local/include")
-	#if (MSYS)
+	#if(MSYS)
 	#	set(GLFW_LIBRARY "D:/msysgit/local/lib/libglfw.a")
-	#endif (MSYS)
-	#if (MSVC)
+	#endif(MSYS)
+	#if(MSVC)
 	#	set(GLFW_LIBRARY "D:/msysgit/local/lib/glfw.lib")
-	#endif (MSVC)
-endif (WIN32)
-if (UNIX)
+	#endif(MSVC)
+endif(WIN32)
+if(UNIX)
 	find_package(GLUT REQUIRED)
 	#find_package(GLFW REQUIRED)
 	#find_package(OpenAL REQUIRED)
 	#find_package(Freetype REQUIRED)
-endif (UNIX)
+endif(UNIX)
 #
 ###############################################################################
 
@@ -134,9 +134,9 @@ endif (UNIX)
 #
 # Start OpenGL SuperBible 5.0 stuff
 #
-if (OPENGL_SUPERBIBLE_50)
+if(OPENGL_SUPERBIBLE_50)
 	set(OPENGL_SUPERBIBLE_50_INCLUDES "${test_SOURCE_DIR}/GLTools/include" "${test_SOURCE_DIR}/GLTools/include/GL")
-endif (OPENGL_SUPERBIBLE_50)
+endif(OPENGL_SUPERBIBLE_50)
 #
 # End OpenGL SuperBible 5.0 stuff
 #
@@ -271,6 +271,7 @@ FILE_LIST_NO_RECURSE(UNIT_TEST_CONTROL "engine/unit_test")
 FILE_LIST_RECURSE(UNIT_TEST_TESTS "engine/unit_test/tests")
 ###############################################################################
 
+
 ###############################################################################
 #
 # Platform include paths
@@ -280,14 +281,14 @@ set(PROJECT_INDEPENDENT_INCLUDE_DIRS
 	"${test_SOURCE_DIR}/engine/tools"
 	"${test_SOURCE_DIR}/engine/unit_test"
 	)
-if (WIN32)
+if(WIN32)
 	set(PROJECT_DEPENDENT_INCLUDE_DIRS
 	"${test_SOURCE_DIR}/engine/windows")
-endif (WIN32)
-if (UNIX)
+endif(WIN32)
+if(UNIX)
 	set(PROJECT_DEPENDENT_INCLUDE_DIRS
 	"${test_SOURCE_DIR}/engine/linux")
-endif (UNIX)
+endif(UNIX)
 #
 # Set up include and library paths
 #
@@ -301,14 +302,14 @@ set(LIBS ${LIBS} ${Boost_LIBRARIES} ${OPENGL_LIBRARY} ${ZLIB_LIBRARIES} ${GLUT_L
 #
 # Platform sources
 #
-if (OPENGL_SUPERBIBLE_50)
+if(OPENGL_SUPERBIBLE_50)
 	set(OPENGL_SUPERBIBLE_50_SOURCES
 		# Start OpenGL SuperBible 5.0 stuff
 		#GLTools/src/openglsuperbible_uber.cpp
 		GLSB/examples.cpp
 		# End OpenGL SuperBible 5.0 stuff
 		)
-endif (OPENGL_SUPERBIBLE_50)
+endif(OPENGL_SUPERBIBLE_50)
 #
 ###############################################################################
 
@@ -347,12 +348,12 @@ source_group(UnitTests\\Tests FILES ${UNIT_TEST_TESTS_SOURCES} ${UNIT_TEST_TESTS
 #
 # Build the 'generate_version' executable
 #
-add_executable (
+add_executable(
 	generate_version
  	engine/tools/generate_version/main.cpp
  	engine/independent/common/stdafx.cpp
 	)
-target_link_libraries (generate_version ${Boost_LIBRARIES})
+target_link_libraries(generate_version ${Boost_LIBRARIES})
 #
 get_target_property(GENERATE_VERSION_EXE generate_version LOCATION)
 add_custom_command(
@@ -368,7 +369,7 @@ add_custom_command(
 #
 # Build the 'unit-test' executable
 #
-add_executable (
+add_executable(
 	unit-test
  	engine/unit_test/main.cpp
 	engine/independent/common/version.cpp
@@ -377,7 +378,7 @@ add_executable (
 	${UNIT_TEST_HEADERS}
 	${UNIT_TEST_SOURCES}
 	)
-target_link_libraries (unit-test ${LIBS})
+target_link_libraries(unit-test ${LIBS})
 
 get_target_property(UNIT_TEST_EXE unit-test LOCATION)
 add_custom_command(
@@ -393,7 +394,7 @@ add_custom_command(
 #
 # Build rules for the executable
 #
-add_executable (
+add_executable(
 	test
  	main.cpp
 	engine/independent/common/version.cpp
@@ -402,7 +403,7 @@ add_executable (
 	${PROJECT_SOURCES}
  	${OPENGL_SUPERBIBLE_50_SOURCES}
 	)
-target_link_libraries (test ${LIBS})
+target_link_libraries(test ${LIBS})
 add_dependencies(test unit-test)
 #
 ###############################################################################
