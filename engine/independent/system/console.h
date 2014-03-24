@@ -13,13 +13,13 @@
 //==============================================================================
 
 #define REGISTER_VARIABLE(_variable_, _value_, _flags_, _on_change_callback_, _description_) \
-	engine::CConsole::Get().RegisterVariable(engine::CompileTimeStringHash(#_variable_), _variable_, _value_, _flags_, _on_change_callback_, #_variable_, _description_)
+	engine::system::CConsole::Get().RegisterVariable(engine::utility::CompileTimeStringHash(#_variable_), _variable_, _value_, _flags_, _on_change_callback_, #_variable_, _description_)
 #define REGISTER_NAMED_VARIABLE(_name_, _variable_, _value_, _flags_, _on_change_callback_, _description_) \
-	engine::CConsole::Get().RegisterVariable(engine::CompileTimeStringHash(_name_), _variable_, _value_, _flags_, _on_change_callback_, _name_, _description_)
+	engine::system::CConsole::Get().RegisterVariable(engine::utility::CompileTimeStringHash(_name_), _variable_, _value_, _flags_, _on_change_callback_, _name_, _description_)
 #define REGISTER_COMMAND(_flags_, _execute_callback_, _description_) \
-	engine::CConsole::Get().RegisterCommand(engine::CompileTimeStringHash(#_execute_callback_), _flags_, _execute_callback_, #_execute_callback_, _description_)
+	engine::system::CConsole::Get().RegisterCommand(engine::utility::CompileTimeStringHash(#_execute_callback_), _flags_, _execute_callback_, #_execute_callback_, _description_)
 #define REGISTER_NAMED_COMMAND(_command_, _flags_, _execute_callback_, _description_) \
-	engine::CConsole::Get().RegisterCommand(engine::CompileTimeStringHash(_command_), _flags_, _execute_callback_, _command_, _description_)
+	engine::system::CConsole::Get().RegisterCommand(engine::utility::CompileTimeStringHash(_command_), _flags_, _execute_callback_, _command_, _description_)
 
 //------------------------------------------------------------------------------
 // A "hidden" variable/command will have no plain text details stored when
@@ -27,13 +27,13 @@
 //------------------------------------------------------------------------------
 #if CONSOLE_HIDDEN_VARIABLES_ENABLED
 #define REGISTER_HIDDEN_VARIABLE(_variable_, _value_, _flags_, _on_change_callback_, _description_) \
-	engine::CConsole::Get().RegisterVariable(engine::CompileTimeStringHash(#_variable_), _variable_, _value_, _flags_, _on_change_callback_, NULL, NULL)
+	engine::system::CConsole::Get().RegisterVariable(engine::utility::CompileTimeStringHash(#_variable_), _variable_, _value_, _flags_, _on_change_callback_, NULL, NULL)
 #define REGISTER_HIDDEN_NAMED_VARIABLE(_name_, _variable_, _value_, _flags_, _on_change_callback_, _description_) \
-	engine::CConsole::Get().RegisterVariable(engine::CompileTimeStringHash(_name_), _variable_, _value_, _flags_, _on_change_callback_, NULL, NULL)
+	engine::system::CConsole::Get().RegisterVariable(engine::utility::CompileTimeStringHash(_name_), _variable_, _value_, _flags_, _on_change_callback_, NULL, NULL)
 #define REGISTER_HIDDEN_COMMAND(_flags_, _execute_callback_, _description_) \
-	engine::CConsole::Get().RegisterCommand(engine::CompileTimeStringHash(#_execute_callback_), _flags_, _execute_callback_, NULL, NULL)
+	engine::system::CConsole::Get().RegisterCommand(engine::utility::CompileTimeStringHash(#_execute_callback_), _flags_, _execute_callback_, NULL, NULL)
 #define REGISTER_HIDDEN_NAMED_COMMAND(_command_, _flags_, _execute_callback_, _description_) \
-	engine::CConsole::Get().RegisterCommand(engine::CompileTimeStringHash(_command_), _flags_, _execute_callback_, NULL, NULL)
+	engine::system::CConsole::Get().RegisterCommand(engine::utility::CompileTimeStringHash(_command_), _flags_, _execute_callback_, NULL, NULL)
 #else
 #define REGISTER_HIDDEN_VARIABLE(_variable_, _value_, _flags_, _on_change_callback_, _description_) REGISTER_VARIABLE(_variable_, _value_, _flags_, _on_change_callback_, _description_)
 #define REGISTER_HIDDEN_NAMED_VARIABLE(_name_, _variable_, _value_, _flags_, _on_change_callback_, _description_) REGISTER_NAMED_VARIABLE(_name_, _variable_, _value_, _flags_, _on_change_callback_, _description_)
@@ -57,24 +57,28 @@
 #define REGISTER_DEBUG_NAMED_COMMAND(_command_, _flags_, _execute_callback_, _description_)
 #endif // DEVELOPMENT_CONSOLE_VARIABLES_ENABLED
 
-#define UNREGISTER_VARIABLE(_variable_) engine::CConsole::Get().UnregisterVariable(engine::CompileTimeStringHash(#_variable_))
-#define UNREGISTER_VARIABLE_BY_NAME(_variable_) engine::CConsole::Get().UnregisterVariable(engine::CompileTimeStringHash(_variable_))
-#define UNREGISTER_VARIABLE_BY_POINTER(_tivariableptr_) engine::CConsole::Get().UnregisterVariable(_tivariableptr_)
+#define UNREGISTER_VARIABLE(_variable_) engine::system::CConsole::Get().UnregisterVariable(engine::utility::CompileTimeStringHash(#_variable_))
+#define UNREGISTER_VARIABLE_BY_NAME(_variable_) engine::system::CConsole::Get().UnregisterVariable(engine::utility::CompileTimeStringHash(_variable_))
+#define UNREGISTER_VARIABLE_BY_POINTER(_tivariableptr_) engine::system::CConsole::Get().UnregisterVariable(_tivariableptr_)
 
-#define UNREGISTER_COMMAND(_command_) engine::CConsole::Get().UnregisterCommand(engine::CompileTimeStringHash(#_command_))
-#define UNREGISTER_COMMAND_BY_NAME(_command_) engine::CConsole::Get().UnregisterCommand(engine::CompileTimeStringHash(_command_))
-#define UNREGISTER_COMMAND_BY_POINTER(_ticommandptr_) engine::CConsole::Get().UnregisterCommand(_ticommandptr_)
+#define UNREGISTER_COMMAND(_command_) engine::system::CConsole::Get().UnregisterCommand(engine::utility::CompileTimeStringHash(#_command_))
+#define UNREGISTER_COMMAND_BY_NAME(_command_) engine::system::CConsole::Get().UnregisterCommand(engine::utility::CompileTimeStringHash(_command_))
+#define UNREGISTER_COMMAND_BY_POINTER(_ticommandptr_) engine::system::CConsole::Get().UnregisterCommand(_ticommandptr_)
 
 //==============================================================================
 
 namespace engine
 {
 	//============================================================================
-	// CConsole
-	//============================================================================
-	class CConsole
+
+	namespace system
 	{
-		//--------------------------------------------------------------------------
+		//==========================================================================
+		// CConsole
+		//==========================================================================
+		class CConsole
+		{
+			//------------------------------------------------------------------------
 		public:
 			SINGLETON(CConsole);
 			~CConsole(void);
@@ -112,9 +116,9 @@ namespace engine
 				enum eFlags
 				{
 					eF_CONST = BIT(0),		// If set, the mapped variable cannot be changed by
-																// Get/Set methods (with the exception of variable
-																// registration, where it's initial value *will*
-																// be passed to Set (and any OnChange callback)
+					// Get/Set methods (with the exception of variable
+					// registration, where it's initial value *will*
+					// be passed to Set (and any OnChange callback)
 				}; // End [enum eFlags]
 
 				virtual int64							GetInteger(void) const = 0;
@@ -278,13 +282,16 @@ namespace engine
 			// that have names and descriptions (instead of spurious NULL pointers),
 			// and they're not easily linked with the source in the first place.
 
-	}; // End [class CConsole]
+		}; // End [class CConsole]
 
+		//==========================================================================
+	} // End [namespace system]
+
+	//============================================================================
 } // End [namespace engine]
 
 //==============================================================================
 
 #endif // !defined(__CONSOLE_H__)
 // EOF
-
 

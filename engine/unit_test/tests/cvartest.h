@@ -40,7 +40,7 @@ namespace test
 			static	uint32						ConsoleCommandTest(CUnitTest* pParent);
 
 		private:
-			static	engine::CConsole::TIVariablePtr m_pCVar;
+			static	engine::system::CConsole::TIVariablePtr m_pCVar;
 	}; // End [struct class CCVarTest : public CUnitTest]
 
 	//============================================================================

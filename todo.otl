@@ -1,27 +1,29 @@
-Build process
-	Seem to have a circular dependency for engine/independent/common/version.cpp
-	Also have some smart pointer issues in release builds
-
-Tracing
-	Could store callstack address of function in the trace macro?  Might help with debugging..?
-		Requires being able to grab the callstack
+Engine
+	Now that there is separation by library, need separation by namespace
+	Need init/tick/shutdown lifecycle
 
 Unit tests
 	probably can do nicer comparisons of strings in cvar tests now that we're using std::string
 	Need to add custom log unit test
 	Make unit test exe delete/create results file so that the main executable will fail to build if the unit tests fail
 
-Logs
-	Once engine lifecycle management is in place, can register log level as debug cvar
-	Log to file still needs implementing
-
-Engine
-	Need init/tick/shutdown lifecycle
+Tracing
+	Could store callstack address of function in the trace macro?  Might help with debugging..?
+		Requires being able to grab the callstack
 
 File system
 	Need file system abstraction to control the number of open files (use boost::filesystem under the hood)
+
+Logs
+	Once engine lifecycle management is in place, can register log level as debug cvar
+	Log to file still needs implementing
 
 Solved:
 	Logs no longer being elided from code when in release builds - why?
 		To do with not being able to determine the value of log_level as a constant at runtime
 			Release builds now expose log_level as a static constant in log.h
+	Seem to have a circular dependency for engine/independent/common/version.cpp
+		Needed to remove the full path (i.e. path needed ${test_SOURCE_DIR}) of version.cpp
+	Also have some smart pointer warnings in release builds
+		Boost include directories now treated as system directories (include_directories(SYSTEM xxx) means use -isystem instead of -I with gcc make)
+

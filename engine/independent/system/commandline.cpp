@@ -9,23 +9,27 @@ namespace engine
 {
 	//============================================================================
 
-	CCommandLine::CCommandLine(uint32 argc, const char* const* argv, CConsole& console)
-		: m_log(ENGINE_LOGGER, "CommandLine")
+	namespace system
 	{
-		std::vector<const char*> preArgs;
-		std::vector<const char*> args;
-		std::vector<const char*> postArgs;
+		//==========================================================================
 
-		preArgs.reserve(argc);
-		args.reserve(argc);
-		postArgs.reserve(argc);
-
-		// Skip the executable name
-		for (uint32 index = 1; index < argc; ++index)
+		CCommandLine::CCommandLine(uint32 argc, const char* const* argv, CConsole& console)
+			: m_log(ENGINE_LOGGER, "CommandLine")
 		{
-			// Sort args into pre/normal/post
-			switch (argv[index][0])
+			std::vector<const char*> preArgs;
+			std::vector<const char*> args;
+			std::vector<const char*> postArgs;
+
+			preArgs.reserve(argc);
+			args.reserve(argc);
+			postArgs.reserve(argc);
+
+			// Skip the executable name
+			for (uint32 index = 1; index < argc; ++index)
 			{
+				// Sort args into pre/normal/post
+				switch (argv[index][0])
+				{
 				case '-':
 					preArgs.push_back(argv[index]+1);
 					break;
@@ -37,28 +41,30 @@ namespace engine
 				default:
 					args.push_back(argv[index]);
 					break;
+				}
+			}
+
+			// Append normal args to pre args array
+			preArgs.insert(preArgs.end(), args.begin(), args.end());
+			// Append post args to pre/normal args array
+			preArgs.insert(preArgs.end(), postArgs.begin(), postArgs.end());
+
+			for (std::vector<const char*>::iterator it = preArgs.begin(); it != preArgs.end(); ++ it)
+			{
+				LOG_ALWAYS(m_log, "%s", *it);
 			}
 		}
 
-		// Append normal args to pre args array
-		preArgs.insert(preArgs.end(), args.begin(), args.end());
-		// Append post args to pre/normal args array
-		preArgs.insert(preArgs.end(), postArgs.begin(), postArgs.end());
+		//============================================================================
 
-		for (std::vector<const char*>::iterator it = preArgs.begin(); it != preArgs.end(); ++ it)
+		CCommandLine::~CCommandLine(void)
 		{
-			LOG_ALWAYS(m_log, "%s", *it);
 		}
-	}
+
+		//==========================================================================
+	} // End [namespace system]
 
 	//============================================================================
-
-	CCommandLine::~CCommandLine(void)
-	{
-	}
-
-	//============================================================================
-
 } // End [namespace engine]
 
 //==============================================================================

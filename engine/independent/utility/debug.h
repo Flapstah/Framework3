@@ -8,35 +8,43 @@
 namespace engine
 {
 	//============================================================================
-	// CTrace
-	//============================================================================
-	class CTrace
+
+	namespace utility
 	{
-	public:
-		CTrace(bool enable, const char* entryPoint);
-		~CTrace(void);
+		//==========================================================================
+		// CTrace
+		//==========================================================================
+		class CTrace
+		{
+		public:
+			CTrace(bool enable, const char* entryPoint);
+			~CTrace(void);
 
-		static const char* CreateString(const char* format, ...) __attribute__((format(printf, 1, 2)));
+			static const char* CreateString(const char* format, ...) __attribute__((format(printf, 1, 2)));
 
-		static void On(void);
-		static void Off(void);
+			static void On(void);
+			static void Off(void);
 
-	private:
+		private:
 #if DEBUG_TRACE_USE_LOGGER
-		static CLog* m_pLog;
+			static engine::system::CLog* m_pLog;
 #endif // DEBUG_TRACE_USE_LOGGER
-		const char* m_entryPoint;
-		const bool	m_enable;
-		static bool	s_active;
-	}; // End [class CTrace]
+			const char* m_entryPoint;
+			const bool	m_enable;
+			static bool	s_active;
+		}; // End [class CTrace]
+
+
+		//==========================================================================
+	} // End [namespace utility]
 
 	//============================================================================
 } // End [namespace engine]
 
-#define TRACE_STRING(_format_, ...) engine::CTrace::CreateString(_format_, ## __VA_ARGS__)
-#define TRACE(_enable_) engine::CTrace _functionTracer(_enable_, TRACE_STRING("%s(%d): %s", __FILE__, __LINE__, __FUNCTION_SIGNATURE__));
-#define TRON engine::CTrace::On()
-#define TROFF engine::CTrace::Off()
+#define TRACE_STRING(_format_, ...) engine::utility::CTrace::CreateString(_format_, ## __VA_ARGS__)
+#define TRACE(_enable_) engine::utility::CTrace _functionTracer(_enable_, TRACE_STRING("%s(%d): %s", __FILE__, __LINE__, __FUNCTION_SIGNATURE__));
+#define TRON engine::utility::CTrace::On()
+#define TROFF engine::utility::CTrace::Off()
 
 #else
 

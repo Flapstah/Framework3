@@ -39,36 +39,42 @@ namespace engine
 {
 	//============================================================================
 
-	uint32 GetVersion(void)
+	namespace common
 	{
-		return (VERSION_MAJOR << 24) || (VERSION_MINOR << 16) || BUILD_NUMBER;
-	}
+		//==========================================================================
 
-	//============================================================================
+		uint32 GetVersion(void)
+		{
+			return (VERSION_MAJOR << 24) || (VERSION_MINOR << 16) || BUILD_NUMBER;
+		}
 
-	const char* GetVersionString(void)
-	{
-		return __VERSION_SIGNATURE__;
-	}
+		//==========================================================================
 
-	//============================================================================
+		const char* GetVersionString(void)
+		{
+			return __VERSION_SIGNATURE__;
+		}
 
-	const char* GetConfigurationString(void)
-	{
-		return __CONFIGURATION_SIGNATURE__;
-	}
+		//==========================================================================
 
-	//============================================================================
+		const char* GetConfigurationString(void)
+		{
+			return __CONFIGURATION_SIGNATURE__;
+		}
 
-	const char* GetBuildDateString(void)
-	{
-		return __BUILD_DATE_SIGNATURE__;
-	}
+		//==========================================================================
+
+		const char* GetBuildDateString(void)
+		{
+			return __BUILD_DATE_SIGNATURE__;
+		}
+
+		//==========================================================================
+	} // End [namespace common]
 
 	//============================================================================
 } // End [namespace engine]
 
 //==============================================================================
 // EOF
-
 

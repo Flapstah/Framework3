@@ -106,7 +106,7 @@ namespace test
 
 		protected:
 			ITime*										m_pTime;
-			CLog											m_log;
+			engine::system::CLog			m_log;
 			eTestStatus								m_testStatus;
 			eStageStatus							m_stageStatus;
 

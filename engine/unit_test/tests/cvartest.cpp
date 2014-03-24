@@ -21,7 +21,7 @@ namespace test
 
 	//============================================================================
 
-	engine::CConsole::TIVariablePtr CCVarTest::m_pCVar;
+	engine::system::CConsole::TIVariablePtr CCVarTest::m_pCVar;
 
 	//============================================================================
 
@@ -174,14 +174,14 @@ namespace test
 
 				case 6:
 					{
-						engine::CConsole::Get().Execute("testIntegerVariable = 123");
+						engine::system::CConsole::Get().Execute("testIntegerVariable = 123");
 						pThis->Test("Setting integer cvar through console command (with '=')", m_pCVar->GetInteger() == 123, "Value is not set correctly");
 					}
 					break;
 
 				case 7:
 					{
-						engine::CConsole::Get().Execute("testIntegerVariable 0x123");
+						engine::system::CConsole::Get().Execute("testIntegerVariable 0x123");
 						pThis->Test("Setting integer cvar through console command (without '=')", m_pCVar->GetInteger() == 291, "Value is not set correctly");
 					}
 					break;
@@ -212,7 +212,7 @@ namespace test
 				case 1:
 					{
 						int64 initialValue = rand();
-						m_pCVar = REGISTER_VARIABLE(testIntegerVariable, initialValue, engine::CConsole::IVariable::eF_CONST, NULL, "A test variable");
+						m_pCVar = REGISTER_VARIABLE(testIntegerVariable, initialValue, engine::system::CConsole::IVariable::eF_CONST, NULL, "A test variable");
 						pThis->Test("Setting initial value of const integer cvar", m_pCVar->GetInteger() == initialValue, "Initial value is not set correctly");
 					}
 					break;
@@ -247,7 +247,7 @@ namespace test
 				case 5:
 					{
 						int64 initialValue = m_pCVar->GetInteger();
-						engine::CConsole::Get().Execute("testIntegerVariable = 123");
+						engine::system::CConsole::Get().Execute("testIntegerVariable = 123");
 						pThis->Test("Setting integer cvar through console command", m_pCVar->GetInteger() == initialValue, "Value has changed");
 					}
 					break;
@@ -319,14 +319,14 @@ namespace test
 
 				case 6:
 					{
-						engine::CConsole::Get().Execute("testDoubleVariable = 87.123");
+						engine::system::CConsole::Get().Execute("testDoubleVariable = 87.123");
 						pThis->Test("Setting double cvar through console command (with '=')", pThis->IsEqual(m_pCVar->GetDouble(), 87.123), "Value is not set correctly");
 					}
 					break;
 
 				case 7:
 					{
-						engine::CConsole::Get().Execute("testDoubleVariable 0x12.3");
+						engine::system::CConsole::Get().Execute("testDoubleVariable 0x12.3");
 						pThis->Test("Setting double cvar through console command (without '=')", pThis->IsEqual(m_pCVar->GetDouble(), 18.1875), "Value is not set correctly");
 					}
 					break;
@@ -357,7 +357,7 @@ namespace test
 				case 1:
 					{
 						double initialValue = static_cast<double>(rand()) / static_cast<double>(rand()+1);
-						m_pCVar = REGISTER_VARIABLE(testDoubleVariable, initialValue, engine::CConsole::IVariable::eF_CONST, NULL, "A test variable");
+						m_pCVar = REGISTER_VARIABLE(testDoubleVariable, initialValue, engine::system::CConsole::IVariable::eF_CONST, NULL, "A test variable");
 						pThis->Test("Setting initial value of const double cvar", pThis->IsEqual(m_pCVar->GetDouble(), initialValue), "Initial value is not set correctly");
 					}
 					break;
@@ -392,7 +392,7 @@ namespace test
 				case 5:
 					{
 						double initialValue = m_pCVar->GetDouble();
-						engine::CConsole::Get().Execute("testIntegerVariable = 0x12.3");
+						engine::system::CConsole::Get().Execute("testIntegerVariable = 0x12.3");
 						pThis->Test("Setting double cvar through console command", pThis->IsEqual(m_pCVar->GetDouble(), initialValue), "Value has changed");
 					}
 					break;
@@ -478,7 +478,7 @@ namespace test
 				case 1:
 					{
 						const char* initialValue = "A test value";
-						m_pCVar = REGISTER_VARIABLE(testStringVariable, initialValue, engine::CConsole::IVariable::eF_CONST, NULL, "A test variable");
+						m_pCVar = REGISTER_VARIABLE(testStringVariable, initialValue, engine::system::CConsole::IVariable::eF_CONST, NULL, "A test variable");
 						pThis->Test("Setting initial value of constant string cvar", strcmp(m_pCVar->GetString().c_str(), initialValue) == 0, "Initial value is not set correctly");
 					}
 					break;
@@ -549,7 +549,7 @@ namespace test
 				case 3:
 					{
 						std::string cmd = "Test \"1 2\" 3";
-						engine::CConsole::Get().Execute(cmd);
+						engine::system::CConsole::Get().Execute(cmd);
 						pThis->Test("Testing console command was executed", testCommandEntered, "Test command not executed");
 					}
 					break;

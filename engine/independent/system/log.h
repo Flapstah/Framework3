@@ -6,11 +6,15 @@
 namespace engine
 {
 	//============================================================================
-	// CLog
-	//============================================================================
-	class CLog
+
+	namespace system
 	{
-		//--------------------------------------------------------------------------
+		//==========================================================================
+		// CLog
+		//==========================================================================
+		class CLog
+		{
+			//------------------------------------------------------------------------
 
 		public:
 			enum eLogLevel
@@ -25,17 +29,17 @@ namespace engine
 				eLL_DEBUG
 			};
 
-		//--------------------------------------------------------------------------
+			//------------------------------------------------------------------------
 
 			enum eBehaviour
 			{
 				eB_ACTIVE				= 1 << 0,		// Log is active and will produce output
 				eB_NO_STDERR		= 1 << 1,		// Log will NOT use stderr (eBT_STANDARD
-																		// target will normally output to stderr for
-																		// eLL_FATAL, eLL_ERROR and eLL_WARNING log
-																		// levels, with everything else going to
-																		// stdout.  Setting this flag will force
-																		// *all* output through stdout.)
+				// target will normally output to stderr for
+				// eLL_FATAL, eLL_ERROR and eLL_WARNING log
+				// levels, with everything else going to
+				// stdout.  Setting this flag will force
+				// *all* output through stdout.)
 
 				// Additional info
 				eBAI_LOCATION		= 1 << 2,
@@ -56,7 +60,7 @@ namespace engine
 				eBT_ALL					= (eBT_CONSOLE | eBT_DEBUGGER | eBT_FILE | eBT_STANDARD),
 			};
 
-		//--------------------------------------------------------------------------
+			//------------------------------------------------------------------------
 
 		public:
 			CLog(CLog& parent, const char* name);
@@ -92,7 +96,7 @@ namespace engine
 		private:
 			CLog(void);
 
-		//--------------------------------------------------------------------------
+			//------------------------------------------------------------------------
 
 		private:
 			CLog* m_pParent;
@@ -106,8 +110,11 @@ namespace engine
 			static int64 s_logLevel;
 #endif // defined(RELEASE)
 
-		//--------------------------------------------------------------------------
-	}; // End [class CLog]
+			//------------------------------------------------------------------------
+		}; // End [class CLog]
+
+		//==========================================================================
+	} // End [namespace system]
 
 	//============================================================================
 } // End [namespace engine]
@@ -119,20 +126,20 @@ namespace engine
 #if LOG_ELIDE_ALL_LOGS
 #define LOG(_log_, _level_, _format_, ...)
 #else // LOG_ELIDE_ALL_LOGS
-#define LOG(_log_, _level_, _format_, ...) (((engine::CLog::s_logLevel >= _level_) && ((_log_).IsActive())) ? (_log_).Log(__FILE__, __LINE__, _level_, _format_, ## __VA_ARGS__) : false)
+#define LOG(_log_, _level_, _format_, ...) (((engine::system::CLog::s_logLevel >= _level_) && ((_log_).IsActive())) ? (_log_).Log(__FILE__, __LINE__, _level_, _format_, ## __VA_ARGS__) : false)
 #endif // LOG_ELIDE_ALL_LOGS
 
-#define LOG_DEBUG(_log_, _format_, ...) LOG(_log_, engine::CLog::eLL_DEBUG, _format_, ## __VA_ARGS__)
-#define LOG_VERBOSE(_log_, _format_, ...) LOG(_log_, engine::CLog::eLL_VERBOSE, _format_, ## __VA_ARGS__)
-#define LOG_INFO(_log_, _format_, ...) LOG(_log_, engine::CLog::eLL_INFO, _format_, ## __VA_ARGS__)
-#define LOG_TERSE(_log_, _format_, ...) LOG(_log_, engine::CLog::eLL_TERSE, _format_, ## __VA_ARGS__)
-#define LOG_WARNING(_log_, _format_, ...) LOG(_log_, engine::CLog::eLL_WARNING, _format_, ## __VA_ARGS__)
-#define LOG_ERROR(_log_, _format_, ...) LOG(_log_, engine::CLog::eLL_ERROR, _format_, ## __VA_ARGS__)
-#define LOG_FATAL(_log_, _format_, ...) LOG(_log_, engine::CLog::eLL_FATAL, _format_, ## __VA_ARGS__)
-#define LOG_ALWAYS(_log_, _format_, ...) LOG(_log_, engine::CLog::eLL_ALWAYS, _format_, ## __VA_ARGS__)
+#define LOG_DEBUG(_log_, _format_, ...) LOG(_log_, engine::system::CLog::eLL_DEBUG, _format_, ## __VA_ARGS__)
+#define LOG_VERBOSE(_log_, _format_, ...) LOG(_log_, engine::system::CLog::eLL_VERBOSE, _format_, ## __VA_ARGS__)
+#define LOG_INFO(_log_, _format_, ...) LOG(_log_, engine::system::CLog::eLL_INFO, _format_, ## __VA_ARGS__)
+#define LOG_TERSE(_log_, _format_, ...) LOG(_log_, engine::system::CLog::eLL_TERSE, _format_, ## __VA_ARGS__)
+#define LOG_WARNING(_log_, _format_, ...) LOG(_log_, engine::system::CLog::eLL_WARNING, _format_, ## __VA_ARGS__)
+#define LOG_ERROR(_log_, _format_, ...) LOG(_log_, engine::system::CLog::eLL_ERROR, _format_, ## __VA_ARGS__)
+#define LOG_FATAL(_log_, _format_, ...) LOG(_log_, engine::system::CLog::eLL_FATAL, _format_, ## __VA_ARGS__)
+#define LOG_ALWAYS(_log_, _format_, ...) LOG(_log_, engine::system::CLog::eLL_ALWAYS, _format_, ## __VA_ARGS__)
 
-#define ENGINE_LOGGER engine::CLog::GetEngineLog()
-#define GAME_LOGGER engine::CLog::GetGameLog()
+#define ENGINE_LOGGER engine::system::CLog::GetEngineLog()
+#define GAME_LOGGER engine::system::CLog::GetGameLog()
 
 //==============================================================================
 

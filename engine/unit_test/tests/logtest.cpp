@@ -2,7 +2,7 @@
 
 #include "tests/logtest.h"
 
-#define LOG_TEST(_log_, _level_, _stage_type_) pThis->Test(#_level_ " log test", (LOG_ ## _level_(_log_, #_level_ " log test") == (_log_.IsActive() && (engine::CLog::s_logLevel >= engine::CLog::eLL_ ## _level_))), "Should not have logged at " #_level_ " log level", _stage_type_)
+#define LOG_TEST(_log_, _level_, _stage_type_) pThis->Test(#_level_ " log test", (LOG_ ## _level_(_log_, #_level_ " log test") == (_log_.IsActive() && (engine::system::CLog::s_logLevel >= engine::system::CLog::eLL_ ## _level_))), "Should not have logged at " #_level_ " log level", _stage_type_)
 
 namespace test
 {
@@ -37,9 +37,9 @@ namespace test
 	{
 		CLogTest* pThis = static_cast<CLogTest*>(pParent);
 		uint32 status = eSS_PASS;
-		ENGINE_LOGGER.SetFlags(ENGINE_LOGGER.GetFlags() & ~(engine::CLog::eBT_CONSOLE | engine::CLog::eBT_FILE | engine::CLog::eBT_STANDARD));
+		ENGINE_LOGGER.SetFlags(ENGINE_LOGGER.GetFlags() & ~(engine::system::CLog::eBT_CONSOLE | engine::system::CLog::eBT_FILE | engine::system::CLog::eBT_STANDARD));
 #if defined(DEBUG)
-		int64 oldLogLevel = engine::CLog::s_logLevel;
+		int64 oldLogLevel = engine::system::CLog::s_logLevel;
 #endif // defined(DEBUG)
 
 		if (pThis->m_testStatus == eTS_RUNNING)
@@ -70,69 +70,69 @@ namespace test
 				// If we're in debug, we can alter the log level and retest to make sure
 				// all log levels are correctly elided
 				case 3:
-					engine::CLog::s_logLevel = engine::CLog::eLL_DEBUG;
+					engine::system::CLog::s_logLevel = engine::system::CLog::eLL_DEBUG;
 					LOG_TEST(ENGINE_LOGGER, DEBUG, eTT_SubStage);
 					LOG_TEST(ENGINE_LOGGER, INFO, eTT_SubStage);
 					LOG_TEST(ENGINE_LOGGER, WARNING, eTT_SubStage);
 					LOG_TEST(ENGINE_LOGGER, ERROR, eTT_SubStage);
 					LOG_TEST(ENGINE_LOGGER, FATAL, eTT_SubStage);
 					LOG_TEST(ENGINE_LOGGER, ALWAYS, eTT_Stage);
-					engine::CLog::s_logLevel = oldLogLevel;
+					engine::system::CLog::s_logLevel = oldLogLevel;
 					break;
 
 				case 4:
-					engine::CLog::s_logLevel = engine::CLog::eLL_INFO;
+					engine::system::CLog::s_logLevel = engine::system::CLog::eLL_INFO;
 					LOG_TEST(ENGINE_LOGGER, DEBUG, eTT_SubStage);
 					LOG_TEST(ENGINE_LOGGER, INFO, eTT_SubStage);
 					LOG_TEST(ENGINE_LOGGER, WARNING, eTT_SubStage);
 					LOG_TEST(ENGINE_LOGGER, ERROR, eTT_SubStage);
 					LOG_TEST(ENGINE_LOGGER, FATAL, eTT_SubStage);
 					LOG_TEST(ENGINE_LOGGER, ALWAYS, eTT_Stage);
-					engine::CLog::s_logLevel = oldLogLevel;
+					engine::system::CLog::s_logLevel = oldLogLevel;
 					break;
 
 				case 5:
-					engine::CLog::s_logLevel = engine::CLog::eLL_WARNING;
+					engine::system::CLog::s_logLevel = engine::system::CLog::eLL_WARNING;
 					LOG_TEST(ENGINE_LOGGER, DEBUG, eTT_SubStage);
 					LOG_TEST(ENGINE_LOGGER, INFO, eTT_SubStage);
 					LOG_TEST(ENGINE_LOGGER, WARNING, eTT_SubStage);
 					LOG_TEST(ENGINE_LOGGER, ERROR, eTT_SubStage);
 					LOG_TEST(ENGINE_LOGGER, FATAL, eTT_SubStage);
 					LOG_TEST(ENGINE_LOGGER, ALWAYS, eTT_Stage);
-					engine::CLog::s_logLevel = oldLogLevel;
+					engine::system::CLog::s_logLevel = oldLogLevel;
 					break;
 
 				case 6:
-					engine::CLog::s_logLevel = engine::CLog::eLL_ERROR;
+					engine::system::CLog::s_logLevel = engine::system::CLog::eLL_ERROR;
 					LOG_TEST(ENGINE_LOGGER, DEBUG, eTT_SubStage);
 					LOG_TEST(ENGINE_LOGGER, INFO, eTT_SubStage);
 					LOG_TEST(ENGINE_LOGGER, WARNING, eTT_SubStage);
 					LOG_TEST(ENGINE_LOGGER, ERROR, eTT_SubStage);
 					LOG_TEST(ENGINE_LOGGER, FATAL, eTT_SubStage);
 					LOG_TEST(ENGINE_LOGGER, ALWAYS, eTT_Stage);
-					engine::CLog::s_logLevel = oldLogLevel;
+					engine::system::CLog::s_logLevel = oldLogLevel;
 					break;
 
 				case 7:
-					engine::CLog::s_logLevel = engine::CLog::eLL_FATAL;
+					engine::system::CLog::s_logLevel = engine::system::CLog::eLL_FATAL;
 					LOG_TEST(ENGINE_LOGGER, DEBUG, eTT_SubStage);
 					LOG_TEST(ENGINE_LOGGER, INFO, eTT_SubStage);
 					LOG_TEST(ENGINE_LOGGER, WARNING, eTT_SubStage);
 					LOG_TEST(ENGINE_LOGGER, ERROR, eTT_SubStage);
 					LOG_TEST(ENGINE_LOGGER, FATAL, eTT_SubStage);
 					LOG_TEST(ENGINE_LOGGER, ALWAYS, eTT_Stage);
-					engine::CLog::s_logLevel = oldLogLevel;
+					engine::system::CLog::s_logLevel = oldLogLevel;
 					break;
 
 				case 8:
-					engine::CLog::s_logLevel = engine::CLog::eLL_ALWAYS;
+					engine::system::CLog::s_logLevel = engine::system::CLog::eLL_ALWAYS;
 					LOG_TEST(ENGINE_LOGGER, DEBUG, eTT_SubStage);
 					LOG_TEST(ENGINE_LOGGER, INFO, eTT_SubStage);
 					LOG_TEST(ENGINE_LOGGER, WARNING, eTT_SubStage);
 					LOG_TEST(ENGINE_LOGGER, ERROR, eTT_SubStage);
 					LOG_TEST(ENGINE_LOGGER, FATAL, eTT_SubStage);
 					LOG_TEST(ENGINE_LOGGER, ALWAYS, eTT_Stage);
-					engine::CLog::s_logLevel = oldLogLevel;
+					engine::system::CLog::s_logLevel = oldLogLevel;
 					break;
 #endif // defined(DEBUG)
 
@@ -142,7 +142,7 @@ namespace test
 			}
 		}
 
-		ENGINE_LOGGER.SetFlags(ENGINE_LOGGER.GetFlags() | (engine::CLog::eBT_CONSOLE | engine::CLog::eBT_FILE | engine::CLog::eBT_STANDARD));
+		ENGINE_LOGGER.SetFlags(ENGINE_LOGGER.GetFlags() | (engine::system::CLog::eBT_CONSOLE | engine::system::CLog::eBT_FILE | engine::system::CLog::eBT_STANDARD));
 		return status;
 	}
 

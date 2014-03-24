@@ -10,10 +10,14 @@
 namespace engine
 {
 	//============================================================================
-	// CRunTimeStringHash
-	//============================================================================
-	class CRunTimeStringHash
+
+	namespace utility
 	{
+		//==========================================================================
+		// CRunTimeStringHash
+		//==========================================================================
+		class CRunTimeStringHash
+		{
 		public:
 			static uint32 Calculate(const char* id)
 			{
@@ -31,16 +35,16 @@ namespace engine
 
 				return hash;
 			}
-	}; // End [class CRunTimeStringHash]
+		}; // End [class CRunTimeStringHash]
+
+		//==========================================================================
+	} // End [namespace utility]
 
 	//============================================================================
-
 } // End [namespace engine]
 
 //==============================================================================
 
 #endif // !defined(__RUNTIMESTRINGHASH_H__)
 // EOF
-
-
 

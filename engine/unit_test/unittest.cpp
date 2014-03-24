@@ -14,7 +14,7 @@ namespace test
 
 	CUnitTest::CUnitTest(const char* name)
 		: m_pTime(GetITime())
-		, m_log(CLog::GetMasterLog(), "UnitTest", CLog::eB_ACTIVE | CLog::eB_NO_STDERR | CLog::eBT_ALL)
+		, m_log(engine::system::CLog::GetMasterLog(), "UnitTest", engine::system::CLog::eB_ACTIVE | engine::system::CLog::eB_NO_STDERR | engine::system::CLog::eBT_ALL)
 		, m_testStatus(eTS_UNINITIALISED)
 		, m_stageStatus(eSS_PASS)
 		, m_name(name)
@@ -27,7 +27,7 @@ namespace test
 		TRACE(TRACE_ENABLE);
 
 		LOG_ALWAYS(m_log, COLOUR_DEFAULT); 
-		m_log.SetFlags(m_log.GetFlags() | CLog::eBAI_NAME | CLog::eBAI_TIMESTAMP);
+		m_log.SetFlags(m_log.GetFlags() | engine::system::CLog::eBAI_NAME | engine::system::CLog::eBAI_TIMESTAMP);
 	}
 
 	//============================================================================
@@ -94,9 +94,9 @@ namespace test
 
 				if (status & eSS_COMPLETE)
 				{
-					m_log.SetFlags(m_log.GetFlags() & ~(CLog::eBAI_NAME | CLog::eBAI_TIMESTAMP));
+					m_log.SetFlags(m_log.GetFlags() & ~(engine::system::CLog::eBAI_NAME | engine::system::CLog::eBAI_TIMESTAMP));
 					LOG_ALWAYS(m_log, COLOUR_DEFAULT "complete.\n");
-					m_log.SetFlags(m_log.GetFlags() | CLog::eBAI_NAME | CLog::eBAI_TIMESTAMP);
+					m_log.SetFlags(m_log.GetFlags() | engine::system::CLog::eBAI_NAME | engine::system::CLog::eBAI_TIMESTAMP);
 
 					m_errorTotal += m_errors;
 					ResetStage();
@@ -150,7 +150,7 @@ namespace test
 
 		const char* none = "None";
 		uint32 logFlags = m_log.GetFlags();
-		m_log.SetFlags(logFlags & ~(CLog::eBAI_NAME | CLog::eBAI_TIMESTAMP));
+		m_log.SetFlags(logFlags & ~(engine::system::CLog::eBAI_NAME | engine::system::CLog::eBAI_TIMESTAMP));
 
 		if (test != true)
 		{
