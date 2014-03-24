@@ -29,23 +29,29 @@ namespace engine
 
 			enum eBehaviour
 			{
-				eB_ACTIVE				= 1 << 0,
+				eB_ACTIVE				= 1 << 0,		// Log is active and will produce output
+				eB_NO_STDERR		= 1 << 1,		// Log will NOT use stderr (eBT_STANDARD
+																		// target will normally output to stderr for
+																		// eLL_FATAL, eLL_ERROR and eLL_WARNING log
+																		// levels, with everything else going to
+																		// stdout.  Setting this flag will force
+																		// *all* output through stdout.)
 
 				// Additional info
-				eBAI_LOCATION		= 1 << 1,
-				eBAI_LOG_LEVEL	= 1 << 2,
-				eBAI_NAME				= 1 << 3,
-				eBAI_NEWLINE		= 1 << 4,
-				eBAI_THREADID		= 1 << 5,
-				eBAI_TIMESTAMP	= 1 << 6,
+				eBAI_LOCATION		= 1 << 2,
+				eBAI_LOG_LEVEL	= 1 << 3,
+				eBAI_NAME				= 1 << 4,
+				eBAI_NEWLINE		= 1 << 5,
+				eBAI_THREADID		= 1 << 6,
+				eBAI_TIMESTAMP	= 1 << 7,
 
 				eBAI_ALL				= (eBAI_LOCATION | eBAI_LOG_LEVEL | eBAI_NAME | eBAI_NEWLINE | eBAI_THREADID | eBAI_TIMESTAMP),
 
 				// Targets
-				eBT_CONSOLE			= 1 << 7,
-				eBT_DEBUGGER		= 1 << 8, // N.B. Only on Windows
-				eBT_FILE				= 1 << 9,
-				eBT_STANDARD		= 1 << 10,
+				eBT_CONSOLE			= 1 << 8,
+				eBT_DEBUGGER		= 1 << 9, // N.B. Only on Windows
+				eBT_FILE				= 1 << 10,
+				eBT_STANDARD		= 1 << 11,
 
 				eBT_ALL					= (eBT_CONSOLE | eBT_DEBUGGER | eBT_FILE | eBT_STANDARD),
 			};

@@ -9,8 +9,8 @@ namespace engine
 
 	inline bool CLog::IsActive(void) const
 	{
-		bool active = m_flags & eB_ACTIVE;
-		return (active && ((m_pParent != NULL) ? m_pParent->IsActive() : active));
+		bool active = (m_flags & eB_ACTIVE) && ((m_pParent != NULL) ? m_pParent->IsActive() : true);
+		return active;
 	}
 
 	//============================================================================

@@ -14,7 +14,7 @@ namespace test
 
 	CUnitTest::CUnitTest(const char* name)
 		: m_pTime(GetITime())
-		, m_log(CLog::GetMasterLog(), "UnitTest", CLog::eBT_FILE | CLog::eBT_CONSOLE | CLog::eBT_STANDARD | CLog::eBT_DEBUGGER)
+		, m_log(CLog::GetMasterLog(), "UnitTest", CLog::eB_ACTIVE | CLog::eB_NO_STDERR | CLog::eBT_ALL)
 		, m_testStatus(eTS_UNINITIALISED)
 		, m_stageStatus(eSS_PASS)
 		, m_name(name)

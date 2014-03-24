@@ -165,7 +165,12 @@ namespace engine
 
 			if (m_flags & eBT_STANDARD)
 			{
-				fputs(buffer, ((s_logLevel == eLL_FATAL) || (s_logLevel == eLL_ERROR) || (s_logLevel == eLL_WARNING)) ? stderr : stdout);
+				FILE* pDestination = stdout;
+				if (!(m_flags & eB_NO_STDERR) && ((s_logLevel == eLL_FATAL) || (s_logLevel == eLL_ERROR) || (s_logLevel == eLL_WARNING)))
+				{
+					pDestination = stderr;
+				}
+				fputs(buffer, pDestination);
 			}
 
 #if defined(WIN32)
