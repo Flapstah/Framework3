@@ -25,7 +25,7 @@ namespace engine
 		if (m_enable)
 		{
 #if DEBUG_TRACE_USE_LOGGER
-			static CLog lazyLogConstruction(CLog::GetMasterLog(), "Trace", CLog::eB_ACTIVE | /*CLog::eBAI_NEWLINE | */CLog::eBAI_NAME | /*CLog::eBAI_TIMESTAMP |*/ CLog::eBT_CONSOLE | CLog::eBT_DEBUGGER | CLog::eBT_FILE | CLog::eBT_STANDARD);
+			static CLog lazyLogConstruction(CLog::GetMasterLog(), "Trace", CLog::eB_ACTIVE | /*CLog::eBAI_NEWLINE | */CLog::eBAI_NAME | /*CLog::eBAI_TIMESTAMP |*/ CLog::eBT_ALL);
 			m_pLog = &lazyLogConstruction;
 #endif // DEBUG_TRACE_USE_LOGGER
 
