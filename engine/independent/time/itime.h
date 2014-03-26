@@ -144,7 +144,7 @@ namespace engine
 	//============================================================================
 } // End [namespace engine]
 
-#include "common/itime.inl"
+#include "time/itime.inl"
 
 //==============================================================================
 #endif // End [!defined(__ITIME_H__)]
