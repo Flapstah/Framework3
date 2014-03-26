@@ -27,7 +27,7 @@ namespace engine
 				eLL_INFO,
 				eLL_VERBOSE,
 				eLL_DEBUG
-			};
+			}; // End [enum eLogLevel]
 
 			//------------------------------------------------------------------------
 
@@ -58,7 +58,7 @@ namespace engine
 				eBT_STANDARD		= 1 << 11,
 
 				eBT_ALL					= (eBT_CONSOLE | eBT_DEBUGGER | eBT_FILE | eBT_STANDARD),
-			};
+			}; // End [enum eBehaviour]
 
 			//------------------------------------------------------------------------
 

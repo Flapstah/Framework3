@@ -181,6 +181,7 @@ ENDMACRO(FILE_LIST_NO_RECURSE)
 #
 # Engine platform independent:
 #
+FILE_LIST_RECURSE(ENGINE_PLATFORM_INDEPENDENT_BASE "engine/independent/base")
 FILE_LIST_RECURSE(ENGINE_PLATFORM_INDEPENDENT_COMMON "engine/independent/common")
 list(REMOVE_ITEM ENGINE_PLATFORM_INDEPENDENT_COMMON_SOURCES "${test_SOURCE_DIR}/engine/independent/common/version.cpp")
 FILE_LIST_RECURSE(ENGINE_PLATFORM_INDEPENDENT_SYSTEM "engine/independent/system")
@@ -266,6 +267,10 @@ endif(UNIX)
 #
 # Common
 #
+set(ENGINE_BASE_SOURCES
+	${ENGINE_PLATFORM_INDEPENDENT_BASE}
+	${ENGINE_PLATFORM_DEPENDENT_BASE}
+	)
 set(ENGINE_COMMON_SOURCES
 	${ENGINE_PLATFORM_INDEPENDENT_COMMON}
 	${ENGINE_PLATFORM_DEPENDENT_COMMON}
@@ -283,26 +288,24 @@ set(ENGINE_UTILITY_SOURCES
 	${ENGINE_PLATFORM_DEPENDENT_UTILITY}
 	)
 #
-
-#
 # Debug builds will build static libraries for all engine components to improve
 # iteration speed.
 # Release builds will build a monolithic executable from all the individual
 # source files to get the best compiler optimisations across the executable
 #
-
 if(CMAKE_BUILD_TYPE MATCHES "Debug")
+	add_library(EngineBase STATIC ${ENGINE_BASE_SOURCES})
 	add_library(EngineCommon STATIC ${ENGINE_COMMON_SOURCES})
 	add_library(EngineSystem STATIC ${ENGINE_SYSTEM_SOURCES})
 	add_library(EngineTime STATIC ${ENGINE_TIME_SOURCES})
 	add_library(EngineUtility STATIC ${ENGINE_UTILITY_SOURCES})
 	set(LIBS ${LIBS} 
+		EngineBase
 		EngineCommon
 		EngineSystem
 		EngineTime
 		EngineUtility
 		)
-	set(PROJECT_HEADERS ${ENGINE_INDEPENDENT_COMMON_HEADERS})
 else()
 	set(ENGINE_HEADERS
 		${ENGINE_PLATFORM_INDEPENDENT_HEADERS}
@@ -321,6 +324,7 @@ endif(CMAKE_BUILD_TYPE MATCHES "Debug")
 #
 # Source groups for IDE projects
 #
+source_group(Engine\\Independent\\Base FILES ${ENGINE_INDEPENDENT_BASE_HEADERS} ${ENGINE_INDEPENDENT_BASE_SOURCES})
 source_group(Engine\\Independent\\Common FILES ${ENGINE_INDEPENDENT_COMMON_HEADERS} ${ENGINE_INDEPENDENT_COMMON_SOURCES})
 source_group(Engine\\Independent\\System FILES ${ENGINE_INDEPENDENT_SYSTEM_HEADERS} ${ENGINE_INDEPENDENT_SYSTEM_SOURCES})
 source_group(Engine\\Independent\\Time FILES ${ENGINE_INDEPENDENT_TIME_HEADERS} ${ENGINE_INDEPENDENT_TIME_SOURCES})
