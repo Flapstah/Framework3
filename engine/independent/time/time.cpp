@@ -27,6 +27,7 @@ namespace engine
 
 		const CTimeValue CTime::Update(void)
 		{
+			//TODO: pump elapsed time here (capped to some maximum value)
 			return INVALID_TIME;
 		}
 

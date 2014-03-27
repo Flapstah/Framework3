@@ -1,6 +1,9 @@
 Engine
-	Now that there is separation by library, need separation by namespace
-	Need init/tick/shutdown lifecycle
+	Need to revisit versioning since debug builds now don't bump the version (generate_version dependencies)
+	Need init/update/shutdown lifecycle
+
+Time
+	Need to pump elapsed time in CTime::Update(), capped to max frame time
 
 Unit tests
 	probably can do nicer comparisons of strings in cvar tests now that we're using std::string
@@ -26,4 +29,7 @@ Solved:
 		Needed to remove the full path (i.e. path needed ${test_SOURCE_DIR}) of version.cpp
 	Also have some smart pointer warnings in release builds
 		Boost include directories now treated as system directories (include_directories(SYSTEM xxx) means use -isystem instead of -I with gcc make)
-
+	Now that there is separation by library, need separation by namespace
+		Removed interface based design
+			No need for pure interfaces in static libraries or monolithic executables - it's a better fit for dynamic libraries
+				Dynamic libraries mean all code (whether used or not) is available, and you pay the virtual dereference cost for interfaces
