@@ -16,6 +16,10 @@ namespace engine
 		{
 			//------------------------------------------------------------------------
 
+			friend CLog& GetMasterLog(void);
+			friend CLog& GetEngineLog(void);
+			friend CLog& GetGameLog(void);
+			
 		public:
 			enum eLogLevel
 			{
@@ -76,23 +80,8 @@ namespace engine
 			// parameter 5 in __attribute__ specifier in Log() declaration below
 			bool Log(const char* file, uint32 line, uint32 level, const char* format, ...) __attribute__((format(printf, 5, 6)));
 
-			// The master log is the root from which all other logs depend and should
-			// not be used directly, other than to SetActive() to enable/disable
-			// logging globally.
-			static CLog& GetMasterLog(void);
-
-			// The engine log is used for engine side logging; subsytem logs should
-			// depend from this; never try this at global scope though due to the fact
-			// that the order of globally constructed objects cannot be guaranteed
-			// between compilation units
-			static CLog& GetEngineLog(void);
-
-			// The game log is used for game side logging; subsytem logs should depend
-			// from this; never try this at global scope though due to the fact that
-			// the order of globally constructed objects cannot be guaranteed between
-			// compilation units
-			static CLog& GetGameLog(void);
-
+			//------------------------------------------------------------------------
+			
 		private:
 			CLog(void);
 
@@ -112,6 +101,23 @@ namespace engine
 
 			//------------------------------------------------------------------------
 		}; // End [class CLog]
+
+		// The master log is the root from which all other logs depend and generally
+		// should not be used directly, other than to SetActive() to enable/disable
+		// logging globally.
+		CLog& GetMasterLog(void);
+
+		// The engine log is used for engine side logging; subsytem logs should
+		// depend from this; never try this at global scope though due to the fact
+		// that the order of globally constructed objects cannot be guaranteed
+		// between compilation units
+		CLog& GetEngineLog(void);
+
+		// The game log is used for game side logging; subsytem logs should depend
+		// from this; never try this at global scope though due to the fact that
+		// the order of globally constructed objects cannot be guaranteed between
+		// compilation units
+		CLog& GetGameLog(void);
 
 		//==========================================================================
 	} // End [namespace system]
@@ -138,8 +144,8 @@ namespace engine
 #define LOG_FATAL(_log_, _format_, ...) LOG(_log_, engine::system::CLog::eLL_FATAL, _format_, ## __VA_ARGS__)
 #define LOG_ALWAYS(_log_, _format_, ...) LOG(_log_, engine::system::CLog::eLL_ALWAYS, _format_, ## __VA_ARGS__)
 
-#define ENGINE_LOGGER engine::system::CLog::GetEngineLog()
-#define GAME_LOGGER engine::system::CLog::GetGameLog()
+#define ENGINE_LOGGER engine::system::GetEngineLog()
+#define GAME_LOGGER engine::system::GetGameLog()
 
 //==============================================================================
 

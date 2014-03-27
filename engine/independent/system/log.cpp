@@ -200,7 +200,7 @@ namespace engine
 
 		//==========================================================================
 
-		CLog& CLog::GetMasterLog(void)
+		CLog& GetMasterLog(void)
 		{
 			static CLog logMaster;
 			return logMaster;
@@ -208,7 +208,7 @@ namespace engine
 
 		//==========================================================================
 
-		CLog& CLog::GetEngineLog(void)
+		CLog& GetEngineLog(void)
 		{
 			static CLog logEngine(GetMasterLog(), LOG_ENGINE_NAME);
 			return logEngine;
@@ -216,7 +216,7 @@ namespace engine
 
 		//==========================================================================
 
-		CLog& CLog::GetGameLog(void)
+		CLog& GetGameLog(void)
 		{
 			static CLog logGame(GetMasterLog(), LOG_GAME_NAME);
 			return logGame;

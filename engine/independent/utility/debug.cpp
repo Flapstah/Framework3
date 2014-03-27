@@ -30,7 +30,7 @@ namespace engine
 			if (m_enable)
 			{
 #if DEBUG_TRACE_USE_LOGGER
-				static engine::system::CLog lazyLogConstruction(engine::system::CLog::GetMasterLog(), "Trace", engine::system::CLog::eB_ACTIVE | /*engine::system::CLog::eBAI_NEWLINE | */engine::system::CLog::eBAI_NAME | /*engine::system::CLog::eBAI_TIMESTAMP |*/ engine::system::CLog::eBT_ALL);
+				static engine::system::CLog lazyLogConstruction(engine::system::GetMasterLog(), "Trace", engine::system::CLog::eB_ACTIVE | /*engine::system::CLog::eBAI_NEWLINE | */engine::system::CLog::eBAI_NAME | /*engine::system::CLog::eBAI_TIMESTAMP |*/ engine::system::CLog::eBT_ALL);
 				m_pLog = &lazyLogConstruction;
 #endif // DEBUG_TRACE_USE_LOGGER
 

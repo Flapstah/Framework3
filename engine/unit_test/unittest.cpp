@@ -13,7 +13,7 @@ namespace test
 	//============================================================================
 
 	CUnitTest::CUnitTest(const char* name)
-		: m_log(engine::system::CLog::GetMasterLog(), "UnitTest", engine::system::CLog::eB_ACTIVE | engine::system::CLog::eB_NO_STDERR | engine::system::CLog::eBT_ALL)
+		: m_log(engine::system::GetMasterLog(), "UnitTest", engine::system::CLog::eB_ACTIVE | engine::system::CLog::eB_NO_STDERR | engine::system::CLog::eBT_ALL)
 		, m_testStatus(eTS_UNINITIALISED)
 		, m_stageStatus(eSS_PASS)
 		, m_name(name)
