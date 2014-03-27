@@ -12,13 +12,6 @@ namespace engine
 	{
 		//==========================================================================
 
-		ITime* GetITime(void)
-		{
-			return &CTime::Get();
-		}
-
-		//==========================================================================
-
 		CTime::CTime(void)
 		{
 			Platform_Initialise();
@@ -46,7 +39,7 @@ namespace engine
 
 		//==========================================================================
 
-		ITimer* CTime::CreateTimer(ITimer& parent, float maxFrameTime, float scale, CTimeValue& callbackInterval, ITimer::TimerCallback pCallback, void* const pUserData)
+		CTimer* CTime::CreateTimer(CTimer& parent, float maxFrameTime, float scale, CTimeValue& callbackInterval, CTimer::TimerCallback pCallback, void* const pUserData)
 		{
 			IGNORE_PARAMETER(parent);
 			IGNORE_PARAMETER(maxFrameTime);

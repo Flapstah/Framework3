@@ -1,5 +1,5 @@
-#if !defined(__ITIME_INL__)
-#define __ITIME_INL__
+#if !defined(__TIMEVALUE_INL__)
+#define __TIMEVALUE_INL__
 
 //==============================================================================
 
@@ -308,7 +308,7 @@ namespace engine
 } // End [namespace engine]
 
 //==============================================================================
-#endif // End [!defined(__ITIME_INL__)]
+#endif // End [!defined(__TIMEVALUE_INL__)]
 // [EOF]
 
 

@@ -1,7 +1,7 @@
 #include "common/stdafx.h" // log.h included here
 
 #include <boost/thread/thread.hpp>
-#include "time/itime.h"
+#include "time/time.h"
 #include "system/console.h"
 
 //==============================================================================
@@ -76,7 +76,7 @@ namespace engine
 			{
 				int32 days, hours, minutes;
 				float seconds;
-				time::CTimeValue now = time::GetITime()->GetCurrentTime();
+				engine::time::CTimeValue now = engine::time::CTime::Get().GetCurrentTime();
 				now.GetTime(days, hours, minutes, seconds);
 				written = snprintf(buffer+position, LOG_BUFFER_SIZE-position-1, "[%02u:%02u:%06.3f]: ", hours, minutes, seconds);
 				position += (written >= 0) ? written : 0;

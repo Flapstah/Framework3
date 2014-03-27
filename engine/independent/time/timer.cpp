@@ -1,5 +1,6 @@
 #include "common/stdafx.h"
 
+#include "time/time.h"
 #include "time/timer.h"
 
 //==============================================================================
@@ -10,7 +11,7 @@ namespace engine
 	{
 		//==========================================================================
 
-		CTimer::CTimer(ITimer* pParent, float maxFrameTime, float scale, CTimeValue& callbackInterval, ITimer::TimerCallback pCallback, void* const pUserData)
+		CTimer::CTimer(CTimer* pParent, float maxFrameTime, float scale, CTimeValue& callbackInterval, CTimer::TimerCallback pCallback, void* const pUserData)
 			: m_callbackInterval(callbackInterval)
 			, m_pParent(pParent)
 			, m_pCallback(pCallback)
@@ -131,7 +132,7 @@ namespace engine
 				}
 				else
 				{
-					m_timeNow = GetITime()->GetCurrentTime();
+					m_timeNow = CTime::Get().GetCurrentTime();
 				}
 			}
 			else

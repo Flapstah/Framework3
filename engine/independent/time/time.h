@@ -3,7 +3,8 @@
 
 //==============================================================================
 
-#include "time/itime.h"
+#include "time/timer.h"
+#include "time/timevalue.h"
 
 //==============================================================================
 
@@ -13,25 +14,23 @@ namespace engine
 
 	namespace time
 	{
-		class CTime : public ITime
+		class CTime
 		{
-			public:
-				SINGLETON(CTime);
-				virtual ~CTime(void);
+		public:
+			SINGLETON(CTime);
+			~CTime(void);
 
-			// ITime
-			virtual	const CTimeValue Update(void);
-			virtual const CTimeValue GetCurrentTime(void) const;
-			virtual ITimer* CreateTimer(ITimer& parent, float maxFrameTime, float scale, CTimeValue& callbackInterval, ITimer::TimerCallback pCallback, void* const pUserData);
-			virtual void Sleep(uint32 microseconds);
-			// ~ITime
+			const CTimeValue Update(void);
+			const CTimeValue GetCurrentTime(void) const;
+			CTimer* CreateTimer(CTimer& parent, float maxFrameTime, float scale, CTimeValue& callbackInterval, CTimer::TimerCallback pCallback, void* const pUserData);
+			void Sleep(uint32 microseconds);
 
 			protected:
 			void Initialise(void);
 			void Platform_Initialise(void);
 			void Platform_Sleep(uint32 microseconds);
 			const CTimeValue Platform_GetCurrentTime(void) const;
-		}; // End [class CTime : public ITime]
+		}; // End [class CTime]
 
 		//============================================================================
 	} // End [namespace time]

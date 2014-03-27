@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-#include "time/itime.h"
+#include "time/time.h"
 
 using namespace std;
 using namespace engine;
@@ -105,7 +105,6 @@ namespace test
 			//========================================================================
 
 		protected:
-			ITime*										m_pTime;
 			engine::system::CLog			m_log;
 			eTestStatus								m_testStatus;
 			eStageStatus							m_stageStatus;

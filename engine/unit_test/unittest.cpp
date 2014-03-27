@@ -13,8 +13,7 @@ namespace test
 	//============================================================================
 
 	CUnitTest::CUnitTest(const char* name)
-		: m_pTime(GetITime())
-		, m_log(engine::system::CLog::GetMasterLog(), "UnitTest", engine::system::CLog::eB_ACTIVE | engine::system::CLog::eB_NO_STDERR | engine::system::CLog::eBT_ALL)
+		: m_log(engine::system::CLog::GetMasterLog(), "UnitTest", engine::system::CLog::eB_ACTIVE | engine::system::CLog::eB_NO_STDERR | engine::system::CLog::eBT_ALL)
 		, m_testStatus(eTS_UNINITIALISED)
 		, m_stageStatus(eSS_PASS)
 		, m_name(name)
@@ -67,7 +66,7 @@ namespace test
 	{
 		TRACE(TRACE_ENABLE);
 
-		m_timeStarted = GetITime()->GetCurrentTime();
+		m_timeStarted = engine::time::CTime::Get().GetCurrentTime();
 		m_testStatus = eTS_RUNNING;
 
 		return m_timeStarted;
@@ -119,7 +118,7 @@ namespace test
 	{
 		TRACE(TRACE_ENABLE);
 
-		m_timeEnded = GetITime()->GetCurrentTime();
+		m_timeEnded = CTime::Get().GetCurrentTime();
 		return m_timeEnded;
 	}
 
