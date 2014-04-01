@@ -15,7 +15,6 @@ namespace engine
 		CEngine::CEngine(void)
 			: m_flags(0)
 		{
-			Initialise();
 		}
 
 		//==========================================================================
@@ -27,11 +26,12 @@ namespace engine
 
 		//==========================================================================
 
-		bool CEngine::Initialise(void)
+		bool CEngine::Initialise(int argc, char* argv[])
 		{
 			bool ok = true;
 
-			time::CTime::Get();
+		//	time::CTime::Get().CreateTimer(NULL, 0.1f, 1.0f, 1.0f/60.0f, )
+			
 
 			if (ok)
 			{
@@ -49,6 +49,7 @@ namespace engine
 
 			if (m_flags & eF_INITIALISED)
 			{
+				tickTime = time::CTime::Get().Update();
 			}
 
 			return tickTime;

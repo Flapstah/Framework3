@@ -18,48 +18,46 @@ namespace engine
 		//==========================================================================
 		class CTimer
 		{
+			friend class CTime;
+
 		public:
 			typedef bool (*TimerCallback)(CTimer*, void* const);
 
-			CTimer(CTimer* pParent, float maxFrameTime, float scale, CTimeValue& callbackInterval, CTimer::TimerCallback pCallback, void* const pUserData);
 			~CTimer(void);
 
 			CTimeValue GetCurrentTime(void) const;
 			CTimeValue GetElapsedTime(void) const;
 			CTimeValue GetFrameTime(void) const;
-			float GetMaxFrameTime(void) const;
-			void SetMaxFrameTime(float maxFrameTime);
+			bool Update(CTimeValue elapsed);
 			void SetScale(float scale);
 			float GetScale(void) const;
 			void Pause(bool pause);
 			bool IsPaused(void);
-			void SuspendCallbacks(bool suspend);
-			bool HasSuspendedCallbacks(void);
 			void Reset(const CTimeValue& when);
-			void SetCallbackInterval(const CTimeValue& interval);
-			const CTimeValue& GetCallbackInterval(void);
 
 			//------------------------------------------------------------------------
 
 		private:
+			CTimer(CTimer* pParent, float maxFrameTime, float scale, float callbackInterval, CTimer::TimerCallback pCallback, void* const pUserData);
+
+			//------------------------------------------------------------------------
+
 			CTimeValue m_timeNow;
 			CTimeValue m_timeLast;
 			CTimeValue m_timeElapsed;
-			CTimeValue m_callbackInterval;
-			CTimeValue m_callbackTicker;
 
 			CTimer* m_pParent;
 			TimerCallback m_pCallback;
 			void* const m_pUserData;
 
+			float m_callbackInterval;
+			float m_callbackTicker;
 			float m_maxFrameTime;
 			float m_scale;
 
 			enum eFlags
 			{
-				TF_ACTIVE							= 1 << 0,
-				TF_PAUSED							= 1 << 1,
-				TF_SUSPEND_CALLBACKS	= 1 << 2
+				TF_PAUSED							= 1 << 0,
 			}; // End [enum eFlags]
 			uint32 m_flags;
 

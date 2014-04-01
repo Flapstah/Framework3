@@ -13,7 +13,14 @@ namespace engine
 		//==========================================================================
 
 		CTime::CTime(void)
+			: m_frameTimeAccumulator(0.0f)
+			, m_minFrameTime(0.0f)
+			, m_maxFrameTime(0.0f)
+			, m_avgFrameTime(0.0f)
+			, m_frameIndex(0)
 		{
+			memset(m_frameTimes, 0, sizeof(m_frameTimes));
+
 			Platform_Initialise();
 		}
 
@@ -27,8 +34,30 @@ namespace engine
 
 		const CTimeValue CTime::Update(void)
 		{
-			//TODO: pump elapsed time here (capped to some maximum value)
-			return INVALID_TIME;
+			static CTimeValue last = GetCurrentTime();
+			CTimeValue now = GetCurrentTime();
+			CTimeValue elapsed = now - last;
+
+			for (TTimerDeque::iterator it = m_timers.begin(), end = m_timers.end(); it != end; ++it)
+			{
+				it->get()->Update(elapsed);
+			}
+
+			float frameTime = elapsed.GetSeconds();
+			m_frameTimeAccumulator -= m_frameTimes[m_frameIndex];
+			m_frameTimes[m_frameIndex] = frameTime;
+			m_frameIndex = ++m_frameIndex & 0x1f;
+			if (frameTime < m_minFrameTime)
+			{
+				m_minFrameTime = frameTime;
+			}
+			if (frameTime > m_maxFrameTime)
+			{
+				m_maxFrameTime = frameTime;
+			}
+			m_avgFrameTime = m_frameTimeAccumulator / 32.0f;
+
+			return elapsed;
 		}
 
 		//==========================================================================
@@ -40,17 +69,28 @@ namespace engine
 
 		//==========================================================================
 
-		CTimer* CTime::CreateTimer(CTimer& parent, float maxFrameTime, float scale, CTimeValue& callbackInterval, CTimer::TimerCallback pCallback, void* const pUserData)
+		CTime::TTimerPtr CTime::CreateTimer(TTimerPtr parent, float maxFrameTime, float scale, float callbackInterval, CTimer::TimerCallback pCallback, void* const pUserData)
 		{
-			IGNORE_PARAMETER(parent);
-			IGNORE_PARAMETER(maxFrameTime);
-			IGNORE_PARAMETER(scale);
-			IGNORE_PARAMETER(callbackInterval);
-			IGNORE_PARAMETER(pCallback);
-			IGNORE_PARAMETER(pUserData);
-			return NULL;
+			TTimerPtr timer = boost::make_shared<CTimer>(CTimer(parent.get(), maxFrameTime, scale, callbackInterval, pCallback, pUserData));
+			m_timers.push_back(timer);
+			return timer;
 		}
 
+		//==========================================================================
+
+		void CTime::DestroyTimer(TTimerPtr timer)
+		{
+			for (TTimerDeque::iterator it = m_timers.begin(), end = m_timers.end(); it != end; ++it)
+			{
+				if (*it == timer)
+				{
+					m_timers.erase(it);
+					break;
+				}
+			}
+
+			return;
+		}
 		//==========================================================================
 
 		void CTime::Sleep(uint32 microseconds)

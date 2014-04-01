@@ -11,7 +11,7 @@ namespace engine
 	{
 		//==========================================================================
 
-		CTimer::CTimer(CTimer* pParent, float maxFrameTime, float scale, CTimeValue& callbackInterval, CTimer::TimerCallback pCallback, void* const pUserData)
+		CTimer::CTimer(CTimer* pParent, float maxFrameTime, float scale, float callbackInterval, CTimer::TimerCallback pCallback, void* const pUserData)
 			: m_callbackInterval(callbackInterval)
 			, m_pParent(pParent)
 			, m_pCallback(pCallback)
@@ -52,16 +52,26 @@ namespace engine
 
 		//==========================================================================
 
-		float CTimer::GetMaxFrameTime(void) const
+		bool CTimer::Update(CTimeValue elapsed)
 		{
-			return m_maxFrameTime;
-		}
+			bool active = true;
 
-		//==========================================================================
+			if (IsPaused() == false)
+			{
+				float scaledElapsed = elapsed.GetSeconds()*m_scale;
+				float frameTime = (scaledElapsed < m_maxFrameTime) ? scaledElapsed : m_maxFrameTime;
+				m_timeLast = m_timeNow;
+				m_timeNow += frameTime;
+				m_timeElapsed += frameTime;
+				m_callbackTicker -= frameTime;
+				if (m_callbackTicker <= 0.0)
+				{
+					active = m_pCallback(this, m_pUserData);
+					m_callbackTicker += m_callbackInterval;
+				}
+			}
 
-		void CTimer::SetMaxFrameTime(float maxFrameTime)
-		{
-			m_maxFrameTime = maxFrameTime;
+			return active;
 		}
 
 		//==========================================================================
@@ -101,27 +111,6 @@ namespace engine
 
 		//==========================================================================
 
-		void CTimer::SuspendCallbacks(bool suspend)
-		{
-			if (suspend)
-			{
-				m_flags |= TF_SUSPEND_CALLBACKS;
-			}
-			else
-			{
-				m_flags &= ~TF_SUSPEND_CALLBACKS;
-			}
-		}
-
-		//==========================================================================
-
-		bool CTimer::HasSuspendedCallbacks(void)
-		{
-			return ((m_flags & TF_SUSPEND_CALLBACKS) == TF_SUSPEND_CALLBACKS);
-		}
-
-		//==========================================================================
-
 		void CTimer::Reset(const CTimeValue& when)
 		{
 			if (when == INVALID_TIME)
@@ -142,20 +131,6 @@ namespace engine
 
 			m_timeLast = m_timeNow;
 			m_timeElapsed = DECLARE_64BIT(0);
-		}
-
-		//==========================================================================
-
-		void CTimer::SetCallbackInterval(const CTimeValue& interval)
-		{
-			m_callbackInterval = interval;
-		}
-
-		//==========================================================================
-
-		const CTimeValue& CTimer::GetCallbackInterval(void)
-		{
-			return m_callbackInterval;
 		}
 
 		//==========================================================================

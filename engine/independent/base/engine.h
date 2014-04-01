@@ -18,7 +18,7 @@ namespace engine
 		//==========================================================================
 		class CEngine
 		{
-			//------------------------------------------------------------------------
+			//========================================================================
 
 		public:
 			enum eFlags
@@ -35,7 +35,7 @@ namespace engine
 			//========================================================================
 			// Lifecycle
 			//========================================================================
-			bool Initialise(void);
+			bool Initialise(int argc, char* argv[]);
 			engine::time::CTimeValue Update(void);
 			bool Uninitialise(void);
 			bool Terminate(void);
@@ -46,6 +46,7 @@ namespace engine
 			engine::time::CTime* GetTime(void);
 
 			//------------------------------------------------------------------------
+
 		protected:
 			uint32 m_flags;
 
