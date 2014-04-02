@@ -12,10 +12,10 @@ namespace engine
 		//==========================================================================
 
 		CTimer::CTimer(CTimer* pParent, float maxFrameTime, float scale, float callbackInterval, CTimer::TimerCallback pCallback, void* const pUserData)
-			: m_callbackInterval(callbackInterval)
-			, m_pParent(pParent)
+			: m_pParent(pParent)
 			, m_pCallback(pCallback)
 			, m_pUserData(pUserData)
+			, m_callbackInterval(callbackInterval)
 			,	m_maxFrameTime(maxFrameTime)
 			, m_scale(scale)
 			, m_flags(0)
@@ -64,7 +64,7 @@ namespace engine
 				m_timeNow += frameTime;
 				m_timeElapsed += frameTime;
 				m_callbackTicker -= frameTime;
-				if (m_callbackTicker <= 0.0)
+				if (m_callbackTicker <= 0.0f)
 				{
 					active = m_pCallback(this, m_pUserData);
 					m_callbackTicker += m_callbackInterval;
@@ -131,6 +131,7 @@ namespace engine
 
 			m_timeLast = m_timeNow;
 			m_timeElapsed = DECLARE_64BIT(0);
+			m_callbackTicker = m_callbackInterval;
 		}
 
 		//==========================================================================

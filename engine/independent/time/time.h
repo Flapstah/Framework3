@@ -37,6 +37,7 @@ namespace engine
 
 			const CTimeValue Update(void);
 			const CTimeValue GetCurrentTime(void) const;
+			TTimerPtr CreateTimer(float maxFrameTime, float scale, float callbackInterval, CTimer::TimerCallback pCallback, void* const pUserData);
 			TTimerPtr CreateTimer(TTimerPtr parent, float maxFrameTime, float scale, float callbackInterval, CTimer::TimerCallback pCallback, void* const pUserData);
 			void DestroyTimer(TTimerPtr timer);
 			void Sleep(uint32 microseconds);
@@ -59,6 +60,8 @@ namespace engine
 
 			typedef std::deque<TTimerPtr> TTimerDeque;
 			TTimerDeque m_timers;
+
+			CTimeValue m_lastUpdate;
 
 			float m_frameTimes[32];
 			float m_frameTimeAccumulator;

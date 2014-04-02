@@ -22,21 +22,26 @@ namespace engine
 			memset(m_frameTimes, 0, sizeof(m_frameTimes));
 
 			Platform_Initialise();
+			m_lastUpdate = GetCurrentTime();
 		}
 
 		//==========================================================================
 
 		CTime::~CTime(void)
 		{
+			if (m_timers.empty() == false)
+			{
+				LOG_ERROR(ENGINE_LOGGER, "CTime still has timers attached at destruction");
+			}
 		}
 
 		//==========================================================================
 
 		const CTimeValue CTime::Update(void)
 		{
-			static CTimeValue last = GetCurrentTime();
 			CTimeValue now = GetCurrentTime();
-			CTimeValue elapsed = now - last;
+			CTimeValue elapsed = now - m_lastUpdate;
+			m_lastUpdate = now;
 
 			for (TTimerDeque::iterator it = m_timers.begin(), end = m_timers.end(); it != end; ++it)
 			{
@@ -65,6 +70,15 @@ namespace engine
 		const CTimeValue CTime::GetCurrentTime(void) const
 		{
 			return Platform_GetCurrentTime();
+		}
+
+		//==========================================================================
+
+		CTime::TTimerPtr CTime::CreateTimer(float maxFrameTime, float scale, float callbackInterval, CTimer::TimerCallback pCallback, void* const pUserData)
+		{
+			TTimerPtr timer = boost::make_shared<CTimer>(CTimer(NULL, maxFrameTime, scale, callbackInterval, pCallback, pUserData));
+			m_timers.push_back(timer);
+			return timer;
 		}
 
 		//==========================================================================

@@ -6,6 +6,23 @@
 
 //==============================================================================
 
+bool g_run = true;
+
+//==============================================================================
+
+bool timerCallback(engine::time::CTimer* pTimer, void* pData)
+{
+	LOG_ALWAYS(GAME_LOGGER, "timer callback %.2f", (float)(pTimer->GetElapsedTime().GetSeconds()));
+	if (pTimer->GetElapsedTime().GetSeconds() >= 5.0)
+	{
+		g_run = false;
+	}
+
+	return g_run;
+}
+
+//==============================================================================
+
 int main(int argc, char* argv[])
 {
 	IGNORE_PARAMETER(argc);
@@ -13,8 +30,8 @@ int main(int argc, char* argv[])
 
 	engine::base::CEngine& myEngine = engine::base::CEngine::Get();
 	myEngine.Initialise(argc, argv);
-	bool run = true;
-	while (run)
+	engine::time::CTime::TTimerPtr myTimer = engine::time::CTime::Get().CreateTimer(0.1f, 1.0f, 1.0f, timerCallback, NULL);
+	while (g_run)
 	{
 		myEngine.Update();
 	}
