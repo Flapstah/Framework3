@@ -74,7 +74,7 @@ namespace engine
 
 		//==========================================================================
 
-		CTime::TTimerPtr CTime::CreateTimer(float maxFrameTime, float scale, float callbackInterval, CTimer::TimerCallback pCallback, void* const pUserData)
+		CTime::TTimerPtr CTime::CreateTimer(CTimeValue maxFrameTime, float scale, CTimeValue callbackInterval, CTimer::TimerCallback pCallback, void* const pUserData)
 		{
 			TTimerPtr timer = boost::make_shared<CTimer>(CTimer(NULL, maxFrameTime, scale, callbackInterval, pCallback, pUserData));
 			m_timers.push_back(timer);
@@ -83,7 +83,7 @@ namespace engine
 
 		//==========================================================================
 
-		CTime::TTimerPtr CTime::CreateTimer(TTimerPtr parent, float maxFrameTime, float scale, float callbackInterval, CTimer::TimerCallback pCallback, void* const pUserData)
+		CTime::TTimerPtr CTime::CreateTimer(TTimerPtr parent, CTimeValue maxFrameTime, float scale, CTimeValue callbackInterval, CTimer::TimerCallback pCallback, void* const pUserData)
 		{
 			TTimerPtr timer = boost::make_shared<CTimer>(CTimer(parent.get(), maxFrameTime, scale, callbackInterval, pCallback, pUserData));
 			m_timers.push_back(timer);

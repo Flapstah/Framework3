@@ -30,11 +30,12 @@ int main(int argc, char* argv[])
 
 	engine::base::CEngine& myEngine = engine::base::CEngine::Get();
 	myEngine.Initialise(argc, argv);
-	engine::time::CTime::TTimerPtr myTimer = engine::time::CTime::Get().CreateTimer(0.1f, 1.0f, 1.0f, timerCallback, NULL);
+	engine::time::CTime::TTimerPtr myTimer = engine::time::CTime::Get().CreateTimer(engine::time::CTimeValue(0.1), 1.0f, engine::time::CTimeValue(1.0), timerCallback, NULL);
 	while (g_run)
 	{
 		myEngine.Update();
 	}
+	engine::time::CTime::Get().DestroyTimer(myTimer);
 
 	LOG_ALWAYS(GAME_LOGGER, "All done.");
 

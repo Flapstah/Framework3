@@ -30,8 +30,8 @@ namespace engine
 		{
 			bool ok = true;
 
-		//	time::CTime::Get().CreateTimer(NULL, 0.1f, 1.0f, 1.0f/60.0f, )
-			
+			// Initialise the CTime singleton by accessing it (it will be instanced)
+			time::CTime::Get();
 
 			if (ok)
 			{

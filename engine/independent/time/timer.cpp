@@ -11,12 +11,12 @@ namespace engine
 	{
 		//==========================================================================
 
-		CTimer::CTimer(CTimer* pParent, float maxFrameTime, float scale, float callbackInterval, CTimer::TimerCallback pCallback, void* const pUserData)
-			: m_pParent(pParent)
+		CTimer::CTimer(CTimer* pParent, CTimeValue maxFrameTime, float scale, CTimeValue callbackInterval, CTimer::TimerCallback pCallback, void* const pUserData)
+			: m_callbackInterval(callbackInterval)
+			, m_maxFrameTime(maxFrameTime)
+			, m_pParent(pParent)
 			, m_pCallback(pCallback)
 			, m_pUserData(pUserData)
-			, m_callbackInterval(callbackInterval)
-			,	m_maxFrameTime(maxFrameTime)
 			, m_scale(scale)
 			, m_flags(0)
 		{
@@ -58,13 +58,13 @@ namespace engine
 
 			if (IsPaused() == false)
 			{
-				float scaledElapsed = elapsed.GetSeconds()*m_scale;
-				float frameTime = (scaledElapsed < m_maxFrameTime) ? scaledElapsed : m_maxFrameTime;
+				CTimeValue scaledElapsed(static_cast<int64>(static_cast<double>(elapsed.GetTicks())*m_scale));
+				CTimeValue frameTime = (scaledElapsed < m_maxFrameTime) ? scaledElapsed : m_maxFrameTime;
 				m_timeLast = m_timeNow;
 				m_timeNow += frameTime;
 				m_timeElapsed += frameTime;
 				m_callbackTicker -= frameTime;
-				if (m_callbackTicker <= 0.0f)
+				if (m_callbackTicker.GetTicks() <= 0L)
 				{
 					active = m_pCallback(this, m_pUserData);
 					m_callbackTicker += m_callbackInterval;

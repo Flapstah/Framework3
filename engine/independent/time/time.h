@@ -37,8 +37,8 @@ namespace engine
 
 			const CTimeValue Update(void);
 			const CTimeValue GetCurrentTime(void) const;
-			TTimerPtr CreateTimer(float maxFrameTime, float scale, float callbackInterval, CTimer::TimerCallback pCallback, void* const pUserData);
-			TTimerPtr CreateTimer(TTimerPtr parent, float maxFrameTime, float scale, float callbackInterval, CTimer::TimerCallback pCallback, void* const pUserData);
+			TTimerPtr CreateTimer(CTimeValue maxFrameTime, float scale, CTimeValue callbackInterval, CTimer::TimerCallback pCallback, void* const pUserData);
+			TTimerPtr CreateTimer(TTimerPtr parent, CTimeValue maxFrameTime, float scale, CTimeValue callbackInterval, CTimer::TimerCallback pCallback, void* const pUserData);
 			void DestroyTimer(TTimerPtr timer);
 			void Sleep(uint32 microseconds);
 

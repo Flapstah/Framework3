@@ -38,7 +38,7 @@ namespace engine
 			//------------------------------------------------------------------------
 
 		private:
-			CTimer(CTimer* pParent, float maxFrameTime, float scale, float callbackInterval, CTimer::TimerCallback pCallback, void* const pUserData);
+			CTimer(CTimer* pParent, CTimeValue maxFrameTime, float scale, CTimeValue callbackInterval, CTimer::TimerCallback pCallback, void* const pUserData);
 
 			//------------------------------------------------------------------------
 
@@ -46,13 +46,14 @@ namespace engine
 			CTimeValue m_timeLast;
 			CTimeValue m_timeElapsed;
 
+			CTimeValue m_callbackInterval;
+			CTimeValue m_callbackTicker;
+			CTimeValue m_maxFrameTime;
+
 			CTimer* m_pParent;
 			TimerCallback m_pCallback;
 			void* const m_pUserData;
 
-			float m_callbackInterval;
-			float m_callbackTicker;
-			float m_maxFrameTime;
 			float m_scale;
 
 			enum eFlags
