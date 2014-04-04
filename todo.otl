@@ -2,9 +2,6 @@ Engine
 	Need to revisit versioning since debug builds now don't bump the version (generate_version dependencies)
 	Need init/update/shutdown lifecycle
 
-Time
-	Need to pump elapsed time in CTime::Update(), capped to max frame time
-
 Unit tests
 	probably can do nicer comparisons of strings in cvar tests now that we're using std::string
 	Need to add custom log unit test
