@@ -40,20 +40,20 @@ namespace engine
 			TTimerPtr CreateTimer(CTimeValue maxFrameTime, float scale, CTimeValue callbackInterval, CTimer::TimerCallback pCallback, void* const pUserData);
 			TTimerPtr CreateTimer(TTimerPtr parent, CTimeValue maxFrameTime, float scale, CTimeValue callbackInterval, CTimer::TimerCallback pCallback, void* const pUserData);
 			void DestroyTimer(TTimerPtr timer);
-			void Sleep(uint32 microseconds);
+			static void Sleep(uint32 microseconds);
 
 			// N.B. If GetAverageFPS() is called in the very first frame, you'll get a divide-by-zero exception
-			inline float GetAverageFPS(void) { return 1.0f / m_avgFrameTime; }
-			inline float GetAverageFrameTime(void) { return m_avgFrameTime; }
-			inline float GetMinimumFrameTime(void) { return m_minFrameTime; }
-			inline float GetMaximumFrameTime(void) { return m_maxFrameTime; }
+			inline float GetAverageFPS(void) { return 1.0f / GetAverageFrameTime(); }
+			inline float GetAverageFrameTime(void) { return m_frameTimeAccumulator.GetSeconds()/(double)TIME_FRAME_TIME_BUFFER_SIZE; }
+			inline float GetMinimumFrameTime(void) { return m_minFrameTime.GetSeconds(); }
+			inline float GetMaximumFrameTime(void) { return m_maxFrameTime.GetSeconds(); }
 
 			//------------------------------------------------------------------------
 
 		protected:
 			void Initialise(void);
 			void Platform_Initialise(void);
-			void Platform_Sleep(uint32 microseconds);
+			static void Platform_Sleep(uint32 microseconds);
 			const CTimeValue Platform_GetCurrentTime(void) const;
 
 			//------------------------------------------------------------------------
@@ -63,11 +63,10 @@ namespace engine
 
 			CTimeValue m_lastUpdate;
 
-			float m_frameTimes[32];
-			float m_frameTimeAccumulator;
-			float m_minFrameTime;
-			float m_maxFrameTime;
-			float m_avgFrameTime;
+			CTimeValue m_frameTimes[TIME_FRAME_TIME_BUFFER_SIZE];
+			CTimeValue m_frameTimeAccumulator;
+			CTimeValue m_minFrameTime;
+			CTimeValue m_maxFrameTime;
 			uint32 m_frameIndex;
 
 			//========================================================================

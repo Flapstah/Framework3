@@ -13,11 +13,7 @@ namespace engine
 		//==========================================================================
 
 		CTime::CTime(void)
-			: m_frameTimeAccumulator(0.0f)
-			, m_minFrameTime(0.0f)
-			, m_maxFrameTime(0.0f)
-			, m_avgFrameTime(0.0f)
-			, m_frameIndex(0)
+			: m_frameIndex(0)
 		{
 			memset(m_frameTimes, 0, sizeof(m_frameTimes));
 
@@ -48,19 +44,21 @@ namespace engine
 				it->get()->Update(elapsed);
 			}
 
-			float frameTime = elapsed.GetSeconds();
 			m_frameTimeAccumulator -= m_frameTimes[m_frameIndex];
-			m_frameTimes[m_frameIndex] = frameTime;
-			m_frameIndex = ++m_frameIndex & 0x1f;
-			if (frameTime < m_minFrameTime)
+			m_frameTimeAccumulator += elapsed;
+
+			m_frameTimes[m_frameIndex] = elapsed;
+			m_frameIndex = ++m_frameIndex & (TIME_FRAME_TIME_BUFFER_SIZE-1);
+
+			if (elapsed < m_minFrameTime)
 			{
-				m_minFrameTime = frameTime;
+				m_minFrameTime = elapsed;
 			}
-			if (frameTime > m_maxFrameTime)
+
+			if (elapsed > m_maxFrameTime)
 			{
-				m_maxFrameTime = frameTime;
+				m_maxFrameTime = elapsed;
 			}
-			m_avgFrameTime = m_frameTimeAccumulator / 32.0f;
 
 			return elapsed;
 		}
