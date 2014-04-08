@@ -4,6 +4,7 @@
 //==============================================================================
 
 #include "time/time.h"
+#include "time/fpscalculator.h"
 
 //==============================================================================
 
@@ -33,6 +34,16 @@ namespace engine
 			virtual ~CEngine(void);
 
 			//========================================================================
+			// FPS
+			//========================================================================
+			// N.B. If GetAverageFPS() is called in the very first frame, you'll get a divide-by-zero exception
+			inline float GetAverageFPS(void) { return m_fps.GetAverageFPS(); }
+			inline float GetAverageFrameTime(void) { return m_fps.GetAverageFrameTime(); }
+			inline float GetMinimumFrameTime(void) { return m_fps.GetMinimumFrameTime(); }
+			inline float GetMaximumFrameTime(void) { return m_fps.GetMaximumFrameTime(); }
+			//========================================================================
+
+			//========================================================================
 			// Lifecycle
 			//========================================================================
 			bool Initialise(int argc, char* argv[]);
@@ -49,6 +60,7 @@ namespace engine
 
 		protected:
 			uint32 m_flags;
+			engine::time::CFPSCalculator m_fps;
 
 			//========================================================================
 		}; // End [class CEngine]

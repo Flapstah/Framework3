@@ -12,7 +12,7 @@ bool g_run = true;
 
 bool timerCallback(engine::time::CTimer* pTimer, void* pData)
 {
-	LOG_ALWAYS(GAME_LOGGER, "timer callback %.2f (%.2ffps)", (float)(pTimer->GetElapsedTime().GetSeconds()), engine::time::CTime::Get().GetAverageFPS());
+	LOG_ALWAYS(GAME_LOGGER, "timer callback %.2f (%.2ffps)", (float)(pTimer->GetElapsedTime().GetSeconds()), engine::base::CEngine::Get().GetAverageFPS());
 	if (pTimer->GetElapsedTime().GetSeconds() >= 5.0)
 	{
 		g_run = false;
@@ -37,6 +37,7 @@ int main(int argc, char* argv[])
 		engine::time::CTime::Sleep(10000);
 	}
 	engine::time::CTime::Get().DestroyTimer(myTimer);
+	myEngine.Uninitialise(); // Not strictly needed as will be called when engine destructed
 
 	LOG_ALWAYS(GAME_LOGGER, "All done.");
 

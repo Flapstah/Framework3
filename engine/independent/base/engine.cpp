@@ -50,6 +50,7 @@ namespace engine
 			if (m_flags & eF_INITIALISED)
 			{
 				tickTime = time::CTime::Get().Update();
+				m_fps.Update(tickTime);
 			}
 
 			return tickTime;
@@ -59,7 +60,11 @@ namespace engine
 
 		bool CEngine::Uninitialise(void)
 		{
-			m_flags &= ~eF_INITIALISED;
+			if (m_flags & eF_INITIALISED)
+			{
+				m_flags &= ~eF_INITIALISED;
+			}
+
 			return true;
 		}
 

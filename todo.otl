@@ -1,6 +1,5 @@
 Engine
 	Need to revisit versioning since debug builds now don't bump the version (generate_version dependencies)
-	Need init/update/shutdown lifecycle
 
 Unit tests
 	probably can do nicer comparisons of strings in cvar tests now that we're using std::string
@@ -30,3 +29,4 @@ Solved:
 		Removed interface based design
 			No need for pure interfaces in static libraries or monolithic executables - it's a better fit for dynamic libraries
 				Dynamic libraries mean all code (whether used or not) is available, and you pay the virtual dereference cost for interfaces
+	Make FPS calculations a separate class so that timers can have their own FPS calculator (engine can run at very high fps, but e.g. renderer is locked to ~60fps)

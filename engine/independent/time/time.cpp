@@ -13,10 +13,7 @@ namespace engine
 		//==========================================================================
 
 		CTime::CTime(void)
-			: m_frameIndex(0)
 		{
-			memset(m_frameTimes, 0, sizeof(m_frameTimes));
-
 			Platform_Initialise();
 			m_lastUpdate = GetCurrentTime();
 		}
@@ -42,22 +39,6 @@ namespace engine
 			for (TTimerDeque::iterator it = m_timers.begin(), end = m_timers.end(); it != end; ++it)
 			{
 				it->get()->Update(elapsed);
-			}
-
-			m_frameTimeAccumulator -= m_frameTimes[m_frameIndex];
-			m_frameTimeAccumulator += elapsed;
-
-			m_frameTimes[m_frameIndex] = elapsed;
-			m_frameIndex = ++m_frameIndex & (TIME_FRAME_TIME_BUFFER_SIZE-1);
-
-			if (elapsed < m_minFrameTime)
-			{
-				m_minFrameTime = elapsed;
-			}
-
-			if (elapsed > m_maxFrameTime)
-			{
-				m_maxFrameTime = elapsed;
 			}
 
 			return elapsed;
