@@ -26,7 +26,7 @@ namespace engine
 			m_frameTimeAccumulator += elapsed;
 
 			m_frameTimes[m_frameIndex] = elapsed;
-			m_frameIndex = ++m_frameIndex & (TIME_FRAME_TIME_BUFFER_SIZE-1);
+			m_frameIndex = ++m_frameIndex & (TIME_FPS_FRAME_BUFFER_SIZE-1);
 
 			if (elapsed < m_minFrameTime)
 			{

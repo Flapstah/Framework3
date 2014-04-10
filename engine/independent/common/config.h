@@ -19,7 +19,7 @@
 //------------------------------------------------------------------------------
 // Time config
 //------------------------------------------------------------------------------
-#define TIME_FRAME_TIME_BUFFER_SIZE (32) // N.B. Must be a power of 2
+#define TIME_FPS_FRAME_BUFFER_SIZE (32) // N.B. Must be a power of 2
 #define TIMER_POOL_SIZE (16)
 #define USE_DYNAMIC_TIMER_POOL 0
 //------------------------------------------------------------------------------
