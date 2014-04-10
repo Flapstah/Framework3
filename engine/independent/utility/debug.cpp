@@ -18,7 +18,10 @@ namespace engine
 #endif // DEBUG_TRACE_START_ENABLED
 
 #if DEBUG_TRACE_USE_LOGGER
+#define _TRACE(_format_, ...) LOG_DEBUG(*m_pLog, _format_, ## __VA_ARGS__)
 		engine::system::CLog* CTrace::m_pLog = NULL;
+#else
+#define _TRACE(_format_, ...) printf(_format_, ## __VA_ARGS__)
 #endif // DEBUG_TRACE_USE_LOGGER
 
 		//==========================================================================
@@ -36,11 +39,7 @@ namespace engine
 
 				if (s_active)
 				{
-#if DEBUG_TRACE_USE_LOGGER
-					LOG_DEBUG(*m_pLog, "[ENTER]: %s\n", m_entryPoint);
-#else
-					printf("[ENTER]: %s\n", m_entryPoint);
-#endif // DEBUG_TRACE_USE_LOGGER
+					_TRACE("[ENTER]: %s\n", m_entryPoint);
 				}
 			}	
 		}
@@ -51,11 +50,7 @@ namespace engine
 		{
 			if (m_enable && s_active)
 			{
-#if DEBUG_TRACE_USE_LOGGER
-				LOG_DEBUG(*m_pLog, "[EXIT]: %s\n", m_entryPoint);
-#else
-				printf("[EXIT]: %s\n", m_entryPoint);
-#endif // DEBUG_TRACE_USE_LOGGER
+				_TRACE("[EXIT]: %s\n", m_entryPoint);
 			}
 		}
 
