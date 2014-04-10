@@ -19,7 +19,7 @@
 //------------------------------------------------------------------------------
 // Time config
 //------------------------------------------------------------------------------
-#define TIME_FPS_FRAME_BUFFER_SIZE (32) // N.B. Must be a power of 2
+#define TIME_FPS_FRAME_BUFFER_SIZE (32) // N.B. Must be a power of 2 (see config_conditions below)
 #define TIMER_POOL_SIZE (16)
 #define USE_DYNAMIC_TIMER_POOL 0
 //------------------------------------------------------------------------------
@@ -66,6 +66,15 @@
 #define DEBUG_TRACE_USE_LOGGER (1)			// Use CLog for trace (0 = printf)
 #define DEBUG_TRACE_START_ENABLED (1)		// Trace starts enabled (=> global constructors)
 //------------------------------------------------------------------------------
+
+namespace engine
+{
+	namespace config_conditions
+	{
+		// Ensure that TIME_FPS_FRAME_BUFFER_SIZE is > 0 and a power of 2
+		BOOST_STATIC_ASSERT((TIME_FPS_FRAME_BUFFER_SIZE > 0) && ((TIME_FPS_FRAME_BUFFER_SIZE & (TIME_FPS_FRAME_BUFFER_SIZE-1)) == 0));
+	} // End [namespace config_conditions]
+} // End [namespace engine]
 
 //==============================================================================
 #endif // End [!defined(__CONFIG_H__)]

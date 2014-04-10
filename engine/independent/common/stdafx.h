@@ -27,6 +27,8 @@
 #include <time.h>
 #include <math.h>
 
+#include <boost/static_assert.hpp>
+
 #include "common/config.h"
 #include "common/macros.h"
 #include "common/types.h"
