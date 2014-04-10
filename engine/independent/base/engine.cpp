@@ -1,6 +1,7 @@
 #include "common/stdafx.h" // log.h included here
 
 #include "base/engine.h"
+#include "system/console.h"
 
 //==============================================================================
 
@@ -32,6 +33,7 @@ namespace engine
 
 			// Initialise the CTime singleton by accessing it (it will be instanced)
 			time::CTime::Get();
+			system::CConsole::Get();
 
 			if (ok)
 			{
