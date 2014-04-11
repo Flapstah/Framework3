@@ -31,12 +31,21 @@ namespace engine
 		{
 			bool ok = true;
 
+			//------------------------------------------------------------------------
 			// Initialise the CTime singleton by accessing it (it will be instanced)
+			//------------------------------------------------------------------------
 			time::CTime::Get();
 			system::CConsole::Get();
 
+			// TODO: Read config here and add contents to CConsole::SetInitialValue()
+
 			if (ok)
 			{
+				//----------------------------------------------------------------------
+				// Register cvars
+				//----------------------------------------------------------------------
+				REGISTER_DEBUG_NAMED_VARIABLE("log_level", engine::system::CLog::s_logLevel, static_cast<int64>(LOG_DEFAULT_DEBUG_LOG_LEVEL), 0, NULL, "Set the debug logging level (0=NONE, 1=ALWAYS, 2=FATAL, 3=ERROR, 4=WARNING, 5=INFO, 6=DEBUG)");
+
 				m_flags |= eF_INITIALISED;
 			}
 
@@ -64,6 +73,8 @@ namespace engine
 		{
 			if (m_flags & eF_INITIALISED)
 			{
+				UNREGISTER_DEBUG_VARIABLE_BY_NAME("log_level");
+
 				m_flags &= ~eF_INITIALISED;
 			}
 

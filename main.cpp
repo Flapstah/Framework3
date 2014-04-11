@@ -3,6 +3,7 @@
 #if !USE_OPENGL_SUPERBIBLE
 
 #include "base/engine.h"
+#include "system/console.h"
 
 //==============================================================================
 
@@ -28,6 +29,8 @@ int main(int argc, char* argv[])
 	IGNORE_PARAMETER(argc);
 	IGNORE_PARAMETER(argv);
 
+	LOG_ALWAYS(GAME_LOGGER, "Start...");
+
 	engine::base::CEngine& myEngine = engine::base::CEngine::Get();
 	myEngine.Initialise(argc, argv);
 	engine::time::CTime::TTimerPtr myTimer = engine::time::CTime::Get().CreateTimer(engine::time::CTimeValue(0.1), 1.0f, engine::time::CTimeValue(1.0), timerCallback, NULL);
@@ -37,6 +40,12 @@ int main(int argc, char* argv[])
 		engine::time::CTime::Sleep(10000);
 	}
 	engine::time::CTime::Get().DestroyTimer(myTimer);
+
+	engine::system::CConsole::TIVariablePtr plog_level = engine::system::CConsole::Get().FindVariable("log_level");
+	if (plog_level != NULL)
+	{
+		LOG_ALWAYS(GAME_LOGGER, "log_level = %" PRId64, plog_level->GetInteger());
+	}
 	myEngine.Uninitialise(); // Not strictly needed as will be called when engine destructed
 
 	LOG_ALWAYS(GAME_LOGGER, "All done.");

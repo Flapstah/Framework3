@@ -50,11 +50,17 @@
 #define REGISTER_DEBUG_NAMED_VARIABLE(_name_, _variable_, _value_, _flags_, _on_change_callback_, _description_) REGISTER_NAMED_VARIABLE(_name_, _variable_, _value_, _flags_, _on_change_callback_, _description_)
 #define REGISTER_DEBUG_COMMAND(_flags_, _execute_callback_, _description_) REGISTER_COMMAND(_flags_, _execute_callback_, _description_)
 #define REGISTER_DEBUG_NAMED_COMMAND(_command_, _flags_, _execute_callback_, _description_) REGISTER_NAMED_COMMAND(_command_, _flags_, _execute_callback_, _description_)
+#define UNREGISTER_DEBUG_VARIABLE(_variable_) UNREGISTER_VARIABLE(_variable_)
+#define UNREGISTER_DEBUG_VARIABLE_BY_NAME(_variable_) UNREGISTER_VARIABLE_BY_NAME(_variable_)
+#define UNREGISTER_DEBUG_VARIABLE_BY_POINTER(_tivariableptr_) UNREGISTER_VARIABLE_BY_POINTER(_tivariableptr_)
 #else
 #define REGISTER_DEBUG_VARIABLE(_variable_, _value_, _flags_, _on_change_callback_, _description_) _variable_ = (_value_)
 #define REGISTER_DEBUG_NAMED_VARIABLE(_name_, _variable_, _value_, _flags_, _on_change_callback_, _description_) _variable_ = (_value_)
 #define REGISTER_DEBUG_COMMAND(_flags_, _execute_callback_, _description_)
 #define REGISTER_DEBUG_NAMED_COMMAND(_command_, _flags_, _execute_callback_, _description_)
+#define UNREGISTER_DEBUG_VARIABLE(_variable_)
+#define UNREGISTER_DEBUG_VARIABLE_BY_NAME(_variable_)
+#define UNREGISTER_DEBUG_VARIABLE_BY_POINTER(_tivariableptr_)
 #endif // DEVELOPMENT_CONSOLE_VARIABLES_ENABLED
 
 #define UNREGISTER_VARIABLE(_variable_) engine::system::CConsole::Get().UnregisterVariable(engine::utility::CompileTimeStringHash(#_variable_))

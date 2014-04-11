@@ -27,22 +27,22 @@
 //------------------------------------------------------------------------------
 // Console variables config
 //------------------------------------------------------------------------------
-#if defined(_DEBUG)
+#if defined(DEBUG)
 #define CONSOLE_HIDDEN_VARIABLES_ENABLED (0)
 #define CONSOLE_DEVELOPMENT_VARIABLES_ENABLED (1)
 #else
 #define CONSOLE_HIDDEN_VARIABLES_ENABLED (1)
 #define DEVELOPMENT_CONSOLE_VARIABLES_ENABLED (0)
-#endif // defined(_DEBUG)
+#endif // defined(DEBUG)
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
 // File system config
 //------------------------------------------------------------------------------
 #define FILESYSTEM_MAX_HANDLES (16)
-#if defined(_DEBUG)
+#if defined(DEBUG)
 #define FILESYSTEM_MAX_STORED_NAME_LENGTH (64)
-#endif // defined(_DEBUG)
+#endif // defined(DEBUG)
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
