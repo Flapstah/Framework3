@@ -262,25 +262,46 @@ namespace engine
 			eConsoleState		ExecuteDeferred(const char* commandLine, uint32 frames);
 			eConsoleState		ExecuteDeferred(const char* commandLine, float seconds);
 
+			//------------------------------------------------------------------------
+			// Stores an initial value for an (as yet) unregistered variable
+			//------------------------------------------------------------------------
+			void						SetInitialValue(uint32 nameHash, const char* value);
+
 		protected:
+			//------------------------------------------------------------------------
 			// Variables and commands without a description cannot be searched for in
 			// the console, or tab completed.
+			//------------------------------------------------------------------------
 			void						AddDescription(uint32 nameHash, const char* name, const char* description);
 
 		private:
+			//------------------------------------------------------------------------
 			// Store the variable map as a map of name hash and pointer to variable
+			//------------------------------------------------------------------------
 			typedef std::map<uint32, TIVariablePtr> TVariableMap;
 			TVariableMap m_variables;
+
+			//------------------------------------------------------------------------
 			// Store the command map as a map of name hash and pointer to command
+			//------------------------------------------------------------------------
 			typedef std::map<uint32, TICommandPtr> TCommandMap;
 			TCommandMap m_commands;
+
+			//------------------------------------------------------------------------
 			// Store a second map of name hash and pointer to name and description
-			// string
-			typedef std::map<uint32, SDetails*> TDetailsMap;
-			TDetailsMap m_details;
+			// string.
 			// This will ensure we only store strings for those variables/commands
 			// that have names and descriptions (instead of spurious NULL pointers),
 			// and they're not easily linked with the source in the first place.
+			//------------------------------------------------------------------------
+			typedef std::map<uint32, SDetails*> TDetailsMap;
+			TDetailsMap m_details;
+
+			//------------------------------------------------------------------------
+			// Store a map of initial values for (as yet) unregistered variables
+			//------------------------------------------------------------------------
+			typedef std::map<uint32, const char*> TInitialValueMap;
+			TInitialValueMap m_initialValues;
 
 		}; // End [class CConsole]
 

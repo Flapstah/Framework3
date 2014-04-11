@@ -384,7 +384,17 @@ namespace engine
 					m_variables[nameHash] = pVariable;
 				}
 
-				pVariable->SetInteger(value);
+				// Check if there's an initial value stored
+				TInitialValueMap::iterator it = m_initialValues.find(nameHash);
+				if (it == m_initialValues.end())
+				{
+					pVariable->SetInteger(value);
+				}
+				else
+				{
+					pVariable->SetString(it->second);
+				}
+
 				//...then restore the flags
 				pVariable->ModifyFlags(flags, 0);
 
@@ -419,7 +429,17 @@ namespace engine
 					m_variables[nameHash] = pVariable;
 				}
 
-				pVariable->SetDouble(value);
+				// Check if there's an initial value stored
+				TInitialValueMap::iterator it = m_initialValues.find(nameHash);
+				if (it == m_initialValues.end())
+				{
+					pVariable->SetDouble(value);
+				}
+				else
+				{
+					pVariable->SetString(it->second);
+				}
+
 				//...then restore the flags
 				pVariable->ModifyFlags(flags, 0);
 
@@ -454,7 +474,17 @@ namespace engine
 					m_variables[nameHash] = pVariable;
 				}
 
-				pVariable->SetString(value);
+				// Check if there's an initial value stored
+				TInitialValueMap::iterator it = m_initialValues.find(nameHash);
+				if (it == m_initialValues.end())
+				{
+					pVariable->SetString(value);
+				}
+				else
+				{
+					pVariable->SetString(it->second);
+				}
+
 				//...then restore the flags
 				pVariable->ModifyFlags(flags, 0);
 
@@ -715,6 +745,13 @@ namespace engine
 
 			LOG_FATAL(g_log, "[TODO]: CConsole::ExecuteDeferred(seconds)");
 			return eCS_OK;
+		}
+
+		//==========================================================================
+
+		void CConsole::SetInitialValue(uint32 nameHash, const char* value)
+		{
+			m_initialValues[nameHash] = value;
 		}
 
 		//==========================================================================
