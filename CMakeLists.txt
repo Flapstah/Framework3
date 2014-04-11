@@ -296,6 +296,7 @@ set(ENGINE_UTILITY_SOURCES
 # source files to get the best compiler optimisations across the executable
 #
 if(CMAKE_BUILD_TYPE MATCHES "Debug")
+	add_definitions(-DDEBUG)
 	add_library(EngineBase STATIC ${ENGINE_BASE_SOURCES})
 	add_library(EngineCommon STATIC ${ENGINE_COMMON_SOURCES})
 	add_library(EngineSystem STATIC ${ENGINE_SYSTEM_SOURCES})
@@ -309,6 +310,7 @@ if(CMAKE_BUILD_TYPE MATCHES "Debug")
 		EngineUtility
 		)
 else()
+	add_definitions(-DRELEASE)
 	set(ENGINE_HEADERS
 		${ENGINE_PLATFORM_INDEPENDENT_HEADERS}
 		${ENGINE_PLATFORM_DEPENDENT_HEADERS}

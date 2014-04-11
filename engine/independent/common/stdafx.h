@@ -9,12 +9,8 @@
 
 #include "common/platform_stdafx.h"
 
-#if defined(NDEBUG)
-#define RELEASE
-#else
-#define DEBUG
-#endif // defined(RELEASE)
-
+//==============================================================================
+// DEBUG and RELEASE macros are defined by CMakeLists.txt, depending on build
 //==============================================================================
 
 #include <cstdio>
