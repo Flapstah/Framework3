@@ -44,7 +44,12 @@ namespace engine
 				//----------------------------------------------------------------------
 				// Register cvars
 				//----------------------------------------------------------------------
-				REGISTER_DEBUG_NAMED_VARIABLE("log_level", engine::system::CLog::s_logLevel, static_cast<int64>(LOG_DEFAULT_DEBUG_LOG_LEVEL), 0, NULL, "Set the debug logging level (0=NONE, 1=ALWAYS, 2=FATAL, 3=ERROR, 4=WARNING, 5=INFO, 6=DEBUG)");
+#if defined(DEBUG)
+				// Can't use REGISTER_DEBUG_NAMED_VARIABLE as that tries to set the
+				// initial value of the variable, and s_logLevel *must* be const in
+				// release builds for the LOG_xxx macros to be elided successfully.
+				REGISTER_NAMED_VARIABLE("log_level", engine::system::CLog::s_logLevel, static_cast<int64>(LOG_DEFAULT_DEBUG_LOG_LEVEL), 0, NULL, "Set the debug logging level (0=NONE, 1=ALWAYS, 2=FATAL, 3=ERROR, 4=WARNING, 5=INFO, 6=DEBUG)");
+#endif // defined(DEBUG)
 
 				m_flags |= eF_INITIALISED;
 			}
@@ -73,7 +78,9 @@ namespace engine
 		{
 			if (m_flags & eF_INITIALISED)
 			{
-				UNREGISTER_DEBUG_VARIABLE_BY_NAME("log_level");
+#if defined(DEBUG)
+				UNREGISTER_VARIABLE_BY_NAME("log_level");
+#endif // defined(DEBUG)
 
 				m_flags &= ~eF_INITIALISED;
 			}
