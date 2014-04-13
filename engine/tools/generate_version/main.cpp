@@ -279,7 +279,7 @@ int main(int argc, char* argv[])
 
 	if (g_flags & eF_HELP)
 	{
-		// TODO: help
+		TODO(need to put some help text here)
 		std::cout << std::endl << "TODO: help" << std::endl;
 		return eRC_OK;
 	}

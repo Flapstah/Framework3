@@ -37,7 +37,7 @@ namespace engine
 			time::CTime::Get();
 			system::CConsole::Get();
 
-			// TODO: Read config here and add contents to CConsole::SetInitialValue()
+			TODO(Read config here and add contents to CConsole::SetInitialValue())
 
 			if (ok)
 			{

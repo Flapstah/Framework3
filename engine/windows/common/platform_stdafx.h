@@ -33,7 +33,24 @@
 #define __FUNCTION_SIGNATURE__ __PRETTY_FUNCTION__
 #else
 #define __FUNCTION_SIGNATURE__ __FUNCSIG__
-#endif
+#endif // defined(__GNUC__)
+
+//==============================================================================
+// Macro to generate #pragma's
+//==============================================================================
+#if defined(__GNUC__)
+#define DO_PRAGMA(_token_string_) _Pragma (#_token_string_)
+//------------------------------------------------------------------------------
+// This macro prints a TODO message during the build process
+//------------------------------------------------------------------------------
+#define TODO(_message_) DO_PRAGMA(message ("TODO: " #_message_))
+#else
+#define DO_PRAGMA(_token_string_) __pragma(_token_string_)
+//------------------------------------------------------------------------------
+// This macro prints a TODO message during the build process
+//------------------------------------------------------------------------------
+#define TODO(_message_) DO_PRAGMA(message (__FILE__ "(" STRINGIZE(__LINE__) "): TODO: " #_message_))
+#endif // defined(__GNUC__)
 
 //==============================================================================
 // Microsoft elected to use macros instead of functions for these... so you

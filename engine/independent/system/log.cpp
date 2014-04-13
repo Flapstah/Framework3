@@ -160,12 +160,12 @@ namespace engine
 			{
 				if (m_flags & eBT_FILE)
 				{
-					// TODO: file output here
+					TODO(file output here)
 				}
 
 				if (m_flags & eBT_CONSOLE)
 				{
-					// TODO: console output here
+					TODO(console output here)
 				}
 
 				if (m_flags & eBT_STANDARD)
