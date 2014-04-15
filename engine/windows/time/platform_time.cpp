@@ -29,16 +29,19 @@ namespace engine
 			::QueryPerformanceFrequency(&frequency);
 			g_platformTicksPerSecond = static_cast<uint64>(frequency.QuadPart);
 
-			// Grab current system time in 100ns units
+			// Grab current system time (in 100ns units) and convert it to local time
 			FILETIME baseTime;
 			::GetSystemTimeAsFileTime(&baseTime);
+			FILETIME localTime;
+			::FileTimeToLocalFileTime(&baseTime, &localTime);
+
 			// Grab high performance tick count since machine was turned on
 			LARGE_INTEGER time;
 			::QueryPerformanceCounter(&time);
 
-			int64 ns100 = baseTime.dwHighDateTime;
+			int64 ns100 = localTime.dwHighDateTime;
 			ns100 <<= 32;
-			ns100 |= baseTime.dwLowDateTime;
+			ns100 |= localTime.dwLowDateTime;
 
 			double ticksPer100Nanoseconds = static_cast<double>(frequency.QuadPart) / 10000000.0;
 			double base100nsTicks = static_cast<double>(ns100)-(static_cast<double>(time.QuadPart)/ticksPer100Nanoseconds);
