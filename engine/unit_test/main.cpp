@@ -15,8 +15,15 @@ int main(int argc, char* argv[])
 {
 	TRACE(TRACE_ENABLE);
 
-	IGNORE_PARAMETER(argc);
-	IGNORE_PARAMETER(argv);
+//	IGNORE_PARAMETER(argc);
+//	IGNORE_PARAMETER(argv);
+
+	for (uint32 i = 0; i < argc; ++i)
+	{
+		printf("[%i] [%s]\n", i, argv[i]);
+	}
+
+	LOG_ALWAYS(GAME_LOGGER, "Starting unit tests...");
 
 	{
 		test::CTypeTest test;
