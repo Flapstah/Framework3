@@ -39,19 +39,21 @@ namespace engine
 			{
 				eB_ACTIVE				= 1 << 0,		// Log is active and will produce output
 				eB_NO_STDERR		= 1 << 1,		// Log will NOT use stderr (eBT_STANDARD
-				// target will normally output to stderr for
-				// eLL_FATAL, eLL_ERROR and eLL_WARNING log
-				// levels, with everything else going to
-				// stdout.  Setting this flag will force
-				// *all* output through stdout.)
+																		// target will normally output to stderr for
+																		// eLL_FATAL, eLL_ERROR and eLL_WARNING log
+																		// levels, with everything else going to
+																		// stdout.  Setting this flag will force
+																		// *all* output through stdout.)
+				eB_AUTO_FLUSH		= 1 << 2,		// Automatically flush every call to Log()
+																		// if eBT_FILE target (see below)
 
 				// Additional info
-				eBAI_LOCATION		= 1 << 2,
-				eBAI_LOG_LEVEL	= 1 << 3,
-				eBAI_NAME				= 1 << 4,
-				eBAI_NEWLINE		= 1 << 5,
-				eBAI_THREADID		= 1 << 6,
-				eBAI_TIMESTAMP	= 1 << 7,
+				eBAI_LOCATION		= 1 << 2,		// adds the log location [__FILE__(__LINE__)]
+				eBAI_LOG_LEVEL	= 1 << 3,		// adds the named log level, e.g. [WARNING]
+				eBAI_NAME				= 1 << 4,		// adds the log name, e.g. [MASTER]
+				eBAI_NEWLINE		= 1 << 5,		// auto appends a newline to each log
+				eBAI_THREADID		= 1 << 6,		// adds the platform specific thread ID
+				eBAI_TIMESTAMP	= 1 << 7,		// adds a timestamp, e.g. [00:00:00.000]
 
 				eBAI_ALL				= (eBAI_LOCATION | eBAI_LOG_LEVEL | eBAI_NAME | eBAI_NEWLINE | eBAI_THREADID | eBAI_TIMESTAMP),
 

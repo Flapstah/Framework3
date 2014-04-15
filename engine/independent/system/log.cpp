@@ -1,6 +1,8 @@
 #include "common/stdafx.h" // log.h included here
 
+#include <boost/filesystem.hpp>
 #include <boost/thread/thread.hpp>
+#include <time.h>
 #include "time/time.h"
 #include "system/console.h"
 
@@ -17,6 +19,13 @@ namespace engine
 	namespace system
 	{
 		//==========================================================================
+
+		const boost::filesystem::path g_logFilePath(boost::filesystem::system_complete(boost::filesystem::initial_path() / boost::filesystem::path(LOG_MASTER_NAME ".log")));
+		std::ofstream g_logFile;
+
+		//==========================================================================
+
+		//==========================================================================
 #if defined(RELEASE)
 		const CLog::eLogLevel CLog::s_logLevel = LOG_DEFAULT_RELEASE_LOG_LEVEL;
 #else
@@ -30,10 +39,6 @@ namespace engine
 			, m_name(name)
 			, m_flags(parent.m_flags)
 		{
-			if (m_pParent->m_name == NULL)
-			{
-				printf("FUCK\n");
-			}
 		}
 
 		//==========================================================================
@@ -49,6 +54,12 @@ namespace engine
 
 		CLog::~CLog(void)
 		{
+			if (m_pParent == NULL)
+			{
+				// This is the master log destructor
+				m_flags &= ~(eBAI_LOCATION | eBAI_THREADID);
+				Log(NULL, 0, eLL_ALWAYS, "Log closed");
+			}
 		}
 
 		//==========================================================================
@@ -158,9 +169,14 @@ namespace engine
 			bool haveOutput = (written >= 0) && (written < LOG_BUFFER_SIZE);
 			if (haveOutput)
 			{
-				if (m_flags & eBT_FILE)
+				if ((m_flags & eBT_FILE) && g_logFile.good())
 				{
-					TODO(file output here)
+					g_logFile << buffer;
+
+					if (m_flags & eB_AUTO_FLUSH)
+					{
+						g_logFile.flush();
+					}
 				}
 
 				if (m_flags & eBT_CONSOLE)
@@ -194,8 +210,42 @@ namespace engine
 		CLog::CLog(void)
 			: m_pParent(NULL)
 			, m_name(LOG_MASTER_NAME)
-			, m_flags(eB_ACTIVE | eBAI_ALL | eBT_ALL)
+			, m_flags(eB_ACTIVE | eB_AUTO_FLUSH | eBAI_ALL | eBT_ALL)
 		{
+			time_t rawTime;
+			struct tm* pTimeInfo;
+			char buffer[80];
+
+			::time(&rawTime);
+			pTimeInfo = localtime(&rawTime);
+
+			boost::filesystem::file_status status = boost::filesystem::status(g_logFilePath);
+
+			if (boost::filesystem::exists(status) == true)
+			{
+				boost::filesystem::path backupDir(g_logFilePath.parent_path() / "log_backup");
+				boost::filesystem::file_status status = boost::filesystem::status(backupDir);
+
+				if (boost::filesystem::exists(status) == false)
+				{
+					boost::filesystem::create_directory(backupDir);
+					status = boost::filesystem::status(backupDir);
+				}
+
+				if (boost::filesystem::is_directory(backupDir) == true)
+				{
+					strftime(buffer, sizeof(buffer), "%Y%m%d-%H%M%S_", pTimeInfo);
+					boost::filesystem::path backupPath(backupDir / (std::string(buffer) + g_logFilePath.filename().string()));
+					boost::filesystem::rename(g_logFilePath, backupPath);
+				}
+			}
+
+			g_logFile = std::ofstream(g_logFilePath.string().c_str(), std::ios_base::out | std::ios_base::binary);
+			strftime(buffer, sizeof(buffer), "%d/%m/%Y %H:%M:%S", pTimeInfo);
+
+			m_flags &= ~(eBAI_LOCATION | eBAI_THREADID);
+			Log(NULL, 0, eLL_ALWAYS, "Log created [%s]", buffer);
+			m_flags |= (eBAI_LOCATION | eBAI_THREADID);
 		}
 
 		//==========================================================================
