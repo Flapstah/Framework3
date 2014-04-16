@@ -12,6 +12,7 @@ Tracing
 
 File system
 	Need file system abstraction to control the number of open files (use boost::filesystem under the hood)
+		Need to factor out storage of root directory to internal filesystem class
 
 Logs
 	Once engine lifecycle management is in place, can register log level as debug cvar

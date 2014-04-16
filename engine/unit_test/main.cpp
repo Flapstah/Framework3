@@ -1,5 +1,7 @@
 #include "common/stdafx.h"
 
+#include "base/engine.h"
+
 #include "tests/cvartest.h"
 #include "tests/logtest.h"
 #include "tests/timetest.h"
@@ -18,10 +20,8 @@ int main(int argc, char* argv[])
 //	IGNORE_PARAMETER(argc);
 //	IGNORE_PARAMETER(argv);
 
-	for (uint32 i = 0; i < argc; ++i)
-	{
-		printf("[%i] [%s]\n", i, argv[i]);
-	}
+	engine::base::CEngine& myEngine = engine::base::CEngine::Get();
+	myEngine.Initialise(argc, argv);
 
 	LOG_ALWAYS(GAME_LOGGER, "Starting unit tests...");
 
@@ -53,6 +53,9 @@ int main(int argc, char* argv[])
 	}
 
 	LOG_ALWAYS(GAME_LOGGER, "All done.");
+
+	myEngine.Uninitialise(); // Not strictly needed as will be called when engine destructed
+	return 0;
 }
 
 //==============================================================================

@@ -46,10 +46,10 @@ int main(int argc, char* argv[])
 	{
 		LOG_ALWAYS(GAME_LOGGER, "log_level = %" PRId64, plog_level->GetInteger());
 	}
-	myEngine.Uninitialise(); // Not strictly needed as will be called when engine destructed
 
 	LOG_ALWAYS(GAME_LOGGER, "All done.");
 
+	myEngine.Uninitialise(); // Not strictly needed as will be called when engine destructed
 	return 0;
 }
 

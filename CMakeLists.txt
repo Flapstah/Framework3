@@ -441,8 +441,8 @@ target_link_libraries(unit-test ${LIBS})
 
 get_target_property(UNIT_TEST_EXE unit-test LOCATION)
 add_custom_command(
-	OUTPUT "${test_SOURCE_DIR}/results.txt"
-	COMMAND "${UNIT_TEST_EXE}" --root "${test_SOURCE_DIR}" > "${test_SOURCE_DIR}/results.txt"
+	OUTPUT "${test_SOURCE_DIR}/unit-test.log"
+	COMMAND "${UNIT_TEST_EXE}" -root "${test_SOURCE_DIR}" -log "unit-test.log"
 	DEPENDS "${UNIT_TEST_EXE}" ${PROJECT_INDEPENDENT_SOURCES} ${PROJECT_DEPENDENT_SOURCES} ${UNIT_TEST_SOURCES} ${UNIT_TEST_HEADERS}
 	)
 #
@@ -457,7 +457,7 @@ add_executable(
 	test
  	main.cpp
 	engine/independent/common/version.cpp
-	results.txt
+	unit-test.log
 	${ENGINE_HEADERS}
 	${ENGINE_SOURCES}
  	${OPENGL_SUPERBIBLE_50_SOURCES}

@@ -9,7 +9,7 @@ build/
 engine/independent/common/version.cpp
 log_backup/
 make
-results.txt
 run
 tags
 unit-test
+unit-test.log
