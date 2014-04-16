@@ -15,6 +15,8 @@ namespace engine
 
 		CEngine::CEngine(void)
 			: m_flags(0)
+			, m_rootPath(boost::filesystem::initial_path())
+			, m_logName(LOG_MASTER_NAME ".log")
 		{
 		}
 
@@ -30,6 +32,42 @@ namespace engine
 		bool CEngine::Initialise(int argc, char* argv[])
 		{
 			bool ok = true;
+
+			//------------------------------------------------------------------------
+			// The passed arguments are scanned for '-root' and '-log' as these must
+			// be set before any engine subsystems are initialised
+			//------------------------------------------------------------------------
+			for (uint32 i = 1; i < argc; ++i)
+			{
+				if ((strcmp("-root", argv[i]) == 0) && (i < argc-1))
+				{
+					boost::filesystem::path newRootPath(argv[++i]);
+					try
+					{
+						if (newRootPath.is_absolute())
+						{
+							newRootPath = boost::filesystem::canonical(newRootPath);
+						}
+						else
+						{
+							newRootPath = boost::filesystem::canonical(m_rootPath / newRootPath);
+						}
+					}
+
+					catch (boost::filesystem::filesystem_error e)
+					{
+						LOG_ERROR(ENGINE_LOGGER, "%s", e.what());
+						newRootPath = m_rootPath;
+					}
+
+					m_rootPath = newRootPath;
+				}
+
+				if ((strcmp("-log", argv[i]) == 0) && (i < argc-1))
+				{
+					m_logName = argv[++i];
+				}
+			}
 
 			//------------------------------------------------------------------------
 			// Initialise the CTime singleton by accessing it (it will be instanced)
@@ -99,9 +137,30 @@ namespace engine
 
 		//==========================================================================
 
-		engine::time::CTime* CEngine::GetTime(void)
+		engine::time::CTime* CEngine::GetTime(void) const
 		{
 			return (m_flags & eF_INITIALISED) ? &time::CTime::Get() : NULL;
+		}
+
+		//==========================================================================
+
+		engine::system::CConsole* CEngine::GetConsole(void) const
+		{
+			return (m_flags & eF_INITIALISED) ? &system::CConsole::Get() : NULL;
+		}
+
+		//==========================================================================
+
+		const boost::filesystem::path& CEngine::GetRootPath(void) const
+		{
+			return m_rootPath;
+		}
+
+		//==========================================================================
+
+		const std::string& CEngine::GetLogName(void) const
+		{
+			return m_logName;
 		}
 
 		//==========================================================================

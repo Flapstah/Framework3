@@ -2,7 +2,10 @@
 
 #include <boost/filesystem.hpp>
 #include <boost/thread/thread.hpp>
+
 #include <time.h>
+
+#include "base/engine.h"
 #include "time/time.h"
 #include "system/console.h"
 
@@ -218,44 +221,35 @@ namespace engine
 			::time(&rawTime);
 			pTimeInfo = localtime(&rawTime);
 
-			const boost::filesystem::path g_logFilePath(boost::filesystem::system_complete(boost::filesystem::initial_path() / boost::filesystem::path(LOG_MASTER_NAME ".log")));
-			printf("checking status [%s]\n", g_logFilePath.string().c_str());
-			/*
-			boost::filesystem::file_status status = boost::filesystem::status(g_logFilePath);
+			const boost::filesystem::path logFilePath(engine::base::CEngine::Get().GetRootPath() / engine::base::CEngine::Get().GetLogName());
+			boost::filesystem::file_status status = boost::filesystem::status(logFilePath);
 
 			if (boost::filesystem::exists(status) == true)
 			{
-				printf("backup [%s]\n", g_logFilePath.string().c_str());
-				boost::filesystem::path backupDir(g_logFilePath.parent_path() / "log_backup");
-				printf("check for dir [%s]\n", backupDir.string().c_str());
+				boost::filesystem::path backupDir(logFilePath.parent_path() / "log_backup");
 				boost::filesystem::file_status status = boost::filesystem::status(backupDir);
 
 				if (boost::filesystem::exists(status) == false)
 				{
-					printf("create dir [%s]\n", backupDir.string().c_str());
 					boost::filesystem::create_directory(backupDir);
 					status = boost::filesystem::status(backupDir);
-					printf("checking status [%s]\n", backupDir.string().c_str());
 				}
 
 				if (boost::filesystem::is_directory(backupDir) == true)
 				{
 					strftime(buffer, sizeof(buffer), "%Y%m%d-%H%M%S_", pTimeInfo);
-					boost::filesystem::path backupPath(backupDir / (std::string(buffer) + g_logFilePath.filename().string()));
-					printf("rename [%s] to [%s]\n", g_logFilePath.string().c_str(), backupPath.string().c_str());
-					boost::filesystem::rename(g_logFilePath, backupPath);
+					boost::filesystem::path backupPath(backupDir / (std::string(buffer) + logFilePath.filename().string()));
+					printf("rename [%s] to [%s]\n", logFilePath.string().c_str(), backupPath.string().c_str());
+					boost::filesystem::rename(logFilePath, backupPath);
 				}
 			}
 
-			printf("opening [%s]\n", g_logFilePath.string().c_str());
-			g_logFile.open(g_logFilePath.string().c_str(), std::ios_base::out | std::ios_base::binary);
-			printf("opened [%s]\n", g_logFilePath.string().c_str());
+			g_logFile.open(logFilePath.string().c_str(), std::ios_base::out | std::ios_base::binary);
 			strftime(buffer, sizeof(buffer), "%d/%m/%Y %H:%M:%S", pTimeInfo);
 
 			m_flags &= ~(eBAI_LOCATION | eBAI_THREADID);
 			Log(NULL, 0, eLL_ALWAYS, "Log created [%s]", buffer);
 			m_flags |= (eBAI_LOCATION | eBAI_THREADID);
-			*/
 		}
 
 		//==========================================================================
