@@ -280,6 +280,13 @@ namespace engine
 			//------------------------------------------------------------------------
 			void						AddDescription(uint32 nameHash, const char* name, const char* description);
 
+			//------------------------------------------------------------------------
+
+		protected:
+			CLog m_log;
+
+			//------------------------------------------------------------------------
+
 		private:
 			//------------------------------------------------------------------------
 			// Store the variable map as a map of name hash and pointer to variable

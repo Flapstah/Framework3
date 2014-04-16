@@ -20,9 +20,9 @@ namespace engine
 		//==========================================================================
 
 		//==========================================================================
-		// Create custom log for the console
+		// Console log access for console variables/commands is through this pointer
 		//==========================================================================
-		static CLog g_log(ENGINE_LOGGER, "Console");
+		static CLog* g_pLog = NULL;
 
 		//==========================================================================
 		// TVariable specialisation for int64
@@ -46,7 +46,7 @@ namespace engine
 #if !defined(_RELEASE)
 			else
 			{
-				LOG_WARNING(g_log, "Failed to set const integer variable with %s", value.c_str());
+				LOG_WARNING(*g_pLog, "Failed to set const integer variable with %s", value.c_str());
 			}
 #endif // !defined(_RELEASE)
 
@@ -75,7 +75,7 @@ namespace engine
 #if !defined(_RELEASE)
 			else
 			{
-				LOG_WARNING(g_log, "Failed to set const double variable with %s", value.c_str());
+				LOG_WARNING(*g_pLog, "Failed to set const double variable with %s", value.c_str());
 			}
 #endif // !defined(_RELEASE)
 
@@ -115,7 +115,7 @@ namespace engine
 #if !defined(_RELEASE)
 			else
 			{
-				LOG_WARNING(g_log, "Failed to set const string variable with %s", buffer.str().c_str());
+				LOG_WARNING(*g_pLog, "Failed to set const string variable with %s", buffer.str().c_str());
 			}
 #endif // !defined(_RELEASE)
 
@@ -149,7 +149,7 @@ namespace engine
 #if !defined(_RELEASE)
 			else
 			{
-				LOG_WARNING(g_log, "Failed to set const string variable with %s", buffer.str().c_str());
+				LOG_WARNING(*g_pLog, "Failed to set const string variable with %s", buffer.str().c_str());
 			}
 #endif // !defined(_RELEASE)
 
@@ -180,7 +180,7 @@ namespace engine
 #if !defined(_RELEASE)
 			else
 			{
-				LOG_WARNING(g_log, "Failed to set const string variable with %s", value.c_str());
+				LOG_WARNING(*g_pLog, "Failed to set const string variable with %s", value.c_str());
 			}
 #endif // !defined(_RELEASE)
 
@@ -235,7 +235,7 @@ namespace engine
 #if !defined(_RELEASE)
 			else
 			{
-				LOG_WARNING(g_log, "Failed to set const variable with %" PRId64, value);
+				LOG_WARNING(*g_pLog, "Failed to set const variable with %" PRId64, value);
 			}
 #endif // !defined(_RELEASE)
 
@@ -266,7 +266,7 @@ namespace engine
 #if !defined(_RELEASE)
 			else
 			{
-				LOG_WARNING(g_log, "Failed to set const variable with %g", value);
+				LOG_WARNING(*g_pLog, "Failed to set const variable with %g", value);
 			}
 #endif // !defined(_RELEASE)
 
@@ -334,8 +334,10 @@ namespace engine
 		//==========================================================================
 
 		CConsole::CConsole(void)
+			: m_log(ENGINE_LOGGER, "Console")
 		{
 			TRACE(TRACE_ENABLE);
+			g_pLog = &m_log;
 		}
 
 		//==========================================================================
@@ -349,11 +351,11 @@ namespace engine
 				const SDetails* pDetails = FindDetails(it->first);
 				if (pDetails != NULL)
 				{
-					LOG_ERROR(g_log, "Still have variable [%s] @ 0x%p registered", pDetails->m_name.c_str(), it->second.get());
+					LOG_ERROR(m_log, "Still have variable [%s] @ 0x%p registered", pDetails->m_name.c_str(), it->second.get());
 				}
 				else
 				{
-					LOG_ERROR(g_log, "Still have variable [%#x] @ 0x%p registered", it->first, it->second.get());
+					LOG_ERROR(m_log, "Still have variable [%#x] @ 0x%p registered", it->first, it->second.get());
 				}
 			}
 		}
@@ -397,7 +399,7 @@ namespace engine
 			}
 			else
 			{
-				LOG_FATAL(g_log, "Trying to register an integer variable named [%s] (hash [%d]), with description [%s], but that name already exists!", name, nameHash, description);
+				LOG_FATAL(m_log, "Trying to register an integer variable named [%s] (hash [%d]), with description [%s], but that name already exists!", name, nameHash, description);
 			}
 
 			return pVariable;
@@ -442,7 +444,7 @@ namespace engine
 			}
 			else
 			{
-				LOG_FATAL(g_log, "Trying to register a double variable named [%s] (hash [%d]), with description [%s], but that name already exists!", name, nameHash, description);
+				LOG_FATAL(m_log, "Trying to register a double variable named [%s] (hash [%d]), with description [%s], but that name already exists!", name, nameHash, description);
 			}
 
 			return pVariable;
@@ -487,7 +489,7 @@ namespace engine
 			}
 			else
 			{
-				LOG_FATAL(g_log, "Trying to register an string variable named [%s] (hash [%d]), with description [%s], but that name already exists!", name, nameHash, description);
+				LOG_FATAL(m_log, "Trying to register an string variable named [%s] (hash [%d]), with description [%s], but that name already exists!", name, nameHash, description);
 			}
 
 			return pVariable;
@@ -598,12 +600,12 @@ namespace engine
 				}
 				else
 				{
-					LOG_FATAL(g_log, "Trying to register command named [%s] (hash [%d]), with description [%s], but that name already exists!", name, nameHash, description);
+					LOG_FATAL(m_log, "Trying to register command named [%s] (hash [%d]), with description [%s], but that name already exists!", name, nameHash, description);
 				}
 			}
 			else
 			{
-				LOG_FATAL(g_log, "Trying to register command named [%s] (hash [%d]), with description [%s], with NULL execute callback!", name, nameHash, description);
+				LOG_FATAL(m_log, "Trying to register command named [%s] (hash [%d]), with description [%s], with NULL execute callback!", name, nameHash, description);
 			}
 
 			return pCommand;
@@ -711,7 +713,7 @@ namespace engine
 				}
 				else
 				{
-					LOG_ERROR(g_log, "[%s] not found", argv[0].c_str());
+					LOG_ERROR(m_log, "[%s] not found", argv[0].c_str());
 					state = eCS_NOT_FOUND;
 				}
 			}
@@ -725,7 +727,8 @@ namespace engine
 		{
 			TRACE(TRACE_ENABLE);
 
-			LOG_FATAL(g_log, "[TODO]: CConsole::ExecuteDeferred(frames)");
+			TODO(CConsole::ExecuteDeferred(frames))
+			LOG_FATAL(m_log, "[TODO]: CConsole::ExecuteDeferred(frames)");
 			return eCS_OK;
 		}
 
@@ -735,7 +738,8 @@ namespace engine
 		{
 			TRACE(TRACE_ENABLE);
 
-			LOG_FATAL(g_log, "[TODO]: CConsole::ExecuteDeferred(seconds)");
+			TODO(CConsole::ExecuteDeferred(seconds))
+			LOG_FATAL(m_log, "[TODO]: CConsole::ExecuteDeferred(seconds)");
 			return eCS_OK;
 		}
 
