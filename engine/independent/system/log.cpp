@@ -239,7 +239,6 @@ namespace engine
 				{
 					strftime(buffer, sizeof(buffer), "%Y%m%d-%H%M%S_", pTimeInfo);
 					boost::filesystem::path backupPath(backupDir / (std::string(buffer) + logFilePath.filename().string()));
-					printf("rename [%s] to [%s]\n", logFilePath.string().c_str(), backupPath.string().c_str());
 					boost::filesystem::rename(logFilePath, backupPath);
 				}
 			}
