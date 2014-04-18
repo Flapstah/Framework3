@@ -187,7 +187,7 @@ namespace engine
 					TODO(console output here)
 				}
 
-				if (m_flags & eBT_STANDARD)
+				if (m_flags & eBT_STDOUT)
 				{
 					FILE* pDestination = stdout;
 					if (!(m_flags & eB_NO_STDERR) && ((s_logLevel == eLL_FATAL) || (s_logLevel == eLL_ERROR) || (s_logLevel == eLL_WARNING)))
@@ -213,7 +213,7 @@ namespace engine
 		CLog::CLog(void)
 			: m_pParent(NULL)
 			, m_name(LOG_MASTER_NAME)
-			, m_flags(eB_ACTIVE | eB_AUTO_FLUSH | eBAI_ALL | eBT_ALL)
+			, m_flags(eB_COMMON | eBAI_COMMON | eBT_ALL)
 		{
 			time_t rawTime;
 			struct tm* pTimeInfo;

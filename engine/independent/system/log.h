@@ -38,7 +38,7 @@ namespace engine
 			enum eBehaviour
 			{
 				eB_ACTIVE				= 1 << 0,		// Log is active and will produce output
-				eB_NO_STDERR		= 1 << 1,		// Log will NOT use stderr (eBT_STANDARD
+				eB_NO_STDERR		= 1 << 1,		// Log will NOT use stderr (eBT_STDOUT
 																		// target will normally output to stderr for
 																		// eLL_FATAL, eLL_ERROR and eLL_WARNING log
 																		// levels, with everything else going to
@@ -46,6 +46,8 @@ namespace engine
 																		// *all* output through stdout.)
 				eB_AUTO_FLUSH		= 1 << 2,		// Automatically flush every call to Log()
 																		// if eBT_FILE target (see below)
+
+				eB_COMMON				= (eB_ACTIVE | eB_AUTO_FLUSH),
 
 				// Additional info
 				eBAI_LOCATION		= 1 << 2,		// adds the log location [__FILE__(__LINE__)]
@@ -56,14 +58,15 @@ namespace engine
 				eBAI_TIMESTAMP	= 1 << 7,		// adds a timestamp, e.g. [00:00:00.000]
 
 				eBAI_ALL				= (eBAI_LOCATION | eBAI_LOG_LEVEL | eBAI_NAME | eBAI_NEWLINE | eBAI_THREADID | eBAI_TIMESTAMP),
+				eBAI_COMMON			= (eBAI_LOG_LEVEL | eBAI_NAME | eBAI_NEWLINE | eBAI_TIMESTAMP),
 
 				// Targets
 				eBT_CONSOLE			= 1 << 8,
 				eBT_DEBUGGER		= 1 << 9, // N.B. Only on Windows
 				eBT_FILE				= 1 << 10,
-				eBT_STANDARD		= 1 << 11,
+				eBT_STDOUT			= 1 << 11,
 
-				eBT_ALL					= (eBT_CONSOLE | eBT_DEBUGGER | eBT_FILE | eBT_STANDARD),
+				eBT_ALL					= (eBT_CONSOLE | eBT_DEBUGGER | eBT_FILE | eBT_STDOUT),
 			}; // End [enum eBehaviour]
 
 			//------------------------------------------------------------------------
