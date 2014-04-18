@@ -13,15 +13,15 @@ Tracing
 File system
 	Need file system abstraction to control the number of open files (use boost::filesystem under the hood)
 		Need to factor out storage of root directory to internal filesystem class
+		Needs to handle virtual file system (mount archive (zip?) files as directories)
 
-Logs
-	Once engine lifecycle management is in place, can register log level as debug cvar
-	Log to file still needs implementing
-
-Solved:
+Solved/fixed:
+	Nev pointed out that CUnitTest::AddStage is poorly named - should be AddTest
 	Logs no longer being elided from code when in release builds - why?
 		To do with not being able to determine the value of log_level as a constant at runtime
 			Release builds now expose log_level as a static constant in log.h
+		Once engine lifecycle management is in place, can register log level as debug cvar
+		Log to file still needs implementing
 	Seem to have a circular dependency for engine/independent/common/version.cpp
 		Needed to remove the full path (i.e. path needed ${test_SOURCE_DIR}) of version.cpp
 	Also have some smart pointer warnings in release builds
