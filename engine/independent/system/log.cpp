@@ -4,6 +4,7 @@
 #include <boost/thread/thread.hpp>
 
 #include <time.h>
+#include <fstream>
 
 #include "base/engine.h"
 #include "time/time.h"
@@ -227,7 +228,7 @@ namespace engine
 			if (boost::filesystem::exists(status) == true)
 			{
 				boost::filesystem::path backupDir(logFilePath.parent_path() / "log_backup");
-				boost::filesystem::file_status status = boost::filesystem::status(backupDir);
+				status = boost::filesystem::status(backupDir);
 
 				if (boost::filesystem::exists(status) == false)
 				{

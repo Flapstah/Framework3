@@ -726,6 +726,8 @@ namespace engine
 		CConsole::eConsoleState CConsole::ExecuteDeferred(const char* commandLine, uint32 frames)
 		{
 			TRACE(TRACE_ENABLE);
+			IGNORE_PARAMETER(commandLine);
+			IGNORE_PARAMETER(frames);
 
 			TODO(CConsole::ExecuteDeferred(frames))
 			LOG_FATAL(m_log, "[TODO]: CConsole::ExecuteDeferred(frames)");
@@ -737,6 +739,8 @@ namespace engine
 		CConsole::eConsoleState CConsole::ExecuteDeferred(const char* commandLine, float seconds)
 		{
 			TRACE(TRACE_ENABLE);
+			IGNORE_PARAMETER(commandLine);
+			IGNORE_PARAMETER(seconds);
 
 			TODO(CConsole::ExecuteDeferred(seconds))
 			LOG_FATAL(m_log, "[TODO]: CConsole::ExecuteDeferred(seconds)");

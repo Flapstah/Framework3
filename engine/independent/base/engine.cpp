@@ -37,7 +37,7 @@ namespace engine
 			// The passed arguments are scanned for '-root' and '-log' as these must
 			// be set before any engine subsystems are initialised
 			//------------------------------------------------------------------------
-			for (uint32 i = 1; i < argc; ++i)
+			for (int32 i = 1; i < argc; ++i)
 			{
 				if ((strcmp("-root", argv[i]) == 0) && (i < argc-1))
 				{

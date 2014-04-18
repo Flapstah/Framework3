@@ -13,6 +13,8 @@ bool g_run = true;
 
 bool timerCallback(engine::time::CTimer* pTimer, void* pData)
 {
+	IGNORE_PARAMETER(pData);
+
 	LOG_ALWAYS(GAME_LOGGER, "timer callback %.2f (%.2ffps)", (float)(pTimer->GetElapsedTime().GetSeconds()), engine::base::CEngine::Get().GetAverageFPS());
 	if (pTimer->GetElapsedTime().GetSeconds() >= 5.0)
 	{
@@ -26,9 +28,6 @@ bool timerCallback(engine::time::CTimer* pTimer, void* pData)
 
 int main(int argc, char* argv[])
 {
-	IGNORE_PARAMETER(argc);
-	IGNORE_PARAMETER(argv);
-
 	LOG_ALWAYS(GAME_LOGGER, "Start...");
 
 	engine::base::CEngine& myEngine = engine::base::CEngine::Get();
