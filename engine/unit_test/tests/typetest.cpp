@@ -35,7 +35,7 @@ namespace test
 	{
 		TRACE(TRACE_ENABLE);
 
-		AddStage("Sizes", SizeTest);
+		AddTest("Sizes", SizeTest);
 
 		return CUnitTest::Initialise();
 	}

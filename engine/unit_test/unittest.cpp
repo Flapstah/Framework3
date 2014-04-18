@@ -42,7 +42,7 @@ namespace test
 		elapsed.GetTime(days, hours, minutes, seconds);
 
 		const char* errorColour = (m_errorTotal != 0) ? COLOUR_ERROR : COLOUR_DEFAULT;
-		LOG_ALWAYS(m_log, COLOUR_TEST_INFO "[%s] " COLOUR_DEFAULT "%d tests completed in %s%d days, %02u:%02u:%06.3fs; " COLOUR_DEFAULT "%s%d errors\n\n", m_name, m_totalTests, (elapsed.GetTicks() < 0) ? "-" : "",  days, hours, minutes, seconds, errorColour, m_errorTotal);
+		LOG_ALWAYS(m_log, COLOUR_TEST_INFO "[%s] " COLOUR_DEFAULT "%d tests completed in %s%d days, %02u:%02u:%06.3fs; " COLOUR_DEFAULT "%s%d errors\n\n" COLOUR_RESET, m_name, m_totalTests, (elapsed.GetTicks() < 0) ? "-" : "",  days, hours, minutes, seconds, errorColour, m_errorTotal);
 	}
 
 	//============================================================================
@@ -131,7 +131,7 @@ namespace test
 
 	//============================================================================
 
-	void CUnitTest::AddStage(const char* name, TestFn function)
+	void CUnitTest::AddTest(const char* name, TestFn function)
 	{
 		TRACE(TRACE_ENABLE);
 

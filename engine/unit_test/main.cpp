@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
 	engine::base::CEngine& myEngine = engine::base::CEngine::Get();
 	myEngine.Initialise(argc, argv);
 
-	LOG_ALWAYS(GAME_LOGGER, "Starting unit tests...");
+	LOG_ALWAYS(GAME_LOGGER, "Starting unit tests...\n");
 
 	{
 		test::CTypeTest test;

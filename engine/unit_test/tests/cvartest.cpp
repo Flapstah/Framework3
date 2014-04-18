@@ -64,14 +64,14 @@ namespace test
 	{
 		TRACE(TRACE_ENABLE);
 
-		AddStage("Lifecycle", ConsoleVariableLifecycle);
-		AddStage("Integer console variable operations", IntegerVariableOperations);
-		AddStage("Integer constant console variable operations", IntegerConstantVariableOperations);
-		AddStage("Floating point console variable operations", FloatVariableOperations);
-		AddStage("Floating point constant console variable operations", FloatConstantVariableOperations);
-		AddStage("String console variable operations", StringVariableOperations);
-		AddStage("String constant console variable operations", StringConstantVariableOperations);
-		AddStage("Console command test", ConsoleCommandTest);
+		AddTest("Lifecycle", ConsoleVariableLifecycle);
+		AddTest("Integer console variable operations", IntegerVariableOperations);
+		AddTest("Integer constant console variable operations", IntegerConstantVariableOperations);
+		AddTest("Floating point console variable operations", FloatVariableOperations);
+		AddTest("Floating point constant console variable operations", FloatConstantVariableOperations);
+		AddTest("String console variable operations", StringVariableOperations);
+		AddTest("String constant console variable operations", StringConstantVariableOperations);
+		AddTest("Console command test", ConsoleCommandTest);
 
 		return CUnitTest::Initialise();
 	}

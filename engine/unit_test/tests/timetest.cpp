@@ -23,8 +23,8 @@ namespace test
 
 	bool CTimeTest::Initialise(void)
 	{
-		AddStage("CTimeValue Limits", TimeValueLimits);
-		AddStage("CTimeValue Operations", TimeValueOperations);
+		AddTest("CTimeValue Limits", TimeValueLimits);
+		AddTest("CTimeValue Operations", TimeValueOperations);
 
 		return CUnitTest::Initialise();
 	}

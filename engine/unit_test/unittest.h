@@ -85,7 +85,7 @@ namespace test
 			virtual	const	CTimeValue&	End(void);
 			virtual				void				Uninitialise(void);
 
-										void				AddStage(const char* name, TestFn function);
+										void				AddTest(const char* name, TestFn function);
 										void				Test(const char* description, bool test, const char* failureMessage, int32 testType = eTT_Stage);
 										
 			//========================================================================

@@ -25,8 +25,8 @@ namespace test
 
 	bool CLogTest::Initialise(void)
 	{
-		AddStage("Default log", DefaultLog);
-		AddStage("Custom log", CustomLog);
+		AddTest("Default log", DefaultLog);
+		AddTest("Custom log", CustomLog);
 
 		return CUnitTest::Initialise();
 	}
@@ -37,7 +37,7 @@ namespace test
 	{
 		CLogTest* pThis = static_cast<CLogTest*>(pParent);
 		uint32 status = eSS_PASS;
-		ENGINE_LOGGER.SetFlags(ENGINE_LOGGER.GetFlags() & ~(engine::system::CLog::eBT_CONSOLE | engine::system::CLog::eBT_FILE | engine::system::CLog::eBT_STANDARD));
+		ENGINE_LOGGER.SetFlags(ENGINE_LOGGER.GetFlags() & ~(engine::system::CLog::eBT_CONSOLE | engine::system::CLog::eBT_FILE | engine::system::CLog::eBT_STDOUT));
 #if defined(DEBUG)
 		int64 oldLogLevel = engine::system::CLog::s_logLevel;
 #endif // defined(DEBUG)
@@ -142,7 +142,7 @@ namespace test
 			}
 		}
 
-		ENGINE_LOGGER.SetFlags(ENGINE_LOGGER.GetFlags() | (engine::system::CLog::eBT_CONSOLE | engine::system::CLog::eBT_FILE | engine::system::CLog::eBT_STANDARD));
+		ENGINE_LOGGER.SetFlags(ENGINE_LOGGER.GetFlags() | (engine::system::CLog::eBT_CONSOLE | engine::system::CLog::eBT_FILE | engine::system::CLog::eBT_STDOUT));
 		return status;
 	}
 
