@@ -219,37 +219,24 @@ namespace engine
 			struct tm* pTimeInfo;
 			char buffer[80];
 
+			// N.B. The filesystem should normally be obtained through
+			// CEngine::GetFileSystem(), as it will be NULL if the engine isn't
+			// initialised, but the log system is created as part of the
+			// initialisation process and therefore we wouldn't get access here.
+			base::CFileSystem& fileSystem = base::CFileSystem::Get();
+
 			::time(&rawTime);
 			pTimeInfo = localtime(&rawTime);
 
-			const boost::filesystem::path logFilePath(engine::base::CEngine::Get().GetRootPath() / engine::base::CEngine::Get().GetLogName());
-			boost::filesystem::file_status status = boost::filesystem::status(logFilePath);
-
-			if (boost::filesystem::exists(status) == true)
+			if (fileSystem.Backup(fileSystem.GetLogFilePath(), boost::filesystem::path("log_backup")))
 			{
-				boost::filesystem::path backupDir(logFilePath.parent_path() / "log_backup");
-				status = boost::filesystem::status(backupDir);
+				g_logFile.open(fileSystem.GetLogFilePath().generic_string().c_str(), std::ios_base::out | std::ios_base::binary);
 
-				if (boost::filesystem::exists(status) == false)
-				{
-					boost::filesystem::create_directory(backupDir);
-					status = boost::filesystem::status(backupDir);
-				}
-
-				if (boost::filesystem::is_directory(backupDir) == true)
-				{
-					strftime(buffer, sizeof(buffer), "%Y%m%d-%H%M%S_", pTimeInfo);
-					boost::filesystem::path backupPath(backupDir / (std::string(buffer) + logFilePath.filename().string()));
-					boost::filesystem::rename(logFilePath, backupPath);
-				}
+				strftime(buffer, sizeof(buffer), "%d/%m/%Y %H:%M:%S", pTimeInfo);
+				m_flags &= ~(eBAI_LOCATION | eBAI_THREADID);
+				Log(NULL, 0, eLL_ALWAYS, "Log created [%s]", buffer);
+				m_flags |= (eBAI_LOCATION | eBAI_THREADID);
 			}
-
-			g_logFile.open(logFilePath.string().c_str(), std::ios_base::out | std::ios_base::binary);
-			strftime(buffer, sizeof(buffer), "%d/%m/%Y %H:%M:%S", pTimeInfo);
-
-			m_flags &= ~(eBAI_LOCATION | eBAI_THREADID);
-			Log(NULL, 0, eLL_ALWAYS, "Log created [%s]", buffer);
-			m_flags |= (eBAI_LOCATION | eBAI_THREADID);
 		}
 
 		//==========================================================================

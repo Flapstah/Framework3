@@ -3,11 +3,10 @@
 
 //==============================================================================
 
+#include "base/filesystem.h"
 #include "system/console.h"
 #include "time/time.h"
 #include "time/fpscalculator.h"
-
-#include <boost/filesystem.hpp>
 
 //==============================================================================
 
@@ -57,22 +56,19 @@ namespace engine
 			//========================================================================
 			// Systems
 			//========================================================================
+			engine::base::CFileSystem* GetFileSystem(void) const;
 			engine::time::CTime* GetTime(void) const;
 			engine::system::CConsole* GetConsole(void) const;
 
 			//========================================================================
 			// Accessors
 			//========================================================================
-			const boost::filesystem::path& GetRootPath(void) const;
-			const std::string& GetLogName(void) const;
 
 			//------------------------------------------------------------------------
 
 		protected:
 			uint32 m_flags;
 			engine::time::CFPSCalculator m_fps;
-			boost::filesystem::path m_rootPath;
-			std::string m_logName;
 
 			//========================================================================
 		}; // End [class CEngine]
