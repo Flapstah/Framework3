@@ -4,6 +4,7 @@
 
 #include "base/engine.h"
 #include "system/console.h"
+#include "system/commandline.h"
 
 //==============================================================================
 
@@ -32,15 +33,18 @@ int main(int argc, char* argv[])
 
 	engine::base::CEngine& myEngine = engine::base::CEngine::Get();
 	myEngine.Initialise(argc, argv);
+
+	engine::system::CConfiguration cl(argc, argv, *myEngine.GetConsole());
+
 	engine::time::CTime::TTimerPtr myTimer = engine::time::CTime::Get().CreateTimer(engine::time::CTimeValue(0.1), 1.0f, engine::time::CTimeValue(1.0), timerCallback, NULL);
-	while (g_run)
+/*	while (g_run)
 	{
 		myEngine.Update();
 		engine::time::CTime::Sleep(10000);
 	}
-	engine::time::CTime::Get().DestroyTimer(myTimer);
+*/	engine::time::CTime::Get().DestroyTimer(myTimer);
 
-	engine::system::CConsole::TIVariablePtr plog_level = engine::system::CConsole::Get().FindVariable("log_level");
+	engine::system::CConsole::TIVariablePtr plog_level = myEngine.GetConsole()->FindVariable("log_level");
 	if (plog_level != NULL)
 	{
 		LOG_ALWAYS(GAME_LOGGER, "log_level = %" PRId64, plog_level->GetInteger());

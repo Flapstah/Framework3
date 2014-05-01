@@ -1,3 +1,7 @@
+CommandLine
+	Working on argument parsing
+		Need a generic, data driven way to parse command line (and preferably config files too)
+
 Engine
 	Need to revisit versioning since debug builds now don't bump the version (generate_version dependencies)
 
@@ -11,11 +15,12 @@ Tracing
 		Requires being able to grab the callstack
 
 File system
-	Need file system abstraction to control the number of open files (use boost::filesystem under the hood)
-		Need to factor out storage of root directory to internal filesystem class
-		Needs to handle virtual file system (mount archive (zip?) files as directories)
+	Need to handle virtual file system (mount archive (zip?) files as directories)
 
 Solved/fixed:
+	Need file system abstraction to control the number of open files (use boost::filesystem under the hood)
+		Just made a utility class in the end to wrap common functionality - how many files would I be managing anyway?
+		Need to factor out storage of root directory to internal filesystem class
 	Nev pointed out that CUnitTest::AddStage is poorly named - should be AddTest
 	Logs no longer being elided from code when in release builds - why?
 		To do with not being able to determine the value of log_level as a constant at runtime
