@@ -4,7 +4,7 @@
 
 #include "base/engine.h"
 #include "system/console.h"
-#include "system/commandline.h"
+#include "system/configuration.h"
 
 //==============================================================================
 
@@ -31,10 +31,22 @@ int main(int argc, char* argv[])
 {
 	LOG_ALWAYS(GAME_LOGGER, "Start...");
 
+	enum eSyntaxID
+	{
+		eSID_LOG = engine::system::CConfiguration::eSID_FIRST_USERID,
+		eSID_ROOT,
+	};
+
+	engine::system::CConfiguration::CSyntax syntax[] = {
+		engine::system::CConfiguration::CSyntax("root", 'r', eSID_ROOT, 0, "specify the root path", NULL),
+		engine::system::CConfiguration::CSyntax("log", 'l', eSID_LOG, 0, "specify the log file", NULL),
+//		engine::system::CConfiguration::CSyntax("xxx", 'x', eSID_LOG, 0, "dummy", NULL),
+	};
+
+	engine::system::CConfiguration config(sizeof(syntax)/sizeof(engine::system::CConfiguration::CSyntax), syntax);
+
 	engine::base::CEngine& myEngine = engine::base::CEngine::Get();
 	myEngine.Initialise(argc, argv);
-
-	engine::system::CConfiguration cl(argc, argv, *myEngine.GetConsole());
 
 	engine::time::CTime::TTimerPtr myTimer = engine::time::CTime::Get().CreateTimer(engine::time::CTimeValue(0.1), 1.0f, engine::time::CTimeValue(1.0), timerCallback, NULL);
 /*	while (g_run)
