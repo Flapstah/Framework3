@@ -50,21 +50,21 @@ namespace engine
 				eB_COMMON				= (eB_ACTIVE | eB_AUTO_FLUSH),
 
 				// Additional info
-				eBAI_LOCATION		= 1 << 2,		// adds the log location [__FILE__(__LINE__)]
-				eBAI_LOG_LEVEL	= 1 << 3,		// adds the named log level, e.g. [WARNING]
-				eBAI_NAME				= 1 << 4,		// adds the log name, e.g. [MASTER]
-				eBAI_NEWLINE		= 1 << 5,		// auto appends a newline to each log
-				eBAI_THREADID		= 1 << 6,		// adds the platform specific thread ID
-				eBAI_TIMESTAMP	= 1 << 7,		// adds a timestamp, e.g. [00:00:00.000]
+				eBAI_LOCATION		= 1 << 3,		// adds the log location [__FILE__(__LINE__)]
+				eBAI_LOG_LEVEL	= 1 << 4,		// adds the named log level, e.g. [WARNING]
+				eBAI_NAME				= 1 << 5,		// adds the log name, e.g. [MASTER]
+				eBAI_NEWLINE		= 1 << 6,		// auto appends a newline to each log
+				eBAI_THREADID		= 1 << 7,		// adds the platform specific thread ID
+				eBAI_TIMESTAMP	= 1 << 8,		// adds a timestamp, e.g. [00:00:00.000]
 
 				eBAI_ALL				= (eBAI_LOCATION | eBAI_LOG_LEVEL | eBAI_NAME | eBAI_NEWLINE | eBAI_THREADID | eBAI_TIMESTAMP),
 				eBAI_COMMON			= (eBAI_LOG_LEVEL | eBAI_NAME | eBAI_NEWLINE | eBAI_TIMESTAMP),
 
 				// Targets
-				eBT_CONSOLE			= 1 << 8,
-				eBT_DEBUGGER		= 1 << 9, // N.B. Only on Windows
-				eBT_FILE				= 1 << 10,
-				eBT_STDOUT			= 1 << 11,
+				eBT_CONSOLE			= 1 << 9,
+				eBT_DEBUGGER		= 1 << 10, // N.B. Only on Windows
+				eBT_FILE				= 1 << 11,
+				eBT_STDOUT			= 1 << 12,
 
 				eBT_ALL					= (eBT_CONSOLE | eBT_DEBUGGER | eBT_FILE | eBT_STDOUT),
 			}; // End [enum eBehaviour]
@@ -85,6 +85,9 @@ namespace engine
 			// parameter 5 in __attribute__ specifier in Log() declaration below
 			bool Log(const char* file, uint32 line, uint32 level, const char* format, ...) __attribute__((format(printf, 5, 6)));
 
+			static void ForceCrashOnFatalLog(void) { s_crashOnFatalLog = true; }
+			static void SuppressCrashOnFatalLog(void) { s_crashOnFatalLog = false; }
+
 			//------------------------------------------------------------------------
 			
 		private:
@@ -96,6 +99,7 @@ namespace engine
 			CLog* m_pParent;
 			const char* m_name;
 			uint32 m_flags;
+			static bool s_crashOnFatalLog;
 
 		public:
 #if defined(RELEASE)

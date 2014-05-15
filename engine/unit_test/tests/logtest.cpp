@@ -42,6 +42,8 @@ namespace test
 		int64 oldLogLevel = engine::system::CLog::s_logLevel;
 #endif // defined(DEBUG)
 
+		engine::system::CLog::SuppressCrashOnFatalLog();
+
 		if (pThis->m_testStatus == eTS_RUNNING)
 		{
 			switch (pThis->GetStage())
@@ -141,6 +143,8 @@ namespace test
 					break;
 			}
 		}
+
+		engine::system::CLog::ForceCrashOnFatalLog();
 
 		ENGINE_LOGGER.SetFlags(ENGINE_LOGGER.GetFlags() | (engine::system::CLog::eBT_CONSOLE | engine::system::CLog::eBT_FILE | engine::system::CLog::eBT_STDOUT));
 		return status;

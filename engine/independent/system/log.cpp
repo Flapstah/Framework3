@@ -34,6 +34,7 @@ namespace engine
 #else
 		int64 CLog::s_logLevel = LOG_DEFAULT_DEBUG_LOG_LEVEL;
 #endif // defined(RELEASE)
+		bool CLog::s_crashOnFatalLog = true;
 
 		//==========================================================================
 
@@ -205,6 +206,11 @@ namespace engine
 #endif // defined(WIN32)
 			}
 
+			if ((level == eLL_FATAL) && (s_crashOnFatalLog))
+			{
+				INTENTIONAL_CRASH;
+			}
+
 			return haveOutput;
 		}
 
@@ -233,9 +239,10 @@ namespace engine
 				g_logFile.open(fileSystem.GetLogFilePath().generic_string().c_str(), std::ios_base::out | std::ios_base::binary);
 
 				strftime(buffer, sizeof(buffer), "%d/%m/%Y %H:%M:%S", pTimeInfo);
+				uint32 flags = m_flags;
 				m_flags &= ~(eBAI_LOCATION | eBAI_THREADID);
 				Log(NULL, 0, eLL_ALWAYS, "Log created [%s]", buffer);
-				m_flags |= (eBAI_LOCATION | eBAI_THREADID);
+				m_flags = flags;
 			}
 		}
 

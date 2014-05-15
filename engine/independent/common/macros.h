@@ -69,9 +69,9 @@
 #define BIT(_number_) (1<<_number_)
 
 //------------------------------------------------------------------------------
-// Trigger a fatal error
+// Trigger an intentional crash to get a dump and/or chance to debug
 //------------------------------------------------------------------------------
-#define FATAL_ERROR(_description_) { fprintf(stderr, "%s(%d): FATAL ERROR : %s\n", __FILE__, __LINE__, _description_); fflush(stderr); uint8* pFatal = NULL; *pFatal = 0; }
+#define INTENTIONAL_CRASH { fflush(stderr); fflush(stdout); uint8* pFatal = NULL; *pFatal = 0; }
 
 //==============================================================================
 
