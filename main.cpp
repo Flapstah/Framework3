@@ -38,12 +38,13 @@ int main(int argc, char* argv[])
 	};
 
 	engine::system::CConfiguration::CSyntax syntax[] = {
-		engine::system::CConfiguration::CSyntax("root", 'r', eSID_ROOT, 0, "specify the root path", NULL),
-		engine::system::CConfiguration::CSyntax("log", 'l', eSID_LOG, 0, "specify the log file", NULL),
+		engine::system::CConfiguration::CSyntax("root", 'r', eSID_ROOT, 1, "specify the root path", NULL),
+		engine::system::CConfiguration::CSyntax("log", 'l', eSID_LOG, 1, "specify the log file", NULL),
 //		engine::system::CConfiguration::CSyntax("xxx", 'x', eSID_LOG, 0, "dummy", NULL),
 	};
 
 	engine::system::CConfiguration config(sizeof(syntax)/sizeof(engine::system::CConfiguration::CSyntax), syntax);
+	config.Parse(argc, argv);
 
 	engine::base::CEngine& myEngine = engine::base::CEngine::Get();
 	myEngine.Initialise(argc, argv);

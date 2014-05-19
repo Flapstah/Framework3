@@ -75,15 +75,19 @@ namespace engine
 			//------------------------------------------------------------------------
 //			{ ID_LOG, "<arg0>".."<arg7" }
 
+			typedef std::vector<const char *> TArgumentVec;
 			class COption
 			{
-				COption(uint32 id, uint32 index, uint32 argc, const char* const* argv);
-				const char* GetArg(uint32 index);
+			public:
+				COption(uint32 id, uint32 flags, TArgumentVec args);
+				uint32 GetArgCount(void) const;
+				const char* GetArg(uint32 index) const;
+				uint32 GetID(void) const { return m_ID; }
 
 			private:
-				const char*				m_arg[CSyntax::eF_MAX_NUMBER_OF_ARGS];
+				TArgumentVec			m_args;
 				uint32						m_ID;
-				uint32						m_argc;
+				uint32						m_flags;
 			};
 
 		public:
@@ -92,12 +96,14 @@ namespace engine
 
 			bool Parse(uint32 argc, const char* const* argv);
 			bool Parse(const char* configFile);
-			void Help(void);
+			void ShowHelp(void);
 
 		protected:
 			typedef std::vector<CSyntax> TSyntaxVec;
+			typedef std::vector<COption> TOptionVec;
 
 			TSyntaxVec m_syntax;
+			TOptionVec m_option;
 
 			//------------------------------------------------------------------------
 		}; // End [class CConfiguration]
