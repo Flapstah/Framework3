@@ -219,7 +219,7 @@ namespace engine
 		CLog::CLog(void)
 			: m_pParent(NULL)
 			, m_name(LOG_MASTER_NAME)
-			, m_flags(eB_COMMON | eBAI_COMMON | eBT_ALL)
+			, m_flags(LOG_DEFAULT_BEHAVIOUR)
 		{
 			time_t rawTime;
 			struct tm* pTimeInfo;

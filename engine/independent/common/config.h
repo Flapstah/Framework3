@@ -55,6 +55,7 @@
 #define LOG_ELIDE_ALL_LOGS (0)
 #define LOG_DEFAULT_DEBUG_LOG_LEVEL engine::system::CLog::eLL_DEBUG
 #define LOG_DEFAULT_RELEASE_LOG_LEVEL engine::system::CLog::eLL_WARNING
+#define LOG_DEFAULT_BEHAVIOUR (eB_COMMON | eBAI_COMMON | eBT_ALL) // See log.h for details
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
