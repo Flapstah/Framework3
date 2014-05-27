@@ -50,18 +50,36 @@ namespace engine
 
 		//==========================================================================
 
-		CConfiguration::CConfiguration(uint32 syntaxCount, const CSyntax* pSyntax)
+		CConfiguration::CConfiguration(void)
+		{
+			// Add 'free' commands
+			CSyntax syntax[] = {
+				CSyntax("help", 'h', eSID_HELP, 0, "show this help text", NULL),
+				// FileSystem commands
+				CSyntax("root", 'r', eSID_ROOT, 1, "specify the root path", NULL),
+				CSyntax("log", 'l', eSID_LOG, 1, "specify the log file", NULL),
+			};
+
+			AddSyntax(sizeof(syntax)/sizeof(engine::system::CConfiguration::CSyntax), syntax);
+		}
+
+		//==========================================================================
+
+		CConfiguration::~CConfiguration(void)
+		{
+		}
+
+		//==========================================================================
+
+		void CConfiguration::AddSyntax(uint32 syntaxCount, const CSyntax* pSyntax)
 		{
 			// Build syntax vector
-			m_syntax.reserve(syntaxCount);
+			m_syntax.reserve(m_syntax.size()+syntaxCount);
 			for (uint32 index = 0; index < syntaxCount; ++index)
 			{
 				m_syntax.push_back(pSyntax[index]);
 			}
 			
-			// Add 'free' commands
-			m_syntax.push_back(CSyntax("help", 'h', eSID_HELP, 0, "show this help text", NULL));
-
 			// Sort alphabetically to speed up parsing
 			std::sort(m_syntax.begin(), m_syntax.end());
 
@@ -208,6 +226,24 @@ namespace engine
 
 		//==========================================================================
 
+		const CConfiguration::COption* CConfiguration::GetOption(uint32 optionID) const
+		{
+			const COption* pOption = NULL;
+
+			for (TOptionVec::const_iterator it = m_option.begin(), end = m_option.end(); it != end; ++it)
+			{
+				if (it->GetID() == optionID)
+				{
+					pOption = &*it;
+					break;
+				}
+			}
+
+			return pOption;
+		}
+
+		//==========================================================================
+
 		void CConfiguration::ShowHelp(void)
 		{
 			size_t maxNameLength = 0;
@@ -282,11 +318,6 @@ namespace engine
 
 		//============================================================================
 
-		CConfiguration::~CConfiguration(void)
-		{
-		}
-
-		//==========================================================================
 	} // End [namespace system]
 
 	//============================================================================

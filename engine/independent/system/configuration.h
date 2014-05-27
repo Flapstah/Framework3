@@ -25,6 +25,8 @@ namespace engine
 			enum eSyntaxID
 			{
 				eSID_HELP = 0,
+				eSID_ROOT,
+				eSID_LOG,
 				eSID_FIRST_USERID,
 			};
 
@@ -91,11 +93,13 @@ namespace engine
 			};
 
 		public:
-			CConfiguration(uint32 syntaxCount, const CSyntax* pSyntax);
+			CConfiguration(void);
 			~CConfiguration(void);
 
+			void AddSyntax(uint32 syntaxCount, const CSyntax* pSyntax);
 			bool Parse(uint32 argc, const char* const* argv);
 			bool Parse(const char* configFile);
+			const COption* GetOption(uint32 optionID) const;
 			void ShowHelp(void);
 
 		protected:
