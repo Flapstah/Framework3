@@ -4,6 +4,7 @@
 //==============================================================================
 
 #include "base/filesystem.h"
+#include "system/configuration.h"
 #include "system/console.h"
 #include "time/time.h"
 #include "time/fpscalculator.h"
@@ -48,7 +49,7 @@ namespace engine
 			//========================================================================
 			// Lifecycle
 			//========================================================================
-			bool Initialise(int argc, char* argv[]);
+			bool Initialise(engine::system::CConfiguration& config);
 			engine::time::CTimeValue Update(void);
 			bool Uninitialise(void);
 			bool Terminate(void);

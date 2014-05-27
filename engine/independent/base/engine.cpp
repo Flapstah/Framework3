@@ -27,7 +27,7 @@ namespace engine
 
 		//==========================================================================
 
-		bool CEngine::Initialise(int argc, char* argv[])
+		bool CEngine::Initialise(engine::system::CConfiguration& config)
 		{
 			bool ok = true;
 
@@ -36,21 +36,19 @@ namespace engine
 			// be set very early (preferably before any systems other than filesystem
 			// are initialised)
 			//------------------------------------------------------------------------
-			for (int32 i = 1; i < argc; ++i)
+			const engine::system::CConfiguration::COption* pOption = config.GetOption(engine::system::CConfiguration::eSID_ROOT);
+			if (pOption != NULL)
 			{
-				if ((strcmp("-root", argv[i]) == 0) && (i < argc-1))
-				{
-					CFileSystem::Get().SetRootPath(argv[++i]);
-				}
-
-				if ((strcmp("-log", argv[i]) == 0) && (i < argc-1))
-				{
-					CFileSystem::Get().SetLogFile(argv[++i]);
-				}
+				CFileSystem::Get().SetRootPath(pOption->GetArg(0));
+			}
+			pOption = config.GetOption(engine::system::CConfiguration::eSID_LOG);
+			if (pOption != NULL)
+			{
+				CFileSystem::Get().SetLogFile(pOption->GetArg(0));
 			}
 
 			//------------------------------------------------------------------------
-			// Initialise the CTime singleton by accessing it (it will be instanced)
+			// Initialise the main engine singletons by intanciating them
 			//------------------------------------------------------------------------
 			CFileSystem::Get(); // in case -root/-log weren't specified (above)
 			time::CTime::Get();
