@@ -37,17 +37,11 @@ int main(int argc, char* argv[])
 		eSID_ROOT,
 	};
 
-	engine::system::CConfiguration::CSyntax syntax[] = {
-		engine::system::CConfiguration::CSyntax("root", 'r', eSID_ROOT, 1, "specify the root path", NULL),
-		engine::system::CConfiguration::CSyntax("log", 'l', eSID_LOG, 1, "specify the log file", NULL),
-//		engine::system::CConfiguration::CSyntax("xxx", 'x', eSID_LOG, 0, "dummy", NULL),
-	};
-
-	engine::system::CConfiguration config(sizeof(syntax)/sizeof(engine::system::CConfiguration::CSyntax), syntax);
+	engine::system::CConfiguration config;
 	config.Parse(argc, argv);
 
 	engine::base::CEngine& myEngine = engine::base::CEngine::Get();
-	myEngine.Initialise(argc, argv);
+	myEngine.Initialise(config);
 
 	engine::time::CTime::TTimerPtr myTimer = engine::time::CTime::Get().CreateTimer(engine::time::CTimeValue(0.1), 1.0f, engine::time::CTimeValue(1.0), timerCallback, NULL);
 /*	while (g_run)

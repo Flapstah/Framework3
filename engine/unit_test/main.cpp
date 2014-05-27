@@ -17,11 +17,19 @@ int main(int argc, char* argv[])
 {
 	TRACE(TRACE_ENABLE);
 
-//	IGNORE_PARAMETER(argc);
-//	IGNORE_PARAMETER(argv);
+	/*
+	enum eSyntaxID
+	{
+		eSID_LOG = engine::system::CConfiguration::eSID_FIRST_USERID,
+		eSID_ROOT,
+	};
+	*/
+
+	engine::system::CConfiguration config;
+	config.Parse(argc, argv);
 
 	engine::base::CEngine& myEngine = engine::base::CEngine::Get();
-	myEngine.Initialise(argc, argv);
+	myEngine.Initialise(config);
 
 	LOG_ALWAYS(GAME_LOGGER, "Starting unit tests...\n");
 
