@@ -442,7 +442,7 @@ target_link_libraries(unit-test ${LIBS})
 get_target_property(UNIT_TEST_EXE unit-test LOCATION)
 add_custom_command(
 	OUTPUT "${test_SOURCE_DIR}/unit-test.log"
-	COMMAND "${UNIT_TEST_EXE}" -root "${test_SOURCE_DIR}" -log "unit-test.log"
+	COMMAND "${UNIT_TEST_EXE}" --root "${test_SOURCE_DIR}" --log "unit-test.log"
 	DEPENDS "${UNIT_TEST_EXE}" ${PROJECT_INDEPENDENT_SOURCES} ${PROJECT_DEPENDENT_SOURCES} ${UNIT_TEST_SOURCES} ${UNIT_TEST_HEADERS}
 	)
 #
