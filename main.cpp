@@ -31,14 +31,17 @@ int main(int argc, char* argv[])
 {
 	LOG_ALWAYS(GAME_LOGGER, "Start...");
 
+	/*
 	enum eSyntaxID
 	{
 		eSID_LOG = engine::system::CConfiguration::eSID_FIRST_USERID,
 		eSID_ROOT,
 	};
+	*/
 
 	engine::system::CConfiguration config;
 	config.Parse(argc, argv);
+	config.Parse("system.cfg");
 
 	engine::base::CEngine& myEngine = engine::base::CEngine::Get();
 	myEngine.Initialise(config);

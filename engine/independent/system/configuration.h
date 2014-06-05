@@ -3,6 +3,8 @@
 
 //==============================================================================
 
+#include <map>
+#include <string>
 #include <vector>
 
 //==============================================================================
@@ -100,14 +102,21 @@ namespace engine
 			bool Parse(uint32 argc, const char* const* argv);
 			bool Parse(const char* configFile);
 			const COption* GetOption(uint32 optionID) const;
+			const std::string GetConfig(const std::string& key) const;
 			void ShowHelp(void);
+
+		protected:
+			void SplitKeyValue(std::string& line, char split, std::string& key, std::string& value);
+			void ProcessLine(std::string* pLine);
 
 		protected:
 			typedef std::vector<CSyntax> TSyntaxVec;
 			typedef std::vector<COption> TOptionVec;
+			typedef std::map<std::string, std::string> TConfigurationMap;
 
 			TSyntaxVec m_syntax;
 			TOptionVec m_option;
+			TConfigurationMap m_config;
 
 			//------------------------------------------------------------------------
 		}; // End [class CConfiguration]

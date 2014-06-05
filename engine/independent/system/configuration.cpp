@@ -2,6 +2,11 @@
 
 #include <algorithm>
 #include "system/configuration.h"
+#include "base/engine.h"
+
+//==============================================================================
+
+#define TRACE_ENABLE false
 
 //==============================================================================
 
@@ -13,6 +18,8 @@ namespace engine
 	{
 		//==========================================================================
 
+		//==========================================================================
+
 		CConfiguration::CSyntax::CSyntax(const char* name, char abbreviation, uint32 id, uint32 flags, const char* help, CustomArgParsing pParseFn /* = NULL */)
 			: m_name(name)
 			, m_help(help)
@@ -21,6 +28,7 @@ namespace engine
 			, m_flags(flags)
 			, m_abbreviation(abbreviation)
 		{
+			TRACE(TRACE_ENABLE);
 		}
 
 		//==========================================================================
@@ -30,12 +38,15 @@ namespace engine
 			, m_ID(id)
 			, m_flags(flags)
 		{
+			TRACE(TRACE_ENABLE);
 		}
 
 		//==========================================================================
 
 		uint32 CConfiguration::COption::GetArgCount(void) const
 		{
+			TRACE(TRACE_ENABLE);
+
 			return m_flags&CSyntax::eF_NUMBER_OF_ARGUMENTS_MASK;
 		}
 
@@ -43,6 +54,8 @@ namespace engine
 
 		const char* CConfiguration::COption::GetArg(uint32 index) const
 		{
+			TRACE(TRACE_ENABLE);
+
 			uint32 argc = GetArgCount();
 
 			return (index < argc) ? m_args[index] : NULL;
@@ -52,6 +65,8 @@ namespace engine
 
 		CConfiguration::CConfiguration(void)
 		{
+			TRACE(TRACE_ENABLE);
+
 			// Add 'free' commands
 			CSyntax syntax[] = {
 				CSyntax("help", 'h', eSID_HELP, 0, "show this help text", NULL),
@@ -67,12 +82,15 @@ namespace engine
 
 		CConfiguration::~CConfiguration(void)
 		{
+			TRACE(TRACE_ENABLE);
 		}
 
 		//==========================================================================
 
 		void CConfiguration::AddSyntax(uint32 syntaxCount, const CSyntax* pSyntax)
 		{
+			TRACE(TRACE_ENABLE);
+
 			// Build syntax vector
 			m_syntax.reserve(m_syntax.size()+syntaxCount);
 			for (uint32 index = 0; index < syntaxCount; ++index)
@@ -104,6 +122,8 @@ namespace engine
 
 		bool CConfiguration::Parse(uint32 argc, const char* const* argv)
 		{
+			TRACE(TRACE_ENABLE);
+
 			TArgumentVec nonOptionArgs;
 			TArgumentVec optionArgs;
 
@@ -202,6 +222,8 @@ namespace engine
 				}
 			}
 
+			/*
+			// debug printing of command line options
 			for (TOptionVec::iterator it = m_option.begin(), end = m_option.end(); it != end; ++it)
 			{
 				uint32 count = it->GetArgCount();
@@ -211,23 +233,38 @@ namespace engine
 					LOG_INFO(ENGINE_LOGGER, "  arg %d: [%s]", index, it->GetArg(index));
 				}
 			}
+			*/
 
-			return false;
+			return true;
 		}
 
 		//==========================================================================
 
 		bool CConfiguration::Parse(const char* configFile)
 		{
-			IGNORE_PARAMETER(configFile);
-			TODO(fix configuration file parsing)
-			return false;
+			TRACE(TRACE_ENABLE);
+
+			engine::utility::CUnaryCallback<CConfiguration, std::string> callback = engine::utility::MakeUnaryCallback<CConfiguration, std::string>(*this, &CConfiguration::ProcessLine);
+			engine::base::CFileSystem::Get().ReadLines(configFile, callback);
+
+			/*
+			// debug printing of config
+			LOG_INFO(ENGINE_LOGGER, "Config file [%s], [Key]:[Value]", configFile);
+			for (TConfigurationMap::iterator it = m_config.begin(), end = m_config.end(); it != end; ++it)
+			{
+				LOG_INFO(ENGINE_LOGGER, "  [%s]:[%s]", it->first.c_str(), it->second.c_str());
+			}
+			*/
+
+			return (m_config.empty() == false);
 		}
 
 		//==========================================================================
 
 		const CConfiguration::COption* CConfiguration::GetOption(uint32 optionID) const
 		{
+			TRACE(TRACE_ENABLE);
+
 			const COption* pOption = NULL;
 
 			for (TOptionVec::const_iterator it = m_option.begin(), end = m_option.end(); it != end; ++it)
@@ -244,8 +281,30 @@ namespace engine
 
 		//==========================================================================
 
+		const std::string CConfiguration::GetConfig(const std::string& key) const
+		{
+			TRACE(TRACE_ENABLE);
+
+			std::string value;
+
+			if (key.empty() == false)
+			{
+				TConfigurationMap::const_iterator it = m_config.find(key);
+				if (it != m_config.end())
+				{
+					value = it->second;
+				}
+			}
+
+			return value;
+		}
+
+		//==========================================================================
+
 		void CConfiguration::ShowHelp(void)
 		{
+			TRACE(TRACE_ENABLE);
+
 			size_t maxNameLength = 0;
 			for (TSyntaxVec::iterator it = m_syntax.begin(), end = m_syntax.end(); it != end; ++it)
 			{
@@ -268,53 +327,51 @@ namespace engine
 			exit(0);
 		}
 
-		/* BOLLOX
-		//==========================================================================
+		//============================================================================
 
-		CConfiguration::CConfiguration(uint32 argc, const char* const* argv)
+		void CConfiguration::SplitKeyValue(std::string& line, char split, std::string& key, std::string& value)
 		{
-			m_parsed.reserve(argc);
+			TRACE(TRACE_ENABLE);
 
-			std::vector<SSyntax> preArgs;
-			std::vector<SSyntax> args;
-			std::vector<SSyntax> postArgs;
+			size_t pos = line.find(split);
 
-			preArgs.reserve(argc);
-			args.reserve(argc);
-			postArgs.reserve(argc);
+			key.clear();
+			value.clear();
 
-			// Skip the executable name
-			for (uint32 index = 1; index < argc; ++index)
+			if (pos != std::string::npos)
 			{
-
-				// Sort args into pre/normal/post
-				switch (argv[index][0])
-				{
-				case '-':
-					preArgs.push_back(argv[index]+1);
-					break;
-
-				case '+':
-					postArgs.push_back(argv[index]+1);
-					break;
-
-				default:
-					args.push_back(argv[index]);
-					break;
-				}
-			}
-
-			// Append normal args to pre args array
-			preArgs.insert(preArgs.end(), args.begin(), args.end());
-			// Append post args to pre/normal args array
-			preArgs.insert(preArgs.end(), postArgs.begin(), postArgs.end());
-
-			for (std::vector<const char*>::iterator it = preArgs.begin(); it != preArgs.end(); ++ it)
-			{
-				//LOG_ALWAYS(m_log, "%s", *it);
+				key = line.substr(0, pos);
+				value = line.substr(pos+1);
 			}
 		}
-		END BOLLOX */
+
+		//============================================================================
+
+		void CConfiguration::ProcessLine(std::string* pLine)
+		{
+			TRACE(TRACE_ENABLE);
+
+			if (pLine != NULL)
+			{
+				std::string key;
+				std::string value;
+
+				engine::utility::StripComment(*pLine, '#');
+				SplitKeyValue(*pLine, '=', key, value);
+				engine::utility::Trim(key);
+				engine::utility::Trim(value);
+
+				if (key.empty() == false)
+				{
+					TConfigurationMap::iterator it = m_config.find(key);
+					if (it != m_config.end())
+					{
+						LOG_WARNING(ENGINE_LOGGER, "Duplicate key [%s] detected in configuration; original value was [%s], now [%s]", key.c_str(), m_config[key].c_str(), value.c_str());
+					}
+					m_config[key] = value;
+				}
+			}
+		}
 
 		//============================================================================
 
