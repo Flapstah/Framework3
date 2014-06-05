@@ -32,9 +32,11 @@
 #include "system/log.h"
 
 #include "utility/ansi.h"
+#include "utility/callback.h"
 #include "utility/compiletimestringhash.h"
 #include "utility/debug.h"
 #include "utility/runtimestringhash.h"
+#include "utility/stringutils.h"
 
 //==============================================================================
 // [EOF]
