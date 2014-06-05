@@ -7,6 +7,10 @@
 
 //==============================================================================
 
+#define TRACE_ENABLE false
+
+//==============================================================================
+
 namespace engine
 {
 	//============================================================================
@@ -21,12 +25,15 @@ namespace engine
 
 		void CTime::Platform_Initialise(void)
 		{
+			TRACE(TRACE_ENABLE);
 		}
 
 		//==========================================================================
 
 		const CTimeValue CTime::Platform_GetCurrentTime() const
 		{
+			TRACE(TRACE_ENABLE);
+
 			::timeval time;
 			::gettimeofday(&time, NULL);
 
@@ -40,6 +47,8 @@ namespace engine
 
 		void CTime::Platform_Sleep(uint32 microseconds)
 		{
+			TRACE(TRACE_ENABLE);
+
 			::usleep(microseconds);
 		}
 

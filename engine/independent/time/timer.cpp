@@ -5,6 +5,10 @@
 
 //==============================================================================
 
+#define TRACE_ENABLE false
+
+//==============================================================================
+
 namespace engine
 {
 	namespace time
@@ -20,6 +24,8 @@ namespace engine
 			, m_scale(scale)
 			, m_flags(0)
 		{
+			TRACE(TRACE_ENABLE);
+
 			Reset(INVALID_TIME);
 		}
 
@@ -27,12 +33,15 @@ namespace engine
 
 		CTimer::~CTimer(void)
 		{
+			TRACE(TRACE_ENABLE);
 		}
 
 		//==========================================================================
 
 		CTimeValue CTimer::GetCurrentTime(void) const
 		{
+			TRACE(TRACE_ENABLE);
+
 			return m_timeNow;
 		}
 
@@ -40,6 +49,8 @@ namespace engine
 
 		CTimeValue CTimer::GetElapsedTime(void) const
 		{
+			TRACE(TRACE_ENABLE);
+
 			return m_timeElapsed;
 		}
 
@@ -47,6 +58,8 @@ namespace engine
 
 		CTimeValue CTimer::GetFrameTime(void) const
 		{
+			TRACE(TRACE_ENABLE);
+
 			return (m_timeNow-m_timeLast);
 		}
 
@@ -54,6 +67,8 @@ namespace engine
 
 		bool CTimer::Update(CTimeValue elapsed)
 		{
+			TRACE(TRACE_ENABLE);
+
 			bool active = true;
 
 			if (IsPaused() == false)
@@ -78,6 +93,8 @@ namespace engine
 
 		void CTimer::SetScale(float scale)
 		{
+			TRACE(TRACE_ENABLE);
+
 			m_scale = scale;
 		}
 
@@ -85,6 +102,8 @@ namespace engine
 
 		float CTimer::GetScale(void) const
 		{
+			TRACE(TRACE_ENABLE);
+
 			return m_scale;
 		}
 
@@ -92,6 +111,8 @@ namespace engine
 
 		void CTimer::Pause(bool pause)
 		{
+			TRACE(TRACE_ENABLE);
+
 			if (pause)
 			{
 				m_flags |= TF_PAUSED;
@@ -106,6 +127,8 @@ namespace engine
 
 		bool CTimer::IsPaused(void)
 		{
+			TRACE(TRACE_ENABLE);
+
 			return ((m_flags & TF_PAUSED) == TF_PAUSED);
 		}
 
@@ -113,6 +136,8 @@ namespace engine
 
 		void CTimer::Reset(const CTimeValue& when)
 		{
+			TRACE(TRACE_ENABLE);
+
 			if (when == INVALID_TIME)
 			{
 				if (m_pParent != NULL)

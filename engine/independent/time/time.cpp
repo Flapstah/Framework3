@@ -4,6 +4,10 @@
 
 //==============================================================================
 
+#define TRACE_ENABLE false
+
+//==============================================================================
+
 namespace engine
 {
 	//============================================================================
@@ -14,6 +18,8 @@ namespace engine
 
 		CTime::CTime(void)
 		{
+			TRACE(TRACE_ENABLE);
+
 			Platform_Initialise();
 			m_lastUpdate = GetCurrentTime();
 		}
@@ -22,6 +28,8 @@ namespace engine
 
 		CTime::~CTime(void)
 		{
+			TRACE(TRACE_ENABLE);
+
 			if (m_timers.empty() == false)
 			{
 				LOG_ERROR(ENGINE_LOGGER, "CTime still has timers attached at destruction");
@@ -32,6 +40,8 @@ namespace engine
 
 		const CTimeValue CTime::Update(void)
 		{
+			TRACE(TRACE_ENABLE);
+
 			CTimeValue now = GetCurrentTime();
 			CTimeValue elapsed = now - m_lastUpdate;
 			m_lastUpdate = now;
@@ -48,6 +58,8 @@ namespace engine
 
 		const CTimeValue CTime::GetCurrentTime(void) const
 		{
+			TRACE(TRACE_ENABLE);
+
 			return Platform_GetCurrentTime();
 		}
 
@@ -55,6 +67,8 @@ namespace engine
 
 		CTime::TTimerPtr CTime::CreateTimer(CTimeValue maxFrameTime, float scale, CTimeValue callbackInterval, CTimer::TimerCallback pCallback, void* const pUserData)
 		{
+			TRACE(TRACE_ENABLE);
+
 			TTimerPtr timer = boost::make_shared<CTimer>(CTimer(NULL, maxFrameTime, scale, callbackInterval, pCallback, pUserData));
 			m_timers.push_back(timer);
 			return timer;
@@ -64,6 +78,8 @@ namespace engine
 
 		CTime::TTimerPtr CTime::CreateTimer(TTimerPtr parent, CTimeValue maxFrameTime, float scale, CTimeValue callbackInterval, CTimer::TimerCallback pCallback, void* const pUserData)
 		{
+			TRACE(TRACE_ENABLE);
+
 			TTimerPtr timer = boost::make_shared<CTimer>(CTimer(parent.get(), maxFrameTime, scale, callbackInterval, pCallback, pUserData));
 			m_timers.push_back(timer);
 			return timer;
@@ -73,6 +89,8 @@ namespace engine
 
 		void CTime::DestroyTimer(TTimerPtr timer)
 		{
+			TRACE(TRACE_ENABLE);
+
 			for (TTimerDeque::iterator it = m_timers.begin(), end = m_timers.end(); it != end; ++it)
 			{
 				if (*it == timer)
@@ -88,6 +106,8 @@ namespace engine
 
 		void CTime::Sleep(uint32 microseconds)
 		{
+			TRACE(TRACE_ENABLE);
+
 			Platform_Sleep(microseconds);
 		}
 
@@ -95,6 +115,8 @@ namespace engine
 
 		void CTime::Initialise(void)
 		{
+			TRACE(TRACE_ENABLE);
+
 			Platform_Initialise();
 		}
 

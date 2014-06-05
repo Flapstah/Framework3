@@ -7,6 +7,10 @@
 
 //==============================================================================
 
+#define TRACE_ENABLE false
+
+//==============================================================================
+
 namespace engine
 {
 	//============================================================================
@@ -21,6 +25,8 @@ namespace engine
 		public:
 			static uint32 Calculate(const char* id)
 			{
+				TRACE(TRACE_ENABLE);
+
 				uint32 index = 0;
 				uint32 hash = (STRING_HASH_PRIME1 ^ id[index])*STRING_HASH_PRIME2;
 

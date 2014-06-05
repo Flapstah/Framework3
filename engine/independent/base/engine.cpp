@@ -5,6 +5,10 @@
 
 //==============================================================================
 
+#define TRACE_ENABLE false
+
+//==============================================================================
+
 namespace engine
 {
 	//============================================================================
@@ -16,12 +20,15 @@ namespace engine
 		CEngine::CEngine(void)
 			: m_flags(0)
 		{
+			TRACE(TRACE_ENABLE);
 		}
 
 		//==========================================================================
 
 		CEngine::~CEngine(void)
 		{
+			TRACE(TRACE_ENABLE);
+
 			Terminate();
 		}
 
@@ -29,6 +36,8 @@ namespace engine
 
 		bool CEngine::Initialise(engine::system::CConfiguration& config)
 		{
+			TRACE(TRACE_ENABLE);
+
 			bool ok = true;
 
 			//------------------------------------------------------------------------
@@ -78,6 +87,8 @@ namespace engine
 
 		engine::time::CTimeValue CEngine::Update(void)	
 		{
+			TRACE(TRACE_ENABLE);
+
 			engine::time::CTimeValue tickTime;
 
 			if (m_flags & eF_INITIALISED)
@@ -93,6 +104,8 @@ namespace engine
 
 		bool CEngine::Uninitialise(void)
 		{
+			TRACE(TRACE_ENABLE);
+
 			if (m_flags & eF_INITIALISED)
 			{
 #if defined(DEBUG)
@@ -109,6 +122,8 @@ namespace engine
 
 		bool CEngine::Terminate(void)
 		{
+			TRACE(TRACE_ENABLE);
+
 			Uninitialise();
 
 			return true;
@@ -118,6 +133,8 @@ namespace engine
 
 		engine::base::CFileSystem* CEngine::GetFileSystem(void) const
 		{
+			TRACE(TRACE_ENABLE);
+
 			return (m_flags & eF_INITIALISED) ? &base::CFileSystem::Get() : NULL;
 		}
 
@@ -125,6 +142,8 @@ namespace engine
 
 		engine::time::CTime* CEngine::GetTime(void) const
 		{
+			TRACE(TRACE_ENABLE);
+
 			return (m_flags & eF_INITIALISED) ? &time::CTime::Get() : NULL;
 		}
 
@@ -132,6 +151,8 @@ namespace engine
 
 		engine::system::CConsole* CEngine::GetConsole(void) const
 		{
+			TRACE(TRACE_ENABLE);
+
 			return (m_flags & eF_INITIALISED) ? &system::CConsole::Get() : NULL;
 		}
 

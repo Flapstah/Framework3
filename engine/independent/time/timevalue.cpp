@@ -4,6 +4,10 @@
 
 //==============================================================================
 
+#define TRACE_ENABLE false
+
+//==============================================================================
+
 namespace engine
 {
 	namespace time
@@ -18,6 +22,8 @@ namespace engine
 
 		void CTimeValue::GetTime(int32& days, int32& hours, int32& minutes, float& seconds)
 		{
+			TRACE(TRACE_ENABLE);
+
 			// remove sign; user calls GetTicks() to determine the sign
 			int64 time = (m_ticks < 0) ? -m_ticks : m_ticks;
 

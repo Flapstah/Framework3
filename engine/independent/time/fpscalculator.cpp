@@ -4,6 +4,10 @@
 
 //==============================================================================
 
+#define TRACE_ENABLE false
+
+//==============================================================================
+
 namespace engine
 {
 	//============================================================================
@@ -15,6 +19,8 @@ namespace engine
 		CFPSCalculator::CFPSCalculator(void)
 			: m_frameIndex(0)
 		{
+			TRACE(TRACE_ENABLE);
+
 			memset(m_frameTimes, 0, sizeof(m_frameTimes));
 		}
 
@@ -22,6 +28,8 @@ namespace engine
 
 		void CFPSCalculator::Update(CTimeValue elapsed)
 		{
+			TRACE(TRACE_ENABLE);
+
 			m_frameTimeAccumulator -= m_frameTimes[m_frameIndex];
 			m_frameTimeAccumulator += elapsed;
 
