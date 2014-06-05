@@ -4,6 +4,10 @@
 
 //==============================================================================
 
+#define TRACE_ENABLE false
+
+//==============================================================================
+
 namespace engine
 {
 	//============================================================================
@@ -24,6 +28,8 @@ namespace engine
 
 		void CTime::Platform_Initialise(void)
 		{
+			TRACE(TRACE_ENABLE);
+
 			LARGE_INTEGER frequency;
 
 			::QueryPerformanceFrequency(&frequency);
@@ -52,6 +58,8 @@ namespace engine
 
 		const CTimeValue CTime::Platform_GetCurrentTime() const
 		{
+			TRACE(TRACE_ENABLE);
+
 			LARGE_INTEGER time;
 			::QueryPerformanceCounter(&time);
 
@@ -65,11 +73,13 @@ namespace engine
 
 		void CTime::Platform_Sleep(uint32 microseconds)
 		{
+			TRACE(TRACE_ENABLE);
+
 			// round up to the nearest 1/2 millisecond
 			uint32 milliseconds = (microseconds+500)/1000;
 			if ((milliseconds == 0) && (microseconds > 0))
 			{
-				milliseconds = 0;
+				milliseconds = 1;
 			}
 
 			::Sleep(milliseconds);
