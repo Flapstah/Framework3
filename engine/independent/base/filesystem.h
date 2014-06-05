@@ -38,6 +38,8 @@ namespace engine
 			boost::filesystem::path& GetCanonicalFilePath(boost::filesystem::path& fileOrPathToFile) const;
 			bool Backup(const boost::filesystem::path& originalFile, const boost::filesystem::path& backupDir) const;
 
+			bool ReadLines(const char* name, engine::utility::CCallbackBase& callback);
+
 		protected:
 			boost::filesystem::path m_rootPath;
 			boost::filesystem::path m_logFilePath;

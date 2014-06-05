@@ -7,6 +7,10 @@
 
 //==============================================================================
 
+#define TRACE_ENABLE false
+
+//==============================================================================
+
 namespace engine
 {
 	//============================================================================
@@ -18,6 +22,8 @@ namespace engine
 		CFileSystem::CFileSystem(void)
 			: m_rootPath(boost::filesystem::initial_path())
 		{
+			TRACE(TRACE_ENABLE);
+
 			m_logFilePath = m_rootPath / boost::filesystem::path(LOG_MASTER_NAME ".log");
 		}
 
@@ -25,12 +31,15 @@ namespace engine
 
 		CFileSystem::~CFileSystem(void)
 		{
+			TRACE(TRACE_ENABLE);
 		}
 
 		//==========================================================================
 
 		void CFileSystem::SetRootPath(const char* rootPath)
 		{
+			TRACE(TRACE_ENABLE);
+
 			boost::filesystem::path newRootPath(rootPath);
 			m_rootPath = GetCanonicalFilePath(newRootPath);
 
@@ -42,6 +51,8 @@ namespace engine
 
 		const boost::filesystem::path& CFileSystem::GetRootPath(void) const
 		{
+			TRACE(TRACE_ENABLE);
+
 			return m_rootPath;
 		}
 
@@ -49,6 +60,8 @@ namespace engine
 
 		void CFileSystem::SetLogFile(const char* fileName)
 		{
+			TRACE(TRACE_ENABLE);
+
 			boost::filesystem::path newLogFilePath(fileName);
 			m_logFilePath = GetCanonicalFilePath(newLogFilePath);
 		}
@@ -57,6 +70,8 @@ namespace engine
 
 		const boost::filesystem::path& CFileSystem::GetLogFilePath(void) const
 		{
+			TRACE(TRACE_ENABLE);
+
 			return m_logFilePath;
 		}
 
@@ -64,6 +79,8 @@ namespace engine
 
 		boost::filesystem::path& CFileSystem::GetCanonicalFilePath(boost::filesystem::path& fileOrPathToFile) const
 		{
+			TRACE(TRACE_ENABLE);
+
 			try
 			{
 				fileOrPathToFile = fileOrPathToFile.is_absolute() ? boost::filesystem::canonical(fileOrPathToFile) : boost::filesystem::canonical(m_rootPath / fileOrPathToFile);
@@ -81,6 +98,8 @@ namespace engine
 
 		bool CFileSystem::Backup(const boost::filesystem::path& originalFile, const boost::filesystem::path& backupDir) const
 		{
+			TRACE(TRACE_ENABLE);
+
 			time_t rawTime;
 			struct tm* pTimeInfo;
 			char buffer[80];
@@ -107,7 +126,7 @@ namespace engine
 						status = boost::filesystem::status(backupPath);
 					}
 
-					if (boost::filesystem::is_directory(backupPath) == true)
+					if (boost::filesystem::is_directory(status) == true)
 					{
 						strftime(buffer, sizeof(buffer), "%Y%m%d-%H%M%S_", pTimeInfo);
 						boost::filesystem::path backupFilePath(backupPath / (std::string(buffer) + originalFilePath.filename().string()));
@@ -122,6 +141,35 @@ namespace engine
 				ok = false;
 			}
 			
+			return ok;
+		}
+
+		//==========================================================================
+
+		bool CFileSystem::ReadLines(const char* name, engine::utility::CCallbackBase& callback)
+		{
+			TRACE(TRACE_ENABLE);
+
+			// Does the file exist?
+			boost::filesystem::path path(name);
+			boost::filesystem::file_status status = boost::filesystem::status(GetCanonicalFilePath(path));
+			bool ok = false;
+
+			if ((boost::filesystem::exists(status) == true) && (boost::filesystem::is_regular_file(status)))
+			{
+				std::string line;
+				std::ifstream file(path.generic_string().c_str(), std::fstream::in);
+
+				while (file.is_open() && file.good())
+				{
+					std::getline(file, line);
+					callback(reinterpret_cast<void*>(&line));
+				}
+
+				file.close();
+				ok = true;
+			}
+
 			return ok;
 		}
 
