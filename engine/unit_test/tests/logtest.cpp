@@ -2,7 +2,11 @@
 
 #include "tests/logtest.h"
 
+//==============================================================================
+
 #define LOG_TEST(_log_, _level_, _stage_type_) pThis->Test(#_level_ " log test", (LOG_ ## _level_(_log_, #_level_ " log test") == (_log_.IsActive() && (engine::system::CLog::s_logLevel >= engine::system::CLog::eLL_ ## _level_))), "Should not have logged at " #_level_ " log level", _stage_type_)
+
+//==============================================================================
 
 namespace test
 {
