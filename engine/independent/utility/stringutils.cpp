@@ -7,9 +7,9 @@
 //==============================================================================
 
 #if !defined(TRACE_ENABLE)
-	#undef TRACE_ENABLE
-	#define TRACE_ENABLE true
+#undef TRACE_ENABLE
 #endif //!defined(TRACE_ENABLE)
+#define TRACE_ENABLE false
 
 //==============================================================================
 

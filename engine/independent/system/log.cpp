@@ -15,6 +15,10 @@
 // that would cause infinite recursion.  If you really must add them, you'll
 // need to #define DEBUG_TRACE_USE_LOGGER (0) - see config.h
 //==============================================================================
+#if defined(TRACE_ENABLE)
+#undef TRACE_ENABLE
+#endif // defined(TRACE_ENABLE)
+#define TRACE_ENABLE false
 
 namespace engine
 {
@@ -28,7 +32,6 @@ namespace engine
 
 		//==========================================================================
 
-		//==========================================================================
 #if defined(RELEASE)
 		const CLog::eLogLevel CLog::s_logLevel = LOG_DEFAULT_RELEASE_LOG_LEVEL;
 #else
@@ -43,6 +46,7 @@ namespace engine
 			, m_name(name)
 			, m_flags(parent.m_flags)
 		{
+			TRACE(TRACE_ENABLE);
 		}
 
 		//==========================================================================
@@ -52,12 +56,15 @@ namespace engine
 			, m_name(name)
 			, m_flags(flags)
 		{
+			TRACE(TRACE_ENABLE);
 		}
 
 		//==========================================================================
 
 		CLog::~CLog(void)
 		{
+			TRACE(TRACE_ENABLE);
+
 			if (m_pParent == NULL)
 			{
 				// This is the master log destructor
@@ -70,6 +77,8 @@ namespace engine
 
 		bool CLog::Log(const char* file, uint32 line, uint32 level, const char* format, ...)
 		{
+			TRACE(TRACE_ENABLE);
+
 			va_list argList;
 			char buffer[LOG_BUFFER_SIZE];
 			int32 position = 0;
@@ -221,6 +230,8 @@ namespace engine
 			, m_name(LOG_MASTER_NAME)
 			, m_flags(LOG_DEFAULT_BEHAVIOUR)
 		{
+			TRACE(TRACE_ENABLE);
+
 			time_t rawTime;
 			struct tm* pTimeInfo;
 			char buffer[80];
@@ -250,6 +261,8 @@ namespace engine
 
 		CLog& GetMasterLog(void)
 		{
+			TRACE(TRACE_ENABLE);
+
 			static CLog logMaster;
 			return logMaster;
 		}
@@ -258,6 +271,8 @@ namespace engine
 
 		CLog& GetEngineLog(void)
 		{
+			TRACE(TRACE_ENABLE);
+
 			static CLog logEngine(GetMasterLog(), LOG_ENGINE_NAME);
 			return logEngine;
 		}
@@ -266,6 +281,8 @@ namespace engine
 
 		CLog& GetGameLog(void)
 		{
+			TRACE(TRACE_ENABLE);
+
 			static CLog logGame(GetMasterLog(), LOG_GAME_NAME);
 			return logGame;
 		}
