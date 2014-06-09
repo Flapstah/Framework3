@@ -63,7 +63,9 @@ namespace engine
 			TRACE(TRACE_ENABLE);
 
 			boost::filesystem::path newLogFilePath(fileName);
-			m_logFilePath = GetCanonicalFilePath(newLogFilePath);
+			boost::filesystem::path parent = newLogFilePath.parent_path();
+			boost::filesystem::path file = newLogFilePath.filename();
+			m_logFilePath = GetCanonicalFilePath(parent) / file;
 		}
 
 		//==========================================================================
@@ -111,14 +113,13 @@ namespace engine
 			try
 			{
 				// Does the file exist?
-				boost::filesystem::path originalFilePath(originalFile);
-				boost::filesystem::file_status status = boost::filesystem::status(GetCanonicalFilePath(originalFilePath));
+				boost::filesystem::file_status status = boost::filesystem::status(originalFile);
 				
 				if (boost::filesystem::exists(status) == true)
 				{
 					// Does the backup path exist?
 					boost::filesystem::path backupPath(backupDir);
-					status = boost::filesystem::status(GetCanonicalFilePath(backupPath));
+					status = boost::filesystem::status(backupPath);
 
 					if (boost::filesystem::exists(status) == false)
 					{
@@ -129,8 +130,8 @@ namespace engine
 					if (boost::filesystem::is_directory(status) == true)
 					{
 						strftime(buffer, sizeof(buffer), "%Y%m%d-%H%M%S_", pTimeInfo);
-						boost::filesystem::path backupFilePath(backupPath / (std::string(buffer) + originalFilePath.filename().string()));
-						boost::filesystem::rename(originalFilePath, backupFilePath);
+						boost::filesystem::path backupFile(backupPath / (std::string(buffer) + originalFile.filename().string()));
+						boost::filesystem::rename(originalFile, backupFile);
 					}
 				}
 			}
