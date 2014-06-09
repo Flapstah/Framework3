@@ -1,3 +1,6 @@
+CVars
+	need a way to register const vars (i.e. declared const as opposed to just flagged const)
+
 Utility
 	uber header for stdafx.h
 
