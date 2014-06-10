@@ -107,6 +107,7 @@ namespace engine
 #else
 			static int64 s_logLevel;
 #endif // defined(RELEASE)
+			static uint32 s_defaultLogBehaviour;
 
 			//------------------------------------------------------------------------
 		}; // End [class CLog]

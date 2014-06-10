@@ -38,6 +38,7 @@ namespace engine
 		int64 CLog::s_logLevel = LOG_DEFAULT_DEBUG_LOG_LEVEL;
 #endif // defined(RELEASE)
 		bool CLog::s_crashOnFatalLog = true;
+		uint32 CLog::s_defaultLogBehaviour = LOG_DEFAULT_BEHAVIOUR;
 
 		//==========================================================================
 
@@ -228,7 +229,7 @@ namespace engine
 		CLog::CLog(void)
 			: m_pParent(NULL)
 			, m_name(LOG_MASTER_NAME)
-			, m_flags(LOG_DEFAULT_BEHAVIOUR)
+			, m_flags(s_defaultLogBehaviour)
 		{
 			TRACE(TRACE_ENABLE);
 

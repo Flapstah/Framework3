@@ -27,6 +27,7 @@ int main(int argc, char* argv[])
 		eSID_ROOT,
 	};
 	*/
+	engine::system::CLog::s_defaultLogBehaviour &= ~engine::system::CLog::eBT_STDOUT;
 
 	engine::system::CConfiguration config;
 	config.Parse(argc, argv);
