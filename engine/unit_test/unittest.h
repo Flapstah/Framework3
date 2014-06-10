@@ -28,7 +28,7 @@ using namespace engine::time;
 //==============================================================================
 // Helper macros
 //==============================================================================
-#define UNIT_TEST(_test_) _test_.Start(); while (_test_.Update() == test::CUnitTest::eTS_RUNNING); _test_.End();
+#define UNIT_TEST(_test_, _pErrors_) _test_.Start(); while (_test_.Update() == test::CUnitTest::eTS_RUNNING); _test_.End(_pErrors_);
 
 namespace test
 {
@@ -82,7 +82,7 @@ namespace test
 			virtual				bool				Initialise(void) = 0;
 			virtual	const	CTimeValue&	Start(void);
 			virtual				eTestStatus	Update(void);
-			virtual	const	CTimeValue&	End(void);
+			virtual	const	CTimeValue&	End(uint32* pErrors);
 			virtual				void				Uninitialise(void);
 
 										void				AddTest(const char* name, TestFn function);

@@ -117,11 +117,15 @@ namespace test
 
 	//============================================================================
 
-	const CTimeValue& CUnitTest::End(void)
+	const CTimeValue& CUnitTest::End(uint32* pErrors)
 	{
 		TRACE(TRACE_ENABLE);
 
 		m_timeEnded = CTime::Get().GetCurrentTime();
+		if (pErrors != NULL)
+		{
+			*pErrors = m_errorTotal;
+		}
 		return m_timeEnded;
 	}
 

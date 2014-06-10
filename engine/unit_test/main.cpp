@@ -28,7 +28,6 @@ int main(int argc, char* argv[])
 	};
 	*/
 	engine::system::CLog::s_defaultLogBehaviour &= ~engine::system::CLog::eBT_STDOUT;
-
 	engine::system::CConfiguration config;
 	config.Parse(argc, argv);
 
@@ -38,13 +37,31 @@ int main(int argc, char* argv[])
 	LOG_ALWAYS(GAME_LOGGER, "Starting unit tests...\n");
 
 	{
+		uint32 errors = 0;
 		test::CTypeTest test;
-		UNIT_TEST(test);
+		UNIT_TEST(test, &errors);
+
+		if (errors != 0)
+		{
+			uint32 flags = GAME_LOGGER.GetFlags();
+			GAME_LOGGER.SetFlags(flags & ~engine::system::CLog::eBT_STDOUT);
+			LOG_ERROR(GAME_LOGGER, "Unit test [CTypeTest] had %d errors");
+			GAME_LOGGER.SetFlags(flags);
+		}
 	}
 
 	{
+		uint32 errors = 0;
 		test::CTimeTest test;
-		UNIT_TEST(test);
+		UNIT_TEST(test, &errors);
+
+		if (errors != 0)
+		{
+			uint32 flags = GAME_LOGGER.GetFlags();
+			GAME_LOGGER.SetFlags(flags & ~engine::system::CLog::eBT_STDOUT);
+			LOG_ERROR(GAME_LOGGER, "Unit test [CTimeTest] had %d errors");
+			GAME_LOGGER.SetFlags(flags);
+		}
 	}
 
 	{
@@ -52,16 +69,34 @@ int main(int argc, char* argv[])
 		// when testing for error conditions
 		ENGINE_LOGGER.SetActive(false);
 
+		uint32 errors = 0;
 		test::CCVarTest test;
-		UNIT_TEST(test);
+		UNIT_TEST(test, &errors);
+
+		if (errors != 0)
+		{
+			uint32 flags = GAME_LOGGER.GetFlags();
+			GAME_LOGGER.SetFlags(flags & ~engine::system::CLog::eBT_STDOUT);
+			LOG_ERROR(GAME_LOGGER, "Unit test [CVarTest] had %d errors");
+			GAME_LOGGER.SetFlags(flags);
+		}
 
 		// Turn on the engine logger here
 		ENGINE_LOGGER.SetActive(true);
 	}
 
 	{
+		uint32 errors = 0;
 		test::CLogTest test;
-		UNIT_TEST(test);
+		UNIT_TEST(test, &errors);
+
+		if (errors != 0)
+		{
+			uint32 flags = GAME_LOGGER.GetFlags();
+			GAME_LOGGER.SetFlags(flags & ~engine::system::CLog::eBT_STDOUT);
+			LOG_ERROR(GAME_LOGGER, "Unit test [CVarTest] had %d errors");
+			GAME_LOGGER.SetFlags(flags);
+		}
 	}
 
 	LOG_ALWAYS(GAME_LOGGER, "All done.");

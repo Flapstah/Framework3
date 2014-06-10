@@ -4,9 +4,6 @@ CVars
 Utility
 	uber header for stdafx.h
 
-Logging
-	use a cvar for the default log flags (that way it can be overridden on either the command line or by config file)
-
 Configuration
 	Maybe consolidate config file and options into a single, searchable configuration?
 		might not be practical but worth investigating
@@ -47,3 +44,4 @@ Solved/fixed:
 	Make FPS calculations a separate class so that timers can have their own FPS calculator (engine can run at very high fps, but e.g. renderer is locked to ~60fps)
 	Working on argument parsing
 		Need a generic, data driven way to parse command line (and preferably config files too)
+	use a cvar for the default log flags (that way it can be overridden on either the command line or by config file)
