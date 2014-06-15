@@ -319,7 +319,7 @@ namespace engine
 			}
 
 			char format[64];
-			sprintf(format, "\t--%%-%ds\t-%%c : %%s", maxNameLength);
+			sprintf(format, "\t--%%-%zus\t-%%c : %%s", maxNameLength);
 
 			LOG_ALWAYS(ENGINE_LOGGER, "Help usage:");
 			for (TSyntaxVec::iterator it = m_syntax.begin(), end = m_syntax.end(); it != end; ++it)
