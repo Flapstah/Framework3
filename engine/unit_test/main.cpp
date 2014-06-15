@@ -27,7 +27,7 @@ int main(int argc, char* argv[])
 		eSID_ROOT,
 	};
 	*/
-	engine::system::CLog::s_defaultLogBehaviour &= ~engine::system::CLog::eBT_STDOUT;
+	engine::system::CLog::SetDefaultLogFlags(engine::system::CLog::GetDefaultLogFlags() & ~engine::system::CLog::eBT_STDOUT);
 	engine::system::CConfiguration config;
 	config.Parse(argc, argv);
 
@@ -43,10 +43,7 @@ int main(int argc, char* argv[])
 
 		if (errors != 0)
 		{
-			uint32 flags = GAME_LOGGER.GetFlags();
-			GAME_LOGGER.SetFlags(flags & ~engine::system::CLog::eBT_STDOUT);
-			LOG_ERROR(GAME_LOGGER, "Unit test [CTypeTest] had %d errors");
-			GAME_LOGGER.SetFlags(flags);
+			LOG_ERROR(GAME_LOGGER, "Unit test [CTypeTest] had %d errors", errors);
 		}
 	}
 
@@ -57,10 +54,7 @@ int main(int argc, char* argv[])
 
 		if (errors != 0)
 		{
-			uint32 flags = GAME_LOGGER.GetFlags();
-			GAME_LOGGER.SetFlags(flags & ~engine::system::CLog::eBT_STDOUT);
-			LOG_ERROR(GAME_LOGGER, "Unit test [CTimeTest] had %d errors");
-			GAME_LOGGER.SetFlags(flags);
+			LOG_ERROR(GAME_LOGGER, "Unit test [CTimeTest] had %d errors", errors);
 		}
 	}
 
@@ -75,10 +69,7 @@ int main(int argc, char* argv[])
 
 		if (errors != 0)
 		{
-			uint32 flags = GAME_LOGGER.GetFlags();
-			GAME_LOGGER.SetFlags(flags & ~engine::system::CLog::eBT_STDOUT);
-			LOG_ERROR(GAME_LOGGER, "Unit test [CVarTest] had %d errors");
-			GAME_LOGGER.SetFlags(flags);
+			LOG_ERROR(GAME_LOGGER, "Unit test [CVarTest] had %d errors", errors);
 		}
 
 		// Turn on the engine logger here
@@ -92,10 +83,7 @@ int main(int argc, char* argv[])
 
 		if (errors != 0)
 		{
-			uint32 flags = GAME_LOGGER.GetFlags();
-			GAME_LOGGER.SetFlags(flags & ~engine::system::CLog::eBT_STDOUT);
-			LOG_ERROR(GAME_LOGGER, "Unit test [CVarTest] had %d errors");
-			GAME_LOGGER.SetFlags(flags);
+			LOG_ERROR(GAME_LOGGER, "Unit test [CVarTest] had %d errors", errors);
 		}
 	}
 

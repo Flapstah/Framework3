@@ -87,6 +87,8 @@ namespace engine
 
 			static void ForceCrashOnFatalLog(void) { s_crashOnFatalLog = true; }
 			static void SuppressCrashOnFatalLog(void) { s_crashOnFatalLog = false; }
+			static uint32 GetDefaultLogFlags(void) { return s_defaultLogBehaviour; }
+			static void SetDefaultLogFlags(uint32 flags) { s_defaultLogBehaviour = flags; }
 
 			//------------------------------------------------------------------------
 			
@@ -99,6 +101,7 @@ namespace engine
 			CLog* m_pParent;
 			const char* m_name;
 			uint32 m_flags;
+			static uint32 s_defaultLogBehaviour;
 			static bool s_crashOnFatalLog;
 
 		public:
@@ -107,7 +110,6 @@ namespace engine
 #else
 			static int64 s_logLevel;
 #endif // defined(RELEASE)
-			static uint32 s_defaultLogBehaviour;
 
 			//------------------------------------------------------------------------
 		}; // End [class CLog]
