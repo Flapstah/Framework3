@@ -160,6 +160,15 @@ namespace engine
 		}
 
 		//==========================================================================
+
+		engine::video::CDisplay* CEngine::GetDisplay(void)
+		{
+			TRACE(TRACE_ENABLE);
+
+			return (m_flags & eF_INITIALISED) ? &m_display : NULL;
+		}
+
+		//==========================================================================
 	} // End [namespace base]
 
 	//============================================================================

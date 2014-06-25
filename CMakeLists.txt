@@ -108,21 +108,21 @@ if(WIN32)
 	set(GLUT_INCLUDE_DIR "D:/MyCode/SDKs/glut/include")
 	set(GLUT_LIBRARY "D:/MyCode/SDKs/glut/lib/glut32.lib")
 	# Can't seem to use find_package for GLFW or OpenAL on my Windows 7 box...
+	set(GLFW_INCLUDE_DIR "D:/msysgit/local/include")
+	if(MSYS)
+		set(GLFW_LIBRARY "D:/msysgit/local/lib/libglfw.a")
+	endif(MSYS)
+	if(MSVC)
+		set(GLFW_LIBRARY "D:/msysgit/local/lib/glfw.lib")
+	endif(MSVC)
 	#set(OPENAL_INCLUDE_DIR "D:/msysgit/local/include")
 	#set(OPENAL_LIBRARY "D:/msysgit/local/lib/OpenAL32.lib")
 	#set(FREETYPE_INCLUDE_DIRS "D:/msysgit/local/include;D:/msysgit/local/include/freetype2")
 	#set(FREETYPE_LIBRARIES "D:/msysgit/local/lib/libfreetype.a")
-	#set(GLFW_INCLUDE_DIR "D:/msysgit/local/include")
-	#if(MSYS)
-	#	set(GLFW_LIBRARY "D:/msysgit/local/lib/libglfw.a")
-	#endif(MSYS)
-	#if(MSVC)
-	#	set(GLFW_LIBRARY "D:/msysgit/local/lib/glfw.lib")
-	#endif(MSVC)
 endif(WIN32)
 if(UNIX)
 	find_package(GLUT REQUIRED)
-	#find_package(GLFW REQUIRED)
+	find_package(GLFW REQUIRED)
 	#find_package(OpenAL REQUIRED)
 	#find_package(Freetype REQUIRED)
 endif(UNIX)
@@ -187,6 +187,7 @@ list(REMOVE_ITEM ENGINE_PLATFORM_INDEPENDENT_COMMON_SOURCES "${test_SOURCE_DIR}/
 FILE_LIST_RECURSE(ENGINE_PLATFORM_INDEPENDENT_SYSTEM "engine/independent/system")
 FILE_LIST_RECURSE(ENGINE_PLATFORM_INDEPENDENT_TIME "engine/independent/time")
 FILE_LIST_RECURSE(ENGINE_PLATFORM_INDEPENDENT_UTILITY "engine/independent/utility")
+FILE_LIST_RECURSE(ENGINE_PLATFORM_INDEPENDENT_VIDEO "engine/independent/video")
 #
 # Engine Windows specific:
 #
@@ -227,6 +228,7 @@ set(ENGINE_PLATFORM_INDEPENDENT_HEADERS
 	${ENGINE_PLATFORM_INDEPENDENT_SYSTEM_HEADERS}
 	${ENGINE_PLATFORM_INDEPENDENT_TIME_HEADERS}
 	${ENGINE_PLATFORM_INDEPENDENT_UTILITY_HEADERS}
+	${ENGINE_PLATFORM_INDEPENDENT_VIDEO_HEADERS}
 	)
 set(ENGINE_PLATFORM_INDEPENDENT_SOURCES
 	${ENGINE_PLATFORM_INDEPENDENT_BASE_SOURCES}
@@ -234,6 +236,7 @@ set(ENGINE_PLATFORM_INDEPENDENT_SOURCES
 	${ENGINE_PLATFORM_INDEPENDENT_SYSTEM_SOURCES}
 	${ENGINE_PLATFORM_INDEPENDENT_TIME_SOURCES}
 	${ENGINE_PLATFORM_INDEPENDENT_UTILITY_SOURCES}
+	${ENGINE_PLATFORM_INDEPENDENT_VIDEO_SOURCES}
 	)
 if(WIN32)
 	set(ENGINE_PLATFORM_DEPENDENT_HEADERS
@@ -289,6 +292,10 @@ set(ENGINE_UTILITY_SOURCES
 	${ENGINE_PLATFORM_INDEPENDENT_UTILITY}
 	${ENGINE_PLATFORM_DEPENDENT_UTILITY}
 	)
+set(ENGINE_VIDEO_SOURCES
+	${ENGINE_PLATFORM_INDEPENDENT_VIDEO}
+	${ENGINE_PLATFORM_DEPENDENT_VIDEO}
+	)
 #
 # Debug builds will build static libraries for all engine components to improve
 # iteration speed.
@@ -302,12 +309,14 @@ if(CMAKE_BUILD_TYPE MATCHES "Debug")
 	add_library(EngineSystem STATIC ${ENGINE_SYSTEM_SOURCES})
 	add_library(EngineTime STATIC ${ENGINE_TIME_SOURCES})
 	add_library(EngineUtility STATIC ${ENGINE_UTILITY_SOURCES})
+	add_library(EngineVideo STATIC ${ENGINE_VIDEO_SOURCES})
 	set(LIBS ${LIBS} 
 		EngineBase
 		EngineCommon
 		EngineSystem
 		EngineTime
 		EngineUtility
+		EngineVideo
 		)
 else()
 	add_definitions(-DRELEASE)
@@ -333,6 +342,7 @@ source_group(Engine\\Independent\\Common FILES ${ENGINE_INDEPENDENT_COMMON_HEADE
 source_group(Engine\\Independent\\System FILES ${ENGINE_INDEPENDENT_SYSTEM_HEADERS} ${ENGINE_INDEPENDENT_SYSTEM_SOURCES})
 source_group(Engine\\Independent\\Time FILES ${ENGINE_INDEPENDENT_TIME_HEADERS} ${ENGINE_INDEPENDENT_TIME_SOURCES})
 source_group(Engine\\Independent\\Utility FILES ${ENGINE_INDEPENDENT_UTILITY_HEADERS} ${ENGINE_INDEPENDENT_UTILITY_SOURCES})
+source_group(Engine\\Independent\\Video FILES ${ENGINE_INDEPENDENT_VIDEO_HEADERS} ${ENGINE_INDEPENDENT_VIDEO_SOURCES})
 source_group(Engine\\Windows\\Common FILES ${ENGINE_WINDOWS_COMMON_HEADERS} ${ENGINE_WINDOWS_COMMON_SOURCES})
 source_group(Engine\\Windows\\Time FILES ${ENGINE_WINDOWS_TIME_HEADERS} ${ENGINE_WINDOWS_TIME_SOURCES})
 source_group(Engine\\Linux\\Common FILES ${ENGINE_LINUX_COMMON_HEADERS} ${ENGINE_LINUX_COMMON_SOURCES})
