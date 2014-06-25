@@ -1,3 +1,6 @@
+GLFW
+	start implementing a GLFW window framework
+
 CVars
 	need a way to register const vars (i.e. declared const as opposed to just flagged const)
 
@@ -7,9 +10,6 @@ Utility
 Configuration
 	Maybe consolidate config file and options into a single, searchable configuration?
 		might not be practical but worth investigating
-
-Engine
-	Need to revisit versioning since debug builds now don't bump the version (generate_version dependencies)
 
 Unit tests
 	probably can do nicer comparisons of strings in cvar tests now that we're using std::string
@@ -45,3 +45,5 @@ Solved/fixed:
 	Working on argument parsing
 		Need a generic, data driven way to parse command line (and preferably config files too)
 	use a cvar for the default log flags (that way it can be overridden on either the command line or by config file)
+	Need to revisit versioning since debug builds now don't bump the version (generate_version dependencies)
+		this might actually be a good thing - only bump the version when there's something significant?
