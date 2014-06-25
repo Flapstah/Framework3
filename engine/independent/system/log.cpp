@@ -7,6 +7,7 @@
 #include <fstream>
 
 #include "base/engine.h"
+#include "common/version.h"
 #include "time/time.h"
 #include "system/console.h"
 
@@ -236,6 +237,8 @@ namespace engine
 			time_t rawTime;
 			struct tm* pTimeInfo;
 			char buffer[80];
+			char zone[32];
+			memset(buffer, 0, sizeof(buffer));
 
 			// N.B. The filesystem should normally be obtained through
 			// CEngine::GetFileSystem(), as it will be NULL if the engine isn't
@@ -250,11 +253,17 @@ namespace engine
 			{
 				g_logFile.open(fileSystem.GetLogFilePath().generic_string().c_str(), std::ios_base::out | std::ios_base::binary);
 
-				strftime(buffer, sizeof(buffer), "%d/%m/%Y %H:%M:%S", pTimeInfo);
-				uint32 flags = m_flags;
-				m_flags &= ~(eBAI_LOCATION | eBAI_THREADID);
+				strftime(buffer, sizeof(buffer), "%x %X", pTimeInfo);
+				strftime(zone, sizeof(zone), " %Z", pTimeInfo);
+				if (strlen(zone) > 1)
+				{
+					size_t bufferLen = strlen(buffer);
+					size_t zoneLen = strlen(zone);
+					size_t maxLen = sizeof(buffer)-bufferLen-1;
+					memcpy(buffer+bufferLen, zone, (zoneLen > maxLen) ? maxLen : zoneLen);
+				}
 				Log(NULL, 0, eLL_ALWAYS, "Log created [%s]", buffer);
-				m_flags = flags;
+				Log(NULL, 0, eLL_ALWAYS, "%s, %s, %s", engine::common::GetVersionString(), engine::common::GetConfigurationString(), engine::common::GetBuildDateString());
 			}
 		}
 

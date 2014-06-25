@@ -29,8 +29,6 @@ bool timerCallback(engine::time::CTimer* pTimer, void* pData)
 
 int main(int argc, char* argv[])
 {
-	LOG_ALWAYS(GAME_LOGGER, "Start...");
-
 	/*
 	enum eSyntaxID
 	{
@@ -45,6 +43,8 @@ int main(int argc, char* argv[])
 
 	engine::base::CEngine& myEngine = engine::base::CEngine::Get();
 	myEngine.Initialise(config);
+
+	LOG_ALWAYS(GAME_LOGGER, "Start...");
 
 	engine::time::CTime::TTimerPtr myTimer = engine::time::CTime::Get().CreateTimer(engine::time::CTimeValue(0.1), 1.0f, engine::time::CTimeValue(1.0), timerCallback, NULL);
 /*	while (g_run)
