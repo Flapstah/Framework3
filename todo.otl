@@ -1,9 +1,6 @@
 GLFW
 	start implementing a GLFW window framework
 
-CVars
-	need a way to register const vars (i.e. declared const as opposed to just flagged const)
-
 Utility
 	uber header for stdafx.h
 
@@ -22,6 +19,11 @@ Tracing
 
 File system
 	Need to handle virtual file system (mount archive (zip?) files as directories)
+
+On hold:
+CVars
+	need a way to register const vars (i.e. declared const as opposed to just flagged const)
+		- this is only really applicable if a constant needs to be found though the console; not sure that's ever going to be likely
 
 Solved/fixed:
 	Need file system abstraction to control the number of open files (use boost::filesystem under the hood)
