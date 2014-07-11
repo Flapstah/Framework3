@@ -464,7 +464,7 @@ add_custom_command(
 # Build rules for the executable
 #
 add_executable(
-	test
+	game
  	main.cpp
 	engine/independent/common/version.cpp
 	unit-test.log
@@ -472,8 +472,8 @@ add_executable(
 	${ENGINE_SOURCES}
  	${OPENGL_SUPERBIBLE_50_SOURCES}
 	)
-target_link_libraries(test ${LIBS})
-add_dependencies(test unit-test)
+target_link_libraries(game ${LIBS})
+add_dependencies(game unit-test)
 #
 ###############################################################################
 
