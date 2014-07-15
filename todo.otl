@@ -1,3 +1,5 @@
+Linux
+	try and work out how to build statically (using .so at the moment - perhaps should use .a?)
 GLFW
 	start implementing a GLFW window framework
 
