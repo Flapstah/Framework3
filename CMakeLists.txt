@@ -344,15 +344,21 @@ if(CMAKE_BUILD_TYPE MATCHES "Debug")
 		)
 else()
 	add_definitions(-DRELEASE)
-	set(ENGINE_HEADERS
-		${ENGINE_PLATFORM_INDEPENDENT_HEADERS}
-		${ENGINE_PLATFORM_DEPENDENT_HEADERS}
-		)
-	set(ENGINE_SOURCES
-		${ENGINE_PLATFORM_INDEPENDENT_SOURCES}
-		${ENGINE_PLATFORM_DEPENDENT_SOURCES}
-		)
+	add_library(Engine STATIC ${ENGINE_BASE_SOURCES} ${ENGINE_COMMON_SOURCES} ${ENGINE_SYSTEM_SOURCES} ${ENGINE_TIME_SOURCES} ${ENGINE_UTILITY_SOURCES} ${ENGINE_VIDEO_SOURCES})
+	target_link_libraries(Engine glfw ${OPENGL_LIBRARIES})
+	set(LIBS ${LIBS} 
+			Engine
+			)
 endif(CMAKE_BUILD_TYPE MATCHES "Debug")
+
+set(ENGINE_HEADERS
+	${ENGINE_PLATFORM_INDEPENDENT_HEADERS}
+	${ENGINE_PLATFORM_DEPENDENT_HEADERS}
+	)
+set(ENGINE_SOURCES
+	${ENGINE_PLATFORM_INDEPENDENT_SOURCES}
+	${ENGINE_PLATFORM_DEPENDENT_SOURCES}
+	)
 #
 ###############################################################################
 
@@ -467,7 +473,6 @@ add_executable(
  	engine/unit_test/main.cpp
 	engine/independent/common/version.cpp
 	${ENGINE_HEADERS}
-	${ENGINE_SOURCES}
 	${UNIT_TEST_HEADERS}
 	${UNIT_TEST_SOURCES}
 	)
@@ -477,7 +482,7 @@ get_target_property(UNIT_TEST_EXE unit-test LOCATION)
 add_custom_command(
 	OUTPUT "${test_SOURCE_DIR}/unit-test.log"
 	COMMAND "${UNIT_TEST_EXE}" --root "${test_SOURCE_DIR}" --log "unit-test.log"
-	DEPENDS "${UNIT_TEST_EXE}" ${PROJECT_INDEPENDENT_SOURCES} ${PROJECT_DEPENDENT_SOURCES} ${UNIT_TEST_SOURCES} ${UNIT_TEST_HEADERS}
+	DEPENDS "${UNIT_TEST_EXE}" ${PROJECT_INDEPENDENT_SOURCES} ${PROJECT_DEPENDENT_SOURCES} ${UNIT_TEST_SOURCES} ${UNIT_TEST_HEADERS} ${ENGINE_SOURCES}
 	)
 #
 ###############################################################################
@@ -493,7 +498,6 @@ add_executable(
 	engine/independent/common/version.cpp
 	unit-test.log
 	${ENGINE_HEADERS}
-	${ENGINE_SOURCES}
  	${OPENGL_SUPERBIBLE_50_SOURCES}
 	)
 target_link_libraries(game glfw ${LIBS})
