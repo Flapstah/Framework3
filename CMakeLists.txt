@@ -57,7 +57,6 @@ ENDIF(WIN32)
 
 set(GLUT_ROOT_PATH "D:/MyCode/SDKs/freeglut-2.8.1")
 set(GLEW_ROOT_PATH "D:/MyCode/SDKs/glew")
-set(ENV{GLFW_ROOT} "D:/MyCode/SDKs/glfw-2.7.6")
 #
 ###############################################################################
 
@@ -136,7 +135,6 @@ endif(Boost_FOUND)
 find_package(OpenGL)
 #find_package(altGLEW REQUIRED)
 #find_package(freeGLUT REQUIRED)
-#find_package(GLFW REQUIRED)
 find_package(ZLIB REQUIRED)
 if(WIN32)
 	#set(OPENAL_INCLUDE_DIR "D:/msysgit/local/include")
@@ -410,7 +408,7 @@ endif(UNIX)
 #
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 include_directories(${PROJECT_INDEPENDENT_INCLUDE_DIRS} ${PROJECT_DEPENDENT_INCLUDE_DIRS} ${ZLIB_INCLUDE_DIRS} ${GLUT_INCLUDE_DIR} ${GLEW_INCLUDE_DIR} ${GLFW_INCLUDE_DIRS} ${OPENAL_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS} ${OPENGL_SUPERBIBLE_50_INCLUDES})
-set(LIBS ${LIBS} ${Boost_LIBRARIES} ${ZLIB_LIBRARIES} ${GLEW_LIBRARY} ${GLUT_LIBRARY} ${GLFW_LIBRARIES} ${OPENAL_LIBRARY} ${FREETYPE_LIBRARIES})
+set(LIBS ${LIBS} ${Boost_LIBRARIES} ${ZLIB_LIBRARIES} ${GLEW_LIBRARY} ${GLUT_LIBRARY} ${OPENAL_LIBRARY} ${FREETYPE_LIBRARIES})
 #
 ###############################################################################
 
