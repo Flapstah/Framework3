@@ -31,12 +31,12 @@ ENDIF()
 
 ###############################################################################
 #
-# The name of our project is "test". CMakeLists files in this project can
-# refer to the root source directory of the project as ${test_SOURCE_DIR} and
-# to the root binary directory of the project as ${test_BINARY_DIR}.
+# The name of our project is "game". CMakeLists files in this project can
+# refer to the root source directory of the project as ${game_SOURCE_DIR} and
+# to the root binary directory of the project as ${game_BINARY_DIR}.
 #
 cmake_minimum_required(VERSION 2.6)
-project(test)
+project(game)
 # Additional cmake modules path
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
 
@@ -110,8 +110,8 @@ endif(CMAKE_COMPILER_IS_GNUCXX)
 #
 
 # GLFW includes OpenGL
-add_subdirectory(${test_SOURCE_DIR}/SDKs/glfw)
-set(GLFW_INCLUDE_DIRS "${test_SOURCE_DIR}/SDKs/glfw/include")
+add_subdirectory(${game_SOURCE_DIR}/SDKs/glfw)
+set(GLFW_INCLUDE_DIRS "${game_SOURCE_DIR}/SDKs/glfw/include")
 #
 ###############################################################################
 
@@ -158,7 +158,7 @@ endif(UNIX)
 # Start OpenGL SuperBible 5.0 stuff
 #
 if(OPENGL_SUPERBIBLE_50)
-	set(OPENGL_SUPERBIBLE_50_INCLUDES "${test_SOURCE_DIR}/GLTools/include" "${test_SOURCE_DIR}/GLTools/include/GL")
+	set(OPENGL_SUPERBIBLE_50_INCLUDES "${game_SOURCE_DIR}/GLTools/include" "${game_SOURCE_DIR}/GLTools/include/GL")
 endif(OPENGL_SUPERBIBLE_50)
 #
 # End OpenGL SuperBible 5.0 stuff
@@ -177,22 +177,22 @@ endif(OPENGL_SUPERBIBLE_50)
 #
 MACRO(FILE_LIST_RECURSE _NAME _LOCATION)
 	file(GLOB_RECURSE ${_NAME}_HEADERS
-		"${test_SOURCE_DIR}/${_LOCATION}/*.h"
-		"${test_SOURCE_DIR}/${_LOCATION}/*.inl"
+		"${game_SOURCE_DIR}/${_LOCATION}/*.h"
+		"${game_SOURCE_DIR}/${_LOCATION}/*.inl"
 		)
 	file(GLOB_RECURSE ${_NAME}_SOURCES
-		"${test_SOURCE_DIR}/${_LOCATION}/*.cpp"
+		"${game_SOURCE_DIR}/${_LOCATION}/*.cpp"
 		)
 	set(${_NAME} ${${_NAME}_HEADERS} ${${_NAME}_SOURCES})
 ENDMACRO(FILE_LIST_RECURSE)
 #
 MACRO(FILE_LIST_NO_RECURSE _NAME _LOCATION)
 	file(GLOB ${_NAME}_HEADERS
-		"${test_SOURCE_DIR}/${_LOCATION}/*.h"
-		"${test_SOURCE_DIR}/${_LOCATION}/*.inl"
+		"${game_SOURCE_DIR}/${_LOCATION}/*.h"
+		"${game_SOURCE_DIR}/${_LOCATION}/*.inl"
 		)
 	file(GLOB ${_NAME}_SOURCES
-		"${test_SOURCE_DIR}/${_LOCATION}/*.cpp"
+		"${game_SOURCE_DIR}/${_LOCATION}/*.cpp"
 		)
 	set(${_NAME} ${${_NAME}_HEADERS} ${${_NAME}_SOURCES})
 ENDMACRO(FILE_LIST_NO_RECURSE)
@@ -206,7 +206,7 @@ ENDMACRO(FILE_LIST_NO_RECURSE)
 #
 FILE_LIST_RECURSE(ENGINE_PLATFORM_INDEPENDENT_BASE "engine/independent/base")
 FILE_LIST_RECURSE(ENGINE_PLATFORM_INDEPENDENT_COMMON "engine/independent/common")
-list(REMOVE_ITEM ENGINE_PLATFORM_INDEPENDENT_COMMON_SOURCES "${test_SOURCE_DIR}/engine/independent/common/version.cpp")
+list(REMOVE_ITEM ENGINE_PLATFORM_INDEPENDENT_COMMON_SOURCES "${game_SOURCE_DIR}/engine/independent/common/version.cpp")
 FILE_LIST_RECURSE(ENGINE_PLATFORM_INDEPENDENT_SYSTEM "engine/independent/system")
 FILE_LIST_RECURSE(ENGINE_PLATFORM_INDEPENDENT_TIME "engine/independent/time")
 FILE_LIST_RECURSE(ENGINE_PLATFORM_INDEPENDENT_UTILITY "engine/independent/utility")
@@ -388,17 +388,17 @@ source_group(UnitTests\\Tests FILES ${UNIT_TEST_TESTS_SOURCES} ${UNIT_TEST_TESTS
 # Platform include paths
 #
 set(PROJECT_INDEPENDENT_INCLUDE_DIRS
-	"${test_SOURCE_DIR}/engine/independent"
-	"${test_SOURCE_DIR}/engine/tools"
-	"${test_SOURCE_DIR}/engine/unit_test"
+	"${game_SOURCE_DIR}/engine/independent"
+	"${game_SOURCE_DIR}/engine/tools"
+	"${game_SOURCE_DIR}/engine/unit_test"
 	)
 if(WIN32)
 	set(PROJECT_DEPENDENT_INCLUDE_DIRS
-	"${test_SOURCE_DIR}/engine/windows")
+	"${game_SOURCE_DIR}/engine/windows")
 endif(WIN32)
 if(UNIX)
 	set(PROJECT_DEPENDENT_INCLUDE_DIRS
-	"${test_SOURCE_DIR}/engine/linux")
+	"${game_SOURCE_DIR}/engine/linux")
 endif(UNIX)
 #
 # Set up include and library paths
@@ -448,17 +448,16 @@ endif(OPENGL_SUPERBIBLE_50)
 # Build the 'generate_version' executable
 #
 add_executable(
-	generate_version
+	generate-version
  	engine/tools/generate_version/main.cpp
  	engine/independent/common/stdafx.cpp
 	)
-target_link_libraries(generate_version ${Boost_LIBRARIES})
+target_link_libraries(generate-version ${Boost_LIBRARIES})
 #
-get_target_property(GENERATE_VERSION_EXE generate_version LOCATION)
 add_custom_command(
-	OUTPUT "${test_SOURCE_DIR}/engine/independent/common/version.cpp"
-	COMMAND "${GENERATE_VERSION_EXE}" --template-file "${test_SOURCE_DIR}/engine/independent/common/version.cpp.in" --build-number-file "${test_SOURCE_DIR}/engine/independent/common/build_number" --output-file "${test_SOURCE_DIR}/engine/independent/common/version.cpp"
-	DEPENDS "${GENERATE_VERSION_EXE}" "${test_SOURCE_DIR}/engine/independent/common/version.cpp.in" ${ENGINE_HEADERS} ${ENGINE_SOURCES}
+	OUTPUT "${game_SOURCE_DIR}/engine/independent/common/version.cpp"
+	COMMAND generate-version --template-file "${game_SOURCE_DIR}/engine/independent/common/version.cpp.in" --build-number-file "${game_SOURCE_DIR}/engine/independent/common/build_number" --output-file "${game_SOURCE_DIR}/engine/independent/common/version.cpp"
+	DEPENDS generate-version "${game_SOURCE_DIR}/engine/independent/common/version.cpp.in" ${ENGINE_HEADERS} ${ENGINE_SOURCES}
 	)
 #
 ###############################################################################
@@ -476,13 +475,12 @@ add_executable(
 	${UNIT_TEST_HEADERS}
 	${UNIT_TEST_SOURCES}
 	)
-target_link_libraries(unit-test glfw ${LIBS})
+target_link_libraries(unit-test ${LIBS})
 
-get_target_property(UNIT_TEST_EXE unit-test LOCATION)
 add_custom_command(
-	OUTPUT "${test_SOURCE_DIR}/unit-test.log"
-	COMMAND "${UNIT_TEST_EXE}" --root "${test_SOURCE_DIR}" --log "unit-test.log"
-	DEPENDS "${UNIT_TEST_EXE}" ${PROJECT_INDEPENDENT_SOURCES} ${PROJECT_DEPENDENT_SOURCES} ${UNIT_TEST_SOURCES} ${UNIT_TEST_HEADERS} ${ENGINE_SOURCES}
+	OUTPUT "${game_SOURCE_DIR}/unit-test.log"
+	COMMAND unit-test --root "${game_SOURCE_DIR}" --log "unit-test.log"
+	DEPENDS unit-test ${PROJECT_INDEPENDENT_SOURCES} ${PROJECT_DEPENDENT_SOURCES} ${UNIT_TEST_SOURCES} ${UNIT_TEST_HEADERS} ${ENGINE_SOURCES}
 	)
 #
 ###############################################################################
@@ -501,7 +499,7 @@ add_executable(
  	${OPENGL_SUPERBIBLE_50_SOURCES}
 	)
 target_link_libraries(game glfw ${LIBS})
-add_dependencies(game unit-test glfw)
+add_dependencies(game unit-test)
 #
 ###############################################################################
 
