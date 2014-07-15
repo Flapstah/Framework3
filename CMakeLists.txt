@@ -143,7 +143,9 @@ if(WIN32)
 	#set(FREETYPE_LIBRARIES "D:/msysgit/local/lib/libfreetype.a")
 endif(WIN32)
 if(UNIX)
-	find_package(GLUT REQUIRED)
+	find_package(X11 REQUIRED)
+	set (X11_LIBRARIES "${X11_LIBRARIES};${X11_Xxf86vm_LIB};${X11_Xrandr_LIB};${X11_Xi_LIB};${X11_Xcursor_LIB}")
+	#find_package(GLUT REQUIRED)
 	#find_package(OpenAL REQUIRED)
 	#find_package(Freetype REQUIRED)
 endif(UNIX)
@@ -331,7 +333,7 @@ if(CMAKE_BUILD_TYPE MATCHES "Debug")
 	add_library(EngineTime STATIC ${ENGINE_TIME_SOURCES})
 	add_library(EngineUtility STATIC ${ENGINE_UTILITY_SOURCES})
 	add_library(EngineVideo STATIC ${ENGINE_VIDEO_SOURCES})
-	target_link_libraries(EngineVideo glfw ${OPENGL_LIBRARIES})
+	target_link_libraries(EngineVideo glfw ${OPENGL_LIBRARIES} ${X11_LIBRARIES})
 	set(LIBS ${LIBS} 
 		EngineBase
 		EngineCommon
@@ -343,7 +345,7 @@ if(CMAKE_BUILD_TYPE MATCHES "Debug")
 else()
 	add_definitions(-DRELEASE)
 	add_library(Engine STATIC ${ENGINE_BASE_SOURCES} ${ENGINE_COMMON_SOURCES} ${ENGINE_SYSTEM_SOURCES} ${ENGINE_TIME_SOURCES} ${ENGINE_UTILITY_SOURCES} ${ENGINE_VIDEO_SOURCES})
-	target_link_libraries(Engine glfw ${OPENGL_LIBRARIES})
+	target_link_libraries(Engine glfw ${OPENGL_LIBRARIES} ${X11_LIBRARIES})
 	set(LIBS ${LIBS} 
 			Engine
 			)
