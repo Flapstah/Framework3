@@ -1,3 +1,6 @@
 Things needed for Linux:
 	sudo apt-get install xorg-dev libglu1-mesa-dev
 	sudo apt-get install libxxf86vm-dev
+
+Finding the library to which a missing symbol belongs (change .a to .so if necessary; last term is the symbol):
+	find /usr/lib/ -type f -name \*.a -exec nm -gAC --defined-only {} 2> /dev/null \; | grep \ XIQueryVersion
