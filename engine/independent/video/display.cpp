@@ -1,7 +1,5 @@
 #include "common/stdafx.h" // log.h included here
 
-#include <GL/glfw.h>
-
 #include "video/display.h"
 
 //==============================================================================
@@ -15,6 +13,7 @@ namespace engine
 		//==========================================================================
 
 		CDisplay::CDisplay(void)
+			: m_window(NULL)
 		{
 		}
 
@@ -33,10 +32,11 @@ namespace engine
 
 			if (glfwInit())
 			{
-				if (glfwOpenWindow(width, height, 0, 0, 0, 0, 0, 0, GLFW_WINDOW))
+				glfwWindowHint(GLFW_DEPTH_BITS, 32);
+				m_window = glfwCreateWindow(width, height, title, NULL, NULL);
+				if (m_window != NULL)
 				{
 					glfwSwapInterval(0);
-					glfwSetWindowTitle(title);
 
 					glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 					glShadeModel(GL_FLAT);
@@ -79,14 +79,14 @@ namespace engine
 			int width, height;
 
 			// Get window size (and protect against height being 0)
-			glfwGetWindowSize(&width, &height);
+			glfwGetWindowSize(m_window, &width, &height);
 			height = (height > 0) ? height : 1;
 
 			// Set up view
 			glViewport(0, 0, width, height);
 			glMatrixMode(GL_PROJECTION);
 			glLoadIdentity();
-			gluOrtho2D(0.0, (GLdouble)width, 0.0, (GLdouble)height);
+//			gluOrtho2D(0.0, (GLdouble)width, 0.0, (GLdouble)height);
 
 			// Clear back buffer
 			glClear(GL_COLOR_BUFFER_BIT);
@@ -116,10 +116,10 @@ namespace engine
 			}
 			glEnd();
 
-			glfwSwapBuffers();
+			glfwSwapBuffers(m_window);
 			glDisable(GL_TEXTURE_2D);
 
-			bool cont = (glfwGetWindowParam(GLFW_OPENED) == GL_TRUE) ? true : false;
+			bool cont = (glfwWindowShouldClose(m_window) == GL_TRUE) ? false : true;
 
 			return cont;
 		}

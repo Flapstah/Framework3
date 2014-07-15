@@ -19,49 +19,33 @@
 # TODO:
 # Allow the user to select to link to a shared library or to a static library.
 
-
 #Search for the include file...
-if (WIN32)
-	#Don't seem to be able to find this on Windows (installation/config error?)
-	#set it directly
-	set(GLFW_INCLUDE_DIR "/usr/local/include/")
-endif (WIN32)
-if (UNIX)
-	FIND_PATH(GLFW_INCLUDE_DIR GL/glfw.h DOC "Path to GLFW include directory."
-		HINTS
-		$ENV{GLFW_ROOT}
-		PATH_SUFFIX include #For finding the include file under the root of the glfw expanded archive, typically on Windows.
-		PATHS
-		/usr/include/
-		/usr/local/include/
-		${PROJECT_ROOT_DIR}/3pp/include/ # added by ptr
-		${PROJECT_ROOT_DIR}/3pp/include/GL/ # added by ptr
-		)
-endif (UNIX)
-#DBG_MSG("GLFW_INCLUDE_DIR = ${GLFW_INCLUDE_DIR}")
+FIND_PATH(GLFW_INCLUDE_DIRS GL/glfw.h DOC "Path to GLFW include directory."
+  HINTS
+  $ENV{GLFW_ROOT}
+	PATH_SUFFIXES include #For finding the include file under the root of the glfw expanded archive, typically on Windows.
+  PATHS
+  /usr/include/
+  /usr/local/include/
+  # By default headers are under GL subfolder
+  /usr/include/GL
+  /usr/local/include/GL
+  ${GLFW_ROOT_DIR}/include/ # added by ptr
+)
 
-if (WIN32)
-	#Don't seem to be able to find this on Windows (installation/config error?)
-	#set it directly
-	set(GLFW_LIBRARY "/usr/local/lib/libglfw.a")
-endif (WIN32)
-if (UNIX)
-	FIND_LIBRARY(GLFW_LIBRARY DOC "Absolute path to GLFW library."
-		NAMES glfw
-		HINTS
-		$ENV{GLFW_ROOT}
-		PATH_SUFFIXES lib/win32 #For finding the library file under the root of the glfw expanded archive, typically on Windows.
-		PATHS
-		/usr/lib
-		/usr/local/lib
-		${PROJECT_ROOT_DIR}/3pp/lib/ # added by ptr
-		)
-endif (UNIX)
-#DBG_MSG("GLFW_LIBRARY = ${GLFW_LIBRARY}")
+FIND_LIBRARY(GLFW_LIBRARIES DOC "Absolute path to GLFW library."
+  NAMES glfw GLFW.lib
+  HINTS
+  $ENV{GLFW_ROOT}
+  PATH_SUFFIXES lib/win32 #For finding the library file under the root of the glfw expanded archive, typically on Windows.
+  PATHS
+  /usr/local/lib
+  /usr/lib
+  ${GLFW_ROOT_DIR}/lib-msvc100/release # added by ptr
+)
 
 SET(GLFW_FOUND 0)
 IF(GLFW_LIBRARY AND GLFW_INCLUDE_DIR)
   SET(GLFW_FOUND 1)
+  message(STATUS "GLFW found!")
 ENDIF(GLFW_LIBRARY AND GLFW_INCLUDE_DIR)
-
-

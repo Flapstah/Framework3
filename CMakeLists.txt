@@ -38,7 +38,26 @@ ENDIF()
 cmake_minimum_required(VERSION 2.6)
 project(test)
 # Additional cmake modules path
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
+
+# Find lib before dll
+IF(WIN32)
+	SET(CMAKE_FIND_LIBRARY_SUFFIXES .a .lib .dll .dll.a)
+
+	# Helpers for finding packages
+	math(EXPR BITS "8*${CMAKE_SIZEOF_VOID_P}")
+	if (BITS MATCHES "64")
+		set(PLATFORM "x64")
+		set(ALT_PLATFORM "Win64")
+	else (BITS MATCHES "64")
+		set(PLATFORM "x86")
+		set(ALT_PLATFORM "Win32")
+	endif (BITS MATCHES "64")
+ENDIF(WIN32)
+
+set(GLUT_ROOT_PATH "D:/MyCode/SDKs/freeglut-2.8.1")
+set(GLEW_ROOT_PATH "D:/MyCode/SDKs/glew")
+set(ENV{GLFW_ROOT} "D:/MyCode/SDKs/glfw-2.7.6")
 #
 ###############################################################################
 
@@ -87,6 +106,18 @@ endif(CMAKE_COMPILER_IS_GNUCXX)
 
 ###############################################################################
 #
+# Additional CMAKE repos
+#
+
+# GLFW includes OpenGL
+add_subdirectory(${test_SOURCE_DIR}/SDKs/glfw)
+set(GLFW_INCLUDE_DIRS "${test_SOURCE_DIR}/SDKs/glfw/include")
+#
+###############################################################################
+
+
+###############################################################################
+#
 # Packages
 #
 set(Boost_USE_STATIC_LIBS ON)
@@ -102,19 +133,12 @@ if(Boost_FOUND)
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DBOOST_NO_EXCEPTIONS")
 	endif(NOT SUPPORT_EXCEPTIONS)
 endif(Boost_FOUND)
-find_package(OpenGL REQUIRED)
+find_package(OpenGL)
+#find_package(altGLEW REQUIRED)
+#find_package(freeGLUT REQUIRED)
+#find_package(GLFW REQUIRED)
 find_package(ZLIB REQUIRED)
 if(WIN32)
-	set(GLUT_INCLUDE_DIR "D:/MyCode/SDKs/glut/include")
-	set(GLUT_LIBRARY "D:/MyCode/SDKs/glut/lib/glut32.lib")
-	# Can't seem to use find_package for GLFW or OpenAL on my Windows 7 box...
-	set(GLFW_INCLUDE_DIR "D:/msysgit/local/include")
-	if(MSYS)
-		set(GLFW_LIBRARY "D:/msysgit/local/lib/libglfw.a")
-	endif(MSYS)
-	if(MSVC)
-		set(GLFW_LIBRARY "D:/msysgit/local/lib/glfw.lib")
-	endif(MSVC)
 	#set(OPENAL_INCLUDE_DIR "D:/msysgit/local/include")
 	#set(OPENAL_LIBRARY "D:/msysgit/local/lib/OpenAL32.lib")
 	#set(FREETYPE_INCLUDE_DIRS "D:/msysgit/local/include;D:/msysgit/local/include/freetype2")
@@ -122,7 +146,6 @@ if(WIN32)
 endif(WIN32)
 if(UNIX)
 	find_package(GLUT REQUIRED)
-	find_package(GLFW REQUIRED)
 	#find_package(OpenAL REQUIRED)
 	#find_package(Freetype REQUIRED)
 endif(UNIX)
@@ -310,6 +333,7 @@ if(CMAKE_BUILD_TYPE MATCHES "Debug")
 	add_library(EngineTime STATIC ${ENGINE_TIME_SOURCES})
 	add_library(EngineUtility STATIC ${ENGINE_UTILITY_SOURCES})
 	add_library(EngineVideo STATIC ${ENGINE_VIDEO_SOURCES})
+	target_link_libraries(EngineVideo glfw ${OPENGL_LIBRARIES})
 	set(LIBS ${LIBS} 
 		EngineBase
 		EngineCommon
@@ -379,8 +403,8 @@ endif(UNIX)
 # own or maintain, and treating as a system include supresses the warnings.
 #
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
-include_directories(${PROJECT_INDEPENDENT_INCLUDE_DIRS} ${PROJECT_DEPENDENT_INCLUDE_DIRS} ${ZLIB_INCLUDE_DIRS} ${GLUT_INCLUDE_DIR} ${GLEW_INCLUDE_DIR} ${GLFW_INCLUDE_DIR} ${OPENGL_INCLUDE_DIRS} ${OPENAL_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS} ${OPENGL_SUPERBIBLE_50_INCLUDES})
-set(LIBS ${LIBS} ${Boost_LIBRARIES} ${ZLIB_LIBRARIES} ${GLEW_LIBRARY} ${GLUT_LIBRARY} ${GLFW_LIBRARY} ${OPENGL_LIBRARIES} ${OPENAL_LIBRARY} ${FREETYPE_LIBRARIES})
+include_directories(${PROJECT_INDEPENDENT_INCLUDE_DIRS} ${PROJECT_DEPENDENT_INCLUDE_DIRS} ${ZLIB_INCLUDE_DIRS} ${GLUT_INCLUDE_DIR} ${GLEW_INCLUDE_DIR} ${GLFW_INCLUDE_DIRS} ${OPENAL_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS} ${OPENGL_SUPERBIBLE_50_INCLUDES})
+set(LIBS ${LIBS} ${Boost_LIBRARIES} ${ZLIB_LIBRARIES} ${GLEW_LIBRARY} ${GLUT_LIBRARY} ${GLFW_LIBRARIES} ${OPENAL_LIBRARY} ${FREETYPE_LIBRARIES})
 #
 ###############################################################################
 
@@ -447,7 +471,7 @@ add_executable(
 	${UNIT_TEST_HEADERS}
 	${UNIT_TEST_SOURCES}
 	)
-target_link_libraries(unit-test ${LIBS})
+target_link_libraries(unit-test glfw ${LIBS})
 
 get_target_property(UNIT_TEST_EXE unit-test LOCATION)
 add_custom_command(
@@ -472,8 +496,8 @@ add_executable(
 	${ENGINE_SOURCES}
  	${OPENGL_SUPERBIBLE_50_SOURCES}
 	)
-target_link_libraries(game ${LIBS})
-add_dependencies(game unit-test)
+target_link_libraries(game glfw ${LIBS})
+add_dependencies(game unit-test glfw)
 #
 ###############################################################################
 
