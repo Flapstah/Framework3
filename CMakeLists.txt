@@ -24,6 +24,7 @@ ENDIF()
 cmake_minimum_required(VERSION 2.8)
 project(game)
 include("cmake/flapstah.cmake")
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # Additional cmake modules path
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
