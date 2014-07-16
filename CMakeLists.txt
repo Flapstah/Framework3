@@ -39,18 +39,12 @@ set(GLEW_ROOT_PATH "D:/MyCode/SDKs/glew")
 # Compiler flags
 #
 set(SUPPORT_EXCEPTIONS 1)
-set(OPENGL_SUPERBIBLE_50 0)
 
 # Generic settings
 #set(LINK_FLAGS "-g")
 #set(CMAKE_CXX_FLAGS "-g")
 set(CMAKE_CXX_FLAGS "")
 set(CMAKE_CXX_WARNING_LEVEL 4)
-if(OPENGL_SUPERBIBLE_50)
-	add_definitions(-DUSE_OPENGL_SUPERBIBLE=1)
-else()
-	add_definitions(-DUSE_OPENGL_SUPERBIBLE=0)
-endif(OPENGL_SUPERBIBLE_50)
 
 # MSVC specific
 if(MSVC)
@@ -122,19 +116,6 @@ if(UNIX)
 	#find_package(OpenAL REQUIRED)
 	#find_package(Freetype REQUIRED)
 endif(UNIX)
-#
-###############################################################################
-
-
-###############################################################################
-#
-# Start OpenGL SuperBible 5.0 stuff
-#
-if(OPENGL_SUPERBIBLE_50)
-	set(OPENGL_SUPERBIBLE_50_INCLUDES "${game_SOURCE_DIR}/GLTools/include" "${game_SOURCE_DIR}/GLTools/include/GL")
-endif(OPENGL_SUPERBIBLE_50)
-#
-# End OpenGL SuperBible 5.0 stuff
 #
 ###############################################################################
 
@@ -348,24 +329,8 @@ endif(UNIX)
 # own or maintain, and treating as a system include supresses the warnings.
 #
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
-include_directories(${PROJECT_INDEPENDENT_INCLUDE_DIRS} ${PROJECT_DEPENDENT_INCLUDE_DIRS} ${ZLIB_INCLUDE_DIRS} ${GLUT_INCLUDE_DIR} ${GLEW_INCLUDE_DIR} ${GLFW_INCLUDE_DIRS} ${OPENAL_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS} ${OPENGL_SUPERBIBLE_50_INCLUDES})
+include_directories(${PROJECT_INDEPENDENT_INCLUDE_DIRS} ${PROJECT_DEPENDENT_INCLUDE_DIRS} ${ZLIB_INCLUDE_DIRS} ${GLUT_INCLUDE_DIR} ${GLEW_INCLUDE_DIR} ${GLFW_INCLUDE_DIRS} ${OPENAL_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS})
 set(LIBS ${LIBS} ${Boost_LIBRARIES} ${ZLIB_LIBRARIES} ${GLEW_LIBRARY} ${GLUT_LIBRARY} ${OPENAL_LIBRARY} ${FREETYPE_LIBRARIES})
-#
-###############################################################################
-
-
-###############################################################################
-#
-# Platform sources
-#
-if(OPENGL_SUPERBIBLE_50)
-	set(OPENGL_SUPERBIBLE_50_SOURCES
-		# Start OpenGL SuperBible 5.0 stuff
-		#GLTools/src/openglsuperbible_uber.cpp
-		GLSB/examples.cpp
-		# End OpenGL SuperBible 5.0 stuff
-		)
-endif(OPENGL_SUPERBIBLE_50)
 #
 ###############################################################################
 
@@ -435,7 +400,6 @@ add_executable(
 	engine/independent/common/version.cpp
 	unit-test.log
 	${ENGINE_HEADERS}
- 	${OPENGL_SUPERBIBLE_50_SOURCES}
 	)
 target_link_libraries(game glfw ${LIBS})
 add_dependencies(game unit-test)
