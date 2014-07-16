@@ -24,7 +24,7 @@ IF(WIN32)
 	SET(CMAKE_FIND_LIBRARY_SUFFIXES .a .lib .dll .dll.a)
 
 	# Helpers for finding packages (might be useful for creating modules)
-	math(EXPR BITS "8*${CMAKE_SIZEOF_VOID_P}")
+	math(EXPR BITS "8 * ${CMAKE_SIZEOF_VOID_P}")
 	if (BITS MATCHES "64")
 		set(PLATFORM "x64")
 		set(ALT_PLATFORM "Win64")

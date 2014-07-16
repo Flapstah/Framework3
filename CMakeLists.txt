@@ -15,8 +15,6 @@ ENDIF()
 #
 ###############################################################################
 
-include("cmake/flapstah.cmake")
-
 ###############################################################################
 #
 # The name of our project is "game". CMakeLists files in this project can
@@ -25,6 +23,8 @@ include("cmake/flapstah.cmake")
 #
 cmake_minimum_required(VERSION 2.8)
 project(game)
+include("cmake/flapstah.cmake")
+
 # Additional cmake modules path
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
 
