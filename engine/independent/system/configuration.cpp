@@ -50,7 +50,7 @@ namespace engine
 		{
 			TRACE(TRACE_ENABLE);
 
-			return m_flags&CSyntax::eF_NUMBER_OF_ARGUMENTS_MASK;
+			return m_flags & CSyntax::eF_NUMBER_OF_ARGUMENTS_MASK;
 		}
 
 		//==========================================================================

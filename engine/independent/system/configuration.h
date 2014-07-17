@@ -21,7 +21,6 @@ namespace engine
 		class CConfiguration
 		{
 			//------------------------------------------------------------------------
-//			{ ID_LOG, "log", 'l', flags, "specify the log file", NULL }
 
 		public:
 			enum eSyntaxID
@@ -37,17 +36,8 @@ namespace engine
 			public:
 				enum eFlags
 				{
-					eF_NUMBER_OF_ARGUMENTS_MASK		= 0xff,
-					eF_MAX_NUMBER_OF_ARGS					= 8,
-					eF_ARG0_IS_PATH								= 1 << 8,
-					eF_ARG1_IS_PATH								= 1 << 9,
-					eF_ARG2_IS_PATH								= 1 << 10,
-					eF_ARG3_IS_PATH								= 1 << 11,
-					eF_ARG4_IS_PATH								= 1 << 12,
-					eF_ARG5_IS_PATH								= 1 << 13,
-					eF_ARG6_IS_PATH								= 1 << 14,
-					eF_ARG7_IS_PATH								= 1 << 15,
-
+					eF_NUMBER_OF_ARGUMENTS_MASK		= 0x7,			// max 7 arguments
+					eF_MAX_NUMBER_OF_ARGS					= 7,
 				};
 
 				// returns success or fail; pass-through argv, argc; index is adjusted by how many args were parsed
@@ -77,7 +67,6 @@ namespace engine
 			};
 
 			//------------------------------------------------------------------------
-//			{ ID_LOG, "<arg0>".."<arg7" }
 
 			typedef std::vector<const char *> TArgumentVec;
 			class COption
