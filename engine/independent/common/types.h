@@ -10,10 +10,12 @@
 	#define PRIx64 "I64x"
 	#define PRId64 "I64d"
 	#define PRIu64 "I64u"
+	#define PRSIZE_T "Iu"
 #else
 	// Need this macro for C++ (ISO C99 standard)
 	#define __STDC_FORMAT_MACROS
 	#include <inttypes.h> // for PRIu64 for printf(), etc. 
+	#define PRSIZE_T "zu"
 #endif // defined(_WIN32)
 
 //==============================================================================
