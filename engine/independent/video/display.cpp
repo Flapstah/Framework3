@@ -4,6 +4,13 @@
 
 //==============================================================================
 
+#if defined(TRACE_ENABLE)
+#undef TRACE_ENABLE
+#endif // defined(TRACE_ENABLE)
+#define TRACE_ENABLE false
+
+//==============================================================================
+
 namespace engine
 {
 	//============================================================================
@@ -14,6 +21,8 @@ namespace engine
 
 		void glfwErrorCallback(int error, const char* description)
 		{
+			TRACE(TRACE_ENABLE);
+
 			LOG_ERROR(ENGINE_LOGGER, "[GLFW] [%d] [%s]", error, description);
 		}
 
@@ -22,6 +31,8 @@ namespace engine
 		CDisplay::CDisplay(void)
 			: m_window(NULL)
 		{
+			TRACE(TRACE_ENABLE);
+
 			glfwSetErrorCallback(glfwErrorCallback);
 		}
 
@@ -29,6 +40,8 @@ namespace engine
 
 		CDisplay::~CDisplay(void)
 		{
+			TRACE(TRACE_ENABLE);
+
 			Uninitialise();
 		}
 
@@ -36,6 +49,8 @@ namespace engine
 
 		bool CDisplay::Initialise(uint32 width, uint32 height, const char* title, bool fullScreen)
 		{
+			TRACE(TRACE_ENABLE);
+
 			bool ok = false;
 
 			if (glfwInit())
@@ -76,6 +91,8 @@ namespace engine
 
 		bool CDisplay::Uninitialise(void)
 		{
+			TRACE(TRACE_ENABLE);
+
 			glfwTerminate();
 			return true;
 		}
@@ -84,6 +101,8 @@ namespace engine
 
 		bool CDisplay::Update(void)
 		{
+			TRACE(TRACE_ENABLE);
+
 			int width, height;
 
 			// Get window size (and protect against height being 0)
