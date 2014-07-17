@@ -284,7 +284,7 @@ namespace engine
 
 		//==========================================================================
 
-		const std::string CConfiguration::GetConfig(const std::string& key) const
+		const std::string CConfiguration::GetValue(const std::string& key) const
 		{
 			TRACE(TRACE_ENABLE);
 
@@ -300,6 +300,29 @@ namespace engine
 			}
 
 			return value;
+		}
+
+		//==========================================================================
+
+		bool CConfiguration::GetValue(const std::string& key, uint32& value) const
+		{
+			TRACE(TRACE_ENABLE);
+
+			bool succeeded = false;
+			const std::string raw = GetValue(key);
+
+			if (raw.empty() == false)
+			{
+				uint32 temp = 0;
+				int items = sscanf(raw.c_str(), "%u", &temp);
+				if (items != 0)
+				{
+					value = temp;
+					succeeded = true;
+				}
+			}
+
+			return succeeded;
 		}
 
 		//==========================================================================

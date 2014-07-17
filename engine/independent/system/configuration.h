@@ -91,7 +91,8 @@ namespace engine
 			bool Parse(uint32 argc, const char* const* argv);
 			bool Parse(const char* configFile);
 			const COption* GetOption(uint32 optionID) const;
-			const std::string GetConfig(const std::string& key) const;
+			const std::string GetValue(const std::string& key) const;
+			bool GetValue(const std::string& key, uint32& value) const;
 			void ShowHelp(void);
 
 		protected:
