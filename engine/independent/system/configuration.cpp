@@ -107,7 +107,7 @@ namespace engine
 			// Check for duplicate names and abbreviations
 			for (TSyntaxVec::iterator sourceIt = m_syntax.begin(), sourceEnd = m_syntax.end(); sourceIt != sourceEnd; ++sourceIt)
 			{
-				for (TSyntaxVec::iterator compareIt = m_syntax.begin(), compareEnd = m_syntax.end(); compareIt != compareEnd; ++compareIt)
+				for (TSyntaxVec::iterator compareIt = sourceIt, compareEnd = m_syntax.end(); compareIt != compareEnd; ++compareIt)
 				{
 					if ((sourceIt != compareIt) &&																					// If not this one and
 							(	(sourceIt->GetID() == compareIt->GetID()) ||											// ID identical or
