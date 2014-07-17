@@ -4,12 +4,8 @@
 //==============================================================================
 
 //------------------------------------------------------------------------------
-// Use GLFW for the UI framework
+// Display config
 //------------------------------------------------------------------------------
-#define USE_GLFW 1
-
-#define LOG_KEYBOARD_INPUT 0
-
 #define DEFAULT_WINDOW_WIDTH (640)
 #define DEFAULT_WINDOW_HEIGHT (400)
 #define DEFAULT_WINDOW_TITLE "Framework Test"
