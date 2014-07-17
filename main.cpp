@@ -34,7 +34,6 @@ int main(int argc, char* argv[])
 	enum eSyntaxID
 	{
 		eSID_LOG = engine::system::CConfiguration::eSID_FIRST_USERID,
-		eSID_ROOT,
 	};
 	*/
 
@@ -47,13 +46,21 @@ int main(int argc, char* argv[])
 
 	LOG_ALWAYS(GAME_LOGGER, "Start...");
 
+	uint32 display_width = DEFAULT_WINDOW_WIDTH;
+	uint32 display_height = DEFAULT_WINDOW_HEIGHT;
+	config.GetValue("display_width", display_width);
+	config.GetValue("display_height", display_height);
+
 	engine::video::CDisplay* pDisplay = myEngine.GetDisplay();
-	pDisplay->Initialise(1024,576,"Test",false);
+	pDisplay->Initialise(display_width, display_height, DEFAULT_WINDOW_TITLE, false);
+
 	engine::time::CTime::TTimerPtr myTimer = engine::time::CTime::Get().CreateTimer(engine::time::CTimeValue(0.1), 1.0f, engine::time::CTimeValue(1.0), timerCallback, NULL);
 	while (g_run)
 	{
 		myEngine.Update();
 		g_run &= pDisplay->Update();
+
+		TODO(Need proper FPS sorting here: linux is 60fps and windows is 100fps)
 		engine::time::CTime::Sleep(10000);
 	}
 	engine::time::CTime::Get().DestroyTimer(myTimer);
