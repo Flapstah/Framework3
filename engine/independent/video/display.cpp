@@ -12,9 +12,17 @@ namespace engine
 	{
 		//==========================================================================
 
+		void glfwErrorCallback(int error, const char* description)
+		{
+			LOG_ERROR(ENGINE_LOGGER, "[GLFW] [%d] [%s]", error, description);
+		}
+
+		//==========================================================================
+
 		CDisplay::CDisplay(void)
 			: m_window(NULL)
 		{
+			glfwSetErrorCallback(glfwErrorCallback);
 		}
 
 		//==========================================================================
