@@ -29,6 +29,7 @@ namespace engine
 		public:
 			typedef void (T::*F)(void);
 
+			CCallback(void) : m_o(NULL), m_f(NULL) {}
 			CCallback(T& o, F f) : m_o(&o), m_f(f) {}
 			virtual void operator()(void) const { (m_o->*m_f)(); }
 
@@ -45,6 +46,7 @@ namespace engine
 		public:
 			typedef void (T::*F)(P1*);
 
+			CUnaryCallback(void) : m_o(NULL), m_f(NULL) {}
 			CUnaryCallback(T& o, F f) : m_o(&o), m_f(f) {}
 			virtual void operator()(void* p1) const { (m_o->*m_f)((P1*)p1); }
 
@@ -61,6 +63,7 @@ namespace engine
 		public:
 			typedef void (T::*F)(P1*, P2*);
 
+			CBinaryCallback(void) : m_o(NULL), m_f(NULL) {}
 			CBinaryCallback(T& o, F f) : m_o(&o), m_f(f) {}
 			virtual void operator()(void* p1, void* p2) const { (m_o->*m_f)((P1*)p1, (P2*)p2); }
 
@@ -76,6 +79,7 @@ namespace engine
 		public:
 			typedef void (T::*F)(P1*, P2*, P3*);
 
+			CTertiaryCallback(void) : m_o(NULL), m_f(NULL) {}
 			CTertiaryCallback(T& o, F f) : m_o(&o), m_f(f) {}
 			virtual void operator()(void* p1, void* p2, void* p3) const { (m_o->*m_f)((P1*)p1, (P2*)p2, (P3*)p3); }
 
