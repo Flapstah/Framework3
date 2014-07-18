@@ -327,6 +327,45 @@ namespace engine
 
 		//==========================================================================
 
+		bool CConfiguration::GetValue(const std::string& key, bool& value) const
+		{
+			TRACE(TRACE_ENABLE);
+
+			bool succeeded = false;
+			const std::string raw = GetValue(key);
+
+			if (raw.empty() == false)
+			{
+				switch (raw.c_str()[0])
+				{
+					case '0': // intentional fall-through
+					case 'f': // intentional fall-through
+					case 'F': // intentional fall-through
+					case 'n': // intentional fall-through
+					case 'N':
+						value = false;
+						succeeded = true;
+						break;
+
+					case '1': // intentional fall-through
+					case 't': // intentional fall-through
+					case 'T': // intentional fall-through
+					case 'y': // intentional fall-through
+					case 'Y':
+						value = true;
+						succeeded = true;
+						break;
+
+					default:
+						break;
+				}
+			}
+
+			return succeeded;
+		}
+
+		//==========================================================================
+
 		void CConfiguration::ShowHelp(void)
 		{
 			TRACE(TRACE_ENABLE);

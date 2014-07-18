@@ -18,7 +18,7 @@ bool timerCallback(engine::time::CTimer* pTimer, void* pData)
 
 	double elapsed = pTimer->GetElapsedTime().GetSeconds();
 	LOG_ALWAYS(GAME_LOGGER, "timer callback %.2f (%.2ffps)", (float)(elapsed), engine::base::CEngine::Get().GetAverageFPS());
-	if (elapsed >= 5.0)
+	if (elapsed >= 10.0)
 	{
 		g_run = false;
 	}
@@ -50,9 +50,11 @@ int main(int argc, char* argv[])
 	uint32 display_height = DEFAULT_WINDOW_HEIGHT;
 	config.GetValue("display_width", display_width);
 	config.GetValue("display_height", display_height);
+	bool display_fullScreen = DEFAULT_FULL_SCREEN;
+	config.GetValue("display_fullscreen", display_fullScreen);
 
 	engine::video::CDisplay* pDisplay = myEngine.GetDisplay();
-	pDisplay->Initialise(display_width, display_height, DEFAULT_WINDOW_TITLE, false);
+	pDisplay->Initialise(display_width, display_height, DEFAULT_WINDOW_TITLE, display_fullScreen);
 
 	engine::time::CTime::TTimerPtr myTimer = engine::time::CTime::Get().CreateTimer(engine::time::CTimeValue(0.1), 1.0f, engine::time::CTimeValue(1.0), timerCallback, NULL);
 	while (g_run)

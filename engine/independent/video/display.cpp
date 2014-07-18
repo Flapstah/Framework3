@@ -56,9 +56,10 @@ namespace engine
 			if (glfwInit())
 			{
 				glfwWindowHint(GLFW_DEPTH_BITS, 32);
-				m_window = glfwCreateWindow(width, height, title, NULL, NULL);
+				m_window = glfwCreateWindow(width, height, title, (fullScreen == true) ? glfwGetPrimaryMonitor() : NULL, NULL);
 				if (m_window != NULL)
 				{
+					glfwMakeContextCurrent(m_window);
 					glfwSwapInterval(0);
 
 					glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -146,7 +147,8 @@ namespace engine
 			glfwSwapBuffers(m_window);
 			glDisable(GL_TEXTURE_2D);
 
-			bool cont = (glfwWindowShouldClose(m_window) == GL_TRUE) ? false : true;
+			glfwPollEvents();
+			bool cont = !glfwWindowShouldClose(m_window);
 
 			return cont;
 		}

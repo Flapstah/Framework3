@@ -93,6 +93,7 @@ namespace engine
 			const COption* GetOption(uint32 optionID) const;
 			const std::string GetValue(const std::string& key) const;
 			bool GetValue(const std::string& key, uint32& value) const;
+			bool GetValue(const std::string& key, bool& value) const;
 			void ShowHelp(void);
 
 		protected:

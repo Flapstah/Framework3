@@ -10,6 +10,7 @@
 #define DEFAULT_WINDOW_HEIGHT (400)
 #define DEFAULT_WINDOW_TITLE "Framework Test"
 #define DEFAULT_FRAMERATE (60.0)
+#define DEFAULT_FULL_SCREEN (false)
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
