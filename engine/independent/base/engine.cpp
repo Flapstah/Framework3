@@ -161,7 +161,7 @@ namespace engine
 
 		//==========================================================================
 
-		engine::video::CDisplay* CEngine::GetDisplay(void)
+		engine::glfw::CDisplay* CEngine::GetDisplay(void)
 		{
 			TRACE(TRACE_ENABLE);
 

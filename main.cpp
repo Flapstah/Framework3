@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
 	bool display_fullScreen = DEFAULT_FULL_SCREEN;
 	config.GetValue("display_fullscreen", display_fullScreen);
 
-	engine::video::CDisplay* pDisplay = myEngine.GetDisplay();
+	engine::glfw::CDisplay* pDisplay = myEngine.GetDisplay();
 	pDisplay->Initialise(display_width, display_height, DEFAULT_WINDOW_TITLE, display_fullScreen);
 
 	engine::time::CTime::TTimerPtr myTimer = engine::time::CTime::Get().CreateTimer(engine::time::CTimeValue(0.1), 1.0f, engine::time::CTimeValue(1.0), timerCallback, NULL);

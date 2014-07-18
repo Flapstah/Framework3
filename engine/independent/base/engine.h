@@ -4,11 +4,11 @@
 //==============================================================================
 
 #include "base/filesystem.h"
+#include "glfw/display.h"
 #include "system/configuration.h"
 #include "system/console.h"
 #include "time/time.h"
 #include "time/fpscalculator.h"
-#include "video/display.h"
 
 //==============================================================================
 
@@ -65,14 +65,14 @@ namespace engine
 			//========================================================================
 			// Accessors
 			//========================================================================
-			engine::video::CDisplay* GetDisplay(void);
+			engine::glfw::CDisplay* GetDisplay(void);
 
 			//------------------------------------------------------------------------
 
 		protected:
 			uint32 m_flags;
 			engine::time::CFPSCalculator m_fps;
-			engine::video::CDisplay m_display;
+			engine::glfw::CDisplay m_display;
 
 			//========================================================================
 		}; // End [class CEngine]
