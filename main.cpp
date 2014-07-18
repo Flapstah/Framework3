@@ -53,14 +53,15 @@ int main(int argc, char* argv[])
 	bool display_fullScreen = DEFAULT_FULL_SCREEN;
 	config.GetValue("display_fullscreen", display_fullScreen);
 
-	engine::glfw::CDisplay* pDisplay = myEngine.GetDisplay();
-	pDisplay->Initialise(display_width, display_height, DEFAULT_WINDOW_TITLE, display_fullScreen);
+	engine::glfw::SConfiguration glfwConfiguration;
+	engine::glfw::CGLFW* pGLFW = myEngine.GetGLFW();
+	pGLFW->Initialise(glfwConfiguration);
+	pGLFW->OpenDisplay(display_width, display_height, DEFAULT_WINDOW_TITLE, display_fullScreen);
 
 	engine::time::CTime::TTimerPtr myTimer = engine::time::CTime::Get().CreateTimer(engine::time::CTimeValue(0.1), 1.0f, engine::time::CTimeValue(1.0), timerCallback, NULL);
-	while (g_run)
+	while (myEngine.Update() != engine::time::INVALID_TIME)
 	{
 		myEngine.Update();
-		g_run &= pDisplay->Update();
 
 		TODO("Need proper FPS sorting here: linux is 60fps, windows is 100fps")
 		engine::time::CTime::Sleep(10000);
@@ -75,7 +76,6 @@ int main(int argc, char* argv[])
 	}
 	*/
 
-	pDisplay->Uninitialise();
 	LOG_ALWAYS(GAME_LOGGER, "All done.");
 
 	myEngine.Uninitialise(); // Not strictly needed as will be called when engine destructed

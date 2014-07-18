@@ -19,21 +19,15 @@ namespace engine
 	{
 		//==========================================================================
 
-		void glfwErrorCallback(int error, const char* description)
-		{
-			TRACE(TRACE_ENABLE);
-
-			LOG_ERROR(ENGINE_LOGGER, "[GLFW] [%d] [%s]", error, description);
-		}
+		CDisplay::TDisplayID CDisplay::s_id = 0;
 
 		//==========================================================================
 
 		CDisplay::CDisplay(void)
 			: m_window(NULL)
+			, m_active(false)
 		{
 			TRACE(TRACE_ENABLE);
-
-			glfwSetErrorCallback(glfwErrorCallback);
 		}
 
 		//==========================================================================
@@ -42,60 +36,54 @@ namespace engine
 		{
 			TRACE(TRACE_ENABLE);
 
-			Uninitialise();
+			Close();
 		}
 
 		//==========================================================================
 
-		bool CDisplay::Initialise(uint32 width, uint32 height, const char* title, bool fullScreen)
+		CDisplay::TDisplayID CDisplay::Open(uint32 width, uint32 height, const char* title, bool fullScreen)
 		{
 			TRACE(TRACE_ENABLE);
 
-			bool ok = false;
+			m_active = false;
+			m_id = INVALID_DISPLAY_ID;
 
-			if (glfwInit())
+			glfwWindowHint(GLFW_DEPTH_BITS, 32);
+			m_window = glfwCreateWindow(width, height, title, (fullScreen == true) ? glfwGetPrimaryMonitor() : NULL, NULL);
+			if (m_window != NULL)
 			{
-				glfwWindowHint(GLFW_DEPTH_BITS, 32);
-				m_window = glfwCreateWindow(width, height, title, (fullScreen == true) ? glfwGetPrimaryMonitor() : NULL, NULL);
-				if (m_window != NULL)
-				{
-					glfwMakeContextCurrent(m_window);
-					glfwSwapInterval(0);
+				glfwMakeContextCurrent(m_window);
+				glfwSwapInterval(0);
 
-					glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-					glShadeModel(GL_FLAT);
+				glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+				glShadeModel(GL_FLAT);
 
-					// Do texture stuff (http://www.gamedev.net/page/resources/_/reference/programming/opengl/269/opengl-texture-mapping-an-introduction-r947)
-					glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-					glBindTexture(GL_TEXTURE_2D, eTID_Main);
-					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+				// Do texture stuff (http://www.gamedev.net/page/resources/_/reference/programming/opengl/269/opengl-texture-mapping-an-introduction-r947)
+				glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+				glBindTexture(GL_TEXTURE_2D, eTID_Main);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
-					ok = true;
-				}
-				else
-				{
-					LOG_ALWAYS(ENGINE_LOGGER, "Failed to open GLFW window");
-				}
+				m_active = true;
+				m_id = s_id++;
 			}
 			else
 			{
-				LOG_ALWAYS(ENGINE_LOGGER, "Failed to initialise GLFW");
+				LOG_ERROR(ENGINE_LOGGER, "Failed to open GLFW window");
 			}
 
-			return ok;
+			return m_id;
 		}
 
 		//==========================================================================
 
-		bool CDisplay::Uninitialise(void)
+		void CDisplay::Close(void)
 		{
 			TRACE(TRACE_ENABLE);
 
-			glfwTerminate();
-			return true;
+			glfwSetWindowShouldClose(m_window, GL_TRUE);
 		}
 
 		//==========================================================================
@@ -104,53 +92,55 @@ namespace engine
 		{
 			TRACE(TRACE_ENABLE);
 
-			int width, height;
-
-			// Get window size (and protect against height being 0)
-			glfwGetWindowSize(m_window, &width, &height);
-			height = (height > 0) ? height : 1;
-
-			// Set up view
-			glViewport(0, 0, width, height);
-			glMatrixMode(GL_PROJECTION);
-			glLoadIdentity();
-//			gluOrtho2D(0.0, (GLdouble)width, 0.0, (GLdouble)height);
-
-			// Clear back buffer
-			glClear(GL_COLOR_BUFFER_BIT);
-
-			// Select texture
-			glEnable(GL_TEXTURE_2D);
-			glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-			glBindTexture(GL_TEXTURE_2D, eTID_Main);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, eDS_WIDTH, eDS_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_memory);
-
-			int32 scaledWidth = eDS_WIDTH;
-			int32 scaledHeight = eDS_HEIGHT;
-			int32 x = (width - scaledWidth) / 2;
-			int32 y = (height - scaledHeight) / 2;
-
-			// Render textured quad
-			glBegin(GL_QUADS);
+			if (m_active == true)
 			{
-				glTexCoord2f(0.0f, 1.0f);
-				glVertex2i(x, y);
-				glTexCoord2f(0.0f, 0.0f);
-				glVertex2i(x, y + scaledHeight);
-				glTexCoord2f(1.0f, 0.0f);
-				glVertex2i(x + scaledWidth, y + scaledHeight);
-				glTexCoord2f(1.0f, 1.0f);
-				glVertex2i(x + scaledWidth, y);
+				int width, height;
+
+				// Get window size (and protect against height being 0)
+				glfwGetWindowSize(m_window, &width, &height);
+				height = (height > 0) ? height : 1;
+
+				// Set up view
+				glViewport(0, 0, width, height);
+				glMatrixMode(GL_PROJECTION);
+				glLoadIdentity();
+				//			gluOrtho2D(0.0, (GLdouble)width, 0.0, (GLdouble)height);
+
+				// Clear back buffer
+				glClear(GL_COLOR_BUFFER_BIT);
+
+				// Select texture
+				glEnable(GL_TEXTURE_2D);
+				glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+				glBindTexture(GL_TEXTURE_2D, eTID_Main);
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, eDS_WIDTH, eDS_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_memory);
+
+				int32 scaledWidth = eDS_WIDTH;
+				int32 scaledHeight = eDS_HEIGHT;
+				int32 x = (width - scaledWidth) / 2;
+				int32 y = (height - scaledHeight) / 2;
+
+				// Render textured quad
+				glBegin(GL_QUADS);
+				{
+					glTexCoord2f(0.0f, 1.0f);
+					glVertex2i(x, y);
+					glTexCoord2f(0.0f, 0.0f);
+					glVertex2i(x, y + scaledHeight);
+					glTexCoord2f(1.0f, 0.0f);
+					glVertex2i(x + scaledWidth, y + scaledHeight);
+					glTexCoord2f(1.0f, 1.0f);
+					glVertex2i(x + scaledWidth, y);
+				}
+				glEnd();
+
+				glfwSwapBuffers(m_window);
+				glDisable(GL_TEXTURE_2D);
+
+				m_active = !glfwWindowShouldClose(m_window);
 			}
-			glEnd();
 
-			glfwSwapBuffers(m_window);
-			glDisable(GL_TEXTURE_2D);
-
-			glfwPollEvents();
-			bool cont = !glfwWindowShouldClose(m_window);
-
-			return cont;
+			return m_active;
 		}
 
 		//==========================================================================

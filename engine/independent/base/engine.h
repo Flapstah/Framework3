@@ -4,7 +4,7 @@
 //==============================================================================
 
 #include "base/filesystem.h"
-#include "glfw/display.h"
+#include "glfw/glfw.h"
 #include "system/configuration.h"
 #include "system/console.h"
 #include "time/time.h"
@@ -59,20 +59,19 @@ namespace engine
 			// Systems
 			//========================================================================
 			engine::base::CFileSystem* GetFileSystem(void) const;
+			engine::glfw::CGLFW* GetGLFW(void);
 			engine::time::CTime* GetTime(void) const;
 			engine::system::CConsole* GetConsole(void) const;
 
 			//========================================================================
 			// Accessors
 			//========================================================================
-			engine::glfw::CDisplay* GetDisplay(void);
 
 			//------------------------------------------------------------------------
 
 		protected:
 			uint32 m_flags;
 			engine::time::CFPSCalculator m_fps;
-			engine::glfw::CDisplay m_display;
 
 			//========================================================================
 		}; // End [class CEngine]

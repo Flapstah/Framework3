@@ -98,6 +98,11 @@ namespace engine
 			{
 				tickTime = time::CTime::Get().Update();
 				m_fps.Update(tickTime);
+
+				if (!glfw::CGLFW::Get().Update())
+				{
+					tickTime = engine::time::INVALID_TIME;
+				}
 			}
 
 			return tickTime;
@@ -161,11 +166,11 @@ namespace engine
 
 		//==========================================================================
 
-		engine::glfw::CDisplay* CEngine::GetDisplay(void)
+		engine::glfw::CGLFW* CEngine::GetGLFW(void)
 		{
 			TRACE(TRACE_ENABLE);
 
-			return (m_flags & eF_INITIALISED) ? &m_display : NULL;
+			return (m_flags & eF_INITIALISED) ? &glfw::CGLFW::Get() : NULL;
 		}
 
 		//==========================================================================
@@ -176,4 +181,5 @@ namespace engine
 
 //==============================================================================
 // EOF
+
 

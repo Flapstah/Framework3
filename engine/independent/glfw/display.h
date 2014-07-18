@@ -7,6 +7,10 @@
 
 //==============================================================================
 
+#define INVALID_DISPLAY_ID (0xffffffff)
+
+//==============================================================================
+
 namespace engine
 {
 	//============================================================================
@@ -20,12 +24,15 @@ namespace engine
 		{
 			//========================================================================
 			public:
+				typedef uint32 TDisplayID;
+
 				CDisplay(void);
-				bool Initialise(uint32 width, uint32 height, const char* title, bool fullScreen);
-				bool Uninitialise(void);
+				TDisplayID Open(uint32 width, uint32 height, const char* title, bool fullScreen);
+				void Close(void);
 				~CDisplay(void);
 
 				bool Update(void);
+				TDisplayID GetID(void) const { return m_id; }
 
 			protected:
 				enum eDisplaySize
@@ -42,6 +49,10 @@ namespace engine
 				};
 
 				GLFWwindow* m_window;
+				TDisplayID m_id;
+				bool m_active;
+
+				static TDisplayID s_id;
 
 			//========================================================================
 		}; // End [class CDisplay]
