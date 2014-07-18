@@ -28,9 +28,6 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # Additional cmake modules path
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
-
-set(GLUT_ROOT_PATH "D:/MyCode/SDKs/freeglut-2.8.1")
-set(GLEW_ROOT_PATH "D:/MyCode/SDKs/glew")
 #
 ###############################################################################
 
@@ -102,7 +99,6 @@ if(Boost_FOUND)
 endif(Boost_FOUND)
 find_package(OpenGL)
 #find_package(altGLEW REQUIRED)
-#find_package(freeGLUT REQUIRED)
 find_package(ZLIB REQUIRED)
 if(WIN32)
 	#set(OPENAL_INCLUDE_DIR "D:/msysgit/local/include")
@@ -113,7 +109,6 @@ endif(WIN32)
 if(UNIX)
 	find_package(X11 REQUIRED)
 	set (X11_LIBRARIES "${X11_LIBRARIES};${X11_Xxf86vm_LIB};${X11_Xrandr_LIB};${X11_Xi_LIB};${X11_Xcursor_LIB}")
-	#find_package(GLUT REQUIRED)
 	#find_package(OpenAL REQUIRED)
 	#find_package(Freetype REQUIRED)
 endif(UNIX)
@@ -330,8 +325,8 @@ endif(UNIX)
 # own or maintain, and treating as a system include supresses the warnings.
 #
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
-include_directories(${PROJECT_INDEPENDENT_INCLUDE_DIRS} ${PROJECT_DEPENDENT_INCLUDE_DIRS} ${ZLIB_INCLUDE_DIRS} ${GLUT_INCLUDE_DIR} ${GLEW_INCLUDE_DIR} ${GLFW_INCLUDE_DIRS} ${OPENAL_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS})
-set(LIBS ${LIBS} ${Boost_LIBRARIES} ${ZLIB_LIBRARIES} ${GLEW_LIBRARY} ${GLUT_LIBRARY} ${OPENAL_LIBRARY} ${FREETYPE_LIBRARIES})
+include_directories(${PROJECT_INDEPENDENT_INCLUDE_DIRS} ${PROJECT_DEPENDENT_INCLUDE_DIRS} ${ZLIB_INCLUDE_DIRS} ${GLFW_INCLUDE_DIRS} ${OPENAL_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS})
+set(LIBS ${LIBS} ${Boost_LIBRARIES} ${ZLIB_LIBRARIES} ${OPENAL_LIBRARY} ${FREETYPE_LIBRARIES})
 #
 ###############################################################################
 
