@@ -1,7 +1,5 @@
 #include "common/stdafx.h"
 
-#if !USE_OPENGL_SUPERBIBLE
-
 #include "base/engine.h"
 #include "system/console.h"
 #include "system/configuration.h"
@@ -91,6 +89,5 @@ int main(int argc, char* argv[])
 
 //==============================================================================
 
-#endif // !USE_OPENGL_SUPERBIBLE
 
 // [EOF]
