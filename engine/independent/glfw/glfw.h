@@ -8,7 +8,8 @@
 #include <boost/make_shared.hpp>
 #include <GLFW/glfw3.h>
 
-#include <glfw/display.h>
+#include "glfw/display.h"
+#include "time/time.h"
 
 //==============================================================================
 
@@ -70,6 +71,7 @@ namespace engine
 				typedef boost::shared_ptr<CDisplay> TCDisplayPtr;
 				typedef std::vector<TCDisplayPtr> TDisplayVec;
 				TDisplayVec m_display;
+				engine::time::CTime::TTimerPtr m_timer;
 				eFlags m_flags;
 				eStatus m_status;
 
