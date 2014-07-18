@@ -41,10 +41,10 @@ namespace engine
 			// FPS
 			//========================================================================
 			// N.B. If GetAverageFPS() is called in the very first frame, you'll get a divide-by-zero exception
-			inline float GetAverageFPS(void) { return m_fps.GetAverageFPS(); }
-			inline float GetAverageFrameTime(void) { return m_fps.GetAverageFrameTime(); }
-			inline float GetMinimumFrameTime(void) { return m_fps.GetMinimumFrameTime(); }
-			inline float GetMaximumFrameTime(void) { return m_fps.GetMaximumFrameTime(); }
+			inline double GetAverageFPS(void) { return m_fps.GetAverageFPS(); }
+			inline double GetAverageFrameTime(void) { return m_fps.GetAverageFrameTime(); }
+			inline double GetMinimumFrameTime(void) { return m_fps.GetMinimumFrameTime(); }
+			inline double GetMaximumFrameTime(void) { return m_fps.GetMaximumFrameTime(); }
 			//========================================================================
 
 			//========================================================================

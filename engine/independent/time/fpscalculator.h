@@ -21,10 +21,10 @@ namespace engine
 			void Update(CTimeValue elapsed);
 
 			// N.B. If GetAverageFPS() is called in the very first frame, you'll get a divide-by-zero exception
-			inline float GetAverageFPS(void) { return 1.0f / GetAverageFrameTime(); }
-			inline float GetAverageFrameTime(void) { return m_frameTimeAccumulator.GetSeconds()/(double)TIME_FPS_FRAME_BUFFER_SIZE; }
-			inline float GetMinimumFrameTime(void) { return m_minFrameTime.GetSeconds(); }
-			inline float GetMaximumFrameTime(void) { return m_maxFrameTime.GetSeconds(); }
+			inline double GetAverageFPS(void) { return 1.0 / GetAverageFrameTime(); }
+			inline double GetAverageFrameTime(void) { return m_frameTimeAccumulator.GetSeconds()/(double)TIME_FPS_FRAME_BUFFER_SIZE; }
+			inline double GetMinimumFrameTime(void) { return m_minFrameTime.GetSeconds(); }
+			inline double GetMaximumFrameTime(void) { return m_maxFrameTime.GetSeconds(); }
 
 			//------------------------------------------------------------------------
 		private:
