@@ -49,7 +49,7 @@
 //------------------------------------------------------------------------------
 // This macro prints a TODO message during the build process
 //------------------------------------------------------------------------------
-#define TODO(_message_) DO_PRAGMA(message (__FILE__ "(" STRINGIZE(__LINE__) "): TODO: " #_message_))
+#define TODO(_message_) DO_PRAGMA(message (__FILE__ "(" STRINGIZE(__LINE__) "): TODO: " _message_))
 #endif // defined(__GNUC__)
 
 //==============================================================================

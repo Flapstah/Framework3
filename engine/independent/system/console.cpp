@@ -732,7 +732,7 @@ namespace engine
 			IGNORE_PARAMETER(commandLine);
 			IGNORE_PARAMETER(frames);
 
-			TODO(CConsole::ExecuteDeferred(frames))
+			TODO("CConsole::ExecuteDeferred(frames)")
 			LOG_FATAL(m_log, "[TODO]: CConsole::ExecuteDeferred(frames)");
 			return eCS_OK;
 		}
@@ -745,7 +745,7 @@ namespace engine
 			IGNORE_PARAMETER(commandLine);
 			IGNORE_PARAMETER(seconds);
 
-			TODO(CConsole::ExecuteDeferred(seconds))
+			TODO("CConsole::ExecuteDeferred(seconds)")
 			LOG_FATAL(m_log, "[TODO]: CConsole::ExecuteDeferred(seconds)");
 			return eCS_OK;
 		}

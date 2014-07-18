@@ -40,7 +40,7 @@
 //------------------------------------------------------------------------------
 // This macro prints a TODO message during the build process
 //------------------------------------------------------------------------------
-#define TODO(_message_) DO_PRAGMA(message ("TODO: " #_message_))
+#define TODO(_message_) DO_PRAGMA(message ("TODO: " _message_))
 
 //==============================================================================
 

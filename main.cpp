@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
 		myEngine.Update();
 		g_run &= pDisplay->Update();
 
-		TODO(Need proper FPS sorting here: linux is 60fps and windows is 100fps)
+		TODO("Need proper FPS sorting here: linux is 60fps, windows is 100fps")
 		engine::time::CTime::Sleep(10000);
 	}
 	engine::time::CTime::Get().DestroyTimer(myTimer);
