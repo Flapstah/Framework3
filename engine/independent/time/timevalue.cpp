@@ -18,7 +18,7 @@ namespace engine
 		//==========================================================================
 
 		extern int64 g_platformTicksPerSecond;
-		const int64& g_kTICKS_PER_SECOND = g_platformTicksPerSecond;
+		const int64& TICKS_PER_SECOND = g_platformTicksPerSecond;
 		const CTimeValue INVALID_TIME(DECLARE_64BIT(0x8000000000000000));
 
 		//==========================================================================
@@ -30,7 +30,7 @@ namespace engine
 			// remove sign; user calls GetTicks() to determine the sign
 			int64 time = (m_ticks < 0) ? -m_ticks : m_ticks;
 
-			int64 unit = g_kTICKS_PER_SECOND*60*60*24; // ticks per day
+			int64 unit = TICKS_PER_SECOND*60*60*24; // ticks per day
 			days = time/unit;
 			time -= unit*days;
 
@@ -40,7 +40,7 @@ namespace engine
 
 			unit /= 60; // ticks per minute
 			minutes = time/unit;
-			seconds = static_cast<float>(time-(unit*minutes))/g_kTICKS_PER_SECOND;
+			seconds = static_cast<float>(time-(unit*minutes))/TICKS_PER_SECOND;
 		}
 
 		//==========================================================================

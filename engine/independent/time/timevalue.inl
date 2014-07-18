@@ -11,7 +11,7 @@ namespace engine
 	{
 		//==========================================================================
 
-		extern const int64& g_kTICKS_PER_SECOND;
+		extern const int64& TICKS_PER_SECOND;
 
 		//==========================================================================
 
@@ -30,7 +30,7 @@ namespace engine
 		//==========================================================================
 
 		inline CTimeValue::CTimeValue(double seconds)
-			: m_ticks(static_cast<int64>(seconds*g_kTICKS_PER_SECOND))
+			: m_ticks(static_cast<int64>(seconds*TICKS_PER_SECOND))
 		{
 		}
 
@@ -53,7 +53,7 @@ namespace engine
 
 		inline CTimeValue& CTimeValue::operator=(double seconds)
 		{
-			m_ticks = static_cast<int64>(seconds*g_kTICKS_PER_SECOND);
+			m_ticks = static_cast<int64>(seconds*TICKS_PER_SECOND);
 			return *this;
 		}
 
@@ -77,7 +77,7 @@ namespace engine
 
 		inline CTimeValue& CTimeValue::operator+=(double seconds)
 		{
-			m_ticks += static_cast<int64>(seconds*g_kTICKS_PER_SECOND);
+			m_ticks += static_cast<int64>(seconds*TICKS_PER_SECOND);
 			return *this;
 		}
 
@@ -101,7 +101,7 @@ namespace engine
 
 		inline CTimeValue& CTimeValue::operator-=(double seconds)
 		{
-			m_ticks -= static_cast<int64>(seconds*g_kTICKS_PER_SECOND);
+			m_ticks -= static_cast<int64>(seconds*TICKS_PER_SECOND);
 			return *this;
 		}
 
@@ -125,7 +125,7 @@ namespace engine
 
 		inline const CTimeValue CTimeValue::operator+(double seconds) const
 		{
-			CTimeValue result(m_ticks+static_cast<int64>(seconds*g_kTICKS_PER_SECOND));
+			CTimeValue result(m_ticks+static_cast<int64>(seconds*TICKS_PER_SECOND));
 			return result;
 		}
 
@@ -149,7 +149,7 @@ namespace engine
 
 		inline const CTimeValue CTimeValue::operator-(double seconds) const
 		{
-			CTimeValue result(m_ticks-static_cast<int64>(seconds*g_kTICKS_PER_SECOND));
+			CTimeValue result(m_ticks-static_cast<int64>(seconds*TICKS_PER_SECOND));
 			return result;
 		}
 
@@ -172,7 +172,7 @@ namespace engine
 
 		inline bool CTimeValue::operator==(double seconds) const
 		{
-			return (m_ticks == static_cast<int64>(seconds*g_kTICKS_PER_SECOND));
+			return (m_ticks == static_cast<int64>(seconds*TICKS_PER_SECOND));
 		}
 
 		//==========================================================================
@@ -193,7 +193,7 @@ namespace engine
 
 		inline bool CTimeValue::operator!=(double seconds) const
 		{
-			return (m_ticks != static_cast<int64>(seconds*g_kTICKS_PER_SECOND));
+			return (m_ticks != static_cast<int64>(seconds*TICKS_PER_SECOND));
 		}
 
 		//==========================================================================
@@ -214,7 +214,7 @@ namespace engine
 
 		inline bool CTimeValue::operator<(double seconds) const
 		{
-			return (m_ticks < seconds*g_kTICKS_PER_SECOND);
+			return (m_ticks < seconds*TICKS_PER_SECOND);
 		}
 
 		//==========================================================================
@@ -235,7 +235,7 @@ namespace engine
 
 		inline bool CTimeValue::operator<=(double seconds) const
 		{
-			return (m_ticks <= seconds*g_kTICKS_PER_SECOND);
+			return (m_ticks <= seconds*TICKS_PER_SECOND);
 		}
 
 		//==========================================================================
@@ -256,7 +256,7 @@ namespace engine
 
 		inline bool CTimeValue::operator>(double seconds) const
 		{
-			return (m_ticks > seconds*g_kTICKS_PER_SECOND);
+			return (m_ticks > seconds*TICKS_PER_SECOND);
 		}
 
 		//==========================================================================
@@ -277,7 +277,7 @@ namespace engine
 
 		inline bool CTimeValue::operator>=(double seconds) const
 		{
-			return (m_ticks >= seconds*g_kTICKS_PER_SECOND);
+			return (m_ticks >= seconds*TICKS_PER_SECOND);
 		}	
 
 		//==========================================================================
@@ -291,7 +291,7 @@ namespace engine
 
 		inline double CTimeValue::GetSeconds(void) const
 		{
-			return static_cast<double>(m_ticks)/g_kTICKS_PER_SECOND;
+			return static_cast<double>(m_ticks)/TICKS_PER_SECOND;
 		}
 
 		//==========================================================================
