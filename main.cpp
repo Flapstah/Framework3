@@ -59,12 +59,19 @@ int main(int argc, char* argv[])
 	pGLFW->OpenDisplay(display_width, display_height, DEFAULT_WINDOW_TITLE, display_fullScreen);
 
 	engine::time::CTime::TTimerPtr myTimer = engine::time::CTime::Get().CreateTimer(engine::time::CTimeValue(0.1), 1.0f, engine::time::CTimeValue(1.0), timerCallback, NULL);
-	while ((myEngine.Update() != engine::time::INVALID_TIME) && g_run)
+	while (g_run)
 	{
-		myEngine.Update();
+		engine::time::CTimeValue tick = myEngine.Update();
+		if (tick == engine::time::INVALID_TIME)
+		{
+			g_run = false;
+		}
+		else
+		{
 
 		TODO("Need proper FPS sorting here: linux is 60fps, windows is 100fps")
-		engine::time::CTime::Sleep(10000);
+//		engine::time::CTime::Sleep(10000);
+		}
 	}
 	engine::time::CTime::Get().DestroyTimer(myTimer);
 
