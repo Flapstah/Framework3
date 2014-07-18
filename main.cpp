@@ -10,19 +10,34 @@ bool g_run = true;
 
 //==============================================================================
 
-bool timerCallback(engine::time::CTimer* pTimer, void* pData)
+class CGame
 {
-	IGNORE_PARAMETER(pData);
-
-	double elapsed = pTimer->GetElapsedTime().GetSeconds();
-	LOG_ALWAYS(GAME_LOGGER, "timer callback %.2f (%.2ffps)", (float)(elapsed), engine::base::CEngine::Get().GetAverageFPS());
-	if (elapsed >= 10.0)
+	public:
+	CGame(void)
 	{
-		g_run = false;
+		m_callback = engine::utility::MakeUnaryCallback<CGame, engine::time::CTimer>(*this, &CGame::TimerCallback);
+		m_timer = engine::time::CTime::Get().CreateTimer(engine::time::CTimeValue(0.1), 1.0f, engine::time::CTimeValue(1.0), m_callback);
 	}
 
-	return g_run;
-}
+	~CGame(void)
+	{
+		engine::time::CTime::Get().DestroyTimer(m_timer);
+	}
+
+	private:
+	engine::utility::CUnaryCallback<CGame, engine::time::CTimer> m_callback;
+	engine::time::CTime::TTimerPtr m_timer;
+
+	void TimerCallback(engine::time::CTimer* pTimer)
+	{
+		double elapsed = pTimer->GetElapsedTime().GetSeconds();
+		LOG_ALWAYS(GAME_LOGGER, "timer callback %.2f (%.2ffps)", (float)(elapsed), (float)engine::base::CEngine::Get().GetAverageFPS());
+		if (elapsed >= 10.0)
+		{
+			g_run = false;
+		}
+	}
+};
 
 //==============================================================================
 
@@ -56,22 +71,13 @@ int main(int argc, char* argv[])
 	pGLFW->Initialise(glfwConfiguration);
 	pGLFW->OpenDisplay(display_width, display_height, DEFAULT_WINDOW_TITLE, display_fullScreen);
 
-	engine::time::CTime::TTimerPtr myTimer = engine::time::CTime::Get().CreateTimer(engine::time::CTimeValue(0.1), 1.0f, engine::time::CTimeValue(1.0), timerCallback, NULL);
+	CGame* pGame = new CGame();
 	while (g_run)
 	{
 		engine::time::CTimeValue tick = myEngine.Update();
-		if (tick == engine::time::INVALID_TIME)
-		{
-			g_run = false;
-		}
-		else
-		{
-
-		TODO("Need proper FPS sorting here: linux is 60fps, windows is 100fps")
-//		engine::time::CTime::Sleep(10000);
-		}
+		g_run = (tick != engine::time::INVALID_TIME);
 	}
-	engine::time::CTime::Get().DestroyTimer(myTimer);
+	delete pGame;
 
 	/*
 	engine::system::CConsole::TIVariablePtr plog_level = myEngine.GetConsole()->FindVariable("log_level");
@@ -88,6 +94,6 @@ int main(int argc, char* argv[])
 }
 
 //==============================================================================
-
-
 // [EOF]
+
+

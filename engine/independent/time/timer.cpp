@@ -18,12 +18,11 @@ namespace engine
 	{
 		//==========================================================================
 
-		CTimer::CTimer(CTimer* pParent, CTimeValue maxFrameTime, float scale, CTimeValue callbackInterval, CTimer::TimerCallback pCallback, void* const pUserData)
+		CTimer::CTimer(CTimer* pParent, CTimeValue maxFrameTime, float scale, CTimeValue callbackInterval, engine::utility::CCallbackBase& callback)
 			: m_callbackInterval(callbackInterval)
 			, m_maxFrameTime(maxFrameTime)
 			, m_pParent(pParent)
-			, m_pCallback(pCallback)
-			, m_pUserData(pUserData)
+			, m_callback(callback)
 			, m_scale(scale)
 			, m_flags(0)
 		{
@@ -68,11 +67,9 @@ namespace engine
 
 		//==========================================================================
 
-		bool CTimer::Update(CTimeValue elapsed)
+		void CTimer::Update(CTimeValue elapsed)
 		{
 			TRACE(TRACE_ENABLE);
-
-			bool active = true;
 
 			if (IsPaused() == false)
 			{
@@ -84,12 +81,10 @@ namespace engine
 				m_callbackTicker -= frameTime;
 				if (m_callbackTicker.GetTicks() <= 0L)
 				{
-					active = m_pCallback(this, m_pUserData);
+					m_callback((void*)this);
 					m_callbackTicker += m_callbackInterval;
 				}
 			}
-
-			return active;
 		}
 
 		//==========================================================================

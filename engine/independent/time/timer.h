@@ -21,14 +21,12 @@ namespace engine
 			friend class CTime;
 
 		public:
-			typedef bool (*TimerCallback)(CTimer*, void* const);
-
 			~CTimer(void);
 
 			CTimeValue GetCurrentTime(void) const;
 			CTimeValue GetElapsedTime(void) const;
 			CTimeValue GetFrameTime(void) const;
-			bool Update(CTimeValue elapsed);
+			void Update(CTimeValue elapsed);
 			void SetScale(float scale);
 			float GetScale(void) const;
 			void Pause(bool pause);
@@ -38,7 +36,7 @@ namespace engine
 			//------------------------------------------------------------------------
 
 		private:
-			CTimer(CTimer* pParent, CTimeValue maxFrameTime, float scale, CTimeValue callbackInterval, CTimer::TimerCallback pCallback, void* const pUserData);
+			CTimer(CTimer* pParent, CTimeValue maxFrameTime, float scale, CTimeValue callbackInterval, engine::utility::CCallbackBase& callback);
 
 			//------------------------------------------------------------------------
 
@@ -51,8 +49,7 @@ namespace engine
 			CTimeValue m_maxFrameTime;
 
 			CTimer* m_pParent;
-			TimerCallback m_pCallback;
-			void* const m_pUserData;
+			engine::utility::CCallbackBase& m_callback;
 
 			float m_scale;
 
