@@ -59,7 +59,7 @@ int main(int argc, char* argv[])
 	pGLFW->OpenDisplay(display_width, display_height, DEFAULT_WINDOW_TITLE, display_fullScreen);
 
 	engine::time::CTime::TTimerPtr myTimer = engine::time::CTime::Get().CreateTimer(engine::time::CTimeValue(0.1), 1.0f, engine::time::CTimeValue(1.0), timerCallback, NULL);
-	while (myEngine.Update() != engine::time::INVALID_TIME)
+	while ((myEngine.Update() != engine::time::INVALID_TIME) && g_run)
 	{
 		myEngine.Update();
 

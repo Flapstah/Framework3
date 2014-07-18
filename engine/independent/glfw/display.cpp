@@ -83,7 +83,11 @@ namespace engine
 		{
 			TRACE(TRACE_ENABLE);
 
-			glfwSetWindowShouldClose(m_window, GL_TRUE);
+			if (m_active)
+			{
+				glfwSetWindowShouldClose(m_window, GL_TRUE);
+				m_active = false;
+			}
 		}
 
 		//==========================================================================

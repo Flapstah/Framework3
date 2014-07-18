@@ -59,6 +59,8 @@ namespace engine
 				void CloseDisplay(engine::glfw::CDisplay::TDisplayID id);
 
 			protected:
+				void CloseAllDisplays(void);
+
 				enum eFlags
 				{
 					eF_NONE = 0,

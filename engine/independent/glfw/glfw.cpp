@@ -114,6 +114,7 @@ namespace engine
 
 			if (m_status == eS_RUNNING)
 			{
+				CloseAllDisplays();
 				glfwTerminate();
 			}
 
@@ -150,6 +151,16 @@ namespace engine
 					it->get()->Close();
 					break;
 				}
+			}
+		}
+
+		//==========================================================================
+
+		void CGLFW::CloseAllDisplays(void)
+		{
+			for (TDisplayVec::iterator it = m_display.begin(), end = m_display.end(); it != end; ++it)
+			{
+				it->get()->Close();
 			}
 		}
 

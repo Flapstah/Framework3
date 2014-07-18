@@ -116,6 +116,7 @@ namespace engine
 
 			if (m_flags & eF_INITIALISED)
 			{
+				glfw::CGLFW::Get().Uninitialise();
 #if defined(DEBUG)
 				UNREGISTER_VARIABLE_BY_NAME("log_level");
 #endif // defined(DEBUG)
