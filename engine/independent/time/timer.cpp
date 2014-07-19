@@ -62,7 +62,7 @@ namespace engine
 		{
 			TRACE(TRACE_ENABLE);
 
-			return (m_timeNow-m_timeLast);
+			return (m_timeLastCallback - m_timePreviousCallback);
 		}
 
 		//==========================================================================
@@ -74,13 +74,15 @@ namespace engine
 			if (IsPaused() == false)
 			{
 				CTimeValue scaledElapsed(static_cast<int64>(static_cast<double>(elapsed.GetTicks())*m_scale));
-				CTimeValue frameTime = (scaledElapsed < m_maxFrameTime) ? scaledElapsed : m_maxFrameTime;
-				m_timeLast = m_timeNow;
+				CTimeValue frameTime = (scaledElapsed > m_maxFrameTime) ? m_maxFrameTime : scaledElapsed;
 				m_timeNow += frameTime;
 				m_timeElapsed += frameTime;
 				m_callbackTicker -= frameTime;
 				if (m_callbackTicker.GetTicks() <= 0L)
 				{
+					m_timePreviousCallback = m_timeLastCallback;
+					m_timeLastCallback = m_timeNow;
+
 					m_callback((void*)this);
 					m_callbackTicker += m_callbackInterval;
 				}
@@ -164,9 +166,10 @@ namespace engine
 				m_timeNow = when;
 			}
 
-			m_timeLast = m_timeNow;
 			m_timeElapsed = DECLARE_64BIT(0);
 			m_callbackTicker = m_callbackInterval;
+			m_timeLastCallback = m_timeNow;
+			m_timePreviousCallback = m_timeLastCallback - m_callbackInterval;
 		}
 
 		//==========================================================================

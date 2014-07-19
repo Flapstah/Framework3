@@ -43,11 +43,12 @@ namespace engine
 			//------------------------------------------------------------------------
 
 			CTimeValue m_timeNow;
-			CTimeValue m_timeLast;
 			CTimeValue m_timeElapsed;
 
 			CTimeValue m_callbackInterval;
 			CTimeValue m_callbackTicker;
+			CTimeValue m_timeLastCallback;
+			CTimeValue m_timePreviousCallback;
 			CTimeValue m_maxFrameTime;
 
 			const CTimer* m_pParent;

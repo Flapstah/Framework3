@@ -190,10 +190,8 @@ namespace engine
 		{
 			TRACE(TRACE_ENABLE);
 
-			IGNORE_PARAMETER(pTimer);
-
 			bool running = Update();
-			//m_fps.Update(time::CTime::Get().GetFrameTime());
+			m_fps.Update(pTimer->GetFrameTime());
 
 			if (running == false)
 			{
