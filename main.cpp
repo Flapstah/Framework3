@@ -31,7 +31,8 @@ class CGame
 	void TimerCallback(engine::time::CTimer* pTimer)
 	{
 		double elapsed = pTimer->GetElapsedTime().GetSeconds();
-		LOG_ALWAYS(GAME_LOGGER, "timer callback %.2f (%.2ffps)", (float)(elapsed), (float)engine::base::CEngine::Get().GetAverageFPS());
+		//LOG_ALWAYS(GAME_LOGGER, "timer callback %.2f engine fps (%.2ffps) display fps (%.2ffps)", (float)(elapsed), (float)engine::base::CEngine::Get().GetAverageFPS(), (float)engine::base::CEngine::Get().GetGLFW()->GetAverageFPS());
+		LOG_ALWAYS(GAME_LOGGER, "timer callback %.2f engine fps (%.2ffps)", (float)(elapsed), (float)engine::base::CEngine::Get().GetAverageFPS());
 		if (elapsed >= 10.0)
 		{
 			g_run = false;
@@ -66,16 +67,18 @@ int main(int argc, char* argv[])
 	bool display_fullScreen = DEFAULT_FULL_SCREEN;
 	config.GetValue("display_fullscreen", display_fullScreen);
 
+	/*
 	engine::glfw::SConfiguration glfwConfiguration;
 	engine::glfw::CGLFW* pGLFW = myEngine.GetGLFW();
 	pGLFW->Initialise(glfwConfiguration);
 	pGLFW->OpenDisplay(display_width, display_height, DEFAULT_WINDOW_TITLE, display_fullScreen);
+	*/
 
 	CGame* pGame = new CGame();
 	while (g_run)
 	{
 		engine::time::CTimeValue tick = myEngine.Update();
-		g_run = (tick != engine::time::INVALID_TIME);
+		g_run &= (tick != engine::time::INVALID_TIME);
 	}
 	delete pGame;
 

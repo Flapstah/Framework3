@@ -10,6 +10,7 @@
 
 #include "glfw/display.h"
 #include "time/time.h"
+#include "time/fpscalculator.h"
 
 //==============================================================================
 
@@ -34,6 +35,7 @@ namespace engine
 			~SConfiguration(void);
 
 			bool m_continuousUpdate;
+			uint32 m_desiredFrameRate;
 		}; // End [struct SConfiguration]
 
 		//==========================================================================
@@ -59,8 +61,20 @@ namespace engine
 				engine::glfw::CDisplay::TDisplayID OpenDisplay(uint32 width, uint32 height, const char* name, bool fullScreen);
 				void CloseDisplay(engine::glfw::CDisplay::TDisplayID id);
 
+				//======================================================================
+				// FPS
+				//======================================================================
+				void SetDesiredFramerate(uint32 framerate);
+				// N.B. If GetAverageFPS() is called in the very first frame, you'll get a divide-by-zero exception
+				inline double GetAverageFPS(void) { return m_fps.GetAverageFPS(); }
+				inline double GetAverageFrameTime(void) { return m_fps.GetAverageFrameTime(); }
+				inline double GetMinimumFrameTime(void) { return m_fps.GetMinimumFrameTime(); }
+				inline double GetMaximumFrameTime(void) { return m_fps.GetMaximumFrameTime(); }
+				//======================================================================
+
 			protected:
 				void CloseAllDisplays(void);
+				void TimerCallback(engine::time::CTimer* pTimer);
 
 				enum eFlags
 				{
@@ -72,6 +86,8 @@ namespace engine
 				typedef std::vector<TCDisplayPtr> TDisplayVec;
 				TDisplayVec m_display;
 				engine::time::CTime::TTimerPtr m_timer;
+				engine::time::CFPSCalculator m_fps;
+				engine::utility::CUnaryCallback<CGLFW, engine::time::CTimer> m_callback;
 				eFlags m_flags;
 				eStatus m_status;
 

@@ -92,20 +92,21 @@ namespace engine
 		{
 			TRACE(TRACE_ENABLE);
 
-			engine::time::CTimeValue tickTime;
+			engine::time::CTimeValue frameTime;
 
 			if (m_flags & eF_INITIALISED)
 			{
-				tickTime = time::CTime::Get().Update();
-				m_fps.Update(tickTime);
-
-				if (!glfw::CGLFW::Get().Update())
-				{
-					tickTime = engine::time::INVALID_TIME;
-				}
+				frameTime = time::CTime::Get().Update();
+				m_fps.Update(frameTime);
 			}
 
-			return tickTime;
+			if (m_flags & eF_SIGNAL_TERMINATE)
+			{
+				LOG_INFO(ENGINE_LOGGER, "CEngine::Update(): SIGNAL_TERMINATE");
+				frameTime = engine::time::INVALID_TIME;
+			}
+
+			return frameTime;
 		}
 
 		//==========================================================================
@@ -134,6 +135,7 @@ namespace engine
 			TRACE(TRACE_ENABLE);
 
 			Uninitialise();
+			m_flags |= eF_SIGNAL_TERMINATE;
 
 			return true;
 		}

@@ -29,6 +29,8 @@ namespace engine
 			void Update(CTimeValue elapsed);
 			void SetScale(float scale);
 			float GetScale(void) const;
+			CTimeValue GetCallbackInterval(void) const;
+			void SetCallbackInterval(CTimeValue interval);
 			void Pause(bool pause);
 			bool IsPaused(void);
 			void Reset(const CTimeValue& when);
@@ -36,7 +38,7 @@ namespace engine
 			//------------------------------------------------------------------------
 
 		private:
-			CTimer(CTimer* pParent, CTimeValue maxFrameTime, float scale, CTimeValue callbackInterval, engine::utility::CCallbackBase& callback);
+			CTimer(const CTimer* pParent, CTimeValue maxFrameTime, float scale, CTimeValue callbackInterval, engine::utility::CCallbackBase& callback);
 
 			//------------------------------------------------------------------------
 
@@ -48,7 +50,7 @@ namespace engine
 			CTimeValue m_callbackTicker;
 			CTimeValue m_maxFrameTime;
 
-			CTimer* m_pParent;
+			const CTimer* m_pParent;
 			engine::utility::CCallbackBase& m_callback;
 
 			float m_scale;

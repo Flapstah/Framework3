@@ -18,7 +18,7 @@ namespace engine
 	{
 		//==========================================================================
 
-		CTimer::CTimer(CTimer* pParent, CTimeValue maxFrameTime, float scale, CTimeValue callbackInterval, engine::utility::CCallbackBase& callback)
+		CTimer::CTimer(const CTimer* pParent, CTimeValue maxFrameTime, float scale, CTimeValue callbackInterval, engine::utility::CCallbackBase& callback)
 			: m_callbackInterval(callbackInterval)
 			, m_maxFrameTime(maxFrameTime)
 			, m_pParent(pParent)
@@ -103,6 +103,18 @@ namespace engine
 			TRACE(TRACE_ENABLE);
 
 			return m_scale;
+		}
+
+		CTimeValue CTimer::GetCallbackInterval(void) const
+		{
+			return m_callbackInterval;
+		}
+
+		//==========================================================================
+
+		void CTimer::SetCallbackInterval(CTimeValue interval)
+		{
+			m_callbackInterval = interval;
 		}
 
 		//==========================================================================

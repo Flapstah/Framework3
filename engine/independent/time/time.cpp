@@ -46,15 +46,24 @@ namespace engine
 			TRACE(TRACE_ENABLE);
 
 			CTimeValue now = GetCurrentTime();
-			CTimeValue elapsed = now - m_lastUpdate;
+			m_frameTime = now - m_lastUpdate;
 			m_lastUpdate = now;
 
 			for (TTimerDeque::iterator it = m_timers.begin(), end = m_timers.end(); it != end; ++it)
 			{
-				it->get()->Update(elapsed);
+				it->get()->Update(m_frameTime);
 			}
 
-			return elapsed;
+			return m_frameTime;
+		}
+
+		//==========================================================================
+
+		const CTimeValue CTime::GetFrameTime(void) const
+		{
+			TRACE(TRACE_ENABLE);
+
+			return m_frameTime;
 		}
 
 		//==========================================================================

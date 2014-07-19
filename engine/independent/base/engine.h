@@ -29,6 +29,7 @@ namespace engine
 			enum eFlags
 			{
 				eF_INITIALISED = 1 << 0,
+				eF_SIGNAL_TERMINATE = 1 << 1,
 			}; // End [enum eFlags]
 
 			//------------------------------------------------------------------------
