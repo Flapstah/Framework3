@@ -60,14 +60,17 @@ int main(int argc, char* argv[])
 
 	LOG_ALWAYS(GAME_LOGGER, "Start...");
 
+	engine::glfw::SConfiguration glfwConfiguration;
+
 	uint32 display_width = DEFAULT_WINDOW_WIDTH;
 	uint32 display_height = DEFAULT_WINDOW_HEIGHT;
 	config.GetValue("display_width", display_width);
 	config.GetValue("display_height", display_height);
 	bool display_fullScreen = DEFAULT_FULL_SCREEN;
 	config.GetValue("display_fullscreen", display_fullScreen);
+	glfwConfiguration.m_desiredFrameRate = DEFAULT_FRAMERATE;
+	config.GetValue("display_framerate", glfwConfiguration.m_desiredFrameRate);
 
-	engine::glfw::SConfiguration glfwConfiguration;
 	engine::glfw::CGLFW* pGLFW = myEngine.GetGLFW();
 	pGLFW->Initialise(glfwConfiguration);
 	pGLFW->OpenDisplay(display_width, display_height, DEFAULT_WINDOW_TITLE, display_fullScreen);
