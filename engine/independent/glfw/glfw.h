@@ -3,7 +3,7 @@
 
 //==============================================================================
 
-#include <vector>
+#include <map>
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 #include <GLFW/glfw3.h>
@@ -75,8 +75,8 @@ namespace engine
 				}; // End [enum eFlags]
 
 				typedef boost::shared_ptr<CDisplay> TCDisplayPtr;
-				typedef std::vector<TCDisplayPtr> TDisplayVec;
-				TDisplayVec m_display;
+				typedef std::map<const GLFWwindow*, TCDisplayPtr> TDisplayMap;
+				TDisplayMap m_display;
 				engine::time::CTime::TTimerPtr m_timer;
 				engine::time::CFPSCalculator m_fps;
 				engine::utility::CUnaryCallback<CGLFW, engine::time::CTimer> m_callback;

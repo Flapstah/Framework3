@@ -33,6 +33,7 @@ namespace engine
 
 				bool Update(void);
 				TDisplayID GetID(void) const { return m_id; }
+				const GLFWwindow* GetGLFWwindow(void) const { return m_window; }
 
 			protected:
 				enum eDisplaySize

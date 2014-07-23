@@ -32,7 +32,7 @@ namespace engine
 		//==========================================================================
 
 		SConfiguration::SConfiguration(void)
-			: m_continuousUpdate(true)
+			: m_realtime(true)
 			, m_desiredFrameRate(DEFAULT_FRAMERATE)
 		{
 			TRACE(TRACE_ENABLE);
@@ -81,9 +81,9 @@ namespace engine
 			{
 				m_status = eS_RUNNING;
 
-				if (configuration.m_continuousUpdate)
+				if (configuration.m_realtime)
 				{
-					m_flags = eF_CONTINOUS_UPDATE;
+					m_flags = eF_REALTIME;
 				}
 
 				SetDesiredFramerate(configuration.m_desiredFrameRate);
@@ -98,19 +98,25 @@ namespace engine
 		{
 			TRACE(TRACE_ENABLE);
 
-			TDisplayVec activeWindows;
-			activeWindows.reserve(m_display.size());
+			TDisplayMap activeWindows;
 
-			for (TDisplayVec::iterator it = m_display.begin(), end = m_display.end(); it != end; ++it)
+			for (TDisplayMap::iterator it = m_display.begin(), end = m_display.end(); it != end; ++it)
 			{
-				if (it->get()->Update() == true)
+				if (it->second.get()->Update() == true)
 				{
-					activeWindows.push_back(*it);
+					activeWindows[it->first] = it->second;
 				}
 			}
 
 			m_display.swap(activeWindows);
-			glfwPollEvents();
+			if (m_flags & eF_REALTIME)
+			{
+				glfwPollEvents();
+			}
+			else
+			{
+				glfwWaitEvents();
+			}
 
 			return (m_display.size() > 0);
 		}
@@ -141,7 +147,7 @@ namespace engine
 			engine::glfw::CDisplay::TDisplayID id = pDisplay->Open(width, height, name, fullScreen);
 			if (id != INVALID_DISPLAY_ID)
 			{
-				m_display.push_back(pDisplay);
+				m_display[pDisplay->GetGLFWwindow()] = pDisplay;
 			}
 
 			return id;
@@ -153,11 +159,13 @@ namespace engine
 		{
 			TRACE(TRACE_ENABLE);
 
-			for (TDisplayVec::iterator it = m_display.begin(), end = m_display.end(); it != end; ++it)
+			for (TDisplayMap::iterator it = m_display.begin(), end = m_display.end(); it != end; ++it)
 			{
-				if (it->get()->GetID() == id)
+				if (it->second.get()->GetID() == id)
 				{
-					it->get()->Close();
+					// N.B. since the display map contains smart pointers, the CDisplay
+					// destructors will be called by this
+					m_display.erase(it);
 					break;
 				}
 			}
@@ -187,10 +195,9 @@ namespace engine
 		{
 			TRACE(TRACE_ENABLE);
 
-			for (TDisplayVec::iterator it = m_display.begin(), end = m_display.end(); it != end; ++it)
-			{
-				it->get()->Close();
-			}
+			// N.B. since the display map contains smart pointers, the CDisplay
+			// destructors will be called by this
+			m_display.clear();
 		}
 
 		//==========================================================================
