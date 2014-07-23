@@ -5,6 +5,8 @@
 
 #include <GLFW/glfw3.h>
 
+#include "time/time.h"
+
 //==============================================================================
 
 #define INVALID_DISPLAY_ID (0xffffffff)
@@ -31,7 +33,7 @@ namespace engine
 				void Close(void);
 				~CDisplay(void);
 
-				bool Update(void);
+				bool Update(engine::time::CTimer* pTimer);
 				TDisplayID GetID(void) const { return m_id; }
 				GLFWwindow* GetGLFWwindow(void) const { return m_window; }
 
@@ -44,21 +46,6 @@ namespace engine
 				//----------------------------------------------------------------------
 
 			protected:
-				/*
-				enum eDisplaySize
-				{
-					eDS_WIDTH = 1024,
-					eDS_HEIGHT = 576
-				};
-
-				uint32 m_memory[eDS_WIDTH*eDS_HEIGHT];
-
-				enum eTextureID
-				{
-					eTID_Main = 1
-				};
-				*/
-
 				GLFWwindow* m_window;
 				TDisplayID m_id;
 				int m_width;

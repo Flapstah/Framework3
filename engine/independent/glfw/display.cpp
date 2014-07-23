@@ -61,21 +61,6 @@ namespace engine
 				glfwGetFramebufferSize(m_window, &m_width, &m_height);
 				glViewport(0, 0, m_width, m_height);
 
-				/*
-				glfwSwapInterval(0);
-
-				glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-				glShadeModel(GL_FLAT);
-
-				// Do texture stuff (http://www.gamedev.net/page/resources/_/reference/programming/opengl/269/opengl-texture-mapping-an-introduction-r947)
-				glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-				glBindTexture(GL_TEXTURE_2D, eTID_Main);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-				*/
-
 				m_active = true;
 				m_id = s_id++;
 			}
@@ -102,7 +87,7 @@ namespace engine
 
 		//==========================================================================
 
-		bool CDisplay::Update(void)
+		bool CDisplay::Update(engine::time::CTimer* pTimer)
 		{
 			TRACE(TRACE_ENABLE);
 
@@ -111,48 +96,28 @@ namespace engine
 				// Make this display the current OpenGL context
 				glfwMakeContextCurrent(m_window);
 
-				/*
-				// Get window size (and protect against height being 0)
-				glfwGetWindowSize(m_window, &width, &height);
-				height = (height > 0) ? height : 1;
-
-				// Set up view
-				glViewport(0, 0, width, height);
-				glMatrixMode(GL_PROJECTION);
-				glLoadIdentity();
-				//			gluOrtho2D(0.0, (GLdouble)width, 0.0, (GLdouble)height);
-
+				float ratio = m_width / (float)m_height;
 				// Clear back buffer
 				glClear(GL_COLOR_BUFFER_BIT);
 
-				// Select texture
-				glEnable(GL_TEXTURE_2D);
-				glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-				glBindTexture(GL_TEXTURE_2D, eTID_Main);
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, eDS_WIDTH, eDS_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_memory);
+				// Set up view
+				glMatrixMode(GL_PROJECTION);
+				glLoadIdentity();
+				glOrtho(-ratio, ratio, -1.0f, 1.0f, 1.0f, -1.0f);
 
-				int32 scaledWidth = eDS_WIDTH;
-				int32 scaledHeight = eDS_HEIGHT;
-				int32 x = (width - scaledWidth) / 2;
-				int32 y = (height - scaledHeight) / 2;
+				glMatrixMode(GL_MODELVIEW);
+				glLoadIdentity();
+				glRotatef((float)pTimer->GetElapsedTime().GetSeconds() * 50.0f, 0.0f, 0.0f, 1.0f);
 
-				// Render textured quad
-				glBegin(GL_QUADS);
-				{
-					glTexCoord2f(0.0f, 1.0f);
-					glVertex2i(x, y);
-					glTexCoord2f(0.0f, 0.0f);
-					glVertex2i(x, y + scaledHeight);
-					glTexCoord2f(1.0f, 0.0f);
-					glVertex2i(x + scaledWidth, y + scaledHeight);
-					glTexCoord2f(1.0f, 1.0f);
-					glVertex2i(x + scaledWidth, y);
-				}
+				glBegin(GL_TRIANGLES);
+				glColor3f(1.0f, 0.0f, 0.0f);
+				glVertex3f(-0.6f, -0.4f, 0.0f);
+				glColor3f(0.0f, 1.0f, 0.0f);
+				glVertex3f(0.6f, -0.4f, 0.0f);
+				glColor3f(0.0f, 0.0f, 1.0f);
+				glVertex3f(0.0f, 0.6f, 0.0f);
 				glEnd();
 
-				glfwSwapBuffers(m_window);
-				glDisable(GL_TEXTURE_2D);
-				*/
 				glfwSwapBuffers(m_window);
 
 				m_active = !glfwWindowShouldClose(m_window);

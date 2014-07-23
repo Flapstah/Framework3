@@ -112,7 +112,7 @@ namespace engine
 
 		//==========================================================================
 
-		bool CGLFW::Update(void)
+		bool CGLFW::Update(engine::time::CTimer* pTimer)
 		{
 			TRACE(TRACE_ENABLE);
 
@@ -131,7 +131,7 @@ namespace engine
 			// Update display(s)
 			for (TDisplayMap::iterator it = m_display.begin(), end = m_display.end(); it != end; ++it)
 			{
-				if (it->second.get()->Update() == true)
+				if (it->second.get()->Update(pTimer) == true)
 				{
 					activeWindows[it->first] = it->second;
 				}
@@ -279,10 +279,9 @@ namespace engine
 		{
 			TRACE(TRACE_ENABLE);
 
-			bool running = Update();
 			m_fps.Update(pTimer->GetFrameTime());
 
-			if (running == false)
+			if (Update(pTimer) == false)
 			{
 				engine::base::CEngine::Get().Terminate();
 			}

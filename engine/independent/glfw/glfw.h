@@ -6,10 +6,8 @@
 #include <map>
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
-#include <GLFW/glfw3.h>
 
 #include "glfw/display.h"
-#include "time/time.h"
 #include "time/fpscalculator.h"
 
 //==============================================================================
@@ -55,7 +53,7 @@ namespace engine
 				virtual ~CGLFW(void);
 
 				bool Initialise(engine::glfw::SConfiguration& configuration);
-				bool Update(void);
+				bool Update(engine::time::CTimer* pTimer);
 				void Uninitialise(void);
 
 				engine::glfw::CDisplay::TDisplayID OpenDisplay(uint32 width, uint32 height, const char* name, bool fullScreen);
