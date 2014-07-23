@@ -72,6 +72,8 @@ int main(int argc, char* argv[])
 	config.GetValue("display_fullscreen", display_fullScreen);
 	glfwConfiguration.m_desiredFrameRate = DEFAULT_FRAMERATE;
 	config.GetValue("display_framerate", glfwConfiguration.m_desiredFrameRate);
+	glfwConfiguration.m_realtime = DEFAULT_APPLICATION_REALTIME;
+	config.GetValue("application_realtime", glfwConfiguration.m_realtime);
 
 	engine::glfw::CGLFW* pGLFW = myEngine.GetGLFW();
 	pGLFW->Initialise(glfwConfiguration);

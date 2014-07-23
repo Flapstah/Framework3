@@ -34,7 +34,7 @@ namespace engine
 			SConfiguration(void);
 			~SConfiguration(void);
 
-			bool m_continuousUpdate;
+			bool m_realtime;
 			uint32 m_desiredFrameRate;
 		}; // End [struct SConfiguration]
 
@@ -71,7 +71,7 @@ namespace engine
 				enum eFlags
 				{
 					eF_NONE = 0,
-					eF_CONTINOUS_UPDATE = 1 << 0,
+					eF_REALTIME = 1 << 0,
 				}; // End [enum eFlags]
 
 				typedef boost::shared_ptr<CDisplay> TCDisplayPtr;
