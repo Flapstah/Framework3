@@ -32,7 +32,9 @@ class CGame
 	{
 		double elapsed = pTimer->GetElapsedTime().GetSeconds();
 		double frame = pTimer->GetFrameTime().GetSeconds();
-		LOG_ALWAYS(GAME_LOGGER, "timer callback (elapsed %.2f, interval %.2f), engine fps (%.2f fps), display fps (%.2f fps)", elapsed, frame, engine::base::CEngine::Get().GetAverageFPS(), engine::base::CEngine::Get().GetGLFW()->GetAverageFPS());
+		const engine::time::CFPSCalculator* pEngineFPS = engine::base::CEngine::Get().GetFPS();
+		const engine::time::CFPSCalculator* pGLFWFPS = engine::base::CEngine::Get().GetGLFW()->GetFPS();
+		LOG_ALWAYS(GAME_LOGGER, "timer callback (elapsed %.2f, interval %.2f), engine fps (%.2f fps), display fps (%.2f fps)", elapsed, frame, pEngineFPS->GetAverageFPS(), pGLFWFPS->GetAverageFPS());
 		if (elapsed >= 10.0)
 		{
 			g_run = false;

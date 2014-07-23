@@ -165,6 +165,15 @@ namespace engine
 
 		//==========================================================================
 
+		const engine::time::CFPSCalculator* CGLFW::GetFPS(void) const
+		{
+			TRACE(TRACE_ENABLE);
+
+			return (m_status == eS_RUNNING) ? &m_fps : NULL;
+		}
+
+		//==========================================================================
+
 		void CGLFW::SetDesiredFramerate(uint32 framerate)
 		{
 			TRACE(TRACE_ENABLE);

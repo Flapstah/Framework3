@@ -151,6 +151,15 @@ namespace engine
 
 		//==========================================================================
 
+		engine::glfw::CGLFW* CEngine::GetGLFW(void) const
+		{
+			TRACE(TRACE_ENABLE);
+
+			return (m_flags & eF_INITIALISED) ? &glfw::CGLFW::Get() : NULL;
+		}
+
+		//==========================================================================
+
 		engine::time::CTime* CEngine::GetTime(void) const
 		{
 			TRACE(TRACE_ENABLE);
@@ -169,11 +178,11 @@ namespace engine
 
 		//==========================================================================
 
-		engine::glfw::CGLFW* CEngine::GetGLFW(void)
+		const engine::time::CFPSCalculator* CEngine::GetFPS(void) const
 		{
 			TRACE(TRACE_ENABLE);
 
-			return (m_flags & eF_INITIALISED) ? &glfw::CGLFW::Get() : NULL;
+			return (m_flags & eF_INITIALISED) ? &m_fps : NULL;
 		}
 
 		//==========================================================================

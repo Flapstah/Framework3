@@ -61,16 +61,8 @@ namespace engine
 				engine::glfw::CDisplay::TDisplayID OpenDisplay(uint32 width, uint32 height, const char* name, bool fullScreen);
 				void CloseDisplay(engine::glfw::CDisplay::TDisplayID id);
 
-				//======================================================================
-				// FPS
-				//======================================================================
+				const engine::time::CFPSCalculator* GetFPS(void) const;
 				void SetDesiredFramerate(uint32 framerate);
-				// N.B. If GetAverageFPS() is called in the very first frame, you'll get a divide-by-zero exception
-				inline double GetAverageFPS(void) { return m_fps.GetAverageFPS(); }
-				inline double GetAverageFrameTime(void) { return m_fps.GetAverageFrameTime(); }
-				inline double GetMinimumFrameTime(void) { return m_fps.GetMinimumFrameTime(); }
-				inline double GetMaximumFrameTime(void) { return m_fps.GetMaximumFrameTime(); }
-				//======================================================================
 
 			protected:
 				void CloseAllDisplays(void);
