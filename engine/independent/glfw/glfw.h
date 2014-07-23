@@ -64,6 +64,8 @@ namespace engine
 				const engine::time::CFPSCalculator* GetFPS(void) const;
 				void SetDesiredFramerate(uint32 framerate);
 
+				void glfwKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+
 			protected:
 				void CloseAllDisplays(void);
 				void TimerCallback(engine::time::CTimer* pTimer);
@@ -75,7 +77,7 @@ namespace engine
 				}; // End [enum eFlags]
 
 				typedef boost::shared_ptr<CDisplay> TCDisplayPtr;
-				typedef std::map<const GLFWwindow*, TCDisplayPtr> TDisplayMap;
+				typedef std::map<GLFWwindow*, TCDisplayPtr> TDisplayMap;
 				TDisplayMap m_display;
 				engine::time::CTime::TTimerPtr m_timer;
 				engine::time::CFPSCalculator m_fps;

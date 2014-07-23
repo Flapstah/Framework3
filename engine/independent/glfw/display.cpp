@@ -148,6 +148,18 @@ namespace engine
 		}
 
 		//==========================================================================
+
+		bool CDisplay::glfwKeyCallback(int key, int scancode, int action, int mods)
+		{
+			// N.B. this is a virtual function and can be overridden in derived classes
+			// to customise behaviour
+			//
+			// Returns true if the input event was consumed, otherwise false
+
+			return false;
+		}
+
+		//==========================================================================
 	} // End [namespace glfw]
 
 	//============================================================================

@@ -31,6 +31,15 @@ namespace engine
 		
 		//==========================================================================
 
+		void glfwKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+		{
+			CGLFW::Get().glfwKeyCallback(window, key, scancode, action, mods);
+		}
+
+		//==========================================================================
+		// SConfiguration
+		//==========================================================================
+
 		SConfiguration::SConfiguration(void)
 			: m_realtime(true)
 			, m_desiredFrameRate(DEFAULT_FRAMERATE)
@@ -45,6 +54,8 @@ namespace engine
 			TRACE(TRACE_ENABLE);
 		}
 
+		//==========================================================================
+		// CGLFW
 		//==========================================================================
 
 		CGLFW::CGLFW(void)
@@ -100,15 +111,7 @@ namespace engine
 
 			TDisplayMap activeWindows;
 
-			for (TDisplayMap::iterator it = m_display.begin(), end = m_display.end(); it != end; ++it)
-			{
-				if (it->second.get()->Update() == true)
-				{
-					activeWindows[it->first] = it->second;
-				}
-			}
-
-			m_display.swap(activeWindows);
+			// Gather events
 			if (m_flags & eF_REALTIME)
 			{
 				glfwPollEvents();
@@ -117,6 +120,18 @@ namespace engine
 			{
 				glfwWaitEvents();
 			}
+
+			// Update display(s)
+			for (TDisplayMap::iterator it = m_display.begin(), end = m_display.end(); it != end; ++it)
+			{
+				if (it->second.get()->Update() == true)
+				{
+					activeWindows[it->first] = it->second;
+				}
+			}
+
+			// Clean up inactive displays
+			m_display.swap(activeWindows);
 
 			return (m_display.size() > 0);
 		}
@@ -148,6 +163,7 @@ namespace engine
 			if (id != INVALID_DISPLAY_ID)
 			{
 				m_display[pDisplay->GetGLFWwindow()] = pDisplay;
+				glfwSetKeyCallback(pDisplay->GetGLFWwindow(), engine::glfw::glfwKeyCallback);
 			}
 
 			return id;
@@ -163,6 +179,7 @@ namespace engine
 			{
 				if (it->second.get()->GetID() == id)
 				{
+					glfwSetKeyCallback(it->first, NULL);
 					// N.B. since the display map contains smart pointers, the CDisplay
 					// destructors will be called by this
 					m_display.erase(it);
@@ -191,9 +208,36 @@ namespace engine
 
 		//==========================================================================
 
+		void CGLFW::glfwKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+		{
+			TDisplayMap::iterator it = m_display.find(window);
+			bool consumed = false;
+
+			if (it != m_display.end())
+			{
+				consumed = it->second.get()->glfwKeyCallback(key, scancode, action, mods);
+			}
+
+			if (!consumed)
+			{
+				// Global key handling
+				if ((key == GLFW_KEY_ESCAPE) && (action == GLFW_PRESS))
+				{
+					CloseAllDisplays();
+				}
+			}
+		}
+
+		//==========================================================================
+
 		void CGLFW::CloseAllDisplays(void)
 		{
 			TRACE(TRACE_ENABLE);
+
+			for (TDisplayMap::iterator it = m_display.begin(), end = m_display.end(); it != end; ++it)
+			{
+				glfwSetKeyCallback(it->first, NULL);
+			}
 
 			// N.B. since the display map contains smart pointers, the CDisplay
 			// destructors will be called by this
