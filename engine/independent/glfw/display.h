@@ -35,9 +35,16 @@ namespace engine
 				TDisplayID GetID(void) const { return m_id; }
 				GLFWwindow* GetGLFWwindow(void) const { return m_window; }
 
+				//----------------------------------------------------------------------
+
+				// GLFW callbacks
 				virtual bool glfwKeyCallback(int key, int scancode, int action, int mods);
+				void glfwFramebufferSizeCallback(int width, int height);
+
+				//----------------------------------------------------------------------
 
 			protected:
+				/*
 				enum eDisplaySize
 				{
 					eDS_WIDTH = 1024,
@@ -50,9 +57,12 @@ namespace engine
 				{
 					eTID_Main = 1
 				};
+				*/
 
 				GLFWwindow* m_window;
 				TDisplayID m_id;
+				int m_width;
+				int m_height;
 				bool m_active;
 
 				static TDisplayID s_id;

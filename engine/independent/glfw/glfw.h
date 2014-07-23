@@ -64,10 +64,17 @@ namespace engine
 				const engine::time::CFPSCalculator* GetFPS(void) const;
 				void SetDesiredFramerate(uint32 framerate);
 
+				//----------------------------------------------------------------------
+
+				// GLFW callbacks
 				void glfwKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+				void glfwFramebufferSizeCallback(GLFWwindow* window, int width, int height);
+
+				//----------------------------------------------------------------------
 
 			protected:
 				void CloseAllDisplays(void);
+				void SetDisplayCallbacks(GLFWwindow* window, bool set);
 				void TimerCallback(engine::time::CTimer* pTimer);
 
 				enum eFlags

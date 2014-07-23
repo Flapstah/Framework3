@@ -25,6 +25,8 @@ namespace engine
 
 		CDisplay::CDisplay(void)
 			: m_window(NULL)
+			, m_width(0)
+			, m_height(0)
 			, m_active(false)
 		{
 			TRACE(TRACE_ENABLE);
@@ -52,7 +54,14 @@ namespace engine
 			m_window = glfwCreateWindow(width, height, title, (fullScreen == true) ? glfwGetPrimaryMonitor() : NULL, NULL);
 			if (m_window != NULL)
 			{
+				// Make this display the current OpenGL context
 				glfwMakeContextCurrent(m_window);
+
+				// Set initial dimensions
+				glfwGetFramebufferSize(m_window, &m_width, &m_height);
+				glViewport(0, 0, m_width, m_height);
+
+				/*
 				glfwSwapInterval(0);
 
 				glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -65,6 +74,7 @@ namespace engine
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+				*/
 
 				m_active = true;
 				m_id = s_id++;
@@ -98,8 +108,10 @@ namespace engine
 
 			if (m_active == true)
 			{
-				int width, height;
+				// Make this display the current OpenGL context
+				glfwMakeContextCurrent(m_window);
 
+				/*
 				// Get window size (and protect against height being 0)
 				glfwGetWindowSize(m_window, &width, &height);
 				height = (height > 0) ? height : 1;
@@ -140,6 +152,8 @@ namespace engine
 
 				glfwSwapBuffers(m_window);
 				glDisable(GL_TEXTURE_2D);
+				*/
+				glfwSwapBuffers(m_window);
 
 				m_active = !glfwWindowShouldClose(m_window);
 			}
@@ -151,12 +165,25 @@ namespace engine
 
 		bool CDisplay::glfwKeyCallback(int key, int scancode, int action, int mods)
 		{
+			IGNORE_PARAMETER(key);
+			IGNORE_PARAMETER(scancode);
+			IGNORE_PARAMETER(action);
+			IGNORE_PARAMETER(mods);
 			// N.B. this is a virtual function and can be overridden in derived classes
 			// to customise behaviour
 			//
 			// Returns true if the input event was consumed, otherwise false
 
 			return false;
+		}
+
+		//==========================================================================
+
+		void CDisplay::glfwFramebufferSizeCallback(int width, int height)
+		{
+			m_width = width;
+			m_height = height;
+			glViewport(0, 0, width, height);
 		}
 
 		//==========================================================================

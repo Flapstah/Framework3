@@ -37,6 +37,13 @@ namespace engine
 		}
 
 		//==========================================================================
+
+		void glfwSetFramebufferSizeCallback(GLFWwindow* window, int width, int height)
+		{
+			CGLFW::Get().glfwFramebufferSizeCallback(window, width, height);
+		}
+
+		//==========================================================================
 		// SConfiguration
 		//==========================================================================
 
@@ -162,8 +169,9 @@ namespace engine
 			engine::glfw::CDisplay::TDisplayID id = pDisplay->Open(width, height, name, fullScreen);
 			if (id != INVALID_DISPLAY_ID)
 			{
-				m_display[pDisplay->GetGLFWwindow()] = pDisplay;
-				glfwSetKeyCallback(pDisplay->GetGLFWwindow(), engine::glfw::glfwKeyCallback);
+				GLFWwindow* pWindow = pDisplay->GetGLFWwindow();
+				m_display[pWindow] = pDisplay;
+				SetDisplayCallbacks(pWindow, true);
 			}
 
 			return id;
@@ -179,7 +187,7 @@ namespace engine
 			{
 				if (it->second.get()->GetID() == id)
 				{
-					glfwSetKeyCallback(it->first, NULL);
+					SetDisplayCallbacks(it->first, false);
 					// N.B. since the display map contains smart pointers, the CDisplay
 					// destructors will be called by this
 					m_display.erase(it);
@@ -230,18 +238,39 @@ namespace engine
 
 		//==========================================================================
 
+		void CGLFW::glfwFramebufferSizeCallback(GLFWwindow* window, int width, int height)
+		{
+			TDisplayMap::iterator it = m_display.find(window);
+
+			if (it != m_display.end())
+			{
+				it->second.get()->glfwFramebufferSizeCallback(width, height);
+			}
+		}
+
+		//==========================================================================
+
 		void CGLFW::CloseAllDisplays(void)
 		{
 			TRACE(TRACE_ENABLE);
 
 			for (TDisplayMap::iterator it = m_display.begin(), end = m_display.end(); it != end; ++it)
 			{
-				glfwSetKeyCallback(it->first, NULL);
+				SetDisplayCallbacks(it->first, false);
 			}
 
 			// N.B. since the display map contains smart pointers, the CDisplay
 			// destructors will be called by this
 			m_display.clear();
+		}
+
+		//==========================================================================
+
+		void CGLFW::SetDisplayCallbacks(GLFWwindow* window, bool set)
+		{
+			// Set/clear GLFW callbacks for the given display
+			glfwSetKeyCallback(window, (set) ? engine::glfw::glfwKeyCallback : NULL);
+			glfwSetFramebufferSizeCallback(window, (set) ? engine::glfw::glfwSetFramebufferSizeCallback : NULL);
 		}
 
 		//==========================================================================
