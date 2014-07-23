@@ -60,7 +60,7 @@ namespace engine
 			// Systems
 			//========================================================================
 			engine::base::CFileSystem* GetFileSystem(void) const;
-			engine::glfw::CGLFW* GetGLFW(void);
+			engine::glfw::CGLFW* GetGLFW(void) const;
 			engine::time::CTime* GetTime(void) const;
 			engine::system::CConsole* GetConsole(void) const;
 
