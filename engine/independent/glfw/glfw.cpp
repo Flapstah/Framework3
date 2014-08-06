@@ -104,6 +104,7 @@ namespace engine
 					m_flags = eF_REALTIME;
 				}
 
+				glfwSwapInterval(configuration.m_vsync ? 1 : 0);
 				SetDesiredFramerate(configuration.m_desiredFrameRate);
 			}
 

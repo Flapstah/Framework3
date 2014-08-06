@@ -284,11 +284,11 @@ namespace engine
 
 		//==========================================================================
 
-		const std::string CConfiguration::GetValue(const std::string& key) const
+		const std::string CConfiguration::GetValue(const std::string& key, const char* defaultValue) const
 		{
 			TRACE(TRACE_ENABLE);
 
-			std::string value;
+			std::string value(defaultValue);
 
 			if (key.empty() == false)
 			{
@@ -304,12 +304,12 @@ namespace engine
 
 		//==========================================================================
 
-		bool CConfiguration::GetValue(const std::string& key, uint32& value) const
+		uint32 CConfiguration::GetValue(const std::string& key, uint32 defaultValue) const
 		{
 			TRACE(TRACE_ENABLE);
 
-			bool succeeded = false;
-			const std::string raw = GetValue(key);
+			const std::string raw = GetValue(key, "");
+			uint32 value = defaultValue;
 
 			if (raw.empty() == false)
 			{
@@ -318,21 +318,20 @@ namespace engine
 				if (items != 0)
 				{
 					value = temp;
-					succeeded = true;
 				}
 			}
 
-			return succeeded;
+			return value;
 		}
 
 		//==========================================================================
 
-		bool CConfiguration::GetValue(const std::string& key, bool& value) const
+		bool CConfiguration::GetValue(const std::string& key, bool defaultValue) const
 		{
 			TRACE(TRACE_ENABLE);
 
-			bool succeeded = false;
-			const std::string raw = GetValue(key);
+			const std::string raw = GetValue(key, "");
+			bool value = defaultValue;
 
 			if (raw.empty() == false)
 			{
@@ -344,7 +343,6 @@ namespace engine
 					case 'n': // intentional fall-through
 					case 'N':
 						value = false;
-						succeeded = true;
 						break;
 
 					case '1': // intentional fall-through
@@ -353,7 +351,6 @@ namespace engine
 					case 'y': // intentional fall-through
 					case 'Y':
 						value = true;
-						succeeded = true;
 						break;
 
 					default:
@@ -361,7 +358,7 @@ namespace engine
 				}
 			}
 
-			return succeeded;
+			return value;
 		}
 
 		//==========================================================================

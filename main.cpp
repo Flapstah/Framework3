@@ -64,16 +64,12 @@ int main(int argc, char* argv[])
 
 	engine::glfw::SConfiguration glfwConfiguration;
 
-	uint32 display_width = DEFAULT_WINDOW_WIDTH;
-	uint32 display_height = DEFAULT_WINDOW_HEIGHT;
-	config.GetValue("display_width", display_width);
-	config.GetValue("display_height", display_height);
-	bool display_fullScreen = DEFAULT_FULL_SCREEN;
-	config.GetValue("display_fullscreen", display_fullScreen);
-	glfwConfiguration.m_desiredFrameRate = DEFAULT_FRAMERATE;
-	config.GetValue("display_framerate", glfwConfiguration.m_desiredFrameRate);
-	glfwConfiguration.m_realtime = DEFAULT_APPLICATION_REALTIME;
-	config.GetValue("application_realtime", glfwConfiguration.m_realtime);
+	uint32 display_width = config.GetValue("display_width", DEFAULT_WINDOW_WIDTH);
+	uint32 display_height = config.GetValue("display_height", DEFAULT_WINDOW_HEIGHT);
+	bool display_fullScreen = config.GetValue("display_fullscreen", DEFAULT_FULL_SCREEN);
+	glfwConfiguration.m_desiredFrameRate = config.GetValue("display_framerate", DEFAULT_FRAMERATE);
+	glfwConfiguration.m_realtime = config.GetValue("application_realtime", DEFAULT_APPLICATION_REALTIME);
+	glfwConfiguration.m_vsync = config.GetValue("display_vsync", DEFAULT_DISPLAY_VSYNC);
 
 	engine::glfw::CGLFW* pGLFW = myEngine.GetGLFW();
 	pGLFW->Initialise(glfwConfiguration);

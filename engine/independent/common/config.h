@@ -6,11 +6,12 @@
 //------------------------------------------------------------------------------
 // Display config
 //------------------------------------------------------------------------------
-#define DEFAULT_WINDOW_WIDTH (640)
-#define DEFAULT_WINDOW_HEIGHT (400)
+#define DEFAULT_WINDOW_WIDTH (640u)
+#define DEFAULT_WINDOW_HEIGHT (400u)
 #define DEFAULT_WINDOW_TITLE "Framework Test"
-#define DEFAULT_FRAMERATE (60.0)
+#define DEFAULT_FRAMERATE (60u)
 #define DEFAULT_FULL_SCREEN (false)
+#define DEFAULT_DISPLAY_VSYNC (true)
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------

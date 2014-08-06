@@ -33,6 +33,7 @@ namespace engine
 			~SConfiguration(void);
 
 			bool m_realtime;
+			bool m_vsync;
 			uint32 m_desiredFrameRate;
 		}; // End [struct SConfiguration]
 
