@@ -61,6 +61,12 @@ namespace engine
 				glfwGetFramebufferSize(m_window, &m_width, &m_height);
 				glViewport(0, 0, m_width, m_height);
 
+				// Set up view
+				glMatrixMode(GL_PROJECTION);
+				glLoadIdentity();
+				float ratio = m_width / (float)m_height;
+				glOrtho(-ratio, ratio, -1.0f, 1.0f, 1.0f, -1.0f);
+
 				m_active = true;
 				m_id = s_id++;
 			}
@@ -96,14 +102,8 @@ namespace engine
 				// Make this display the current OpenGL context
 				glfwMakeContextCurrent(m_window);
 
-				float ratio = m_width / (float)m_height;
 				// Clear back buffer
 				glClear(GL_COLOR_BUFFER_BIT);
-
-				// Set up view
-				glMatrixMode(GL_PROJECTION);
-				glLoadIdentity();
-				glOrtho(-ratio, ratio, -1.0f, 1.0f, 1.0f, -1.0f);
 
 				glMatrixMode(GL_MODELVIEW);
 				glLoadIdentity();
@@ -148,7 +148,13 @@ namespace engine
 		{
 			m_width = width;
 			m_height = height;
+
+			// Update view
 			glViewport(0, 0, width, height);
+			glMatrixMode(GL_PROJECTION);
+			glLoadIdentity();
+			float ratio = m_width / (float)m_height;
+			glOrtho(-ratio, ratio, -1.0f, 1.0f, 1.0f, -1.0f);
 		}
 
 		//==========================================================================
