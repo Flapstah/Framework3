@@ -54,6 +54,8 @@ namespace engine
 
 				static TDisplayID s_id;
 
+				void SetViewport(void);
+
 			//========================================================================
 		}; // End [class CDisplay]
 

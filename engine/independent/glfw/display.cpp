@@ -59,13 +59,9 @@ namespace engine
 
 				// Set initial dimensions
 				glfwGetFramebufferSize(m_window, &m_width, &m_height);
-				glViewport(0, 0, m_width, m_height);
 
 				// Set up view
-				glMatrixMode(GL_PROJECTION);
-				glLoadIdentity();
-				float ratio = m_width / (float)m_height;
-				glOrtho(-ratio, ratio, -1.0f, 1.0f, 1.0f, -1.0f);
+				SetViewport();
 
 				m_active = true;
 				m_id = s_id++;
@@ -150,7 +146,14 @@ namespace engine
 			m_height = height;
 
 			// Update view
-			glViewport(0, 0, width, height);
+			SetViewport();
+		}
+
+		//==========================================================================
+
+		void CDisplay::SetViewport(void)
+		{
+			glViewport(0, 0, m_width, m_height);
 			glMatrixMode(GL_PROJECTION);
 			glLoadIdentity();
 			float ratio = m_width / (float)m_height;
