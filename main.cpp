@@ -1,6 +1,7 @@
 #include "common/stdafx.h"
 
 #include "base/engine.h"
+#include "base/thread.h"
 #include "system/console.h"
 #include "system/configuration.h"
 
@@ -35,7 +36,7 @@ class CGame
 		const engine::time::CFPSCalculator* pEngineFPS = engine::base::CEngine::Get().GetFPS();
 		const engine::time::CFPSCalculator* pGLFWFPS = engine::base::CEngine::Get().GetGLFW()->GetFPS();
 		LOG_ALWAYS(GAME_LOGGER, "timer callback (elapsed %.2f, interval %.2f), engine fps (%.2f fps), display fps (%.2f fps)", elapsed, frame, pEngineFPS->GetAverageFPS(), pGLFWFPS->GetAverageFPS());
-		if (elapsed >= 10.0)
+		if (elapsed >= 20.0)
 		{
 			g_run = false;
 		}
@@ -76,6 +77,7 @@ int main(int argc, char* argv[])
 	pGLFW->OpenDisplay(display_width, display_height, DEFAULT_WINDOW_TITLE, display_fullScreen);
 
 	CGame* pGame = new CGame();
+	engine::base::CThread t;
 	while (g_run)
 	{
 		engine::time::CTimeValue tick = myEngine.Update();
