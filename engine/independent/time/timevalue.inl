@@ -296,6 +296,27 @@ namespace engine
 
 		//==========================================================================
 
+		inline int64 CTimeValue::GetMilliseconds(void) const
+		{
+			return m_ticks/(TICKS_PER_SECOND * 1000);
+		}
+
+		//==========================================================================
+
+		inline int64 CTimeValue::GetMicroseconds(void) const
+		{
+			return m_ticks/(TICKS_PER_SECOND * 1000000);
+		}
+
+		//==========================================================================
+
+		inline int64 CTimeValue::GetNanoseconds(void) const
+		{
+			return m_ticks/(TICKS_PER_SECOND * 1000000000);
+		}
+
+		//==========================================================================
+
 		inline int64 CTimeValue::GetTicks(void) const
 		{
 			return m_ticks;

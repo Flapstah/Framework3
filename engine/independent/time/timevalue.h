@@ -72,9 +72,15 @@ namespace engine
 
 				//======================================================================
 				// GetSeconds() returns the number of seconds represented by this
-				// instance
+				// instance, expressed as a double
+				// GetMilliseconds(), GetMicroseconds(), GetNanoseconds() are for
+				// convenience and return the time represented by this instance
+				// expressed as an int64
 				//======================================================================
 				double GetSeconds(void) const;
+				int64 GetMilliseconds(void) const;
+				int64 GetMicroseconds(void) const;
+				int64 GetNanoseconds(void) const;
 
 				//======================================================================
 				// GetTicks() returns the number of ticks represented by this instance
