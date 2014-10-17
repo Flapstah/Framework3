@@ -1,5 +1,7 @@
 #include "common/stdafx.h"
 
+#include <boost/thread.hpp>
+
 #include "time/time.h"
 
 //==============================================================================
@@ -78,14 +80,7 @@ namespace engine
 		{
 			TRACE(TRACE_ENABLE);
 
-			// round up to the nearest 1/2 millisecond
-			uint32 milliseconds = (microseconds+500)/1000;
-			if ((milliseconds == 0) && (microseconds > 0))
-			{
-				milliseconds = 1;
-			}
-
-			::Sleep(milliseconds);
+			boost::this_thread::sleep_for(boost::chrono::microseconds(microseconds));
 		}
 
 		//==========================================================================

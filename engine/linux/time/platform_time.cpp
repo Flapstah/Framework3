@@ -1,6 +1,6 @@
 #include "common/stdafx.h"
 
-#include <unistd.h>			// usleep
+#include <boost/thread.hpp>
 #include <sys/time.h>		// gettimeofday
 
 #include "time/time.h"
@@ -52,7 +52,7 @@ namespace engine
 		{
 			TRACE(TRACE_ENABLE);
 
-			::usleep(microseconds);
+			boost::this_thread::sleep_for(boost::chrono::microseconds(microseconds));
 		}
 
 		//==========================================================================
