@@ -188,5 +188,13 @@
 </node>
 </node>
 </node>
+<node COLOR="#0033ff" CREATED="1415289404165" ID="ID_593453972" MODIFIED="1415289408008" POSITION="right" TEXT="Time">
+<edge STYLE="sharp_bezier" WIDTH="8"/>
+<font NAME="SansSerif" SIZE="18"/>
+<node COLOR="#00b439" CREATED="1415289408009" ID="ID_1603589624" MODIFIED="1415289434709" TEXT="create primary engine timer with scale of 1 that tracks engine elapsed time">
+<edge STYLE="bezier" WIDTH="thin"/>
+<font NAME="SansSerif" SIZE="16"/>
+</node>
+</node>
 </node>
 </map>
