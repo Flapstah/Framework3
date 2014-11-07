@@ -3,7 +3,7 @@
 
 //==============================================================================
 
-#include "time/timer.h"
+#include "time/time.h"
 #include "time/timevalue.h"
 
 #include <deque>
@@ -36,8 +36,9 @@ namespace engine
 			~CTime(void);
 
 			const CTimeValue Update(void);
-			const CTimeValue GetFrameTime(void) const;
-			const CTimeValue GetCurrentTime(void) const;
+			const CTimeValue GetFrameTime(void) const;		// this frame time
+			const CTimeValue GetCurrentTime(void) const;	// current system time
+			const CTimeValue GetElapsedTime(void) const;	// elapsed time since initialisation (ticked by Update())
 
 			TTimerPtr CreateTimer(CTimeValue maxFrameTime, float scale, CTimeValue callbackInterval, engine::utility::CCallbackBase& callback);
 			TTimerPtr CreateTimer(TTimerPtr parent, CTimeValue maxFrameTime, float scale, CTimeValue callbackInterval, engine::utility::CCallbackBase& callback);
@@ -60,6 +61,7 @@ namespace engine
 
 			CTimeValue m_lastUpdate;
 			CTimeValue m_frameTime;
+			CTimeValue m_elapsedTime;
 
 			//========================================================================
 		}; // End [class CTime]

@@ -54,6 +54,7 @@ namespace engine
 				it->get()->Update(m_frameTime);
 			}
 
+			m_elapsedTime += m_frameTime;
 			return m_frameTime;
 		}
 
@@ -73,6 +74,15 @@ namespace engine
 			TRACE(TRACE_ENABLE);
 
 			return Platform_GetCurrentTime();
+		}
+
+		//==========================================================================
+
+		const CTimeValue CTime::GetElapsedTime(void) const
+		{
+			TRACE(TRACE_ENABLE);
+
+			return m_elapsedTime;
 		}
 
 		//==========================================================================

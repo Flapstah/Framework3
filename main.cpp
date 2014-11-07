@@ -78,9 +78,16 @@ int main(int argc, char* argv[])
 
 	CGame* pGame = new CGame();
 	engine::base::CThread t;
+	//bool done = false;
 	while (g_run)
 	{
 		engine::time::CTimeValue tick = myEngine.Update();
+		//engine::time::CTimeValue elapsed = myEngine.GetTime()->GetElapsedTime();
+		//if (!done && (elapsed.GetSeconds() >= 5.0))
+		//{
+		//	t.Terminate(true);
+		//	done = true;
+		//}
 		g_run &= (tick != engine::time::INVALID_TIME);
 	}
 	delete pGame;
