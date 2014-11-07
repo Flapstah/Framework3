@@ -67,7 +67,7 @@ namespace engine
 
 		//==========================================================================
 
-		void CTimer::Update(CTimeValue elapsed)
+		void CTimer::Update(const CTimeValue elapsed)
 		{
 			TRACE(TRACE_ENABLE);
 

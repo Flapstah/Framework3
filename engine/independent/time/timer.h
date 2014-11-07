@@ -26,7 +26,7 @@ namespace engine
 			CTimeValue GetCurrentTime(void) const;
 			CTimeValue GetElapsedTime(void) const;
 			CTimeValue GetFrameTime(void) const;
-			void Update(CTimeValue elapsed);
+			void Update(const CTimeValue elapsed);
 			void SetScale(float scale);
 			float GetScale(void) const;
 			CTimeValue GetCallbackInterval(void) const;
