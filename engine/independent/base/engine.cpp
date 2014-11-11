@@ -60,6 +60,11 @@ namespace engine
 			}
 
 			//------------------------------------------------------------------------
+			// Engine log initialisation
+			//------------------------------------------------------------------------
+			LOG_ALWAYS(ENGINE_LOGGER, "System hardware threads: %d", boost::thread::hardware_concurrency());
+
+			//------------------------------------------------------------------------
 			// Initialise the main engine singletons by intanciating them
 			//------------------------------------------------------------------------
 			CFileSystem::Get(); // in case -root/-log weren't specified (above)
