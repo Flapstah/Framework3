@@ -19,17 +19,12 @@ namespace engine
 	{
 		//==========================================================================
 
-		CThread::CThread(void)
-			: m_threadStatus(eTS_Indeterminate)
+		CThread::CThread(const char* name)
+			: m_name(name)
+			, m_threadStatus(eTS_Indeterminate)
 			, m_terminationReason(eTR_None)
 		{
-			LOG_ALWAYS(ENGINE_LOGGER, "[CThread::CThread()]");
-			if (Initialise() == true)
-			{
-				LOG_ALWAYS(ENGINE_LOGGER, "[CThread::CThread()] initialised...starting thread");
-				m_threadStatus = eTS_Running;
-				m_thread = boost::thread(&CThread::Run, this);
-			}
+			LOG_ALWAYS(ENGINE_LOGGER, "Creating thread [%s]", m_name.c_str());
 		}
 
 		//==========================================================================
@@ -37,14 +32,26 @@ namespace engine
 		CThread::~CThread(void)
 		{
 			Uninitialise();
-			LOG_ALWAYS(ENGINE_LOGGER, "[CThread::~CThread()]");
+			LOG_ALWAYS(ENGINE_LOGGER, "Destroying thread [%s]", m_name.c_str());
+		}
+
+		//==========================================================================
+
+		bool CThread::Initialise(void)
+		{
+			// This will trigger the thread to start running
+			LOG_ALWAYS(ENGINE_LOGGER, "Initialising and starting thread [%s]", m_name.c_str());
+			m_threadStatus = eTS_Running;
+			m_thread = boost::thread(&CThread::Run, this);
+
+			return true;
 		}
 
 		//==========================================================================
 
 		void CThread::Terminate(bool immediate /* = false */)
 		{
-			LOG_ALWAYS(ENGINE_LOGGER, "[CThread::Terminate()]");
+			LOG_ALWAYS(ENGINE_LOGGER, "Thread [%s] terminating", m_name.c_str());
 			// Run from any thread
 			m_mutex.lock();
 
@@ -70,21 +77,17 @@ namespace engine
 
 		void CThread::Run(void)
 		{
-			static uint32 counter = 0;
 			while (m_threadStatus == eTS_Running)
 			{
 				try
 				{
 					InterruptionPoint();
-
-					LOG_ALWAYS(ENGINE_LOGGER, "[CThread::Run()]: Running...%d", counter);
-
 					Tick();
 				}
 
 				catch (boost::thread_interrupted& e)
 				{
-					LOG_ALWAYS(ENGINE_LOGGER, "[CThread::Run()]: thread interrupted");
+					LOG_ALWAYS(ENGINE_LOGGER, "Thread [%s] interrupted", m_name.c_str());
 				}
 			}
 
@@ -104,7 +107,7 @@ namespace engine
 				reason = "Unknown";
 				break;
 			}
-			LOG_ALWAYS(ENGINE_LOGGER, "[CThread::Run()]: thread terminated [%s]", reason);
+			LOG_ALWAYS(ENGINE_LOGGER, "Thread [%s] terminated, reason [%s]", m_name.c_str(), reason);
 			Uninitialise();
 		}
 

@@ -44,10 +44,10 @@ namespace engine
 
 			//------------------------------------------------------------------------
 
-			CThread(void);
+			CThread(const char* name);
 			virtual ~CThread(void);
 
-			virtual bool Initialise(void) { return true; }
+			virtual bool Initialise(void);
 			virtual void Terminate(bool immediate = false);
 			virtual void Uninitialise(void) {}
 
@@ -57,6 +57,7 @@ namespace engine
 			//------------------------------------------------------------------------
 
 		protected:
+			std::string m_name;
 			boost::thread m_thread;
 			boost::mutex m_mutex;
 			volatile eThreadStatus m_threadStatus;
