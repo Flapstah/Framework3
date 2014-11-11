@@ -42,6 +42,32 @@ namespace engine
 
 		//==========================================================================
 
+		void CThread::Terminate(bool immediate /* = false */)
+		{
+			LOG_ALWAYS(ENGINE_LOGGER, "[CThread::Terminate()]");
+			// Run from any thread
+			m_mutex.lock();
+
+			m_threadStatus = eTS_Terminated;
+
+			if (immediate == true)
+			{
+				// Indicate an immediate exit, and raise an interruption exception to
+				// expedite that
+				m_terminationReason = eTR_Abort;
+				m_thread.interrupt();
+			}
+			else
+			{
+				// Indicate that the thread should exit as soon as it can
+				m_terminationReason = eTR_Break;
+			}
+
+			m_mutex.unlock();
+		}
+
+		//==========================================================================
+
 		void CThread::Run(void)
 		{
 			static uint32 counter = 0;
@@ -53,15 +79,7 @@ namespace engine
 
 					LOG_ALWAYS(ENGINE_LOGGER, "[CThread::Run()]: Running...%d", counter);
 
-					if (counter++ < 10)
-					{
-						boost::this_thread::sleep_for(boost::chrono::milliseconds(1000));
-					}
-					else
-					{
-						m_threadStatus = eTS_Terminated;
-						m_terminationReason = eTR_Finished;
-					}
+					Tick();
 				}
 
 				catch (boost::thread_interrupted& e)
@@ -88,32 +106,6 @@ namespace engine
 			}
 			LOG_ALWAYS(ENGINE_LOGGER, "[CThread::Run()]: thread terminated [%s]", reason);
 			Uninitialise();
-		}
-
-		//==========================================================================
-
-		void CThread::Terminate(bool immediate /* = false */)
-		{
-			LOG_ALWAYS(ENGINE_LOGGER, "[CThread::Terminate()]");
-			// Run from any thread
-			m_mutex.lock();
-
-			m_threadStatus = eTS_Terminated;
-
-			if (immediate == true)
-			{
-				// Indicate an immediate exit, and raise an interruption exception to
-				// expedite that
-				m_terminationReason = eTR_Abort;
-				m_thread.interrupt();
-			}
-			else
-			{
-				// Indicate that the thread should exit as soon as it can
-				m_terminationReason = eTR_Break;
-			}
-
-			m_mutex.unlock();
 		}
 
 		//==========================================================================

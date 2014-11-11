@@ -48,7 +48,6 @@ namespace engine
 			virtual ~CThread(void);
 
 			virtual bool Initialise(void) { return true; }
-			virtual void Run(void);
 			virtual void Terminate(bool immediate = false);
 			virtual void Uninitialise(void) {}
 
@@ -62,6 +61,9 @@ namespace engine
 			boost::mutex m_mutex;
 			volatile eThreadStatus m_threadStatus;
 			eTerminationReason m_terminationReason;
+
+			void Run(void);
+			virtual void Tick(void) {};
 
 			//========================================================================
 		};	// End [class CThread]
