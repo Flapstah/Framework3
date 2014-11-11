@@ -36,7 +36,7 @@ class CGame
 		const engine::time::CFPSCalculator* pEngineFPS = engine::base::CEngine::Get().GetFPS();
 		const engine::time::CFPSCalculator* pGLFWFPS = engine::base::CEngine::Get().GetGLFW()->GetFPS();
 		LOG_ALWAYS(GAME_LOGGER, "timer callback (elapsed %.2f, interval %.2f), engine fps (%.2f fps), display fps (%.2f fps)", elapsed, frame, pEngineFPS->GetAverageFPS(), pGLFWFPS->GetAverageFPS());
-		if (elapsed >= 20.0)
+		if (elapsed >= 10.0)
 		{
 			g_run = false;
 		}
@@ -77,17 +77,18 @@ int main(int argc, char* argv[])
 	pGLFW->OpenDisplay(display_width, display_height, DEFAULT_WINDOW_TITLE, display_fullScreen);
 
 	CGame* pGame = new CGame();
-	engine::base::CThread t;
-	//bool done = false;
+	engine::base::CThread t("dummy");
+	t.Initialise();
+	bool done = false;
 	while (g_run)
 	{
 		engine::time::CTimeValue tick = myEngine.Update();
-		//engine::time::CTimeValue elapsed = myEngine.GetTime()->GetElapsedTime();
-		//if (!done && (elapsed.GetSeconds() >= 5.0))
-		//{
-		//	t.Terminate(true);
-		//	done = true;
-		//}
+		engine::time::CTimeValue elapsed = myEngine.GetTime()->GetElapsedTime();
+		if (!done && (elapsed.GetSeconds() >= 5.0))
+		{
+			t.Terminate(true);
+			done = true;
+		}
 		g_run &= (tick != engine::time::INVALID_TIME);
 	}
 	delete pGame;
