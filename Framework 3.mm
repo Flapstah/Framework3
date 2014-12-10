@@ -161,6 +161,26 @@
 <font NAME="SansSerif" SIZE="14"/>
 </node>
 </node>
+<node COLOR="#00b439" CREATED="1415368664925" ID="ID_1100391884" MODIFIED="1415368678922" TEXT="timers don&apos;t respect parents (e.g. scaled to their parents)">
+<edge STYLE="bezier" WIDTH="thin"/>
+<font NAME="SansSerif" SIZE="16"/>
+<node COLOR="#990000" CREATED="1415368681740" ID="ID_1319914643" MODIFIED="1415368822123">
+<richcontent TYPE="NODE"><html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      need to have another pass over timers and fix parental dependencies.
+    </p>
+    <p>
+      also, need to rethink timer updates; child timers should update from parents (i.e. parents update children) but this could lead to difficulties as timers can have more than one child...
+    </p>
+  </body>
+</html></richcontent>
+<font NAME="SansSerif" SIZE="14"/>
+</node>
+</node>
 </node>
 <node COLOR="#0033ff" CREATED="1409814061203" ID="ID_1957547557" MODIFIED="1409814064792" POSITION="right" TEXT="Threads">
 <edge STYLE="sharp_bezier" WIDTH="8"/>
@@ -194,6 +214,17 @@
 <node COLOR="#00b439" CREATED="1415289408009" ID="ID_1603589624" MODIFIED="1415289434709" TEXT="create primary engine timer with scale of 1 that tracks engine elapsed time">
 <edge STYLE="bezier" WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="16"/>
+</node>
+</node>
+<node COLOR="#0033ff" CREATED="1418225971523" ID="ID_923984" MODIFIED="1418225974823" POSITION="right" TEXT="Rendering">
+<edge STYLE="sharp_bezier" WIDTH="8"/>
+<font NAME="SansSerif" SIZE="18"/>
+<node COLOR="#00b439" CREATED="1418225977508" ID="ID_1766515701" MODIFIED="1418225996584" TEXT="decouple physical display size from render target size">
+<edge STYLE="bezier" WIDTH="thin"/>
+<font NAME="SansSerif" SIZE="16"/>
+<node COLOR="#990000" CREATED="1418225998012" ID="ID_949446360" MODIFIED="1418226019626" TEXT="should allow for dynamic up/down scaling to maintain framerate">
+<font NAME="SansSerif" SIZE="14"/>
+</node>
 </node>
 </node>
 </node>
