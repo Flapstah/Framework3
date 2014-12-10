@@ -3,6 +3,7 @@
 #include "base/engine.h"
 #include "glfw/glfw.h"
 
+
 //==============================================================================
 
 #if defined(TRACE_ENABLE)
@@ -66,17 +67,14 @@ namespace engine
 		//==========================================================================
 
 		CGLFW::CGLFW(void)
-			: m_flags(eF_NONE)
+			: CThread("render")
+			, m_flags(eF_NONE)
 			, m_status(eS_UNINITIALISED)
 		{
 			TRACE(TRACE_ENABLE);
 
 			// Set glfw callbacks
 			glfwSetErrorCallback(glfwErrorCallback);
-
-			// Set timer callback
-			m_callback = engine::utility::MakeUnaryCallback<CGLFW, engine::time::CTimer>(*this, &CGLFW::TimerCallback);
-			m_timer = engine::time::CTime::Get().CreateTimer(engine::time::CTimeValue(0.1), 1.0f, engine::time::CTimeValue(1.0/DEFAULT_FRAMERATE), m_callback);
 		}
 
 		//==========================================================================
@@ -94,24 +92,53 @@ namespace engine
 		bool CGLFW::Initialise(engine::glfw::SConfiguration& configuration)
 		{
 			TRACE(TRACE_ENABLE);
+			m_status = eS_RUNNING;
+			m_flags = eF_NONE;
+
+			if (configuration.m_realtime)
+			{
+				m_flags = static_cast<eFlags>(m_flags | eF_REALTIME);
+			}
+
+			if (configuration.m_vsync)
+			{
+				m_flags = static_cast<eFlags>(m_flags | eF_VSYNC);
+			}
+
+			// Set timer callback
+			m_callback = engine::utility::MakeUnaryCallback<CGLFW, engine::time::CTimer>(*this, &CGLFW::TimerCallback);
+			m_timer = engine::time::CTime::Get().CreateTimer(engine::time::CTimeValue(0.1), 1.0f, engine::time::CTimeValue(1.0/DEFAULT_FRAMERATE), m_callback);
+
+			SetDesiredFramerate(configuration.m_desiredFrameRate);
+			return ThreadInitialise();
+		}
+
+		//==========================================================================
+
+		bool CGLFW::ThreadInitialise(void)
+		{
+			TRACE(TRACE_ENABLE);
 
 			if (glfwInit())
 			{
-				m_status = eS_RUNNING;
-
-				if (configuration.m_realtime)
-				{
-					m_flags = eF_REALTIME;
-				}
-
-				glfwSwapInterval(configuration.m_vsync ? 1 : 0);
-				SetDesiredFramerate(configuration.m_desiredFrameRate);
+				glfwSwapInterval((m_flags & eF_VSYNC) ? 1 : 0);
+			}
+			else
+			{
+				m_status = eS_INITFAIL;
 			}
 
 			return (m_status == eS_RUNNING);
 		}
 
 		//==========================================================================
+
+
+		// This needs to be in the threaded tick, but how do we get the pTimer pointer?
+		// also need to be able to open displays on the rendering thread
+		// possible use case for a polymorphic queue?
+
+
 
 		bool CGLFW::Update(engine::time::CTimer* pTimer)
 		{
@@ -147,6 +174,13 @@ namespace engine
 		//==========================================================================
 
 		void CGLFW::Uninitialise(void)
+		{
+			ThreadTerminate();
+		}
+
+		//==========================================================================
+
+		void CGLFW::ThreadTerminate(void)
 		{
 			TRACE(TRACE_ENABLE);
 

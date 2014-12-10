@@ -249,7 +249,7 @@ if(CMAKE_BUILD_TYPE MATCHES "Debug")
 	add_library(EngineTime STATIC ${ENGINE_TIME_SOURCES})
 	add_library(EngineUtility STATIC ${ENGINE_UTILITY_SOURCES})
 	add_library(EngineGLFW STATIC ${ENGINE_GLFW_SOURCES})
-	target_link_libraries(EngineGLFW glfw ${OPENGL_LIBRARIES} ${X11_LIBRARIES})
+	target_link_libraries(EngineGLFW EngineBase glfw ${OPENGL_LIBRARIES} ${X11_LIBRARIES})
 	set(LIBS ${LIBS} 
 		EngineBase
 		EngineCommon
