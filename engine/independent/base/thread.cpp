@@ -77,6 +77,12 @@ namespace engine
 
 		void CThread::Run(void)
 		{
+			if (ThreadInitialise() == false)
+			{
+				m_threadStatus = eTS_Terminated;
+				m_terminationReason = eTR_InitFail;
+			}
+
 			while (m_threadStatus == eTS_Running)
 			{
 				try
@@ -97,6 +103,9 @@ namespace engine
 			case eTR_Finished:
 				reason = "eTR_Finished";
 				break;
+			case eTR_InitFail:
+				reason = "eTR_InitFail";
+				break;
 			case eTR_Break:
 				reason = "eTR_Break";
 				break;
@@ -107,8 +116,9 @@ namespace engine
 				reason = "Unknown";
 				break;
 			}
+
 			LOG_ALWAYS(ENGINE_LOGGER, "Thread [%s] terminated, reason [%s]", m_name.c_str(), reason);
-			Uninitialise();
+			ThreadTerminate();
 		}
 
 		//==========================================================================

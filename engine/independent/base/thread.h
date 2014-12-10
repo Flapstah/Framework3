@@ -34,6 +34,7 @@ namespace engine
 			{
 				eTR_None,				// Not terminated
 				eTR_Finished,		// Internal expiration of thread (natural)
+				eTR_InitFail,		// Internal expiration of thread (initialisation failure)
 				eTR_Break,			// External expiration of thread (requested)
 				eTR_Abort				// External expiration of thread (forced)
 			}; // End [enum eTerminationReason]
@@ -47,13 +48,25 @@ namespace engine
 			CThread(const char* name);
 			virtual ~CThread(void);
 
+			//------------------------------------------------------------------------
+			// These are run from the main (or other) thread
+			//------------------------------------------------------------------------
 			virtual bool Initialise(void);
 			virtual void Terminate(bool immediate = false);
 			virtual void Uninitialise(void) {}
+			//------------------------------------------------------------------------
+
+		protected:
+			//------------------------------------------------------------------------
+			// These are all run on the encapsulated thread
+			//------------------------------------------------------------------------
+			void Run(void);
+			virtual bool ThreadInitialise(void) { return true; }
+			virtual void Tick(void) {}
+			virtual void ThreadTerminate(void) {}
 
 			// Check this thread for interruptions
 			inline void InterruptionPoint(void) { boost::this_thread::interruption_point(); }
-
 			//------------------------------------------------------------------------
 
 		protected:
@@ -62,9 +75,6 @@ namespace engine
 			boost::mutex m_mutex;
 			volatile eThreadStatus m_threadStatus;
 			eTerminationReason m_terminationReason;
-
-			void Run(void);
-			virtual void Tick(void) {};
 
 			//========================================================================
 		};	// End [class CThread]
