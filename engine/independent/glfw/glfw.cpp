@@ -67,8 +67,7 @@ namespace engine
 		//==========================================================================
 
 		CGLFW::CGLFW(void)
-			: CThread("render")
-			, m_flags(eF_NONE)
+			: m_flags(eF_NONE)
 			, m_status(eS_UNINITIALISED)
 		{
 			TRACE(TRACE_ENABLE);
@@ -105,22 +104,13 @@ namespace engine
 				m_flags = static_cast<eFlags>(m_flags | eF_VSYNC);
 			}
 
-			// Set timer callback
-			m_callback = engine::utility::MakeUnaryCallback<CGLFW, engine::time::CTimer>(*this, &CGLFW::TimerCallback);
-			m_timer = engine::time::CTime::Get().CreateTimer(engine::time::CTimeValue(0.1), 1.0f, engine::time::CTimeValue(1.0/DEFAULT_FRAMERATE), m_callback);
-
-			SetDesiredFramerate(configuration.m_desiredFrameRate);
-			return ThreadInitialise();
-		}
-
-		//==========================================================================
-
-		bool CGLFW::ThreadInitialise(void)
-		{
-			TRACE(TRACE_ENABLE);
-
 			if (glfwInit())
 			{
+				// Set timer callback
+				m_callback = engine::utility::MakeUnaryCallback<CGLFW, engine::time::CTimer>(*this, &CGLFW::TimerCallback);
+				m_timer = engine::time::CTime::Get().CreateTimer(engine::time::CTimeValue(0.1), 1.0f, engine::time::CTimeValue(1.0/DEFAULT_FRAMERATE), m_callback);
+
+				SetDesiredFramerate(configuration.m_desiredFrameRate);
 				glfwSwapInterval((m_flags & eF_VSYNC) ? 1 : 0);
 			}
 			else
@@ -132,13 +122,6 @@ namespace engine
 		}
 
 		//==========================================================================
-
-
-		// This needs to be in the threaded tick, but how do we get the pTimer pointer?
-		// also need to be able to open displays on the rendering thread
-		// possible use case for a polymorphic queue?
-
-
 
 		bool CGLFW::Update(engine::time::CTimer* pTimer)
 		{
@@ -174,13 +157,6 @@ namespace engine
 		//==========================================================================
 
 		void CGLFW::Uninitialise(void)
-		{
-			ThreadTerminate();
-		}
-
-		//==========================================================================
-
-		void CGLFW::ThreadTerminate(void)
 		{
 			TRACE(TRACE_ENABLE);
 
