@@ -80,20 +80,13 @@ namespace engine
 
 				//----------------------------------------------------------------------
 
-				enum eFlags
-				{
-					eF_NONE			= 0,
-					eF_REALTIME	= 1 << 0,
-					eF_VSYNC		= 1 << 1,
-				}; // End [enum eFlags]
-
 				typedef boost::shared_ptr<CDisplay> TCDisplayPtr;
 				typedef std::map<GLFWwindow*, TCDisplayPtr> TDisplayMap;
 				TDisplayMap m_display;
 				engine::time::CTime::TTimerPtr m_timer;
 				engine::time::CFPSCalculator m_fps;
 				engine::utility::CUnaryCallback<CGLFW, engine::time::CTimer> m_callback;
-				eFlags m_flags;
+				CDisplay::eFlags m_flags;
 				eStatus m_status;
 
 			//========================================================================

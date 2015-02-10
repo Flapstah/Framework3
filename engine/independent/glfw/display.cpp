@@ -43,7 +43,7 @@ namespace engine
 
 		//==========================================================================
 
-		CDisplay::TDisplayID CDisplay::Open(uint32 width, uint32 height, const char* title, bool fullScreen)
+		CDisplay::TDisplayID CDisplay::Open(uint32 width, uint32 height, const char* title, eFlags flags)
 		{
 			TRACE(TRACE_ENABLE);
 
@@ -51,11 +51,14 @@ namespace engine
 			m_id = INVALID_DISPLAY_ID;
 
 			glfwWindowHint(GLFW_DEPTH_BITS, 32);
-			m_window = glfwCreateWindow(width, height, title, (fullScreen == true) ? glfwGetPrimaryMonitor() : NULL, NULL);
+			m_window = glfwCreateWindow(width, height, title, (flags & eF_FULLSCREEN) ? glfwGetPrimaryMonitor() : NULL, NULL);
 			if (m_window != NULL)
 			{
 				// Make this display the current OpenGL context
 				glfwMakeContextCurrent(m_window);
+
+				// Set swap interval
+				glfwSwapInterval((flags & eF_VSYNC) ? 1 : 0);
 
 				// Set initial dimensions
 				glfwGetFramebufferSize(m_window, &m_width, &m_height);

@@ -67,7 +67,7 @@ namespace engine
 		//==========================================================================
 
 		CGLFW::CGLFW(void)
-			: m_flags(eF_NONE)
+			: m_flags(CDisplay::eF_NONE)
 			, m_status(eS_UNINITIALISED)
 		{
 			TRACE(TRACE_ENABLE);
@@ -92,16 +92,16 @@ namespace engine
 		{
 			TRACE(TRACE_ENABLE);
 			m_status = eS_RUNNING;
-			m_flags = eF_NONE;
+			m_flags = CDisplay::eF_NONE;
 
 			if (configuration.m_realtime)
 			{
-				m_flags = static_cast<eFlags>(m_flags | eF_REALTIME);
+				m_flags = static_cast<CDisplay::eFlags>(m_flags | CDisplay::eF_REALTIME);
 			}
 
 			if (configuration.m_vsync)
 			{
-				m_flags = static_cast<eFlags>(m_flags | eF_VSYNC);
+				m_flags = static_cast<CDisplay::eFlags>(m_flags | CDisplay::eF_VSYNC);
 			}
 
 			if (glfwInit())
@@ -111,7 +111,6 @@ namespace engine
 				m_timer = engine::time::CTime::Get().CreateTimer(engine::time::CTimeValue(0.1), 1.0f, engine::time::CTimeValue(1.0/DEFAULT_FRAMERATE), m_callback);
 
 				SetDesiredFramerate(configuration.m_desiredFrameRate);
-				glfwSwapInterval((m_flags & eF_VSYNC) ? 1 : 0);
 			}
 			else
 			{
@@ -130,7 +129,7 @@ namespace engine
 			TDisplayMap activeWindows;
 
 			// Gather events
-			if (m_flags & eF_REALTIME)
+			if (m_flags & CDisplay::eF_REALTIME)
 			{
 				glfwPollEvents();
 			}
@@ -175,9 +174,11 @@ namespace engine
 		{
 			TRACE(TRACE_ENABLE);
 
+			m_flags = static_cast<CDisplay::eFlags>((m_flags & ~CDisplay::eF_FULLSCREEN) | (-fullScreen & CDisplay::eF_FULLSCREEN));
+
 			TCDisplayPtr pDisplay = boost::make_shared<CDisplay>();
 
-			engine::glfw::CDisplay::TDisplayID id = pDisplay->Open(width, height, name, fullScreen);
+			engine::glfw::CDisplay::TDisplayID id = pDisplay->Open(width, height, name, m_flags);
 			if (id != INVALID_DISPLAY_ID)
 			{
 				GLFWwindow* pWindow = pDisplay->GetGLFWwindow();

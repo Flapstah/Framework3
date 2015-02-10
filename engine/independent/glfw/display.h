@@ -26,10 +26,18 @@ namespace engine
 		{
 			//========================================================================
 			public:
+				enum eFlags
+				{
+					eF_NONE				= 0,
+					eF_REALTIME		= 1 << 0,
+					eF_VSYNC			= 1 << 1,
+					eF_FULLSCREEN	= 1 << 2,
+				}; // End [enum eFlags]
+
 				typedef uint32 TDisplayID;
 
 				CDisplay(void);
-				TDisplayID Open(uint32 width, uint32 height, const char* title, bool fullScreen);
+				TDisplayID Open(uint32 width, uint32 height, const char* title, eFlags flags);
 				void Close(void);
 				~CDisplay(void);
 
