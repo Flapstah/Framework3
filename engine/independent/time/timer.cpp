@@ -18,12 +18,17 @@ namespace engine
 	{
 		//==========================================================================
 
+		uint32 CTimer::s_id = 0;
+
+		//==========================================================================
+
 		CTimer::CTimer(const CTimer* pParent, CTimeValue maxFrameTime, float scale, CTimeValue callbackInterval, engine::utility::CCallbackBase& callback)
 			: m_callbackInterval(callbackInterval)
 			, m_maxFrameTime(maxFrameTime)
 			, m_pParent(pParent)
 			, m_callback(callback)
 			, m_scale(scale)
+			, m_id(s_id++)
 			, m_flags(0)
 		{
 			TRACE(TRACE_ENABLE);

@@ -34,6 +34,7 @@ namespace engine
 			void Pause(bool pause);
 			bool IsPaused(void);
 			void Reset(const CTimeValue& when);
+			uint32 GetID(void) const { return m_id; }
 
 			//------------------------------------------------------------------------
 
@@ -55,6 +56,9 @@ namespace engine
 			engine::utility::CCallbackBase& m_callback;
 
 			float m_scale;
+
+			uint32 m_id;
+			static uint32 s_id;
 
 			enum eFlags
 			{
