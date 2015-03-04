@@ -55,7 +55,7 @@
 #define LOG_MASTER_NAME "master"
 #define LOG_ENGINE_NAME "engine"
 #define LOG_GAME_NAME "game"
-#define LOG_BUFFER_SIZE (1024)
+#define LOG_BUFFER_SIZE (2048)
 #define LOG_ELIDE_ALL_LOGS (0)
 #define LOG_DEFAULT_DEBUG_LOG_LEVEL engine::system::CLog::eLL_DEBUG
 #define LOG_DEFAULT_RELEASE_LOG_LEVEL engine::system::CLog::eLL_WARNING
