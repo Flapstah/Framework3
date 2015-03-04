@@ -34,6 +34,14 @@ namespace engine
 					eF_FULLSCREEN	= 1 << 2,
 				}; // End [enum eFlags]
 
+				enum eDisplayInfoFlags
+				{
+					eDIF_OPENGL			= 1 << 0,
+					eDIF_DISPLAY		= 1 << 1,
+
+					eDIF_ALL				= -1
+				}; // End [enum eDisplayInfoFlags]
+
 				typedef uint32 TDisplayID;
 
 				CDisplay(void);
@@ -44,6 +52,8 @@ namespace engine
 				bool Update(engine::time::CTimer* pTimer);
 				TDisplayID GetID(void) const { return m_id; }
 				GLFWwindow* GetGLFWwindow(void) const { return m_window; }
+
+				void GetInfo(eDisplayInfoFlags flags) const;
 
 				//----------------------------------------------------------------------
 

@@ -60,6 +60,7 @@ namespace engine
 				void Uninitialise(void);
 
 				engine::glfw::CDisplay::TDisplayID OpenDisplay(uint32 width, uint32 height, const char* name, bool fullScreen);
+				void GetDisplayInfo(engine::glfw::CDisplay::TDisplayID id, CDisplay::eDisplayInfoFlags flags = CDisplay::eDIF_DISPLAY) const;
 				void CloseDisplay(engine::glfw::CDisplay::TDisplayID id);
 
 				const engine::time::CFPSCalculator* GetFPS(void) const;

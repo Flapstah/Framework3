@@ -74,7 +74,8 @@ int main(int argc, char* argv[])
 
 	engine::glfw::CGLFW* pGLFW = myEngine.GetGLFW();
 	pGLFW->Initialise(glfwConfiguration);
-	pGLFW->OpenDisplay(display_width, display_height, DEFAULT_WINDOW_TITLE, display_fullScreen);
+	engine::glfw::CDisplay::TDisplayID id = pGLFW->OpenDisplay(display_width, display_height, DEFAULT_WINDOW_TITLE, display_fullScreen);
+	pGLFW->GetDisplayInfo(id);
 
 	CGame* pGame = new CGame();
 	engine::base::CThread t("dummy");

@@ -191,6 +191,22 @@ namespace engine
 
 		//==========================================================================
 
+		void CGLFW::GetDisplayInfo(engine::glfw::CDisplay::TDisplayID id, CDisplay::eDisplayInfoFlags flags /* = CDisplay::eDIF_DISPLAY*/) const
+		{
+			TRACE(TRACE_ENABLE);
+
+			for (TDisplayMap::const_iterator it = m_display.begin(), end = m_display.end(); it != end; ++it)
+			{
+				if (it->second.get()->GetID() == id)
+				{
+					it->second.get()->GetInfo(flags);
+					break;
+				}
+			}
+		}
+
+		//==========================================================================
+
 		void CGLFW::CloseDisplay(engine::glfw::CDisplay::TDisplayID id)
 		{
 			TRACE(TRACE_ENABLE);

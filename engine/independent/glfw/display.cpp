@@ -127,6 +127,30 @@ namespace engine
 
 		//==========================================================================
 
+		void CDisplay::GetInfo(eDisplayInfoFlags flags) const
+		{
+			TRACE(TRACE_ENABLE);
+
+			if (m_active == true)
+			{
+				// Make this display the current OpenGL context
+				glfwMakeContextCurrent(m_window);
+
+				if (flags & eDIF_OPENGL)
+				{
+					LOG_INFO(ENGINE_LOGGER, "[OpenGL] GL_VENDOR   [%s]", glGetString(GL_VENDOR));
+					LOG_INFO(ENGINE_LOGGER, "[OpenGL] GL_RENDERER [%s]", glGetString(GL_RENDERER));
+					LOG_INFO(ENGINE_LOGGER, "[OpenGL] GL_VERSION  [%s]", glGetString(GL_VERSION));
+				}
+				if (flags & eDIF_DISPLAY)
+				{
+					LOG_INFO(ENGINE_LOGGER, "[Display] ID [%d], dimensions [%dw x %dh]", m_id, m_width, m_height);
+				}
+			}
+		}
+
+		//==========================================================================
+
 		bool CDisplay::glfwKeyCallback(int key, int scancode, int action, int mods)
 		{
 			IGNORE_PARAMETER(key);
