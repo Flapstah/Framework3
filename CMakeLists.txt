@@ -75,7 +75,7 @@ endif(CMAKE_COMPILER_IS_GNUCXX)
 
 # GLFW includes OpenGL
 add_subdirectory(${game_SOURCE_DIR}/SDKs/glfw)
-set(GLFW_INCLUDE_DIRS "${game_SOURCE_DIR}/SDKs/glfw/include")
+set(GLFW_INCLUDE_DIR "${game_SOURCE_DIR}/SDKs/glfw/include")
 #
 ###############################################################################
 
@@ -325,7 +325,7 @@ endif(UNIX)
 # own or maintain, and treating as a system include supresses the warnings.
 #
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
-include_directories(${PROJECT_INDEPENDENT_INCLUDE_DIRS} ${PROJECT_DEPENDENT_INCLUDE_DIRS} ${ZLIB_INCLUDE_DIRS} ${GLFW_INCLUDE_DIRS} ${OPENAL_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS})
+include_directories(${PROJECT_INDEPENDENT_INCLUDE_DIRS} ${PROJECT_DEPENDENT_INCLUDE_DIRS} ${ZLIB_INCLUDE_DIRS} ${GLFW_INCLUDE_DIR} ${OPENAL_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS})
 set(LIBS ${LIBS} ${Boost_LIBRARIES} ${ZLIB_LIBRARIES} ${OPENAL_LIBRARY} ${FREETYPE_LIBRARIES})
 #
 ###############################################################################
